@@ -71,11 +71,14 @@ local function flush_previous_frame()
     -- The frame the probe was started part-way through has an incomplete call
     -- count by construction, so it is marked rather than counted.
     local partial = (diag.started_frame ~= nil and M.frame == diag.started_frame)
+    local hs = GameAdapter.hitstop(GameAdapter.player(0))
     ClockStats.add_frame(diag.stats, {
         calls = calls_this_frame,
         gate_open = gate_open_this_frame,
         paused = GameAdapter.in_pause_menu(),
-        hitstop = ((GameAdapter.hitstop(GameAdapter.player(0)) or 0) > 0),
+        hitstop = ((hs or 0) > 0),
+        hitstop_value = hs,
+        tick = M.frame,
         partial = partial,
     })
 end

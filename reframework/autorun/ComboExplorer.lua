@@ -148,6 +148,8 @@ local THEME = {
 
 local live = {
     snap = nil,
+    hp_arm_usable = nil,
+    hp_arm_reason = nil,
     p1_control = nil,
     p1_control_polls = 0,
     p1_char = nil,
@@ -178,6 +180,14 @@ re.on_frame(function()
     end
     live.p1_char = GameAdapter.character(0)
     live.p2_char = GameAdapter.character(1)
+
+    -- Probe A's control arm is a victim-HP delta, and the training menu can
+    -- make that arm identically zero: infinite health never moves, recovery
+    -- moves it back. Without this the probe would report a disagreement on
+    -- every sample and blame mComboDamage for a menu setting.
+    local usable, why = GameAdapter.hp_arm_usable(1)
+    live.hp_arm_usable, live.hp_arm_reason = usable, why
+    probe_a.probe:set_hp_arm(usable, why)
 end)
 
 -- =========================================================
@@ -304,6 +314,11 @@ local function draw_live()
 
     kv("P1 hp / P2 hp", fmt(s.attacker_hp) .. " / " .. fmt(s.victim_hp)
         .. " (max " .. fmt(s.victim_hp_max) .. ")")
+    kv("dummy HP usable as a measure",
+       (live.hp_arm_usable == true and "yes")
+        or (live.hp_arm_usable == false and ("NO - " .. tostring(live.hp_arm_reason)))
+        or "unknown - settings could not be read",
+       live.hp_arm_usable == true and UIKit.COLORS.Green or UIKit.COLORS.Red)
     kv("P1 drive / super", fmt(s.attacker_drive) .. " / " .. fmt(s.attacker_super))
     kv("P1 hit_stop", fmt(s.attacker_hitstop),
        (s.attacker_hitstop or 0) > 0 and UIKit.COLORS.Orange or UIKit.COLORS.White)

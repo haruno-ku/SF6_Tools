@@ -224,6 +224,58 @@ function M.control_scheme(player_index)
     return v
 end
 
+-- The training menu's health settings for one side.
+--
+-- Probe A's whole control arm is a victim-HP delta, and the training defaults
+-- can make that arm identically zero: with infinite health the number never
+-- moves, and with recovery on it moves back. Either way the probe would blame
+-- mComboDamage for a menu setting and report a disagreement that is not one.
+--
+-- Field names and the ParameterSetting path are upstream's
+-- (TrainingComboTrials_v1.0.lua:1281-1303).
+function M.vital_settings(player_index)
+    local out = nil
+    pcall(function()
+        local tm = sdk.get_managed_singleton("app.training.TrainingManager")
+        local td = tm and tm:get_field("_tData")
+        local ps = td and td:get_field("ParameterSetting")
+        local pd = ps and ps.PlayerDatas and ps.PlayerDatas[player_index]
+        if not pd then return end
+        local function b(name)
+            local v = pd[name]
+            if v == nil then return nil end
+            return v == true
+        end
+        local vt = pd.Vital_Type
+        out = {
+            vital_type = vt ~= nil and tonumber(tostring(vt)) or nil,
+            infinity = b("Is_Vital_Infinity"),
+            no_recovery = b("Is_Vital_No_Recovery"),
+            recovery_timer = b("Is_Vital_Recovery_Timer"),
+        }
+    end)
+    return out
+end
+
+-- Is the victim's health usable as a damage measurement right now?
+--
+-- Returns usable(bool|nil), reason. nil means the settings could not be read,
+-- which is not the same as "fine" and must not be treated as such.
+function M.hp_arm_usable(victim_index)
+    local s = M.vital_settings(victim_index)
+    if not s then return nil, "training health settings could not be read" end
+    if s.infinity then
+        return false, "the dummy is on infinite health - the HP delta cannot move"
+    end
+    if s.recovery_timer then
+        return false, "the dummy recovers health on a timer - the HP delta is not damage"
+    end
+    if s.no_recovery == false then
+        return false, "the dummy recovers health - the HP delta is not damage"
+    end
+    return true, nil
+end
+
 function M.is_refreshing()
     local v = false
     pcall(function()

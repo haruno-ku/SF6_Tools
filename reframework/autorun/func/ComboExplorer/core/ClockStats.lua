@@ -48,6 +48,18 @@ function M.new()
     return {
         frames = {},          -- included frames, aggregated
         total_frames = 0,
+        -- Hitstop EPISODES, not just a count of frames.
+        --
+        -- A window-wide subtraction cannot answer the question. "600 frames, 40
+        -- of them with hitstop, gap 3" says nothing about whether the gap came
+        -- from the hitstop, because the two numbers are never related to each
+        -- other in time. What answers it is the per-episode difference: for
+        -- each stretch of hitstop, how many battle frames passed against how
+        -- many engine frames. If the tick clock stalls during hitstop, that
+        -- difference is the length of the episode.
+        hitstop_episodes = {},
+        open_episode = nil,
+        max_abs_drift = 0,    -- worst instantaneous |engine - battle| seen
         included_frames = 0,
         gate_closed_frames = 0,
         paused_frames = 0,
@@ -90,6 +102,57 @@ function M.add_frame(s, rec)
 
     s.included_frames = s.included_frames + 1
     if rec.hitstop then s.hitstop_frames = s.hitstop_frames + 1 end
+
+    -- Episode accounting.
+    --
+    -- The clock under suspicion is the INPUT-HOOK tick, not the battle-frame
+    -- one. Upstream's comment is that hitstop frames go "missing between engine
+    -- ticks", and what it is describing is pl_input_sub not firing - the battle
+    -- sim carries on, the characters are just frozen. So the measurement that
+    -- answers the question is calls-per-frame inside a hitstop episode against
+    -- calls-per-frame outside one.
+    --
+    -- A delay counted in input-hook calls stalls exactly as much as those calls
+    -- do, and hitstop sits between move A and move B in every link test.
+    local calls_p1 = (rec.calls and rec.calls[0]) or 0
+
+    if rec.hitstop then
+        s.hitstop_calls = (s.hitstop_calls or 0) + calls_p1
+        if not s.open_episode then
+            s.open_episode = {
+                start_tick = rec.tick,
+                start_battle = s.included_frames,
+                start_engine = s.engine_frames,
+                calls = calls_p1,
+                frames = 1,
+                peak_hitstop = rec.hitstop_value,
+            }
+        else
+            local e = s.open_episode
+            e.calls = e.calls + calls_p1
+            e.frames = e.frames + 1
+            local v = rec.hitstop_value
+            if v and (e.peak_hitstop == nil or v > e.peak_hitstop) then e.peak_hitstop = v end
+        end
+    else
+        s.normal_calls = (s.normal_calls or 0) + calls_p1
+        s.normal_frames = (s.normal_frames or 0) + 1
+        if s.open_episode then
+            local e = s.open_episode
+            s.hitstop_episodes[#s.hitstop_episodes + 1] = {
+                start_tick = e.start_tick,
+                battle_frames = e.frames,
+                calls = e.calls,
+                calls_per_frame = (e.frames > 0) and (e.calls / e.frames) or nil,
+                engine_frames = s.engine_frames - e.start_engine,
+                peak_hitstop = e.peak_hitstop,
+            }
+            s.open_episode = nil
+        end
+    end
+
+    local drift = math.abs(s.engine_frames - s.included_frames)
+    if drift > s.max_abs_drift then s.max_abs_drift = drift end
 
     for player, n in pairs(rec.calls or {}) do
         s.hist[player] = s.hist[player] or {}
@@ -182,9 +245,78 @@ function M.report(s, opts)
         -- Both clocks over the same window. Reported as two numbers and their
         -- difference; what causes the difference is not asserted here.
         tick_vs_engine_gap = s.engine_frames - s.included_frames,
+        -- A drift that accrues and then cancels is invisible to the endpoint
+        -- subtraction, so the worst instantaneous difference is kept too.
+        max_abs_drift = s.max_abs_drift,
+        hitstop = M.hitstop_finding(s),
         players = per_player,
         assessment = M.assess(s, opts),
     }
+end
+
+-- What the hitstop episodes actually show. This is the measurement probe B
+-- exists to make: whether the battle-frame clock stalls while the engine keeps
+-- running, and by how much.
+function M.hitstop_finding(s)
+    local eps = s.hitstop_episodes or {}
+    local out = {
+        episodes = #eps,
+        detail = eps,
+    }
+    if #eps == 0 then
+        out.conclusive = false
+        out.reason = "no hitstop episode was observed - land some hits during the sample"
+        return out
+    end
+
+    local hs_frames, hs_calls = 0, 0
+    for _, e in ipairs(eps) do
+        hs_frames = hs_frames + e.battle_frames
+        hs_calls = hs_calls + e.calls
+    end
+
+    local n_frames = s.normal_frames or 0
+    local n_calls = s.normal_calls or 0
+
+    out.frames_in_hitstop = hs_frames
+    out.calls_in_hitstop = hs_calls
+    out.frames_outside = n_frames
+    out.calls_outside = n_calls
+    out.calls_per_frame_in_hitstop = (hs_frames > 0) and (hs_calls / hs_frames) or nil
+    out.calls_per_frame_outside = (n_frames > 0) and (n_calls / n_frames) or nil
+
+    if n_frames == 0 then
+        out.conclusive = false
+        out.reason = "no frames outside hitstop to compare against"
+        return out
+    end
+
+    local inside = out.calls_per_frame_in_hitstop
+    local outside = out.calls_per_frame_outside
+
+    -- The comparison, in words: does the input hook keep firing while the
+    -- characters are frozen?
+    if outside < 0.5 then
+        out.conclusive = false
+        out.reason = ("the input hook barely fired even outside hitstop (%.2f calls/frame) - "
+            .. "the sample cannot distinguish the two"):format(outside)
+    elseif inside <= 0.05 then
+        out.conclusive = true
+        out.finding = "input_ticks_stall_during_hitstop"
+        out.reason = ("across %d hitstop episodes (%d frames) the input hook fired %.2f times "
+            .. "per frame, against %.2f outside - delays counted in input ticks stall in hitstop")
+            :format(#eps, hs_frames, inside, outside)
+    elseif math.abs(inside - outside) / outside < 0.1 then
+        out.conclusive = true
+        out.finding = "input_ticks_advance_during_hitstop"
+        out.reason = ("across %d hitstop episodes the input hook fired %.2f times per frame, "
+            .. "the same as the %.2f outside"):format(#eps, inside, outside)
+    else
+        out.conclusive = false
+        out.reason = ("the input hook fired %.2f times per frame in hitstop against %.2f outside - "
+            .. "a partial difference; collect more episodes"):format(inside, outside)
+    end
+    return out
 end
 
 -- Reduces a report to the one thing Provenance wants to know, WITHOUT deciding

@@ -123,6 +123,82 @@ t.eq(r.engine_frames.counted, 100, "paused render frames are not counted as engi
 t.eq(r.engine_frames.skipped_while_paused, 250, "they are reported separately")
 t.eq(r.tick_vs_engine_gap, 0, "so a long pause does not masquerade as clock drift")
 
+-- --- hitstop, which is the actual question -----------------------------------
+
+t.group("hitstop is measured against the input-hook tick")
+
+-- The clock under suspicion is the INPUT-HOOK tick, not the battle-frame one.
+-- The battle sim carries on during hitstop; the characters are frozen. What
+-- upstream describes as frames going "missing between engine ticks" is
+-- pl_input_sub not firing - and a delay counted in input ticks stalls exactly
+-- as much as those calls do.
+--
+-- Writing this test the wrong way first was instructive: simulating a stalled
+-- BATTLE clock produced no observable hitstop frames at all, because there were
+-- no frames on which to observe it.
+
+local function hitstop_run(s, normal_frames, episodes, ep_len, calls_during)
+    for _ = 1, normal_frames do
+        CS.add_frame(s, frame({ hitstop = false, tick = 0 }))
+        CS.add_engine_frame(s, false)
+    end
+    for _ = 1, episodes do
+        for _ = 1, ep_len do
+            CS.add_frame(s, frame({
+                hitstop = true, hitstop_value = ep_len,
+                calls = calls_during and { [0] = 1, [1] = 1 } or {},
+            }))
+            CS.add_engine_frame(s, false)
+        end
+        for _ = 1, 20 do
+            CS.add_frame(s, frame({ hitstop = false }))
+            CS.add_engine_frame(s, false)
+        end
+    end
+end
+
+-- The suspected case: the hook does not fire while frozen.
+s = CS.new()
+hitstop_run(s, 300, 4, 8, false)
+r = CS.report(s)
+
+t.eq(r.hitstop.episodes, 4, "four episodes recorded")
+t.ok(r.hitstop.conclusive, "and they answer the question")
+t.eq(r.hitstop.finding, "input_ticks_stall_during_hitstop", "the stall is detected")
+t.eq(r.hitstop.calls_per_frame_in_hitstop, 0, "no calls during hitstop")
+t.eq(r.hitstop.calls_per_frame_outside, 1, "one call per frame outside it")
+t.ok(r.hitstop.reason:find("stall in hitstop", 1, true) ~= nil, "and it is stated in words")
+t.eq(r.hitstop.detail[1].battle_frames, 8, "each episode carries its own length")
+
+-- The other case: the hook keeps firing, so a delay in input ticks is a delay
+-- in frames after all.
+s = CS.new()
+hitstop_run(s, 300, 4, 8, true)
+r = CS.report(s)
+t.eq(r.hitstop.finding, "input_ticks_advance_during_hitstop", "a hook that keeps firing says so")
+t.ok(r.hitstop.conclusive, "which is equally a conclusion")
+
+-- No hitstop at all is not a finding either way.
+r = CS.report(sample(400))
+t.eq(r.hitstop.episodes, 0, "no episodes")
+t.eq(r.hitstop.conclusive, false, "so nothing is concluded")
+t.ok(r.hitstop.reason:find("land some hits", 1, true) ~= nil, "and the operator is told what to do")
+
+t.group("drift that cancels is still visible")
+
+-- An endpoint subtraction misses a drift that accrues and then comes back, so
+-- the worst instantaneous difference is kept alongside it.
+s = CS.new()
+for _ = 1, 100 do
+    CS.add_frame(s, frame({ hitstop = true, hitstop_value = 1 }))
+    CS.add_engine_frame(s, false)
+end
+for _ = 1, 30 do CS.add_engine_frame(s, false) end          -- engine runs ahead
+for _ = 1, 30 do CS.add_frame(s, frame({ hitstop = false })) end  -- battle catches up
+r = CS.report(s)
+t.eq(r.tick_vs_engine_gap, 0, "the endpoint difference is zero")
+t.ok(r.max_abs_drift >= 29, "but the worst instantaneous drift is recorded (" .. r.max_abs_drift .. ")")
+
 -- --- the sample has to be fit ------------------------------------------------
 
 t.group("fitness")

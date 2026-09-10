@@ -52,6 +52,17 @@ function M.new(opts)
     return p
 end
 
+-- Tells the probe whether the victim's health is a usable damage measurement
+-- under the current training settings. Set from GameAdapter.hp_arm_usable().
+--
+-- Without this the probe's control arm can be identically zero - infinite
+-- health never moves, recovery moves it back - and every sample would report a
+-- disagreement, blaming mComboDamage for a menu option.
+function Probe:set_hp_arm(usable, reason)
+    self.hp_arm_usable = usable
+    self.hp_arm_reason = reason
+end
+
 function Probe:reset()
     self.samples = {}
     self.in_combo = false
@@ -65,6 +76,9 @@ function Probe:reset()
     -- combo will be measured from, captured before its first hit lands.
     self.pre_combo_hp = nil
     self.last_victim_hp = nil
+    -- nil means "not established", which is different from "fine".
+    self.hp_arm_usable = self.hp_arm_usable
+    self.hp_arm_reason = self.hp_arm_reason
 
     self.last_action_id = nil
     self.transitions = nil
@@ -177,7 +191,11 @@ end
 function Probe:close(tick_index)
     if not self.in_combo then return nil end
 
-    local s = self.tracker:result()
+    local s = self.tracker:result({
+        hp_arm_usable = self.hp_arm_usable,
+        hp_arm_reason = self.hp_arm_reason,
+    })
+    s.hp_arm_usable = self.hp_arm_usable
     local open = self.open_sample or {}
     for k, v in pairs(open) do s[k] = v end
     s.end_tick = tick_index
@@ -234,15 +252,32 @@ end
 -- rules live; everything else here is context so the file can be attributed.
 function Probe:report(opts)
     local conclusion = DamageTracker.conclude(self.samples, opts)
+
+    -- A blocked HP arm outranks whatever the samples say: with no control
+    -- measurement there is nothing to cross-check the damage field against, and
+    -- a verdict drawn from that would be an opinion rather than a measurement.
+    local verdict = conclusion.verdict
+    local recommended = conclusion.recommended_source
+    if self.hp_arm_usable == false then
+        verdict = ("HP ARM INVALID - %s. Fix the training menu (finite health, no recovery) and re-run.")
+            :format(tostring(self.hp_arm_reason))
+        recommended = "undecided"
+    elseif self.hp_arm_usable == nil then
+        verdict = "HP ARM UNVERIFIED - the training health settings could not be read. "
+            .. verdict
+    end
+
     return {
         probe = "A.damage_readability",
-        verdict = conclusion.verdict,
-        recommended_source = conclusion.recommended_source,
+        verdict = verdict,
+        recommended_source = recommended,
         carrying_side = conclusion.carrying_side,
         scale_factor = conclusion.scale_factor,
         sufficient = conclusion.sufficient,
         counts = conclusion.counts,
         idle_ticks_to_close = self.idle_ticks_to_close,
+        hp_arm_usable = self.hp_arm_usable,
+        hp_arm_reason = self.hp_arm_reason,
         ticks_observed = self.ticks,
         ticks_skipped = self.skipped_ticks,
         action_id_histogram = self:action_id_histogram(),

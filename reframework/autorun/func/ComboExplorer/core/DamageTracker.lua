@@ -148,7 +148,14 @@ function Tracker:result(opts)
     end
 
     local agree, reason = nil, nil
-    if not self.field_resolved then
+    if opts.hp_arm_usable == false then
+        -- The victim's health is not a damage measurement under these training
+        -- settings. Comparing against it would manufacture a disagreement and
+        -- blame the damage field for a menu option.
+        reason = opts.hp_arm_reason or "the HP arm is invalid under the current training settings"
+    elseif opts.hp_arm_usable == nil and opts.require_hp_arm_check then
+        reason = "the training health settings could not be read, so the HP arm cannot be trusted"
+    elseif not self.field_resolved then
         reason = "mComboDamage never resolved"
     elseif not self.field_nonzero then
         reason = "mComboDamage resolved but never read above zero"
