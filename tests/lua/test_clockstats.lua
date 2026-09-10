@@ -9,7 +9,7 @@
 -- Everything below is really asking: can this instrument be made to lie?
 
 local t = require("tests.lua.harness")
-local CS = require("reframework.autorun.func.ComboExplorer.core.ClockStats")
+local CS = require("func/ComboExplorer/core/ClockStats")
 
 local function frame(over)
     local f = { calls = { [0] = 1, [1] = 1 }, gate_open = true, paused = false, hitstop = false }

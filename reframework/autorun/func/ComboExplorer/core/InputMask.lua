@@ -64,15 +64,41 @@ M.MOTION_SHORTHAND = {
 --   dir      : { UP, DOWN, LEFT, RIGHT } bits
 --   mirror_when : "falsy" | "truthy" - which rl_dir value means mirror
 --   status   : carried through from Provenance so compile() can refuse
+local function is_single_bit(n)
+    return type(n) == "number" and n > 0 and math.floor(n) == n and (n & (n - 1)) == 0
+end
+
 function M.profile(opts)
     opts = opts or {}
     local dir = opts.dir
     if type(dir) ~= "table" or not (dir.UP and dir.DOWN and dir.LEFT and dir.RIGHT) then
         return nil, "profile needs dir = { UP, DOWN, LEFT, RIGHT }"
     end
+    -- A calibration file is hand-writable, and a direction that is not a single
+    -- distinct bit produces masks that look plausible and behave wrongly: two
+    -- directions sharing a bit means one of them can never be expressed.
+    local seen = {}
+    for _, name in ipairs({ "UP", "DOWN", "LEFT", "RIGHT" }) do
+        local bit = dir[name]
+        if not is_single_bit(bit) then
+            return nil, ("direction %s is %s, expected a single bit"):format(name, tostring(bit))
+        end
+        if seen[bit] then
+            return nil, ("directions %s and %s share bit %d"):format(seen[bit], name, bit)
+        end
+        seen[bit] = name
+    end
+
     if type(opts.buttons) ~= "table" then
         return nil, "profile needs a buttons table"
     end
+    for name, bit in pairs(opts.buttons) do
+        if type(bit) ~= "number" or bit <= 0 or math.floor(bit) ~= bit then
+            return nil, ("button %s is %s, expected a positive integer bitmask")
+                :format(tostring(name), tostring(bit))
+        end
+    end
+
     local mirror_when = opts.mirror_when or "falsy"
     if mirror_when ~= "falsy" and mirror_when ~= "truthy" then
         return nil, "mirror_when must be 'falsy' or 'truthy'"
@@ -103,10 +129,22 @@ function M.profile_from_provenance(P, reg, scheme)
         if s ~= "verified" then status = s end
     end
 
+    -- Named explicitly rather than defaulted. A polarity string nobody
+    -- recognises would otherwise silently become "falsy", which is the one
+    -- error that produces a dataset half of which is mirrored - and that reads
+    -- as flaky links rather than as a bug.
+    local mirror_when
+    if pol == "mirror_when_falsy" then mirror_when = "falsy"
+    elseif pol == "mirror_when_truthy" then mirror_when = "truthy"
+    else
+        return nil, ("rl_dir_polarity is %q, expected mirror_when_falsy or mirror_when_truthy")
+            :format(tostring(pol))
+    end
+
     return M.profile({
         buttons = buttons,
         dir = dir,
-        mirror_when = (pol == "mirror_when_truthy") and "truthy" or "falsy",
+        mirror_when = mirror_when,
         status = status,
         scheme = scheme,
         source = "provenance:" .. tostring(reg.calibration_id or "none"),

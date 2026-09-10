@@ -160,6 +160,26 @@ function Sync-Tree {
 # --- the payload -------------------------------------------------------------
 
 Sync-Tree (Join-Path $RepoRoot 'reframework\autorun') (Join-Path $GameDir 'reframework\autorun') 'reframework/autorun'
+
+# robocopy /E copies, it does not mirror, so a module that moves in the repo
+# stays behind on the game machine forever. A stale copy of a renamed file is
+# not inert: it is still on the require path, and a script that finds the old
+# one loads code nobody is looking at any more.
+#
+# Purging is only safe for a directory that is entirely ours and holds nothing
+# user-generated - which is exactly func/ComboExplorer and nothing else. It is
+# deliberately NOT applied to reframework/data, where the mod's own output
+# lives alongside the shipped files.
+$explorerSrc = Join-Path $RepoRoot 'reframework\autorun\func\ComboExplorer'
+$explorerDst = Join-Path $GameDir  'reframework\autorun\func\ComboExplorer'
+if ((Test-Path $explorerSrc) -and (Test-Path $explorerDst)) {
+    Write-Host 'prune reframework/autorun/func/ComboExplorer (removes modules deleted upstream)'
+    $pruneArgs = @($explorerSrc, $explorerDst, '/E', '/PURGE', '/NJH', '/NJS', '/NP', '/NDL', '/R:2', '/W:1')
+    if ($WhatIfPreference) { $pruneArgs += '/L' }
+    & robocopy @pruneArgs | Where-Object { $_ -match 'EXTRA|\*EXTRA' } | ForEach-Object { "      $_" }
+    if ($LASTEXITCODE -ge 8) { throw "robocopy prune failed (exit $LASTEXITCODE)" }
+    $global:LASTEXITCODE = 0
+}
 Sync-Tree (Join-Path $RepoRoot 'reframework\data')    (Join-Path $GameDir 'reframework\data')    'reframework/data'
 Sync-Tree (Join-Path $RepoRoot 'reframework\fonts')   (Join-Path $GameDir 'reframework\fonts')   'reframework/fonts'
 Sync-Tree (Join-Path $RepoRoot 'reframework\images')  (Join-Path $GameDir 'reframework\images')  'reframework/images'

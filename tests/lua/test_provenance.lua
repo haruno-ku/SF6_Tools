@@ -6,7 +6,7 @@
 -- depends on have been measured on a real machine?
 
 local t = require("tests.lua.harness")
-local P = require("reframework.autorun.func.ComboExplorer.core.Provenance")
+local P = require("func/ComboExplorer/core/Provenance")
 
 -- --- everything starts unknown ----------------------------------------------
 

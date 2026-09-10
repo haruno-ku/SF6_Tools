@@ -7,7 +7,7 @@
 -- figure if nobody checks for them.
 
 local t = require("tests.lua.harness")
-local DT = require("reframework.autorun.func.ComboExplorer.core.DamageTracker")
+local DT = require("func/ComboExplorer/core/DamageTracker")
 
 local function run(readings)
     local tr = DT.new()

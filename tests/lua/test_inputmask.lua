@@ -12,8 +12,8 @@
 -- work" - so every one of them is asserted.
 
 local t = require("tests.lua.harness")
-local IM = require("reframework.autorun.func.ComboExplorer.core.InputMask")
-local P  = require("reframework.autorun.func.ComboExplorer.core.Provenance")
+local IM = require("func/ComboExplorer/core/InputMask")
+local P  = require("func/ComboExplorer/core/Provenance")
 
 -- A profile standing in for a completed calibration. The values happen to match
 -- the current provisional guesses, but the test says "verified" explicitly:
@@ -40,6 +40,18 @@ t.is_nil(IM.profile({ buttons = {} }), "a profile without direction bits is reje
 t.is_nil(IM.profile({ dir = { UP = 1, DOWN = 2, LEFT = 4, RIGHT = 8 } }), "without buttons, rejected")
 t.is_nil(IM.profile({ buttons = {}, dir = { UP = 1, DOWN = 2, LEFT = 4, RIGHT = 8 },
                       mirror_when = "maybe" }), "an unknown mirror rule is rejected")
+
+-- A calibration file is hand-writable, so its shape has to be checked. Two
+-- directions sharing a bit means one of them can never be expressed, and the
+-- masks it produces look perfectly plausible.
+t.is_nil(IM.profile({ buttons = { L = 1 }, dir = { UP = 1, DOWN = 2, LEFT = 4, RIGHT = 4 } }),
+         "two directions sharing a bit is rejected")
+t.is_nil(IM.profile({ buttons = { L = 1 }, dir = { UP = 1, DOWN = 2, LEFT = 4, RIGHT = 12 } }),
+         "a direction that is not a single bit is rejected")
+t.is_nil(IM.profile({ buttons = { L = 0 }, dir = { UP = 1, DOWN = 2, LEFT = 4, RIGHT = 8 } }),
+         "a zero button bit is rejected")
+t.is_nil(IM.profile({ buttons = { L = "0x10" }, dir = { UP = 1, DOWN = 2, LEFT = 4, RIGHT = 8 } }),
+         "a button bit that is a string is rejected")
 
 -- The numpad layout must follow the direction bits, not be pinned to them. If
 -- calibration says left and right are the other way round, everything derived
@@ -87,6 +99,17 @@ reg2:apply_calibration({ calibration_id = "flip", values = {
 } })
 t.eq(IM.profile_from_provenance(P, reg2).mirror_when, "truthy",
      "a calibration that flips the polarity flips the profile")
+
+-- An unrecognised polarity must refuse, not quietly become "falsy". That
+-- default is the one error that mirrors half a dataset and reads as flaky links
+-- rather than as a bug.
+local reg3 = P.new()
+reg3:apply_calibration({ calibration_id = "typo", values = {
+    rl_dir_polarity = { status = P.STATUS.VERIFIED, value = "mirror_when_flasy" },
+} })
+local bad, why = IM.profile_from_provenance(P, reg3)
+t.is_nil(bad, "an unrecognised polarity is refused")
+t.ok(why and why:find("mirror_when_falsy", 1, true) ~= nil, "and the error names what was expected")
 
 -- --- notation parsing is profile-independent --------------------------------
 
