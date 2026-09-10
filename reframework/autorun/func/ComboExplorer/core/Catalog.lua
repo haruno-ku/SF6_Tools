@@ -119,9 +119,26 @@ local function charge_category(c)
     return "special"
 end
 
+-- A leading ">" is how the source spells "this comes out of something else".
+-- It appears on the classic side whether or not the Modern side repeats it, so
+-- it is read here as well as in InputMask.parse.
+local function strip_derivation(c)
+    return (c:gsub("^%s*>%s*", ""))
+end
+
+local function classic_is_followup(classic)
+    return type(classic) == "string" and classic:match("^%s*>") ~= nil
+end
+
 local function category_from_classic(classic)
     if not classic then return "unknown" end
-    local c = classic:upper()
+    -- Classified on what the move IS, with the derivation marker removed. A
+    -- ">22+MP" left intact matches neither the motion tests nor the leading-digit
+    -- test and comes back "unknown", which is a statement about this classifier
+    -- rather than about the move - and 24 rows across seven characters were
+    -- being dropped as unclassified for it. Being a derivation is recorded
+    -- separately; it decides reachability, not category.
+    local c = strip_derivation(classic:upper())
     if has_system_token(c) then return "system" end
     if c == "N" then return "system" end
     if contains(c, "THROW") or c == "THROW" then return "throw" end
@@ -280,7 +297,13 @@ function M.build(decoded, opts)
                     category = category_from_classic(classic),
                     action_id_band = band_from_action_id(action_id),
                     air = parsed and parsed.air or false,
-                    followup = parsed and parsed.followup or false,
+                    -- Either side is enough. The Modern display often omits the
+                    -- ">" that the classic display carries - JP's 960 is
+                    -- ">22+LP+HP" against a Modern "22 + light + heavy" - and
+                    -- reading only the Modern side let those rows past the
+                    -- follow-up gate to be dropped as unclassified instead.
+                    followup = (parsed and parsed.followup or false)
+                        or classic_is_followup(classic),
                     any_button = parsed and parsed.any_button or false,
                     parse_error = (not parsed) and perr or nil,
                     -- Kept for cross-checking against what the injector builds.
@@ -324,7 +347,7 @@ function M.build(decoded, opts)
                     exclusion = M.EXCLUSION.SYSTEM
                 elseif not parsed then
                     exclusion = M.EXCLUSION.NO_INPUT
-                elseif parsed.followup then
+                elseif row.followup then
                     exclusion = M.EXCLUSION.FOLLOWUP
                 elseif ownership == "assist_combo" then
                     exclusion = M.EXCLUSION.ASSIST_COMBO

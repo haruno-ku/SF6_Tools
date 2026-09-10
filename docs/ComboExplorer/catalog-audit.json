@@ -60,14 +60,14 @@
       "ac_sha256": "48ca8bf84eb7ef41f87bb1b769a4b6f312b9023d137fbebb0bab981fc2b136e2",
       "by_category": {
         "air_normal": 9,
-        "command_normal": 20,
-        "normal": 8,
+        "command_normal": 21,
+        "normal": 11,
         "od_special": 19,
         "special": 27,
         "super": 17,
         "system": 8,
         "throw": 3,
-        "unknown": 5
+        "unknown": 1
       },
       "character": "Akuma",
       "counts": {
@@ -102,7 +102,7 @@
         "simple_command names neither SP nor AUTO": 8
       },
       "source_character": "Akuma",
-      "unplaceable": 5,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -117,14 +117,14 @@
       "ac_sha256": "3f208fbb93b989829c8a5435a8b83ced717c87ebe16020058efba0dcac3d6dda",
       "by_category": {
         "air_normal": 7,
-        "command_normal": 19,
-        "normal": 14,
+        "command_normal": 22,
+        "normal": 19,
         "od_special": 10,
         "special": 16,
         "super": 8,
         "system": 6,
         "throw": 5,
-        "unknown": 11
+        "unknown": 3
       },
       "character": "Alex",
       "counts": {
@@ -135,11 +135,11 @@
           "air": 7,
           "any_button": 5,
           "assist_combo": 2,
-          "followup": 2,
+          "followup": 8,
           "no_input": 1,
           "system": 11,
           "throw": 5,
-          "unclassified": 8
+          "unclassified": 2
         },
         "by_method": {
           "assist": 11,
@@ -161,45 +161,9 @@
         "simple_command names neither SP nor AUTO": 1
       },
       "source_character": "Alex",
-      "unplaceable": 11,
-      "unplaceable_lost": 8,
+      "unplaceable": 3,
+      "unplaceable_lost": 2,
       "unplaceable_rows": [
-        {
-          "action_id": 962,
-          "classic": ">6",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 964,
-          "classic": ">4",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 970,
-          "classic": ">LP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 972,
-          "classic": ">LP",
-          "input_method": "manual",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 982,
-          "classic": ">HK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 983,
-          "classic": ">HK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
         {
           "action_id": 1495,
           "classic": "LP+MP+HP+LK+MK+HK",
@@ -221,11 +185,11 @@
         "command_normal": 20,
         "normal": 5,
         "od_special": 9,
-        "special": 16,
+        "special": 18,
         "super": 10,
         "system": 6,
         "throw": 3,
-        "unknown": 11
+        "unknown": 9
       },
       "character": "Blanka",
       "counts": {
@@ -235,9 +199,10 @@
           "air": 26,
           "any_button": 15,
           "assist_combo": 1,
+          "followup": 2,
           "system": 11,
           "throw": 2,
-          "unclassified": 8
+          "unclassified": 6
         },
         "by_method": {
           "assist": 19,
@@ -256,8 +221,8 @@
       "problems": 0,
       "problems_by_reason": [],
       "source_character": "Blanka",
-      "unplaceable": 11,
-      "unplaceable_lost": 8,
+      "unplaceable": 9,
+      "unplaceable_lost": 6,
       "unplaceable_rows": [
         {
           "action_id": 929,
@@ -274,26 +239,14 @@
         {
           "action_id": 933,
           "classic": "P",
-          "input_method": "assist",
+          "input_method": "simple",
           "ownership": "verified_alias"
         },
         {
           "action_id": 933,
           "classic": "P",
-          "input_method": "simple",
+          "input_method": "assist",
           "ownership": "verified_alias"
-        },
-        {
-          "action_id": 936,
-          "classic": ">22+MP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 937,
-          "classic": ">22+HP",
-          "input_method": "manual",
-          "ownership": "direct"
         },
         {
           "action_id": 1004,
@@ -370,13 +323,13 @@
       "by_category": {
         "air_normal": 6,
         "command_normal": 17,
-        "normal": 6,
+        "normal": 7,
         "od_special": 18,
         "special": 27,
         "super": 8,
         "system": 6,
         "throw": 3,
-        "unknown": 2
+        "unknown": 1
       },
       "character": "Cammy",
       "counts": {
@@ -411,7 +364,7 @@
         "simple_command names neither SP nor AUTO": 1
       },
       "source_character": "Cammy",
-      "unplaceable": 2,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -425,7 +378,7 @@
     {
       "ac_sha256": "8dcd21cab1ae11982c8fb011d4ad04beece543d366205552dabedc861c5e24a2",
       "by_category": {
-        "air_normal": 8,
+        "air_normal": 11,
         "command_normal": 15,
         "normal": 12,
         "od_special": 15,
@@ -433,7 +386,7 @@
         "super": 8,
         "system": 6,
         "throw": 3,
-        "unknown": 6
+        "unknown": 3
       },
       "character": "ChunLi",
       "counts": {
@@ -468,7 +421,7 @@
         "simple_command names neither SP nor AUTO": 1
       },
       "source_character": "ChunLi",
-      "unplaceable": 6,
+      "unplaceable": 3,
       "unplaceable_lost": 2,
       "unplaceable_rows": [
         {
@@ -489,14 +442,14 @@
       "ac_sha256": "5e13ad6972e82410a8222c42cf0adc0b8ae7ca22872457334c48cbf32cfacdf2",
       "by_category": {
         "air_normal": 9,
-        "command_normal": 16,
-        "normal": 37,
+        "command_normal": 21,
+        "normal": 43,
         "od_special": 19,
         "special": 16,
         "super": 8,
         "system": 6,
         "throw": 2,
-        "unknown": 12
+        "unknown": 1
       },
       "character": "DeeJay",
       "counts": {
@@ -531,7 +484,7 @@
         "simple_command names neither SP nor AUTO": 5
       },
       "source_character": "DeeJay",
-      "unplaceable": 12,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -545,7 +498,7 @@
     {
       "ac_sha256": "4d4e618babf28e6b4bc34dc04111f7ce3a3eab41311609554091d056109144e0",
       "by_category": {
-        "air_normal": 17,
+        "air_normal": 21,
         "command_normal": 23,
         "normal": 5,
         "od_special": 8,
@@ -553,7 +506,7 @@
         "super": 16,
         "system": 6,
         "throw": 3,
-        "unknown": 5
+        "unknown": 1
       },
       "character": "Dhalsim",
       "counts": {
@@ -589,7 +542,7 @@
         "simple_command names neither SP nor AUTO": 1
       },
       "source_character": "Dhalsim",
-      "unplaceable": 5,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -604,14 +557,14 @@
       "ac_sha256": "4b056355a52e8015732109cf9ff3cbd37154002c70d0a862d1b042aa2c7c9192",
       "by_category": {
         "air_normal": 10,
-        "command_normal": 19,
-        "normal": 5,
+        "command_normal": 28,
+        "normal": 6,
         "od_special": 20,
         "special": 29,
         "super": 8,
         "system": 6,
         "throw": 2,
-        "unknown": 23
+        "unknown": 13
       },
       "character": "EHonda",
       "counts": {
@@ -621,10 +574,10 @@
           "air": 10,
           "any_button": 9,
           "assist_combo": 2,
-          "followup": 20,
+          "followup": 22,
           "system": 11,
           "throw": 2,
-          "unclassified": 3
+          "unclassified": 1
         },
         "by_method": {
           "assist": 22,
@@ -646,21 +599,9 @@
         "simple_command names neither SP nor AUTO": 1
       },
       "source_character": "EHonda",
-      "unplaceable": 23,
-      "unplaceable_lost": 3,
+      "unplaceable": 13,
+      "unplaceable_lost": 1,
       "unplaceable_rows": [
-        {
-          "action_id": 976,
-          "classic": ">2+HK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 977,
-          "classic": ">2+HK",
-          "input_method": "manual",
-          "ownership": "verified_alias"
-        },
         {
           "action_id": 1496,
           "classic": "LP+MP+HP+LK+MK+HK",
@@ -674,13 +615,13 @@
       "by_category": {
         "air_normal": 6,
         "command_normal": 17,
-        "normal": 8,
+        "normal": 13,
         "od_special": 11,
         "special": 13,
         "super": 10,
         "system": 6,
         "throw": 2,
-        "unknown": 9
+        "unknown": 4
       },
       "character": "Ed",
       "counts": {
@@ -714,7 +655,7 @@
         "simple_command names neither SP nor AUTO": 9
       },
       "source_character": "Ed",
-      "unplaceable": 9,
+      "unplaceable": 4,
       "unplaceable_lost": 2,
       "unplaceable_rows": [
         {
@@ -736,13 +677,13 @@
       "by_category": {
         "air_normal": 10,
         "command_normal": 52,
-        "normal": 6,
+        "normal": 10,
         "od_special": 13,
         "special": 18,
         "super": 14,
         "system": 6,
         "throw": 2,
-        "unknown": 5
+        "unknown": 1
       },
       "character": "Elena",
       "counts": {
@@ -777,7 +718,7 @@
         "simple_command names neither SP nor AUTO": 2
       },
       "source_character": "Elena",
-      "unplaceable": 5,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -792,14 +733,14 @@
       "ac_sha256": "1ca99c13d2d24bff931ea6bb3c8cec6d6b50ad589a806b1f4588d0ac780f62d6",
       "by_category": {
         "air_normal": 6,
-        "command_normal": 38,
+        "command_normal": 41,
         "normal": 22,
         "od_special": 12,
         "special": 37,
         "super": 12,
         "system": 6,
         "throw": 4,
-        "unknown": 7
+        "unknown": 4
       },
       "character": "Guile",
       "counts": {
@@ -834,7 +775,7 @@
         "simple_command names neither SP nor AUTO": 2
       },
       "source_character": "Guile",
-      "unplaceable": 7,
+      "unplaceable": 4,
       "unplaceable_lost": 2,
       "unplaceable_rows": [
         {
@@ -854,15 +795,15 @@
     {
       "ac_sha256": "0568c81221ccd0d676d8cac818e5af29d876063f176d3f8cec066c85ee31ccf3",
       "by_category": {
-        "air_normal": 6,
+        "air_normal": 7,
         "command_normal": 25,
-        "normal": 6,
+        "normal": 8,
         "od_special": 30,
         "special": 65,
         "super": 9,
         "system": 10,
         "throw": 3,
-        "unknown": 4
+        "unknown": 1
       },
       "character": "Ingrid",
       "counts": {
@@ -898,7 +839,7 @@
         "simple_command names neither SP nor AUTO": 6
       },
       "source_character": "Ingrid",
-      "unplaceable": 4,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -914,13 +855,13 @@
       "by_category": {
         "air_normal": 6,
         "command_normal": 17,
-        "normal": 6,
+        "normal": 10,
         "od_special": 7,
-        "special": 29,
+        "special": 35,
         "super": 8,
         "system": 6,
         "throw": 3,
-        "unknown": 11
+        "unknown": 1
       },
       "character": "JP",
       "counts": {
@@ -930,10 +871,10 @@
           "air": 6,
           "any_button": 1,
           "assist_combo": 1,
-          "followup": 5,
+          "followup": 11,
           "system": 11,
           "throw": 2,
-          "unclassified": 7
+          "unclassified": 1
         },
         "by_method": {
           "assist": 13,
@@ -952,45 +893,9 @@
       "problems": 0,
       "problems_by_reason": [],
       "source_character": "JP",
-      "unplaceable": 11,
-      "unplaceable_lost": 7,
+      "unplaceable": 1,
+      "unplaceable_lost": 1,
       "unplaceable_rows": [
-        {
-          "action_id": 960,
-          "classic": ">22+LP+HP",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 960,
-          "classic": ">22+LP+HP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 960,
-          "classic": ">22+LP+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 961,
-          "classic": ">22+MP+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 961,
-          "classic": ">22+MP+HP",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 961,
-          "classic": ">22+MP+HP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
         {
           "action_id": 1497,
           "classic": "LP+MP+HP+LK+MK+HK",
@@ -1003,14 +908,14 @@
       "ac_sha256": "abf8fbad51d9f39507e644780ed58c00abc1e4ec4299e8b9449daca84df7c04a",
       "by_category": {
         "air_normal": 7,
-        "command_normal": 67,
-        "normal": 6,
+        "command_normal": 68,
+        "normal": 12,
         "od_special": 23,
         "special": 35,
         "super": 8,
         "system": 8,
         "throw": 2,
-        "unknown": 15
+        "unknown": 8
       },
       "character": "Jamie",
       "counts": {
@@ -1045,7 +950,7 @@
         "simple_command names neither SP nor AUTO": 1
       },
       "source_character": "Jamie",
-      "unplaceable": 15,
+      "unplaceable": 8,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -1059,25 +964,25 @@
     {
       "ac_sha256": "58905c345ed46631cb36794997051ebbf8a1f7cb190046f55090b7367447512b",
       "by_category": {
-        "air_normal": 14,
-        "command_normal": 25,
-        "normal": 60,
+        "air_normal": 19,
+        "command_normal": 26,
+        "normal": 61,
         "od_special": 15,
         "special": 37,
         "super": 14,
         "system": 6,
         "throw": 3,
-        "unknown": 8
+        "unknown": 1
       },
       "character": "Juri",
       "counts": {
         "ambiguous_groups": 43,
         "ambiguous_rows": 147,
         "by_exclusion": {
-          "air": 16,
-          "any_button": 5,
+          "air": 15,
+          "any_button": 4,
           "assist_combo": 1,
-          "followup": 10,
+          "followup": 12,
           "system": 11,
           "throw": 2,
           "unclassified": 1
@@ -1102,7 +1007,7 @@
         "simple_command names neither SP nor AUTO": 2
       },
       "source_character": "Juri",
-      "unplaceable": 8,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -1117,14 +1022,14 @@
       "ac_sha256": "3f8582aecd0f559a3c04f82e837832ccc6ce80a52ceec1edaf6c78fabd41dd57",
       "by_category": {
         "air_normal": 7,
-        "command_normal": 13,
-        "normal": 8,
+        "command_normal": 37,
+        "normal": 13,
         "od_special": 14,
         "special": 21,
         "super": 8,
         "system": 6,
         "throw": 2,
-        "unknown": 31
+        "unknown": 2
       },
       "character": "Ken",
       "counts": {
@@ -1132,12 +1037,12 @@
         "ambiguous_rows": 52,
         "by_exclusion": {
           "air": 7,
-          "any_button": 7,
+          "any_button": 4,
           "assist_combo": 2,
-          "followup": 30,
+          "followup": 36,
           "system": 11,
           "throw": 2,
-          "unclassified": 5
+          "unclassified": 2
         },
         "by_method": {
           "assist": 19,
@@ -1159,31 +1064,13 @@
         "simple_command names neither SP nor AUTO": 2
       },
       "source_character": "Ken",
-      "unplaceable": 31,
-      "unplaceable_lost": 5,
+      "unplaceable": 2,
+      "unplaceable_lost": 2,
       "unplaceable_rows": [
         {
           "action_id": 680,
           "classic": "KK",
           "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 936,
-          "classic": ">6+K",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 937,
-          "classic": ">6+K",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 938,
-          "classic": ">6+K",
-          "input_method": "simple",
           "ownership": "direct"
         },
         {
@@ -1198,14 +1085,14 @@
       "ac_sha256": "5cfe7670ec050610df704a90324d7288f46289f71873ea2de6025ca39edde7c6",
       "by_category": {
         "air_normal": 12,
-        "command_normal": 27,
-        "normal": 7,
+        "command_normal": 29,
+        "normal": 12,
         "od_special": 19,
-        "special": 24,
+        "special": 26,
         "super": 10,
         "system": 12,
         "throw": 2,
-        "unknown": 10
+        "unknown": 1
       },
       "character": "Kimberly",
       "counts": {
@@ -1215,10 +1102,10 @@
           "air": 18,
           "any_button": 14,
           "assist_combo": 1,
-          "followup": 9,
+          "followup": 11,
           "system": 17,
           "throw": 2,
-          "unclassified": 3
+          "unclassified": 1
         },
         "by_method": {
           "assist": 21,
@@ -1240,21 +1127,9 @@
         "simple_command names neither SP nor AUTO": 7
       },
       "source_character": "Kimberly",
-      "unplaceable": 10,
-      "unplaceable_lost": 3,
+      "unplaceable": 1,
+      "unplaceable_lost": 1,
       "unplaceable_rows": [
-        {
-          "action_id": 977,
-          "classic": ">22+MP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 978,
-          "classic": ">22+MP",
-          "input_method": "manual",
-          "ownership": "verified_alias"
-        },
         {
           "action_id": 1500,
           "classic": "LP+MP+HP+LK+MK+HK",
@@ -1266,15 +1141,15 @@
     {
       "ac_sha256": "36d9b3d87d425b093aeee36ae7acc355efb5609db17438a5f2e90a13abdb0c6c",
       "by_category": {
-        "air_normal": 20,
+        "air_normal": 21,
         "command_normal": 17,
-        "normal": 5,
+        "normal": 7,
         "od_special": 18,
         "special": 44,
         "super": 10,
         "system": 6,
         "throw": 2,
-        "unknown": 4
+        "unknown": 1
       },
       "character": "Lily",
       "counts": {
@@ -1306,7 +1181,7 @@
       "problems": 0,
       "problems_by_reason": [],
       "source_character": "Lily",
-      "unplaceable": 4,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -1321,14 +1196,14 @@
       "ac_sha256": "24c3454b415d170f911ba87056d50ceb194c350d6ec3e3db985d578bd6a2426d",
       "by_category": {
         "air_normal": 8,
-        "command_normal": 16,
-        "normal": 4,
+        "command_normal": 17,
+        "normal": 14,
         "od_special": 14,
         "special": 17,
         "super": 8,
         "system": 6,
         "throw": 2,
-        "unknown": 18
+        "unknown": 7
       },
       "character": "Luke",
       "counts": {
@@ -1363,7 +1238,7 @@
         "simple_command names neither SP nor AUTO": 2
       },
       "source_character": "Luke",
-      "unplaceable": 18,
+      "unplaceable": 7,
       "unplaceable_lost": 4,
       "unplaceable_rows": [
         {
@@ -1395,25 +1270,25 @@
     {
       "ac_sha256": "9436ca0bf5ace2722e4e9ac35c3d5b79cf26f2f2a139a8e0543f37e6701e7785",
       "by_category": {
-        "air_normal": 6,
-        "command_normal": 18,
+        "air_normal": 15,
+        "command_normal": 20,
         "normal": 6,
         "od_special": 15,
         "special": 16,
         "super": 13,
         "system": 6,
         "throw": 2,
-        "unknown": 12
+        "unknown": 1
       },
       "character": "MBison",
       "counts": {
         "ambiguous_groups": 9,
         "ambiguous_rows": 25,
         "by_exclusion": {
-          "air": 10,
-          "any_button": 9,
+          "air": 6,
+          "any_button": 5,
           "assist_combo": 1,
-          "followup": 3,
+          "followup": 11,
           "system": 11,
           "throw": 2,
           "unclassified": 1
@@ -1435,7 +1310,7 @@
       "problems": 0,
       "problems_by_reason": [],
       "source_character": "MBison",
-      "unplaceable": 12,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -1507,13 +1382,13 @@
       "by_category": {
         "air_normal": 6,
         "command_normal": 15,
-        "normal": 7,
+        "normal": 13,
         "od_special": 31,
         "special": 53,
         "super": 12,
         "system": 6,
         "throw": 2,
-        "unknown": 7
+        "unknown": 1
       },
       "character": "Manon",
       "counts": {
@@ -1548,7 +1423,7 @@
         "simple_command names neither SP nor AUTO": 2
       },
       "source_character": "Manon",
-      "unplaceable": 7,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -1562,15 +1437,15 @@
     {
       "ac_sha256": "bf938898975f2df9c4c6180eb348b2a92762f239dbb47908513e7536adc6827f",
       "by_category": {
-        "air_normal": 7,
-        "command_normal": 17,
-        "normal": 4,
+        "air_normal": 8,
+        "command_normal": 27,
+        "normal": 9,
         "od_special": 13,
         "special": 15,
         "super": 8,
         "system": 6,
         "throw": 2,
-        "unknown": 17
+        "unknown": 1
       },
       "character": "Marisa",
       "counts": {
@@ -1605,7 +1480,7 @@
         "simple_command names neither SP nor AUTO": 2
       },
       "source_character": "Marisa",
-      "unplaceable": 17,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -1620,14 +1495,14 @@
       "ac_sha256": "9faa158243bc4e58b99c17eecb2f1f2eee60f6b56c6ac1fe4cd7f250116a854a",
       "by_category": {
         "air_normal": 28,
-        "command_normal": 19,
+        "command_normal": 26,
         "normal": 7,
         "od_special": 18,
         "special": 34,
         "super": 8,
         "system": 6,
         "throw": 3,
-        "unknown": 12
+        "unknown": 5
       },
       "character": "Rashid",
       "counts": {
@@ -1663,7 +1538,7 @@
         "simple_command names neither SP nor AUTO": 5
       },
       "source_character": "Rashid",
-      "unplaceable": 12,
+      "unplaceable": 5,
       "unplaceable_lost": 2,
       "unplaceable_rows": [
         {
@@ -1685,13 +1560,13 @@
       "by_category": {
         "air_normal": 6,
         "command_normal": 20,
-        "normal": 6,
+        "normal": 9,
         "od_special": 19,
         "special": 23,
         "super": 16,
         "system": 6,
         "throw": 2,
-        "unknown": 4
+        "unknown": 1
       },
       "character": "Ryu",
       "counts": {
@@ -1726,7 +1601,7 @@
         "simple_command names neither SP nor AUTO": 2
       },
       "source_character": "Ryu",
-      "unplaceable": 4,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -1741,14 +1616,14 @@
       "ac_sha256": "424195e69fc11d9f0738c712bb85f24cbcb90a653c1e8ada0a7f87dda0bc89e2",
       "by_category": {
         "air_normal": 6,
-        "command_normal": 22,
-        "normal": 6,
+        "command_normal": 34,
+        "normal": 10,
         "od_special": 9,
         "special": 19,
         "super": 12,
         "system": 7,
         "throw": 2,
-        "unknown": 17
+        "unknown": 1
       },
       "character": "Sagat",
       "counts": {
@@ -1784,7 +1659,7 @@
         "simple_command names neither SP nor AUTO": 1
       },
       "source_character": "Sagat",
-      "unplaceable": 17,
+      "unplaceable": 1,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -1799,14 +1674,14 @@
       "ac_sha256": "604c0f7279f24805c20f70e1f4f780f9d5804cb7ee9f0744ebaaf3ea9c5d71ca",
       "by_category": {
         "air_normal": 6,
-        "command_normal": 16,
-        "normal": 6,
+        "command_normal": 17,
+        "normal": 12,
         "od_special": 11,
         "special": 16,
         "super": 12,
         "system": 6,
         "throw": 2,
-        "unknown": 12
+        "unknown": 5
       },
       "character": "Terry",
       "counts": {
@@ -1838,7 +1713,7 @@
       "problems": 0,
       "problems_by_reason": [],
       "source_character": "Terry",
-      "unplaceable": 12,
+      "unplaceable": 5,
       "unplaceable_lost": 1,
       "unplaceable_rows": [
         {
@@ -1853,14 +1728,14 @@
       "ac_sha256": "e895dc76d9702cbec027de99375383925b339352f5192420b5a78b6270eb8723",
       "by_category": {
         "air_normal": 12,
-        "command_normal": 19,
-        "normal": 5,
+        "command_normal": 47,
+        "normal": 12,
         "od_special": 17,
-        "special": 26,
+        "special": 29,
         "super": 12,
         "system": 6,
         "throw": 2,
-        "unknown": 39
+        "unknown": 1
       },
       "character": "Yasmine",
       "counts": {
@@ -1870,10 +1745,10 @@
           "air": 12,
           "any_button": 5,
           "assist_combo": 4,
-          "followup": 35,
+          "followup": 38,
           "system": 11,
           "throw": 2,
-          "unclassified": 4
+          "unclassified": 1
         },
         "by_method": {
           "assist": 27,
@@ -1895,27 +1770,9 @@
         "simple_command names neither SP nor AUTO": 19
       },
       "source_character": "Yasmine",
-      "unplaceable": 39,
-      "unplaceable_lost": 4,
+      "unplaceable": 1,
+      "unplaceable_lost": 1,
       "unplaceable_rows": [
-        {
-          "action_id": 902,
-          "classic": ">22+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 905,
-          "classic": ">22+LP+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 906,
-          "classic": ">22+MP+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
         {
           "action_id": 1494,
           "classic": "LP+MP+HP+LK+MK+HK",
@@ -1929,13 +1786,13 @@
       "by_category": {
         "air_normal": 8,
         "command_normal": 20,
-        "normal": 5,
+        "normal": 9,
         "od_special": 9,
         "special": 13,
         "super": 8,
         "system": 7,
         "throw": 6,
-        "unknown": 12
+        "unknown": 8
       },
       "character": "Zangief",
       "counts": {
@@ -1968,7 +1825,7 @@
       "problems": 0,
       "problems_by_reason": [],
       "source_character": "Zangief",
-      "unplaceable": 12,
+      "unplaceable": 8,
       "unplaceable_lost": 8,
       "unplaceable_rows": [
         {
@@ -2023,7 +1880,7 @@
     }
   ],
   "failures": [],
-  "generated_at": "2026-09-10T16:10:04Z",
+  "generated_at": "2026-09-10T23:49:52Z",
   "schema": "ce.catalog_audit.v1",
   "source_dir": "reframework/data/TrainingComboTrials_data/command_display",
   "unplaced_notations": [
@@ -2085,38 +1942,6 @@
     },
     {
       "characters": [
-        "JP",
-        "Yasmine"
-      ],
-      "notation": ">22+LP+HP",
-      "rows": 4
-    },
-    {
-      "characters": [
-        "JP",
-        "Yasmine"
-      ],
-      "notation": ">22+MP+HP",
-      "rows": 4
-    },
-    {
-      "characters": [
-        "Blanka",
-        "Kimberly"
-      ],
-      "notation": ">22+MP",
-      "rows": 3
-    },
-    {
-      "characters": [
-        "Blanka",
-        "Yasmine"
-      ],
-      "notation": ">22+HP",
-      "rows": 2
-    },
-    {
-      "characters": [
         "Blanka"
       ],
       "notation": "P",
@@ -2124,52 +1949,10 @@
     },
     {
       "characters": [
-        "Ken"
-      ],
-      "notation": ">6+K",
-      "rows": 3
-    },
-    {
-      "characters": [
         "Zangief"
       ],
       "notation": "PPP",
       "rows": 3
-    },
-    {
-      "characters": [
-        "EHonda"
-      ],
-      "notation": ">2+HK",
-      "rows": 2
-    },
-    {
-      "characters": [
-        "Alex"
-      ],
-      "notation": ">HK",
-      "rows": 2
-    },
-    {
-      "characters": [
-        "Alex"
-      ],
-      "notation": ">LP",
-      "rows": 2
-    },
-    {
-      "characters": [
-        "Alex"
-      ],
-      "notation": ">4",
-      "rows": 1
-    },
-    {
-      "characters": [
-        "Alex"
-      ],
-      "notation": ">6",
-      "rows": 1
     }
   ]
 }

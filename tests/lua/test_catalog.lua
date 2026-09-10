@@ -357,6 +357,57 @@ t.ok(c4[1].reason:find("no such group", 1, true) ~= nil, "an unknown notation is
 
 t.group("degenerate input")
 
+-- --- a derivation the Modern side does not mark --------------------------------
+
+t.group("a \">\" on the classic side alone still means derivation")
+
+-- Zangief cannot show this: every one of his derivations carries the marker on
+-- both sides. JP's do not, and that asymmetry is the bug - so this reads his
+-- real catalog rather than a fixture shaped to the author's assumptions, which
+-- is the same reason the rest of this file uses the shipped Zangief data.
+local jp_json = dofile("tools/lua/json.lua")
+local jp_raw = jp_json.load_file(
+    "reframework/data/TrainingComboTrials_data/command_display/JP.json")
+t.ok(jp_raw ~= nil, "JP's real catalog loads")
+
+local jp = Catalog.build(jp_raw)
+t.ok(jp ~= nil, "and builds")
+
+-- 960 is ">22+LP+HP" in classic and "22 + light + heavy" in Modern. Reading
+-- only the Modern side left it with no marker, no category, and an
+-- `unclassified` exclusion - dropped for having a notation nobody had a word
+-- for, when the source had said plainly what it was.
+local derived, wrongly_dropped = 0, 0
+for _, row in ipairs(jp.rows) do
+    if row.action_id == 960 or row.action_id == 961 then
+        derived = derived + 1
+        t.eq(row.followup, true,
+             ("%d is a derivation, because the classic display says so"):format(row.action_id))
+        t.eq(row.exclusion, "followup",
+             ("%d is excluded for needing a preceding action, not for being unplaceable")
+             :format(row.action_id))
+        -- The category matters as much as the exclusion: CandidateGenerator
+        -- re-collects follow-ups as edge TARGETS, and a target with no category
+        -- cannot be told from a special, a normal or a super.
+        t.eq(row.category, "special",
+             ("%d is classified on what it is, with the marker removed"):format(row.action_id))
+        if row.exclusion == "unclassified" then wrongly_dropped = wrongly_dropped + 1 end
+    end
+end
+t.ok(derived >= 6, "both action ids produced rows for every input method (" .. derived .. ")")
+t.eq(wrongly_dropped, 0, "and not one of them was dropped as unplaceable")
+
+-- The marker decides reachability, never category. Stripping it must not turn a
+-- derivation into something probeable from neutral.
+for _, row in ipairs(jp.rows) do
+    if row.followup then
+        t.ok(not row.standalone,
+             ("derivation %d is still not standalone"):format(row.action_id))
+    end
+end
+
+-- --- degenerate input --------------------------------------------------------
+
 t.is_nil(Catalog.build(nil), "nil is refused")
 t.is_nil(Catalog.build({}), "a table with no _meta is refused")
 local _, why = Catalog.build({})
