@@ -148,6 +148,9 @@ local THEME = {
 
 local live = {
     snap = nil,
+    -- The last frame the panel was drawn on. Used to decide whether anyone is
+    -- looking at the live readout.
+    panel_frame = nil,
     hp_arm_usable = nil,
     hp_arm_reason = nil,
     p1_control = nil,
@@ -201,6 +204,17 @@ Clock.on_frame(function(frame)
     if not current() then return end
     if not Config.data.enabled then return end
     if _G.CurrentTrainerMode ~= MODE_ID then return end
+
+    -- A snapshot is around twenty reflection reads, each in its own pcall, and
+    -- this runs inside a battle-sim hook. Taking one every frame when nothing
+    -- is looking at it is pure cost, so it is only taken when a probe is
+    -- running or the panel was drawn recently enough to still be on screen.
+    local wanted = probe_a.on
+        or (live.panel_frame ~= nil and (frame - live.panel_frame) < 30)
+    if not wanted then
+        live.snap = nil
+        return
+    end
 
     local snap = GameAdapter.snapshot(0)
     live.snap = snap
@@ -449,6 +463,10 @@ re.on_draw_ui(function()
         imgui.tree_pop()
         return
     end
+
+    -- Marks the panel as being on screen, which is what keeps the per-frame
+    -- snapshot alive.
+    live.panel_frame = Clock.frame
 
     local changed, v = imgui.checkbox("enabled##ce_enabled", Config.data.enabled)
     if changed then

@@ -100,7 +100,21 @@ local function on_frame_begin()
     gate_open_this_frame = GameAdapter.can_inject()
 
     for i = 1, #subscribers do
-        pcall(subscribers[i], M.frame)
+        local ok, err = pcall(subscribers[i], M.frame)
+        if not ok then
+            -- A silent pcall on the hot path means a broken subscriber looks
+            -- exactly like a working one that has nothing to say. Reported into
+            -- the suite's own error list, rate-limited because this runs once
+            -- per battle frame and an unbounded log would be its own problem.
+            M.subscriber_errors = (M.subscriber_errors or 0) + 1
+            if M.subscriber_errors <= 5 and _G._mod_errors then
+                _G._mod_errors.count = _G._mod_errors.count + 1
+                _G._mod_errors.list[#_G._mod_errors.list + 1] = {
+                    ctx = "ComboExplorer.Clock frame subscriber " .. i,
+                    err = tostring(err), t = os.clock(),
+                }
+            end
+        end
     end
 end
 

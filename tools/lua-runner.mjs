@@ -13,7 +13,7 @@
 // will not see it, so the known install location is tried as a fallback.
 
 import { spawnSync } from 'node:child_process'
-import { existsSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readdirSync, statSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 
@@ -73,8 +73,52 @@ if (mode === 'syntax') {
       console.error(`SYNTAX  ${f}\n        ${(r.stderr ?? '').trim()}`)
     }
   }
-  console.log(bad === 0 ? `syntax ok: ${files.length} Lua files` : `${bad} of ${files.length} files failed to parse`)
-  process.exit(bad === 0 ? 0 : 1)
+
+  // luac -p parses; it does not resolve requires. A typo in a require path is
+  // therefore invisible here and surfaces as a load failure on the machine
+  // running the game - the slowest possible place to find it, given that
+  // machine is somewhere else.
+  //
+  // REFramework resolves require("func/X/Y") relative to reframework/autorun,
+  // so the check is a file-existence test against that root.
+  // Comments are stripped first: these files explain the require convention in
+  // prose, and a require inside a comment is not a require. Block comments go,
+  // then everything from the first `--` on a line. A `--` inside a string
+  // literal would truncate that line early, which can only cause a require to
+  // be MISSED, never falsely reported - and no require in this codebase follows
+  // a string on the same line.
+  const strip_comments = (src) =>
+    src.replace(/--\[\[[\s\S]*?\]\]/g, '')
+       .split('\n')
+       .map((line) => {
+         const i = line.indexOf('--')
+         return i === -1 ? line : line.slice(0, i)
+       })
+       .join('\n')
+
+  let unresolved = 0
+  let checked = 0
+  for (const f of files) {
+    const src = strip_comments(readFileSync(f, 'utf8'))
+    for (const m of src.matchAll(/require\s*\(\s*(['"])([^'"]+)\1\s*\)/g)) {
+      const target = m[2]
+      if (!target.startsWith('func/')) continue   // stdlib or REFramework-provided
+      checked++
+      const path = join('reframework', 'autorun', `${target}.lua`)
+      if (!existsSync(path)) {
+        unresolved++
+        console.error(`REQUIRE ${f}\n        require("${target}") does not resolve to ${path}`)
+      }
+    }
+  }
+
+  if (bad === 0 && unresolved === 0) {
+    console.log(`syntax ok: ${files.length} Lua files, ${checked} require targets resolve`)
+  } else {
+    if (bad) console.error(`${bad} of ${files.length} files failed to parse`)
+    if (unresolved) console.error(`${unresolved} of ${checked} require targets do not resolve`)
+  }
+  process.exit(bad === 0 && unresolved === 0 ? 0 : 1)
 }
 
 const lua = resolve('lua')

@@ -122,11 +122,19 @@ $ExcludeDirs = @(
     'results'
 )
 
-# Per-user config written by the mod. Shipping our copies would reset the user's
-# language, hotkeys, colours and toggles on every sync.
-$ExcludeFiles = @(
-    'UILang_Config.json'
-    'TrainingHotkeys_Config.json'
+# Config the mod rewrites at runtime. Shipping our copy on every sync would
+# reset the user's language, hotkeys, colours and toggles.
+#
+# Split in two, because most of these ARE shipped in the repo as defaults. If
+# they were simply excluded, a clean install on a fresh machine would never
+# receive them at all - the exclusion that protects an existing setup would
+# break a new one.
+#
+#   $SeedFiles    : shipped defaults. Excluded from the normal sync, then
+#                   copied in a second pass ONLY where the destination has no
+#                   copy yet.
+#   $NeverCopy    : pure user state, not in the repo. Excluded always.
+$SeedFiles = @(
     'TrainingManager_Config.json'
     'SF6DistanceViewer_Config.json'
     'SF6DistanceLogger_Config.json'
@@ -135,9 +143,16 @@ $ExcludeFiles = @(
     'TrainingPostGuard_Config.json'
     'TrainingReactions_Config.json'
     'CommandLogger_Visualizer.json'
+)
+
+$NeverCopy = @(
+    'UILang_Config.json'
+    'TrainingHotkeys_Config.json'
     'XT_Settings.json'
     'CompletedTrials.json'
 )
+
+$ExcludeFiles = $SeedFiles + $NeverCopy
 
 function Sync-Tree {
     param([string] $Source, [string] $Dest, [string] $Label)
@@ -183,6 +198,30 @@ if ((Test-Path $explorerSrc) -and (Test-Path $explorerDst)) {
 Sync-Tree (Join-Path $RepoRoot 'reframework\data')    (Join-Path $GameDir 'reframework\data')    'reframework/data'
 Sync-Tree (Join-Path $RepoRoot 'reframework\fonts')   (Join-Path $GameDir 'reframework\fonts')   'reframework/fonts'
 Sync-Tree (Join-Path $RepoRoot 'reframework\images')  (Join-Path $GameDir 'reframework\images')  'reframework/images'
+
+# Second pass: place the shipped config defaults, but only where the game has
+# no copy yet.
+#
+# /XC /XN /XO excludes Changed, Newer and Older files, and robocopy skips
+# identical files by default - so what is left is exactly the Lonely case, a
+# file present in the repo and absent at the destination. An existing config,
+# however the user has edited it, is never touched.
+function Seed-Missing {
+    param([string] $Source, [string] $Dest, [string[]] $Files, [string] $Label)
+
+    if (-not (Test-Path $Source)) { return }
+    if (-not $Files -or $Files.Count -eq 0) { return }
+
+    Write-Host "seed  $Label (only where the game has no copy)"
+    $rcArgs = @($Source, $Dest) + $Files + @('/S', '/XC', '/XN', '/XO', '/NJH', '/NJS', '/NP', '/NDL', '/R:2', '/W:1')
+    if ($WhatIfPreference) { $rcArgs += '/L' }
+
+    & robocopy @rcArgs | Where-Object { $_ -match '\S' } | ForEach-Object { "      $_" }
+    if ($LASTEXITCODE -ge 8) { throw "robocopy seed failed for $Label (exit $LASTEXITCODE)" }
+    $global:LASTEXITCODE = 0
+}
+
+Seed-Missing (Join-Path $RepoRoot 'reframework\data') (Join-Path $GameDir 'reframework\data') $SeedFiles 'shipped config defaults'
 
 # --- first-run only: REFramework loader and native plugins -------------------
 
