@@ -3,6 +3,8 @@
 **この文書だけ読めば進められる**ように書いてある。GitHub の Issue は同じ内容を
 チェックリストにしたもので、どちらか読みやすい方を使えばよい。
 
+入口: **[#18 \[START HERE\]](https://github.com/haruno-ku/SF6_Tools/issues/18)**（ピン留め済み）
+
 ---
 
 ## 全体像 — なぜこの順番なのか
@@ -61,6 +63,8 @@ node tools/lua-runner.mjs test
 
 ## Step 1 — 無改造版の動作確認 🔴 これが通るまで何もしない
 
+> Issue [#1](https://github.com/haruno-ku/SF6_Tools/issues/1)
+
 1. SF6 起動 → トレーニングモード
 2. `Insert` で REFramework メニューが開く
 3. Training Script Manager が出る
@@ -93,6 +97,8 @@ node tools/lua-runner.mjs test
 
 ### Step 2 — LIVE READOUT の目視
 
+> Issue [#2](https://github.com/haruno-ku/SF6_Tools/issues/2)
+
 **LIVE READOUT** を開いてダミーを何回か殴る。全行が動くこと:
 
 | 行 | 期待 |
@@ -111,6 +117,8 @@ node tools/lua-runner.mjs test
 
 ### Step 3 — Probe A: `mComboDamage` は読めるか
 
+> Issue [#3](https://github.com/haruno-ku/SF6_Tools/issues/3)
+
 **なぜブロッカーか**: 上流全体で読み出しが1箇所しかなく、`pcall` の中で、
 作者自身が「0 が返ることがある」と書いてフォールバックを用意している。
 ここで 0 なら**全エッジの damage が 0 になり、スコアリングが破綻する**。
@@ -124,6 +132,8 @@ node tools/lua-runner.mjs test
 
 ### Step 4 — Probe B: 1 input tick = 1 engine frame か
 
+> Issue [#4](https://github.com/haruno-ku/SF6_Tools/issues/4)
+
 **なぜブロッカーか**: フックは1フレームに複数回発火しうる。上流は
 `app.BattleFlow::UpdateFrameMain` に別フックを張ってラッチで1回に落としている。
 さらに**ヒットストップ中は hook tick が engine frame から乖離する**と
@@ -136,6 +146,8 @@ node tools/lua-runner.mjs test
 
 ### Step 5 — Probe C: リセット1回の実コスト
 
+> Issue [#5](https://github.com/haruno-ku/SF6_Tools/issues/5)
+
 **なぜ重要か**: **総当たり行列の上限を決める唯一の数値。**
 ゲームを高速化する手段は無い（`TimeScale` 等はリポジトリに存在しない）。
 実時間がそのままコストになる。
@@ -146,6 +158,8 @@ node tools/lua-runner.mjs test
 ---
 
 ### Step 6 — Probe D: 同梱カタログはこのビルドを記述しているか
+
+> Issue [#6](https://github.com/haruno-ku/SF6_Tools/issues/6)
 
 **なぜブロッカーか**: 下流すべてが action_id をキーにしている。
 パッチで id がずれていたら、記録した全エッジが**誰も意図していない技**の話になる。
@@ -178,6 +192,8 @@ git push
 
 ### Step 7 — Modern ボタンビットの同定
 
+> Issue [#7](https://github.com/haruno-ku/SF6_Tools/issues/7)
+
 **現状の暫定値**（`core/Provenance.lua` の `modern_button_bits`）:
 
 | bit | Modern |
@@ -200,6 +216,8 @@ git push
 
 ### Step 8 — 方向ビットと `rl_dir` 極性
 
+> Issue [#8](https://github.com/haruno-ku/SF6_Tools/issues/8)
+
 暫定: `UP=1 DOWN=2 LEFT=4 RIGHT=8`、`rl_dir` が **falsy のとき反転**。
 
 根拠: P1 側の実装3箇所が一致している（P2 用の1箇所だけ逆）。
@@ -209,6 +227,8 @@ RSM の `MASKS` だけ LEFT/RIGHT が逆なので注意。
 合わなければ極性を反転。360 系が特に壊れやすい。
 
 ### Step 9 — 入力→action_id スイープ / canonical 確定
+
+> Issue [#9](https://github.com/haruno-ku/SF6_Tools/issues/9)
 
 **なぜ必要か**: 同じ表記に複数の action_id が割り当たっている
 （601/602 が「弱」、617/618/619 が「2+弱」…）。データ側に区別の説明が無い。
@@ -225,6 +245,8 @@ RSM の `MASKS` だけ LEFT/RIGHT が逆なので注意。
 
 ### Step 10 — 1F 粒度の実証
 
+> Issue [#10](https://github.com/haruno-ku/SF6_Tools/issues/10)
+
 **やること**: 同一の A→B ペアで delay を1ティックずつ変えて各20回試行。
 `get_ActionFrame()` と出た action_id が **delay に対して単調・再現的**に変化するか。
 
@@ -237,6 +259,8 @@ RSM の `MASKS` だけ LEFT/RIGHT が逆なので注意。
 
 ## Step 11 — 注入 smoke test
 
+> Issue [#11](https://github.com/haruno-ku/SF6_Tools/issues/11)
+
 Step 7-10 が終わって初めて `Provenance` が注入を許可する。
 
 **やること**: 既知の1ペア（例 `2L → 2L`）を単発実行して目視。
@@ -245,6 +269,8 @@ Step 7-10 が終わって初めて `Provenance` が注入を許可する。
 ---
 
 ## Step 12 — A→B 総当たりの初回実走
+
+> Issue [#12](https://github.com/haruno-ku/SF6_Tools/issues/12)
 
 **最初から欲張らない。** Probe C のコスト実測を見てから行列サイズを決める。
 
@@ -301,6 +327,17 @@ lua tools/lua/explore.lua
 | `docs/ComboExplorer/plan-v3-implementation.md` | 全体計画。§10 が敵対的検証後の設計修正 |
 | `docs/ComboExplorer/README.md` | プローブの操作手順 |
 | `docs/NOTICE.md` | フレームデータは CC-BY-SA-4.0（MIT ではない） |
+
+## まだ答えが出ていない設計判断
+
+実機のデータを見ないと決められないもの。忘れないように Issue にしてある。
+
+| | |
+|---|---|
+| [#14](https://github.com/haruno-ku/SF6_Tools/issues/14) | `Schema.KIND.TRIAL` の `edge_id` 契約（ルート試行には edge_id が無い） |
+| [#15](https://github.com/haruno-ku/SF6_Tools/issues/15) | 「実行したが答えが出なかった」試行の status 語彙 |
+| [#16](https://github.com/haruno-ku/SF6_Tools/issues/16) | 63214+KK の距離バリアント（(Close) 10F / (Mid) 23F / (Far) 54F） |
+| [#17](https://github.com/haruno-ku/SF6_Tools/issues/17) | Knowledge DB へ渡す実測ブロックの形状 |
 
 ## 絶対にやらないこと
 
