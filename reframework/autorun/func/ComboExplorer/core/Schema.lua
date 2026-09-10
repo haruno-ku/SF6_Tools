@@ -93,6 +93,11 @@ M.RUNTIME_UNKNOWNS = {
     SIDE_SWITCH      = "side_switch",
     MODERN_SCALING   = "modern_specific_scaling",
     INPUT_TIMING     = "actual_input_timing",
+    -- Frame advantage after a knockdown is oki advantage, not link advantage.
+    -- No property in the frame source distinguishes them - Zangief's data has
+    -- no knockdown property at all - so a large on-hit number is a suspicion,
+    -- not a fact, and the game has to settle it.
+    KNOCKDOWN        = "knockdown_vs_link_advantage",
 }
 
 -- Applies to every candidate, whatever the frame table says. Spacing decides
