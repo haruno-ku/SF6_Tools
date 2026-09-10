@@ -209,6 +209,56 @@ modes set their own guard type. Switching back to DISABLED restores it.
 
 ---
 
+## The offline explorer (no game needed)
+
+Candidate generation runs end to end on a machine with no SF6 on it. Everything
+it produces is a **theoretical candidate** — a reason to spend a trial on the
+real game, never evidence that a link works.
+
+```bash
+lua tools/lua/explore.lua
+```
+
+Reads the shipped `command_display/Zangief.json` and `data/frame-data/zangief.lua`,
+and writes:
+
+```
+candidates/zangief/modern/candidate-edges.json     every A -> B pair worth trying
+candidates/zangief/modern/candidate-routes.json    multi-step sequences over them
+candidates/zangief/modern/report.md                the same thing for a human
+```
+
+The output is gitignored — 4 MB regenerable in one command — so the committed
+copy of the report lives at
+[`zangief-offline-report.md`](zangief-offline-report.md).
+
+Useful options:
+
+| | |
+|---|---|
+| `--max-steps 4` | longer routes (default 3) |
+| `--to-categories normal,command_normal` | ground normals only |
+| `--to-methods manual` | ignore the simple-input forms |
+| `--beam 500 --max-routes 200` | a smaller run; the report says what was dropped |
+| `--no-collapse` | keep every canonical-id variant of the same button sequence |
+| `--game-patch 2026-08-03` | label the run with the real patch, once it is known |
+| `--character Mai` | any character with a shipped `command_display` file |
+
+It runs the modules that ship into the game, under the stock interpreter, rather
+than a second implementation in Node — so what it produces comes from the same
+code the runner will use.
+
+**Regenerating the frame data** (needs `external-data/`, which is not committed):
+
+```bash
+node tools/gen-framedata-fixture.mjs zangief
+```
+
+The frame data is CC-BY-SA-4.0 and is not covered by this repository's MIT
+licence. See [`docs/NOTICE.md`](../NOTICE.md).
+
+---
+
 ## Development (dev machine)
 
 ```bash
@@ -221,10 +271,12 @@ Needs Node 20+ and Lua 5.4 (`winget install --id DEVCOM.Lua`). A shell opened
 before that install will not have Lua on PATH yet; the runner falls back to the
 default install location.
 
-Only the pure modules are testable off-game — `InputMask`, and later the catalog
-and scoring logic. That split is the design: anything touching `sdk` / `re` /
-`imgui` needs the game, so everything that does not is kept out of those files
-deliberately.
+Only the pure modules are testable off-game — which is now almost all of them:
+the catalog, the frame-data join, candidate generation, the graph, route search,
+scoring, the sequence compiler and the exporter. That split is the design:
+anything touching `sdk` / `re` / `imgui` needs the game, so everything that does
+not is kept out of those files deliberately, and `runtime/GameAdapter.lua` is
+the only file in the Explorer that names `sdk` at all.
 
 The notation fixture is generated from the shipped `command_display` catalog
 rather than typed by hand. A notation the parser cannot handle is a move that
@@ -241,10 +293,21 @@ reframework/autorun/
 
   func/ComboExplorer/core/           PURE - no sdk, unit-tested on the dev machine
     Provenance.lua                   the register of what has not been measured yet
+    Schema.lua                       every record shape, and the status machine
     InputMask.lua                    notation <-> bitmask, given a button profile
+    Catalog.lua                      command_display, read raw
+    FrameData.lua                    the external frame table, joined to the catalog
+    CandidateGenerator.lua           A -> B pairs worth trying, with the reasoning
+    GraphStore.lua                   the candidate graph, and when it goes stale
+    RouteSearch.lua                  bounded walks over it
+    Scoring.lua                      offline orderings, no measured field anywhere
+    SequenceCompiler.lua             a route -> the tick program the injector writes
+    Exporter.lua                     the candidate documents and their header
+    LinkVerdict.lua                  did B increase the combo count
     DamageTracker.lua                two damage measurements and whether they agree
-    ProbeA.lua                       segments a snapshot stream into combos
+    ProbeA.lua / ProbeC.lua          read-only probes
     ClockStats.lua                   per-frame clock accounting
+    CatalogAudit.lua                 does the shipped catalog describe this build
 
   func/ComboExplorer/runtime/        GAME - the only files that touch sdk
     GameAdapter.lua                  every read, in one place
@@ -255,10 +318,13 @@ reframework/data/ComboExplorer_data/
   Config.json                        preferences
   calibration/latest.json            measured values, once they exist
   diagnostics/                       probe reports (committed back)
+data/frame-data/<char>.lua           external frame data, CC-BY-SA-4.0 (see NOTICE)
+candidates/<char>/<scheme>/          offline output - gitignored, regenerable
 scripts/install-dev.ps1              repo -> game folder sync
 tools/                               dev-machine generators and runners
-tests/lua/                           unit tests (314 assertions)
-docs/ComboExplorer/                  the plan and the work split
+tools/lua/                           the offline CLI and its JSON codec - never shipped
+tests/lua/                           unit tests (1768 assertions)
+docs/ComboExplorer/                  the plan, the work split and the offline report
 ```
 
 `core/Provenance.lua` is the one to read first. It lists everything nobody has
@@ -272,3 +338,8 @@ spelling them out, which is what stops a wrong guess from becoming a dataset.
 
 MIT, inherited from SF6_Tools — `Copyright (c) 2026 Wael Hadjmouldi`. See
 [`LICENSE`](../../LICENSE); it stays with any copy.
+
+One exception: `data/frame-data/` and everything derived from it — which
+includes the candidate documents, since every frame margin and damage sum is
+computed from it — is CC-BY-SA-4.0, from the SuperCombo Wiki via sf6-sensei.
+[`docs/NOTICE.md`](../NOTICE.md) has the attribution and the ShareAlike terms.

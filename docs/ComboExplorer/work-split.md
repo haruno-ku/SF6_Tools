@@ -18,12 +18,67 @@
 | A3 raw JSON loader / slim map 回帰 / 分類 / canonical・variant / Catalog | **完了** — `core/Catalog.lua` |
 | A5 `LinkVerdict`（combo count 増加で判定） | **完了** — `core/LinkVerdict.lua` |
 | A7 読み取り専用プローブ（A/B/C/D） | **完了** — 注入なしで4つの未知すべてに答えられる |
-| A4 Schema 固定 | 未着手 |
-| A5 `StageControlFsm` / `RunnerFsm` / `SequenceCompiler` | 未着手 |
-| A6 `ResultCollector` / `GraphStore` / `RouteSearch` / `Scoring` / `Exporter` / KDB adapter | 未着手 |
+| A4 Schema 固定 | **完了** — `core/Schema.lua`。8 レコード種別、状態語彙は `theoretical / runtime_pending / verified / rejected` の 4 値に閉じている |
+| A6 外部フレームデータの接続 | **完了** — `core/FrameData.lua`。classic 表記 ↔ numpad の join を**どの規則で一致したか記録して**返す。不一致は「不明」であって「不可」ではない |
+| A6 `CandidateGenerator` | **完了** — 理由を構造化して持つ。**情報不足で除外しない**。既知の負マージンのみ、数値付きで除外 |
+| A6 `GraphStore` | **完了** — 実測は理論を上書きするが逆はしない。AC/BCM/patch が違う結果は**併合を拒否**する |
+| A6 `RouteSearch` | **完了** — step 上限 / 同一 action 反復 / 連続反復 / 同一 edge 反復 / beam 幅 / OD・SA 予算。**打ち切ったら必ず報告**する |
+| A6 `Scoring` | **完了** — オフラインは予測値のみ。`damage` / `execution_leniency_frames` / `difficulty` は**フィールドごと存在しない** |
+| A5 `SequenceCompiler` | **完了** — delay を**発明しない**（未指定はエラー）。未検証プロファイルは拒否 |
+| A6 `Exporter` + オフライン CLI | **完了** — `lua tools/lua/explore.lua` でゲーム無しに端から端まで通る |
+| A5 `StageControlFsm` / `RunnerFsm` | 進行中 |
+| A6 `ResultCollector` / KDB adapter | 進行中 |
 
-テスト: **634 アサーション**（Lua 5.4.6、SF6 不要）。
-`pnpm test` は構文＋**require 解決**もチェックする（実機でしか出ないロードエラーを開発機で捕まえる）。
+テスト: **1768 アサーション**（Lua 5.4.6、SF6 不要）。
+`node tools/lua-runner.mjs syntax` は構文＋**require 解決**もチェックする
+（実機でしか出ないロードエラーを開発機で捕まえる）。
+
+### オフライン Explorer は縦に通っている
+
+```
+command_display/Zangief.json ─┐
+                              ├─→ Catalog ─→ CandidateGenerator ─→ GraphStore
+data/frame-data/zangief.lua ──┘                                        │
+   (CC-BY-SA-4.0, commit pin 付き)                                     ↓
+                                                                  RouteSearch
+                                                                       ↓
+                                          Exporter ←── Scoring ←───────┘
+                                              ↓
+                        candidates/zangief/modern/{candidate-edges,candidate-routes}.json
+```
+
+一発で再生成できる:
+
+```
+lua tools/lua/explore.lua
+```
+
+出力（`docs/ComboExplorer/zangief-offline-report.md` に全文）:
+
+| | |
+|---|---|
+| 始動技 | 14（Modern 地上通常技 / manual） |
+| 対象技 | 33（通常・必殺・SA / manual + simple） |
+| 検討したペア | 518 |
+| 理論エッジ | **387**（high 128 / medium 148 / low 111） |
+| 除外 | 131 — うち 122 は**既知の**負マージン（数値付き）、9 は連打不可の自己ペア |
+| 情報不足による除外 | **0 件** |
+| ルート候補 | **1037**（3 手まで。同一入力で action_id だけ違う 2333 件を畳んだ後） |
+
+**この 1037 は「繋がるコンボ」ではない。** 全レコードが `status: theoretical` /
+`runtime_verified: false` で、1 件残らず SF6 本体の判定待ちである。
+
+### まだゲームにしか答えられないこと（全候補が抱えている）
+
+| | |
+|---|---|
+| `pushback_range` | フレームデータの pushback は**全件 null**。1 発目の後に届くかは実機でしか分からない |
+| `modern_specific_scaling` | Modern のダメージ補正はどのフレーム表にも無い |
+| `actual_input_timing` | 入力受付幅こそがスイープで測るもの |
+| `knockdown_vs_link_advantage` | +36 が起き攻め有利かリンク有利か、データに区別が無い |
+| `cancel_window_conditions` | キャンセル受付の特殊条件はどの表にも無い |
+| `hitbox_hurtbox` | 同一表記に複数 action_id。どれが出るか未確定 |
+| `juggle_behaviour` | juggle 状態が後続を決める |
 
 ### 読み取り専用プローブが答えるもの
 
