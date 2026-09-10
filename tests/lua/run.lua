@@ -44,6 +44,7 @@ local SUITES = {
     "tests.lua.test_candidategenerator",
     "tests.lua.test_graphstore",
     "tests.lua.test_routesearch",
+    "tests.lua.test_scoring",
     "tests.lua.test_linkverdict",
     "tests.lua.test_probec",
     "tests.lua.test_catalogaudit",
