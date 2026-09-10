@@ -56,6 +56,7 @@ local SUITES = {
     "tests.lua.test_probec",
     "tests.lua.test_catalogaudit",
     "tests.lua.test_calibration",
+    "tests.lua.test_calibrationfsm",
 }
 
 local total_passed, total_failed = 0, 0
