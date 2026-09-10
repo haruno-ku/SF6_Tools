@@ -14,6 +14,11 @@ said so.
 
 ---
 
+> **Coming to this on the gaming PC?** Start at
+> **[`RUNBOOK.md`](RUNBOOK.md)** — the ordered bring-up sequence, in Japanese,
+> with what each step blocks and how to tell whether it passed. The same steps
+> exist as GitHub issues; either is fine.
+
 ## Current build: `0.3.0-diagnostics` — READ ONLY
 
 This build **never injects input**. It watches and measures.
