@@ -166,8 +166,25 @@ local e2 = reg2:get("modern_button_bits")
 t.eq(e2.status, P.STATUS.REFUTED, "status is refuted")
 t.eq(e2.value.M, 0x20, "the measured value replaced the guess")
 t.eq(e2.measurement_note, "display-code table was wrong: M and SP are swapped", "the note survives")
-t.is_nil(reg2:value("modern_button_bits"), "refuted values still do not satisfy value()")
-t.eq(reg2:can(P.CAPABILITY.INJECTION), false, "and still do not unblock the capability")
+-- Refuted is a measurement, so it satisfies value() and it opens the gate. The
+-- alternative was tried and is worse: the first real dataset refuted
+-- hitstop_advances_tick and reset_settle_ticks, and holding those back would
+-- have shut TIMING and STAGE_RESET because the measurement disagreed with a
+-- guess nobody had ever checked.
+t.eq(reg2:value("modern_button_bits").M, 0x20,
+     "a refuted value is a measured value, and value() hands it back")
+t.eq(reg2:is_verified("modern_button_bits"), false,
+     "is_verified still answers the narrower question: did the guess hold")
+t.eq(reg2:is_measured("modern_button_bits"), true, "is_measured answers the wider one")
+-- INJECTION is gated by three entries and only one was supplied here, so the
+-- capability is still shut. What matters is WHY: the refuted entry is no longer
+-- one of the reasons.
+local _, still_blocking = reg2:can(P.CAPABILITY.INJECTION)
+local names = table.concat(still_blocking, ",")
+t.ok(not names:find("modern_button_bits"),
+     "the refuted entry stops being a blocker - it was measured, it just was not "
+     .. "what we thought (still blocked by: " .. names .. ")")
+t.eq(#still_blocking, 2, "leaving only the two nobody has measured")
 
 -- --- malformed calibration is visible, not half-absorbed --------------------
 

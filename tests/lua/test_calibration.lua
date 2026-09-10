@@ -160,24 +160,15 @@ do
     t.eq(Provenance.can(reg, "injection"), false,
          "injection stays shut - no button bit has been measured")
 
-    -- CONSEQUENCE, recorded here because it is not obvious and it bites on the
-    -- very first real dataset.
-    --
     -- Both of these measurements contradicted their guess, so they land as
-    -- REFUTED - and Provenance.blockers counts anything that is not VERIFIED as
-    -- a blocker (Provenance.lua:277). A capability whose only gate was measured
-    -- correctly therefore stays shut, because the measurement disagreed with
-    -- the guess.
-    --
-    -- test_provenance.lua:169-170 asserts this deliberately, so it is the
-    -- contract rather than an accident, and this module does not work around it
-    -- by labelling a contradicted guess "verified".
+    -- REFUTED - which counts. A capability whose gates were measured opens
+    -- whether or not the guess survived; see is_measured in Provenance.lua.
     t.eq(Provenance.get(reg, "reset_settle_ticks").value, 9,
          "the measured reset cost replaced the guess in the register")
     t.eq(Provenance.get(reg, "reset_settle_ticks").status, "refuted", "as a refutation")
-    t.eq(Provenance.can(reg, "stage_reset"), false,
-         "and stage_reset stays blocked BY ITS OWN CORRECT MEASUREMENT - see the note above")
-    t.eq(Provenance.can(reg, "timing"), false,
+    t.eq(Provenance.can(reg, "stage_reset"), true,
+         "and stage_reset opens on it - a refuted measurement is still a measurement")
+    t.eq(Provenance.can(reg, "timing"), true,
          "same for timing, whose hitstop entry was also refuted")
 end
 

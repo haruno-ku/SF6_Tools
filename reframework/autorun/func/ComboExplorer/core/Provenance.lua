@@ -34,6 +34,28 @@ M.STATUS = {
     REFUTED    = "refuted",     -- measured, and the guess was wrong; value replaced
 }
 
+-- VERIFIED and REFUTED are both measurements. The only difference between them
+-- is whether the guess survived, and that is a fact about the guess rather than
+-- about the value now stored - which was measured either way.
+--
+-- Treating refuted as still-unknown looks careful and is not. The first real
+-- dataset refuted two entries: hitstop_advances_tick (guessed false, the tick
+-- does advance, 475 hitstop frames) and reset_settle_ticks (guessed 25,
+-- measured 9 over 11 resets). Under the stricter reading, TIMING and
+-- STAGE_RESET would each have stayed shut because the measurement gating them
+-- disagreed with a guess nobody had ever checked - the project blocked by being
+-- right.
+local function is_measured(status)
+    return status == M.STATUS.VERIFIED or status == M.STATUS.REFUTED
+end
+
+-- Exposed because a caller asking "has anyone looked at this" is asking about
+-- both, and is_verified() answers a narrower question: did the guess hold.
+function M.is_measured(reg, key)
+    local e = reg.entries[key]
+    return e ~= nil and is_measured(e.status)
+end
+
 -- Capabilities are what entries gate. A capability is available only when every
 -- entry that gates it - directly or through another capability it requires - is
 -- verified.
@@ -228,13 +250,18 @@ function M.get(reg, key)
     return reg.entries[key]
 end
 
--- The verified value, or nil. Deliberately withholds the provisional value:
+-- The MEASURED value, or nil. Deliberately withholds the provisional value:
 -- code that has not thought about the unverified case gets nil and fails loudly
 -- rather than running on a guess.
+--
+-- Refuted counts. See is_measured above: the value behind a refuted entry is
+-- the one that came off the machine, and withholding it would mean the only
+-- values this function ever hands out are the ones that happened to match a
+-- guess.
 function M.value(reg, key)
     local e = reg.entries[key]
     if not e then return nil, "unknown key: " .. tostring(key) end
-    if e.status ~= M.STATUS.VERIFIED then
+    if not is_measured(e.status) then
         return nil, e.status
     end
     return deep_copy(e.value)
@@ -273,7 +300,7 @@ function M.blockers(reg, capability, _seen)
 
     local found = {}
     for key, e in pairs(reg.entries) do
-        if gates_capability(e, capability) and e.status ~= M.STATUS.VERIFIED then
+        if gates_capability(e, capability) and not is_measured(e.status) then
             found[key] = true
         end
     end
