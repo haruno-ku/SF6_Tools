@@ -68,6 +68,37 @@ lua tools/lua/explore.lua
 **この 1037 は「繋がるコンボ」ではない。** 全レコードが `status: theoretical` /
 `runtime_verified: false` で、1 件残らず SF6 本体の判定待ちである。
 
+### カタログ監査 — このパイプラインは Zangief 専用か（#19）
+
+```
+lua tools/lua/audit.lua                 # 全31キャラ
+lua tools/lua/audit.lua --character Guile
+```
+
+31キャラの `command_display/*.json` に `Catalog.build` を回すだけ。
+**フレームデータ不要・ゲーム不要**。全文は
+[`docs/ComboExplorer/catalog-audit.md`](catalog-audit.md)、
+action_id 単位の内訳は `catalog-audit.json`。
+
+**答えは「Zangief 専用になっている」。** `core/Catalog.lua` の
+`category_from_classic` が置けなかった表記は、除外チェーンの最後で
+`system` として落ちる。落ちた行は「技が落ちた」という痕跡を残さない。
+
+| | |
+|---|---|
+| そうして落ちている行 | **187**（31キャラ全部で発生） |
+| Zangief | 8 |
+| 最悪 | **Guile 53** — `[4]6` / `[2]8` / `[4]646` を分類器が知らないため、**必殺技とSAが丸ごと** |
+| 溜めキャラ | Blanka 20 / EHonda 16 / DeeJay 15 / MBison 13 / ChunLi 11 |
+
+分類器が持っている表記は `236 / 214 / 360 / 63214 / 22 / 41236` と
+`236236 / 214214 / 720`。**溜め表記が1つも無い。**
+Zangief に溜め技が無いので、Zangief では気付けなかった。
+
+修正は #21。**#20（全キャラの候補生成）より先**である理由もここにある:
+壊れた分類器の上で候補を生成すれば、Guile は「通常技しか持たないキャラ」
+として何千件もの候補を出し、その出力は正常に見える。
+
 ### まだゲームにしか答えられないこと（全候補が抱えている）
 
 | | |

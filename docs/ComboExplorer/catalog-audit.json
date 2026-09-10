@@ -1,0 +1,2927 @@
+{
+  "characters": [
+    {
+      "ac_sha256": "29fcef9b54e71cc0dfdea28336ca32cbaba49c1bcd65dd0b438c307d9bfcf7e4",
+      "by_category": {
+        "air_normal": 7,
+        "command_normal": 20,
+        "normal": 8,
+        "od_special": 10,
+        "special": 12,
+        "super": 8,
+        "system": 6,
+        "throw": 3,
+        "unknown": 3
+      },
+      "character": "AKI",
+      "counts": {
+        "ambiguous_groups": 10,
+        "ambiguous_rows": 23,
+        "by_exclusion": {
+          "air": 7,
+          "any_button": 7,
+          "assist_combo": 1,
+          "system": 12,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 11,
+          "manual": 50,
+          "simple": 16
+        },
+        "classic_only": 8,
+        "entries": 72,
+        "excluded": 29,
+        "rows": 77,
+        "standalone": 48,
+        "unreachable": 8
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 2,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 1,
+        "simple_command names neither SP nor AUTO": 1
+      },
+      "source_character": "AKI",
+      "unplaceable": 3,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "48ca8bf84eb7ef41f87bb1b769a4b6f312b9023d137fbebb0bab981fc2b136e2",
+      "by_category": {
+        "air_normal": 9,
+        "command_normal": 27,
+        "normal": 8,
+        "od_special": 16,
+        "special": 23,
+        "super": 17,
+        "system": 8,
+        "throw": 3,
+        "unknown": 5
+      },
+      "character": "Akuma",
+      "counts": {
+        "ambiguous_groups": 19,
+        "ambiguous_rows": 47,
+        "by_exclusion": {
+          "air": 20,
+          "any_button": 9,
+          "assist_combo": 2,
+          "followup": 4,
+          "system": 14,
+          "throw": 3
+        },
+        "by_method": {
+          "assist": 15,
+          "manual": 75,
+          "simple": 26
+        },
+        "classic_only": 8,
+        "entries": 108,
+        "excluded": 52,
+        "rows": 116,
+        "standalone": 64,
+        "unreachable": 8
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 6,
+      "problems": 16,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 8,
+        "simple_command names neither SP nor AUTO": 8
+      },
+      "source_character": "Akuma",
+      "unplaceable": 5,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "3f208fbb93b989829c8a5435a8b83ced717c87ebe16020058efba0dcac3d6dda",
+      "by_category": {
+        "air_normal": 7,
+        "command_normal": 27,
+        "normal": 14,
+        "od_special": 7,
+        "special": 11,
+        "super": 8,
+        "system": 6,
+        "throw": 5,
+        "unknown": 11
+      },
+      "character": "Alex",
+      "counts": {
+        "ambiguous_groups": 18,
+        "ambiguous_rows": 49,
+        "by_exclusion": {
+          "ac_state": 1,
+          "air": 7,
+          "any_button": 5,
+          "assist_combo": 2,
+          "followup": 2,
+          "no_input": 1,
+          "system": 19,
+          "throw": 5
+        },
+        "by_method": {
+          "assist": 11,
+          "manual": 72,
+          "simple": 13
+        },
+        "classic_only": 6,
+        "entries": 87,
+        "excluded": 42,
+        "rows": 96,
+        "standalone": 54,
+        "unreachable": 6
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 5,
+      "problems": 2,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 1,
+        "simple_command names neither SP nor AUTO": 1
+      },
+      "source_character": "Alex",
+      "unplaceable": 11,
+      "unplaceable_lost": 8,
+      "unplaceable_rows": [
+        {
+          "action_id": 962,
+          "classic": ">6",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 964,
+          "classic": ">4",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 970,
+          "classic": ">LP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 972,
+          "classic": ">LP",
+          "input_method": "manual",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 982,
+          "classic": ">HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 983,
+          "classic": ">HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1495,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1498,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "verified_alias"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "eea1ed2c62f8c33aeeccc63a8eddd2a4133fa77a648cb0e89427953655b8db02",
+      "by_category": {
+        "air_normal": 32,
+        "command_normal": 20,
+        "normal": 5,
+        "od_special": 3,
+        "special": 8,
+        "super": 10,
+        "system": 6,
+        "throw": 3,
+        "unknown": 25
+      },
+      "character": "Blanka",
+      "counts": {
+        "ambiguous_groups": 19,
+        "ambiguous_rows": 53,
+        "by_exclusion": {
+          "air": 26,
+          "any_button": 15,
+          "assist_combo": 1,
+          "system": 31,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 19,
+          "manual": 71,
+          "simple": 22
+        },
+        "classic_only": 58,
+        "entries": 138,
+        "excluded": 75,
+        "rows": 112,
+        "standalone": 37,
+        "unreachable": 58
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 0,
+      "problems_by_reason": [],
+      "source_character": "Blanka",
+      "unplaceable": 25,
+      "unplaceable_lost": 20,
+      "unplaceable_rows": [
+        {
+          "action_id": 859,
+          "classic": "[4]6+LP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 867,
+          "classic": "[4]6+MP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 867,
+          "classic": "[4]6+MP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 873,
+          "classic": "[4]6+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 885,
+          "classic": "[4]6+PP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 885,
+          "classic": "[4]6+PP",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 929,
+          "classic": "P",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 929,
+          "classic": "P",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 933,
+          "classic": "P",
+          "input_method": "assist",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 933,
+          "classic": "P",
+          "input_method": "simple",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 936,
+          "classic": ">22+MP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 937,
+          "classic": ">22+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 971,
+          "classic": "[2]8+LK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 971,
+          "classic": "[2]8+LK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 975,
+          "classic": "[2]8+MK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 984,
+          "classic": "[2]8+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 990,
+          "classic": "[2]8+KK",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 990,
+          "classic": "[2]8+KK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1004,
+          "classic": "P",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "a9e27462064db02e61c86e7ca3087956b778a2311566e73f6937224181d161ea",
+      "by_category": {
+        "air_normal": 26,
+        "command_normal": 37,
+        "normal": 6,
+        "od_special": 14,
+        "special": 17,
+        "super": 8,
+        "system": 6,
+        "throw": 2,
+        "unknown": 1
+      },
+      "character": "CViper",
+      "counts": {
+        "ambiguous_groups": 27,
+        "ambiguous_rows": 71,
+        "by_exclusion": {
+          "air": 38,
+          "any_button": 11,
+          "assist_combo": 1,
+          "system": 12,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 25,
+          "manual": 66,
+          "simple": 26
+        },
+        "classic_only": 17,
+        "entries": 101,
+        "excluded": 64,
+        "rows": 117,
+        "standalone": 53,
+        "unreachable": 17
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 10,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 5,
+        "simple_command names neither SP nor AUTO": 5
+      },
+      "source_character": "CViper",
+      "unplaceable": 1,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "41ddf70bd1d5575d721ea88168ef4239bc3fb16c4f082d5a9dbc7dbb9ac89868",
+      "by_category": {
+        "air_normal": 6,
+        "command_normal": 24,
+        "normal": 6,
+        "od_special": 15,
+        "special": 23,
+        "super": 8,
+        "system": 6,
+        "throw": 3,
+        "unknown": 2
+      },
+      "character": "Cammy",
+      "counts": {
+        "ambiguous_groups": 15,
+        "ambiguous_rows": 32,
+        "by_exclusion": {
+          "air": 17,
+          "any_button": 6,
+          "assist_combo": 2,
+          "followup": 1,
+          "system": 12,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 16,
+          "manual": 56,
+          "simple": 21
+        },
+        "classic_only": 22,
+        "entries": 92,
+        "excluded": 40,
+        "rows": 93,
+        "standalone": 53,
+        "unreachable": 22
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 2,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 1,
+        "simple_command names neither SP nor AUTO": 1
+      },
+      "source_character": "Cammy",
+      "unplaceable": 2,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1500,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "8dcd21cab1ae11982c8fb011d4ad04beece543d366205552dabedc861c5e24a2",
+      "by_category": {
+        "air_normal": 8,
+        "command_normal": 15,
+        "normal": 12,
+        "od_special": 11,
+        "special": 29,
+        "super": 8,
+        "system": 6,
+        "throw": 3,
+        "unknown": 17
+      },
+      "character": "ChunLi",
+      "counts": {
+        "ambiguous_groups": 15,
+        "ambiguous_rows": 42,
+        "by_exclusion": {
+          "air": 17,
+          "any_button": 17,
+          "assist_combo": 1,
+          "followup": 3,
+          "system": 22,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 12,
+          "manual": 79,
+          "simple": 18
+        },
+        "classic_only": 6,
+        "entries": 96,
+        "excluded": 62,
+        "rows": 109,
+        "standalone": 47,
+        "unreachable": 6
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 2,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 1,
+        "simple_command names neither SP nor AUTO": 1
+      },
+      "source_character": "ChunLi",
+      "unplaceable": 17,
+      "unplaceable_lost": 11,
+      "unplaceable_rows": [
+        {
+          "action_id": 900,
+          "classic": "[4]6+LP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 901,
+          "classic": "[4]6+MP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 902,
+          "classic": "[4]6+HP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 902,
+          "classic": "[4]6+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 904,
+          "classic": "[4]6+PP",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 904,
+          "classic": "[4]6+PP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 919,
+          "classic": "KK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 942,
+          "classic": "[2]8+LK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 943,
+          "classic": "[2]8+MK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 944,
+          "classic": "[2]8+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "5e13ad6972e82410a8222c42cf0adc0b8ae7ca22872457334c48cbf32cfacdf2",
+      "by_category": {
+        "air_normal": 9,
+        "command_normal": 16,
+        "normal": 37,
+        "od_special": 10,
+        "special": 8,
+        "super": 8,
+        "system": 6,
+        "throw": 2,
+        "unknown": 29
+      },
+      "character": "DeeJay",
+      "counts": {
+        "ambiguous_groups": 20,
+        "ambiguous_rows": 75,
+        "by_exclusion": {
+          "air": 9,
+          "any_button": 5,
+          "assist_combo": 2,
+          "followup": 11,
+          "system": 26,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 12,
+          "manual": 96,
+          "simple": 17
+        },
+        "classic_only": 7,
+        "entries": 121,
+        "excluded": 55,
+        "rows": 125,
+        "standalone": 70,
+        "unreachable": 7
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 10,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 5,
+        "simple_command names neither SP nor AUTO": 5
+      },
+      "source_character": "DeeJay",
+      "unplaceable": 29,
+      "unplaceable_lost": 15,
+      "unplaceable_rows": [
+        {
+          "action_id": 900,
+          "classic": "[4]6+LP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 902,
+          "classic": "[4]6+MP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 902,
+          "classic": "[4]6+MP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 905,
+          "classic": "[4]6+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 906,
+          "classic": "[4]6+PP",
+          "input_method": "assist",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 906,
+          "classic": "[4]6+PP",
+          "input_method": "simple",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 907,
+          "classic": "[4]6+PP",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 907,
+          "classic": "[4]6+PP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 955,
+          "classic": "[2]8+LK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 956,
+          "classic": "[2]8+MK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 957,
+          "classic": "[2]8+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 957,
+          "classic": "[2]8+HK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 959,
+          "classic": "[2]8+KK",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 959,
+          "classic": "[2]8+KK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "4d4e618babf28e6b4bc34dc04111f7ce3a3eab41311609554091d056109144e0",
+      "by_category": {
+        "air_normal": 17,
+        "command_normal": 23,
+        "normal": 5,
+        "od_special": 8,
+        "special": 25,
+        "super": 16,
+        "system": 6,
+        "throw": 3,
+        "unknown": 5
+      },
+      "character": "Dhalsim",
+      "counts": {
+        "ambiguous_groups": 13,
+        "ambiguous_rows": 35,
+        "by_exclusion": {
+          "ac_state": 2,
+          "air": 21,
+          "any_button": 2,
+          "assist_combo": 2,
+          "followup": 4,
+          "system": 12,
+          "throw": 3
+        },
+        "by_method": {
+          "assist": 16,
+          "manual": 68,
+          "simple": 24
+        },
+        "classic_only": 17,
+        "entries": 102,
+        "excluded": 46,
+        "rows": 108,
+        "standalone": 62,
+        "unreachable": 17
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 2,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 1,
+        "simple_command names neither SP nor AUTO": 1
+      },
+      "source_character": "Dhalsim",
+      "unplaceable": 5,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1498,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "4b056355a52e8015732109cf9ff3cbd37154002c70d0a862d1b042aa2c7c9192",
+      "by_category": {
+        "air_normal": 10,
+        "command_normal": 19,
+        "normal": 5,
+        "od_special": 14,
+        "special": 22,
+        "super": 6,
+        "system": 6,
+        "throw": 2,
+        "unknown": 38
+      },
+      "character": "EHonda",
+      "counts": {
+        "ambiguous_groups": 27,
+        "ambiguous_rows": 69,
+        "by_exclusion": {
+          "air": 10,
+          "any_button": 9,
+          "assist_combo": 2,
+          "followup": 20,
+          "system": 27,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 22,
+          "manual": 76,
+          "simple": 24
+        },
+        "classic_only": 7,
+        "entries": 95,
+        "excluded": 70,
+        "rows": 122,
+        "standalone": 52,
+        "unreachable": 7
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 2,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 1,
+        "simple_command names neither SP nor AUTO": 1
+      },
+      "source_character": "EHonda",
+      "unplaceable": 38,
+      "unplaceable_lost": 16,
+      "unplaceable_rows": [
+        {
+          "action_id": 900,
+          "classic": "[4]6+LP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 901,
+          "classic": "[4]6+MP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 901,
+          "classic": "[4]6+MP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 902,
+          "classic": "[4]6+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 911,
+          "classic": "[4]6+PP",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 911,
+          "classic": "[4]6+PP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 946,
+          "classic": "[2]8+LK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 947,
+          "classic": "[2]8+MK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 948,
+          "classic": "[2]8+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 949,
+          "classic": "[2]8+KK",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 949,
+          "classic": "[2]8+KK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 976,
+          "classic": ">2+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 977,
+          "classic": ">2+HK",
+          "input_method": "manual",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 1203,
+          "classic": "[4]646+K",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1203,
+          "classic": "[4]646+K",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1496,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "d14a103a006e85bdd8cf04f5f51e0ec1931381127cfe86c3b0b75bbb355a6917",
+      "by_category": {
+        "air_normal": 6,
+        "command_normal": 24,
+        "normal": 8,
+        "od_special": 8,
+        "special": 9,
+        "super": 10,
+        "system": 6,
+        "throw": 2,
+        "unknown": 9
+      },
+      "character": "Ed",
+      "counts": {
+        "ambiguous_groups": 11,
+        "ambiguous_rows": 25,
+        "by_exclusion": {
+          "air": 6,
+          "any_button": 8,
+          "followup": 5,
+          "system": 13,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 10,
+          "manual": 58,
+          "simple": 14
+        },
+        "classic_only": 6,
+        "entries": 80,
+        "excluded": 34,
+        "rows": 82,
+        "standalone": 48,
+        "unreachable": 6
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 16,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 7,
+        "simple_command names neither SP nor AUTO": 9
+      },
+      "source_character": "Ed",
+      "unplaceable": 9,
+      "unplaceable_lost": 2,
+      "unplaceable_rows": [
+        {
+          "action_id": 986,
+          "classic": "KK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "5ea2b2aa212ea33b373336853ddb0efd1fe3774ac55b7b2cc77d3e8861508033",
+      "by_category": {
+        "air_normal": 10,
+        "command_normal": 59,
+        "normal": 6,
+        "od_special": 10,
+        "special": 14,
+        "super": 14,
+        "system": 6,
+        "throw": 2,
+        "unknown": 5
+      },
+      "character": "Elena",
+      "counts": {
+        "ambiguous_groups": 29,
+        "ambiguous_rows": 85,
+        "by_exclusion": {
+          "air": 10,
+          "any_button": 5,
+          "assist_combo": 2,
+          "followup": 4,
+          "system": 12,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 22,
+          "manual": 71,
+          "simple": 33
+        },
+        "classic_only": 7,
+        "entries": 108,
+        "excluded": 35,
+        "rows": 126,
+        "standalone": 91,
+        "unreachable": 7
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 4,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 2,
+        "simple_command names neither SP nor AUTO": 2
+      },
+      "source_character": "Elena",
+      "unplaceable": 5,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "1ca99c13d2d24bff931ea6bb3c8cec6d6b50ad589a806b1f4588d0ac780f62d6",
+      "by_category": {
+        "air_normal": 6,
+        "command_normal": 38,
+        "normal": 22,
+        "od_special": 1,
+        "special": 4,
+        "super": 2,
+        "system": 6,
+        "throw": 4,
+        "unknown": 61
+      },
+      "character": "Guile",
+      "counts": {
+        "ambiguous_groups": 32,
+        "ambiguous_rows": 98,
+        "by_exclusion": {
+          "air": 7,
+          "any_button": 7,
+          "assist_combo": 2,
+          "followup": 3,
+          "system": 64,
+          "throw": 3
+        },
+        "by_method": {
+          "assist": 20,
+          "manual": 99,
+          "simple": 25
+        },
+        "classic_only": 6,
+        "entries": 117,
+        "excluded": 86,
+        "rows": 144,
+        "standalone": 58,
+        "unreachable": 6
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 4,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 2,
+        "simple_command names neither SP nor AUTO": 2
+      },
+      "source_character": "Guile",
+      "unplaceable": 61,
+      "unplaceable_lost": 53,
+      "unplaceable_rows": [
+        {
+          "action_id": 898,
+          "classic": "[4]6+PP",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 898,
+          "classic": "[4]6+PP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 899,
+          "classic": "[4]6+LP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 900,
+          "classic": "[4]6+LP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 900,
+          "classic": "[4]6+LP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 901,
+          "classic": "[4]6+LP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 901,
+          "classic": "[4]6+LP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 902,
+          "classic": "[4]6+MP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 903,
+          "classic": "[4]6+MP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 904,
+          "classic": "[4]6+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 905,
+          "classic": "[4]6+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 905,
+          "classic": "[4]6+HP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 905,
+          "classic": "[4]6+HP",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 906,
+          "classic": "[4]6+PP",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 906,
+          "classic": "[4]6+PP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 955,
+          "classic": "[4]6+LP",
+          "input_method": "manual",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 955,
+          "classic": "[4]6+LP",
+          "input_method": "simple",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 956,
+          "classic": "[4]6+LP",
+          "input_method": "simple",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 956,
+          "classic": "[4]6+LP",
+          "input_method": "manual",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 957,
+          "classic": "[4]6+MP",
+          "input_method": "manual",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 958,
+          "classic": "[4]6+MP",
+          "input_method": "manual",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 959,
+          "classic": "[4]6+HP",
+          "input_method": "manual",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 960,
+          "classic": "[4]6+HP",
+          "input_method": "manual",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 960,
+          "classic": "[4]6+HP",
+          "input_method": "simple",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 960,
+          "classic": "[4]6+HP",
+          "input_method": "assist",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 961,
+          "classic": "[4]6+LP",
+          "input_method": "manual",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 961,
+          "classic": "[4]6+LP",
+          "input_method": "simple",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 962,
+          "classic": "[4]6+PP",
+          "input_method": "assist",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 962,
+          "classic": "[4]6+PP",
+          "input_method": "simple",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 989,
+          "classic": "[2]8+LK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 990,
+          "classic": "[2]8+LK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 991,
+          "classic": "[2]8+MK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 991,
+          "classic": "[2]8+MK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 992,
+          "classic": "[2]8+MK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 992,
+          "classic": "[2]8+MK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 993,
+          "classic": "[2]8+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 994,
+          "classic": "[2]8+HK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 994,
+          "classic": "[2]8+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 994,
+          "classic": "[2]8+HK",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 995,
+          "classic": "[2]8+KK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 995,
+          "classic": "[2]8+KK",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1200,
+          "classic": "[4]646+LP+MP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1201,
+          "classic": "[4]646+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1213,
+          "classic": "PP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1240,
+          "classic": "[4]646+K",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1240,
+          "classic": "[4]646+K",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1241,
+          "classic": "[4]646+K",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1241,
+          "classic": "[4]646+K",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1243,
+          "classic": "[4]646+K",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1243,
+          "classic": "[4]646+K",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1244,
+          "classic": "[4]646+K",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1244,
+          "classic": "[4]646+K",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1500,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "0568c81221ccd0d676d8cac818e5af29d876063f176d3f8cec066c85ee31ccf3",
+      "by_category": {
+        "air_normal": 6,
+        "command_normal": 25,
+        "normal": 6,
+        "od_special": 30,
+        "special": 65,
+        "super": 9,
+        "system": 10,
+        "throw": 3,
+        "unknown": 4
+      },
+      "character": "Ingrid",
+      "counts": {
+        "ambiguous_groups": 25,
+        "ambiguous_rows": 100,
+        "by_exclusion": {
+          "ac_state": 3,
+          "air": 47,
+          "any_button": 20,
+          "assist_combo": 5,
+          "followup": 3,
+          "system": 16,
+          "throw": 3
+        },
+        "by_method": {
+          "assist": 17,
+          "manual": 98,
+          "simple": 43
+        },
+        "classic_only": 14,
+        "entries": 130,
+        "excluded": 97,
+        "rows": 158,
+        "standalone": 61,
+        "unreachable": 14
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 12,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 6,
+        "simple_command names neither SP nor AUTO": 6
+      },
+      "source_character": "Ingrid",
+      "unplaceable": 4,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "945eda4c32195abe427a22fef1c4f9ab79414bf68cb203b9dc26a05b7a6a6701",
+      "by_category": {
+        "air_normal": 6,
+        "command_normal": 17,
+        "normal": 6,
+        "od_special": 7,
+        "special": 29,
+        "super": 8,
+        "system": 6,
+        "throw": 3,
+        "unknown": 11
+      },
+      "character": "JP",
+      "counts": {
+        "ambiguous_groups": 17,
+        "ambiguous_rows": 39,
+        "by_exclusion": {
+          "air": 6,
+          "any_button": 1,
+          "assist_combo": 1,
+          "followup": 5,
+          "system": 18,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 13,
+          "manual": 62,
+          "simple": 18
+        },
+        "classic_only": 6,
+        "entries": 83,
+        "excluded": 33,
+        "rows": 93,
+        "standalone": 60,
+        "unreachable": 6
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 0,
+      "problems_by_reason": [],
+      "source_character": "JP",
+      "unplaceable": 11,
+      "unplaceable_lost": 7,
+      "unplaceable_rows": [
+        {
+          "action_id": 960,
+          "classic": ">22+LP+HP",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 960,
+          "classic": ">22+LP+HP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 960,
+          "classic": ">22+LP+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 961,
+          "classic": ">22+MP+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 961,
+          "classic": ">22+MP+HP",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 961,
+          "classic": ">22+MP+HP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "abf8fbad51d9f39507e644780ed58c00abc1e4ec4299e8b9449daca84df7c04a",
+      "by_category": {
+        "air_normal": 7,
+        "command_normal": 74,
+        "normal": 6,
+        "od_special": 20,
+        "special": 31,
+        "super": 8,
+        "system": 8,
+        "throw": 2,
+        "unknown": 15
+      },
+      "character": "Jamie",
+      "counts": {
+        "ambiguous_groups": 32,
+        "ambiguous_rows": 124,
+        "by_exclusion": {
+          "air": 15,
+          "any_button": 34,
+          "assist_combo": 1,
+          "followup": 16,
+          "system": 14,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 19,
+          "manual": 105,
+          "simple": 47
+        },
+        "classic_only": 7,
+        "entries": 132,
+        "excluded": 82,
+        "rows": 171,
+        "standalone": 89,
+        "unreachable": 7
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 2,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 1,
+        "simple_command names neither SP nor AUTO": 1
+      },
+      "source_character": "Jamie",
+      "unplaceable": 15,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "58905c345ed46631cb36794997051ebbf8a1f7cb190046f55090b7367447512b",
+      "by_category": {
+        "air_normal": 14,
+        "command_normal": 32,
+        "normal": 60,
+        "od_special": 12,
+        "special": 33,
+        "super": 14,
+        "system": 6,
+        "throw": 3,
+        "unknown": 8
+      },
+      "character": "Juri",
+      "counts": {
+        "ambiguous_groups": 43,
+        "ambiguous_rows": 147,
+        "by_exclusion": {
+          "air": 16,
+          "any_button": 5,
+          "assist_combo": 1,
+          "followup": 10,
+          "system": 12,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 39,
+          "manual": 99,
+          "simple": 44
+        },
+        "classic_only": 5,
+        "entries": 121,
+        "excluded": 46,
+        "rows": 182,
+        "standalone": 136,
+        "unreachable": 5
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 4,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 2,
+        "simple_command names neither SP nor AUTO": 2
+      },
+      "source_character": "Juri",
+      "unplaceable": 8,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "3f8582aecd0f559a3c04f82e837832ccc6ce80a52ceec1edaf6c78fabd41dd57",
+      "by_category": {
+        "air_normal": 7,
+        "command_normal": 24,
+        "normal": 8,
+        "od_special": 9,
+        "special": 13,
+        "super": 8,
+        "system": 6,
+        "throw": 2,
+        "unknown": 33
+      },
+      "character": "Ken",
+      "counts": {
+        "ambiguous_groups": 22,
+        "ambiguous_rows": 52,
+        "by_exclusion": {
+          "air": 7,
+          "any_button": 7,
+          "assist_combo": 2,
+          "followup": 30,
+          "system": 16,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 19,
+          "manual": 64,
+          "simple": 27
+        },
+        "classic_only": 7,
+        "entries": 87,
+        "excluded": 64,
+        "rows": 110,
+        "standalone": 46,
+        "unreachable": 7
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 4,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 2,
+        "simple_command names neither SP nor AUTO": 2
+      },
+      "source_character": "Ken",
+      "unplaceable": 33,
+      "unplaceable_lost": 5,
+      "unplaceable_rows": [
+        {
+          "action_id": 680,
+          "classic": "KK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 936,
+          "classic": ">6+K",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 937,
+          "classic": ">6+K",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 938,
+          "classic": ">6+K",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "5cfe7670ec050610df704a90324d7288f46289f71873ea2de6025ca39edde7c6",
+      "by_category": {
+        "air_normal": 12,
+        "command_normal": 27,
+        "normal": 7,
+        "od_special": 19,
+        "special": 24,
+        "super": 10,
+        "system": 12,
+        "throw": 2,
+        "unknown": 10
+      },
+      "character": "Kimberly",
+      "counts": {
+        "ambiguous_groups": 30,
+        "ambiguous_rows": 66,
+        "by_exclusion": {
+          "air": 18,
+          "any_button": 14,
+          "assist_combo": 1,
+          "followup": 9,
+          "system": 20,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 21,
+          "manual": 75,
+          "simple": 27
+        },
+        "classic_only": 11,
+        "entries": 103,
+        "excluded": 64,
+        "rows": 123,
+        "standalone": 59,
+        "unreachable": 11
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 10,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 3,
+        "simple_command names neither SP nor AUTO": 7
+      },
+      "source_character": "Kimberly",
+      "unplaceable": 10,
+      "unplaceable_lost": 3,
+      "unplaceable_rows": [
+        {
+          "action_id": 977,
+          "classic": ">22+MP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 978,
+          "classic": ">22+MP",
+          "input_method": "manual",
+          "ownership": "verified_alias"
+        },
+        {
+          "action_id": 1500,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "36d9b3d87d425b093aeee36ae7acc355efb5609db17438a5f2e90a13abdb0c6c",
+      "by_category": {
+        "air_normal": 20,
+        "command_normal": 35,
+        "normal": 5,
+        "od_special": 12,
+        "special": 32,
+        "super": 10,
+        "system": 6,
+        "throw": 2,
+        "unknown": 4
+      },
+      "character": "Lily",
+      "counts": {
+        "ambiguous_groups": 30,
+        "ambiguous_rows": 82,
+        "by_exclusion": {
+          "air": 25,
+          "any_button": 9,
+          "assist_combo": 2,
+          "followup": 3,
+          "system": 12,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 19,
+          "manual": 77,
+          "simple": 30
+        },
+        "classic_only": 8,
+        "entries": 92,
+        "excluded": 53,
+        "rows": 126,
+        "standalone": 73,
+        "unreachable": 8
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 0,
+      "problems_by_reason": [],
+      "source_character": "Lily",
+      "unplaceable": 4,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1495,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "24c3454b415d170f911ba87056d50ceb194c350d6ec3e3db985d578bd6a2426d",
+      "by_category": {
+        "air_normal": 8,
+        "command_normal": 23,
+        "normal": 4,
+        "od_special": 11,
+        "special": 13,
+        "super": 8,
+        "system": 6,
+        "throw": 2,
+        "unknown": 18
+      },
+      "character": "Luke",
+      "counts": {
+        "ambiguous_groups": 13,
+        "ambiguous_rows": 33,
+        "by_exclusion": {
+          "air": 7,
+          "any_button": 7,
+          "assist_combo": 1,
+          "followup": 16,
+          "system": 15,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 13,
+          "manual": 61,
+          "simple": 19
+        },
+        "classic_only": 7,
+        "entries": 80,
+        "excluded": 48,
+        "rows": 93,
+        "standalone": 45,
+        "unreachable": 7
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 4,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 2,
+        "simple_command names neither SP nor AUTO": 2
+      },
+      "source_character": "Luke",
+      "unplaceable": 18,
+      "unplaceable_lost": 4,
+      "unplaceable_rows": [
+        {
+          "action_id": 907,
+          "classic": "PP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 935,
+          "classic": "PP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 936,
+          "classic": "PP",
+          "input_method": "simple",
+          "ownership": "type37_followup_execution_phase"
+        },
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "9436ca0bf5ace2722e4e9ac35c3d5b79cf26f2f2a139a8e0543f37e6701e7785",
+      "by_category": {
+        "air_normal": 6,
+        "command_normal": 21,
+        "normal": 6,
+        "od_special": 6,
+        "special": 8,
+        "super": 13,
+        "system": 6,
+        "throw": 2,
+        "unknown": 26
+      },
+      "character": "MBison",
+      "counts": {
+        "ambiguous_groups": 9,
+        "ambiguous_rows": 25,
+        "by_exclusion": {
+          "air": 10,
+          "any_button": 9,
+          "assist_combo": 1,
+          "followup": 3,
+          "system": 24,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 13,
+          "manual": 63,
+          "simple": 18
+        },
+        "classic_only": 8,
+        "entries": 81,
+        "excluded": 49,
+        "rows": 94,
+        "standalone": 45,
+        "unreachable": 8
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 0,
+      "problems_by_reason": [],
+      "source_character": "MBison",
+      "unplaceable": 26,
+      "unplaceable_lost": 13,
+      "unplaceable_rows": [
+        {
+          "action_id": 908,
+          "classic": "[2]8+LK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 909,
+          "classic": "[2]8+MK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 909,
+          "classic": "[2]8+MK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 910,
+          "classic": "[2]8+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 943,
+          "classic": "[2]8+KK",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 943,
+          "classic": "[2]8+KK",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1018,
+          "classic": "[4]6+LP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1018,
+          "classic": "[4]6+LP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1024,
+          "classic": "[4]6+MP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1030,
+          "classic": "[4]6+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1038,
+          "classic": "[4]6+PP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1038,
+          "classic": "[4]6+PP",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1491,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "3157a731c060c85a10397a96d99f82d39ef7d3f973e72fac3223e968dc2a3027",
+      "by_category": {
+        "air_normal": 6,
+        "command_normal": 31,
+        "normal": 7,
+        "od_special": 28,
+        "special": 38,
+        "super": 16,
+        "system": 6,
+        "throw": 4,
+        "unknown": 1
+      },
+      "character": "Mai",
+      "counts": {
+        "ambiguous_groups": 46,
+        "ambiguous_rows": 113,
+        "by_exclusion": {
+          "air": 24,
+          "any_button": 14,
+          "assist_combo": 2,
+          "system": 12,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 22,
+          "manual": 75,
+          "simple": 40
+        },
+        "classic_only": 6,
+        "entries": 99,
+        "excluded": 54,
+        "rows": 137,
+        "standalone": 83,
+        "unreachable": 6
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 4,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 2,
+        "simple_command names neither SP nor AUTO": 2
+      },
+      "source_character": "Mai",
+      "unplaceable": 1,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1493,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "a7e6faf72135894edea1c8055f0d9fc2b031d761c7a766d90fa282421e29aff8",
+      "by_category": {
+        "air_normal": 6,
+        "command_normal": 15,
+        "normal": 7,
+        "od_special": 31,
+        "special": 53,
+        "super": 12,
+        "system": 6,
+        "throw": 2,
+        "unknown": 7
+      },
+      "character": "Manon",
+      "counts": {
+        "ambiguous_groups": 19,
+        "ambiguous_rows": 97,
+        "by_exclusion": {
+          "air": 6,
+          "any_button": 7,
+          "assist_combo": 2,
+          "followup": 6,
+          "system": 12,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 29,
+          "manual": 70,
+          "simple": 40
+        },
+        "classic_only": 11,
+        "entries": 105,
+        "excluded": 35,
+        "rows": 139,
+        "standalone": 104,
+        "unreachable": 11
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 4,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 2,
+        "simple_command names neither SP nor AUTO": 2
+      },
+      "source_character": "Manon",
+      "unplaceable": 7,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "bf938898975f2df9c4c6180eb348b2a92762f239dbb47908513e7536adc6827f",
+      "by_category": {
+        "air_normal": 7,
+        "command_normal": 24,
+        "normal": 4,
+        "od_special": 10,
+        "special": 11,
+        "super": 8,
+        "system": 6,
+        "throw": 2,
+        "unknown": 17
+      },
+      "character": "Marisa",
+      "counts": {
+        "ambiguous_groups": 11,
+        "ambiguous_rows": 28,
+        "by_exclusion": {
+          "air": 7,
+          "any_button": 3,
+          "assist_combo": 2,
+          "followup": 16,
+          "system": 12,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 13,
+          "manual": 57,
+          "simple": 19
+        },
+        "classic_only": 12,
+        "entries": 84,
+        "excluded": 42,
+        "rows": 89,
+        "standalone": 47,
+        "unreachable": 12
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 4,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 2,
+        "simple_command names neither SP nor AUTO": 2
+      },
+      "source_character": "Marisa",
+      "unplaceable": 17,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "9faa158243bc4e58b99c17eecb2f1f2eee60f6b56c6ac1fe4cd7f250116a854a",
+      "by_category": {
+        "air_normal": 28,
+        "command_normal": 19,
+        "normal": 7,
+        "od_special": 18,
+        "special": 34,
+        "super": 8,
+        "system": 6,
+        "throw": 3,
+        "unknown": 12
+      },
+      "character": "Rashid",
+      "counts": {
+        "ambiguous_groups": 35,
+        "ambiguous_rows": 92,
+        "by_exclusion": {
+          "ac_state": 2,
+          "air": 39,
+          "any_button": 4,
+          "assist_combo": 2,
+          "followup": 10,
+          "system": 13,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 28,
+          "manual": 80,
+          "simple": 27
+        },
+        "classic_only": 4,
+        "entries": 115,
+        "excluded": 72,
+        "rows": 135,
+        "standalone": 63,
+        "unreachable": 4
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 10,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 5,
+        "simple_command names neither SP nor AUTO": 5
+      },
+      "source_character": "Rashid",
+      "unplaceable": 12,
+      "unplaceable_lost": 2,
+      "unplaceable_rows": [
+        {
+          "action_id": 701,
+          "classic": "KK",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "afedc65f24d5968174fdcdd8e42720199564623ba993c35870f4d6084d94c195",
+      "by_category": {
+        "air_normal": 6,
+        "command_normal": 27,
+        "normal": 6,
+        "od_special": 16,
+        "special": 19,
+        "super": 16,
+        "system": 6,
+        "throw": 2,
+        "unknown": 4
+      },
+      "character": "Ryu",
+      "counts": {
+        "ambiguous_groups": 23,
+        "ambiguous_rows": 53,
+        "by_exclusion": {
+          "air": 12,
+          "any_button": 12,
+          "assist_combo": 2,
+          "followup": 3,
+          "system": 12,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 14,
+          "manual": 65,
+          "simple": 23
+        },
+        "classic_only": 6,
+        "entries": 87,
+        "excluded": 43,
+        "rows": 102,
+        "standalone": 59,
+        "unreachable": 6
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 4,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 2,
+        "simple_command names neither SP nor AUTO": 2
+      },
+      "source_character": "Ryu",
+      "unplaceable": 4,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1500,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "424195e69fc11d9f0738c712bb85f24cbcb90a653c1e8ada0a7f87dda0bc89e2",
+      "by_category": {
+        "air_normal": 6,
+        "command_normal": 29,
+        "normal": 6,
+        "od_special": 6,
+        "special": 15,
+        "super": 12,
+        "system": 7,
+        "throw": 2,
+        "unknown": 17
+      },
+      "character": "Sagat",
+      "counts": {
+        "ambiguous_groups": 16,
+        "ambiguous_rows": 39,
+        "by_exclusion": {
+          "ac_state": 3,
+          "air": 6,
+          "any_button": 3,
+          "assist_combo": 2,
+          "followup": 16,
+          "system": 13,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 19,
+          "manual": 64,
+          "simple": 17
+        },
+        "classic_only": 4,
+        "entries": 82,
+        "excluded": 45,
+        "rows": 100,
+        "standalone": 55,
+        "unreachable": 4
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 5,
+      "problems": 2,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 1,
+        "simple_command names neither SP nor AUTO": 1
+      },
+      "source_character": "Sagat",
+      "unplaceable": 17,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "604c0f7279f24805c20f70e1f4f780f9d5804cb7ee9f0744ebaaf3ea9c5d71ca",
+      "by_category": {
+        "air_normal": 6,
+        "command_normal": 23,
+        "normal": 6,
+        "od_special": 8,
+        "special": 12,
+        "super": 12,
+        "system": 6,
+        "throw": 2,
+        "unknown": 12
+      },
+      "character": "Terry",
+      "counts": {
+        "ambiguous_groups": 10,
+        "ambiguous_rows": 30,
+        "by_exclusion": {
+          "air": 6,
+          "any_button": 7,
+          "assist_combo": 2,
+          "followup": 7,
+          "system": 12,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 12,
+          "manual": 59,
+          "simple": 16
+        },
+        "classic_only": 8,
+        "entries": 81,
+        "excluded": 36,
+        "rows": 87,
+        "standalone": 51,
+        "unreachable": 8
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 0,
+      "problems_by_reason": [],
+      "source_character": "Terry",
+      "unplaceable": 12,
+      "unplaceable_lost": 1,
+      "unplaceable_rows": [
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "e895dc76d9702cbec027de99375383925b339352f5192420b5a78b6270eb8723",
+      "by_category": {
+        "air_normal": 12,
+        "command_normal": 26,
+        "normal": 5,
+        "od_special": 14,
+        "special": 22,
+        "super": 12,
+        "system": 6,
+        "throw": 2,
+        "unknown": 39
+      },
+      "character": "Yasmine",
+      "counts": {
+        "ambiguous_groups": 21,
+        "ambiguous_rows": 81,
+        "by_exclusion": {
+          "air": 12,
+          "any_button": 5,
+          "assist_combo": 4,
+          "followup": 35,
+          "system": 15,
+          "throw": 2
+        },
+        "by_method": {
+          "assist": 27,
+          "manual": 79,
+          "simple": 32
+        },
+        "classic_only": 8,
+        "entries": 120,
+        "excluded": 73,
+        "rows": 138,
+        "standalone": 65,
+        "unreachable": 8
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 4,
+      "problems": 38,
+      "problems_by_reason": {
+        "classic_modern but no Modern command form": 19,
+        "simple_command names neither SP nor AUTO": 19
+      },
+      "source_character": "Yasmine",
+      "unplaceable": 39,
+      "unplaceable_lost": 4,
+      "unplaceable_rows": [
+        {
+          "action_id": 902,
+          "classic": ">22+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 905,
+          "classic": ">22+LP+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 906,
+          "classic": ">22+MP+HP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1494,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    },
+    {
+      "ac_sha256": "753d02204cec89c5a885d5748cda2d51bde0769144a15be93f1e717f219006b2",
+      "by_category": {
+        "air_normal": 8,
+        "command_normal": 20,
+        "normal": 5,
+        "od_special": 9,
+        "special": 13,
+        "super": 8,
+        "system": 7,
+        "throw": 6,
+        "unknown": 12
+      },
+      "character": "Zangief",
+      "counts": {
+        "ambiguous_groups": 13,
+        "ambiguous_rows": 31,
+        "by_exclusion": {
+          "ac_state": 2,
+          "air": 12,
+          "any_button": 5,
+          "assist_combo": 2,
+          "followup": 4,
+          "system": 20,
+          "throw": 6
+        },
+        "by_method": {
+          "assist": 11,
+          "manual": 63,
+          "simple": 14
+        },
+        "classic_only": 9,
+        "entries": 80,
+        "excluded": 51,
+        "rows": 88,
+        "standalone": 37,
+        "unreachable": 9
+      },
+      "generated_at": "2026-08-03T00:00:00.000Z",
+      "parse_error": 5,
+      "problems": 0,
+      "problems_by_reason": [],
+      "source_character": "Zangief",
+      "unplaceable": 12,
+      "unplaceable_lost": 8,
+      "unplaceable_rows": [
+        {
+          "action_id": 900,
+          "classic": "PP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 900,
+          "classic": "PP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 901,
+          "classic": "PPP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 901,
+          "classic": "PPP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 901,
+          "classic": "PPP",
+          "input_method": "assist",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 903,
+          "classic": "PP",
+          "input_method": "simple",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 903,
+          "classic": "PP",
+          "input_method": "manual",
+          "ownership": "direct"
+        },
+        {
+          "action_id": 1497,
+          "classic": "LP+MP+HP+LK+MK+HK",
+          "input_method": "manual",
+          "ownership": "direct"
+        }
+      ]
+    }
+  ],
+  "failures": [],
+  "generated_at": "2026-09-10T13:53:37Z",
+  "schema": "ce.catalog_audit.v1",
+  "source_dir": "reframework/data/TrainingComboTrials_data/command_display",
+  "unplaced_notations": [
+    {
+      "characters": [
+        "AKI",
+        "Akuma",
+        "Alex",
+        "Blanka",
+        "CViper",
+        "Cammy",
+        "ChunLi",
+        "DeeJay",
+        "Dhalsim",
+        "EHonda",
+        "Ed",
+        "Elena",
+        "Guile",
+        "Ingrid",
+        "JP",
+        "Jamie",
+        "Juri",
+        "Ken",
+        "Kimberly",
+        "Lily",
+        "Luke",
+        "MBison",
+        "Mai",
+        "Manon",
+        "Marisa",
+        "Rashid",
+        "Ryu",
+        "Sagat",
+        "Terry",
+        "Yasmine",
+        "Zangief"
+      ],
+      "notation": "LP+MP+HP+LK+MK+HK",
+      "rows": 32
+    },
+    {
+      "characters": [
+        "Blanka",
+        "ChunLi",
+        "DeeJay",
+        "EHonda",
+        "Guile",
+        "MBison"
+      ],
+      "notation": "[4]6+PP",
+      "rows": 18
+    },
+    {
+      "characters": [
+        "Blanka",
+        "ChunLi",
+        "DeeJay",
+        "EHonda",
+        "Guile",
+        "MBison"
+      ],
+      "notation": "[4]6+LP",
+      "rows": 17
+    },
+    {
+      "characters": [
+        "Blanka",
+        "ChunLi",
+        "DeeJay",
+        "EHonda",
+        "Guile",
+        "MBison"
+      ],
+      "notation": "[4]6+HP",
+      "rows": 14
+    },
+    {
+      "characters": [
+        "Blanka",
+        "ChunLi",
+        "DeeJay",
+        "EHonda",
+        "Guile",
+        "MBison"
+      ],
+      "notation": "[4]6+MP",
+      "rows": 12
+    },
+    {
+      "characters": [
+        "Blanka",
+        "ChunLi",
+        "DeeJay",
+        "EHonda",
+        "Guile",
+        "MBison"
+      ],
+      "notation": "[2]8+HK",
+      "rows": 10
+    },
+    {
+      "characters": [
+        "Blanka",
+        "ChunLi",
+        "DeeJay",
+        "EHonda",
+        "Guile",
+        "MBison"
+      ],
+      "notation": "[2]8+MK",
+      "rows": 10
+    },
+    {
+      "characters": [
+        "Blanka",
+        "ChunLi",
+        "DeeJay",
+        "EHonda",
+        "Guile",
+        "MBison"
+      ],
+      "notation": "[2]8+LK",
+      "rows": 8
+    },
+    {
+      "characters": [
+        "Blanka",
+        "DeeJay",
+        "EHonda",
+        "Guile",
+        "MBison"
+      ],
+      "notation": "[2]8+KK",
+      "rows": 10
+    },
+    {
+      "characters": [
+        "ChunLi",
+        "Ed",
+        "Ken",
+        "Rashid"
+      ],
+      "notation": "KK",
+      "rows": 4
+    },
+    {
+      "characters": [
+        "Guile",
+        "Luke",
+        "Zangief"
+      ],
+      "notation": "PP",
+      "rows": 8
+    },
+    {
+      "characters": [
+        "EHonda",
+        "Guile"
+      ],
+      "notation": "[4]646+K",
+      "rows": 10
+    },
+    {
+      "characters": [
+        "JP",
+        "Yasmine"
+      ],
+      "notation": ">22+LP+HP",
+      "rows": 4
+    },
+    {
+      "characters": [
+        "JP",
+        "Yasmine"
+      ],
+      "notation": ">22+MP+HP",
+      "rows": 4
+    },
+    {
+      "characters": [
+        "Blanka",
+        "Kimberly"
+      ],
+      "notation": ">22+MP",
+      "rows": 3
+    },
+    {
+      "characters": [
+        "Blanka",
+        "Yasmine"
+      ],
+      "notation": ">22+HP",
+      "rows": 2
+    },
+    {
+      "characters": [
+        "Blanka"
+      ],
+      "notation": "P",
+      "rows": 5
+    },
+    {
+      "characters": [
+        "Ken"
+      ],
+      "notation": ">6+K",
+      "rows": 3
+    },
+    {
+      "characters": [
+        "Zangief"
+      ],
+      "notation": "PPP",
+      "rows": 3
+    },
+    {
+      "characters": [
+        "EHonda"
+      ],
+      "notation": ">2+HK",
+      "rows": 2
+    },
+    {
+      "characters": [
+        "Alex"
+      ],
+      "notation": ">HK",
+      "rows": 2
+    },
+    {
+      "characters": [
+        "Alex"
+      ],
+      "notation": ">LP",
+      "rows": 2
+    },
+    {
+      "characters": [
+        "Alex"
+      ],
+      "notation": ">4",
+      "rows": 1
+    },
+    {
+      "characters": [
+        "Alex"
+      ],
+      "notation": ">6",
+      "rows": 1
+    },
+    {
+      "characters": [
+        "Guile"
+      ],
+      "notation": "[4]646+HP",
+      "rows": 1
+    },
+    {
+      "characters": [
+        "Guile"
+      ],
+      "notation": "[4]646+LP+MP",
+      "rows": 1
+    }
+  ]
+}
