@@ -38,6 +38,7 @@ local SUITES = {
     "tests.lua.test_damagetracker",
     "tests.lua.test_clockstats",
     "tests.lua.test_probea",
+    "tests.lua.test_catalog",
 }
 
 local total_passed, total_failed = 0, 0
