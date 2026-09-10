@@ -33,6 +33,7 @@ end)
 local H = require("tests.lua.harness")
 
 local SUITES = {
+    "tests.lua.test_schema",
     "tests.lua.test_provenance",
     "tests.lua.test_inputmask",
     "tests.lua.test_damagetracker",
