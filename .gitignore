@@ -2,6 +2,11 @@
 # (see docs/ComboExplorer/plan-v3-implementation.md 2.1) - these are the
 # scratch products that must not be.
 external-data/
+# Regenerable in one command from committed inputs:
+#   lua tools/lua/explore.lua
+# 4 MB of JSON that changes wholesale whenever a weight moves does not belong in
+# git; the report it prints is committed under docs/ComboExplorer/ instead.
+candidates/
 exports/_rejected.jsonl
 node_modules/
 *.log
