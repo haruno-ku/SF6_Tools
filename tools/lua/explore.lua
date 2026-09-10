@@ -104,10 +104,21 @@ while i <= #arg do
     end
 end
 
-local char_lc = opt.character:lower()
-opt.catalog = opt.catalog or
-    ("reframework/data/TrainingComboTrials_data/command_display/%s.json"):format(opt.character)
-opt.frames = opt.frames or ("data/frame-data/%s.lua"):format(char_lc)
+-- Resolved through the bridge rather than by casing the argument. The three
+-- names a character has do not derive from one another, and the failure when
+-- they are assumed to is silent: the frame data is simply absent and the report
+-- says "frame data: NONE" as though that were a fact about the character.
+local Characters = dofile("tools/lua/characters.lua")
+local entry, cerr = Characters.resolve(opt.character)
+if not entry then
+    io.stderr:write(("explore: %s\n"):format(tostring(cerr)))
+    os.exit(2)
+end
+opt.character = entry.catalog          -- canonical spelling from here on
+local char_lc = entry.catalog:lower()
+
+opt.catalog = opt.catalog or Characters.catalog_path(entry)
+opt.frames = opt.frames or Characters.frame_data_path(entry)
 opt.out = opt.out or ("candidates/%s/%s"):format(char_lc, opt.scheme)
 
 -- --- inputs ------------------------------------------------------------------

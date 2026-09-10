@@ -22,6 +22,8 @@ return {
         fetched_at = "2026-09-10T09:58:49Z",
         obtained_via = "RyoSogawa/sf6-sensei",
         commit = "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
+        catalog_character = "Zangief",
+        fighter_id = 6,
         source_path = "packages/data/src/generated/zangief.json",
     },
     moves = {

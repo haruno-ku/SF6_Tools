@@ -1,6 +1,6 @@
 // Emits data/frame-data/<char>.lua from an sf6-sensei character file.
 //
-//   node tools/gen-framedata-fixture.mjs [character] [path-to-json]
+//   node tools/gen-framedata-fixture.mjs [CatalogName] [path-to-json]
 //
 // LICENCE
 //
@@ -15,8 +15,31 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { dirname } from 'node:path'
 
-const character = process.argv[2] ?? 'zangief'
-const src = process.argv[3] ?? `external-data/sf6-sensei/${character}.json`
+// The argument is the CATALOG name, PascalCase, the way command_display spells
+// it - the same convention gen-catalog-fixture.mjs and gen-notation-fixture.mjs
+// already take. It used to be the sensei slug, which meant this one generator
+// disagreed with its two siblings about what a character is called.
+const character = process.argv[2] ?? 'Zangief'
+
+// The bridge. sf6-sensei writes ChunLi as "chunli" and DeeJay as "dee_jay", so
+// no transform of the catalog name reaches both; 3 of 31 come out wrong under a
+// plain lowercase, as a request for a file that does not exist.
+const BRIDGE = JSON.parse(readFileSync('data/characters.json', 'utf8'))
+const entry = BRIDGE.characters.find((c) => c.catalog === character)
+if (!entry) {
+  console.error(`gen-framedata-fixture: ${character} is not in data/characters.json.`)
+  console.error(`  Known: ${BRIDGE.characters.map((c) => c.catalog).join(', ')}`)
+  console.error(`  Refusing rather than guessing a filename - that is how a`)
+  console.error(`  character silently gets no frame data and every candidate for`)
+  console.error(`  them comes out low confidence for a reason nobody recorded.`)
+  process.exit(2)
+}
+
+const src = process.argv[3] ?? `external-data/sf6-sensei/${entry.sensei}.json`
+
+// Named for the catalog, lowercased, because that is what tools/lua/explore.lua
+// asks for. Naming it after the sensei slug would put DeeJay's numbers in
+// dee_jay.lua and leave explore.lua looking for deejay.lua.
 const out = `data/frame-data/${character.toLowerCase()}.lua`
 const srcMetaPath = `external-data/sf6-sensei/source.json`
 
@@ -26,6 +49,13 @@ const data = JSON.parse(readFileSync(src, 'utf8'))
 // they came from, and an unverifiable derived work is one nobody may re-use.
 let srcMeta = {}
 try { srcMeta = JSON.parse(readFileSync(srcMetaPath, 'utf8')) } catch { /* absent */ }
+
+// The pin names a DIRECTORY; the per-file path is derived. It used to name one
+// file - packages/.../zangief.json - and that string was copied verbatim into
+// every generated file's provenance, so generating a second character stamped
+// Zangief's source path onto somebody else's numbers.
+const senseiDir = srcMeta.dir ?? 'packages/data/src/generated'
+const sourcePath = `${senseiDir}/${entry.sensei}.json`
 
 const lua = (s) =>
   '"' + [...Buffer.from(String(s), 'utf8')]
@@ -53,7 +83,7 @@ body.push('-- Source (original work): SuperCombo Wiki - Street Fighter 6 Frame D
 body.push('--   https://wiki.supercombo.gg/w/Street_Fighter_6')
 body.push('-- Obtained via: ' + (srcMeta.repository ?? 'RyoSogawa/sf6-sensei')
   + (srcMeta.commit ? ' @ ' + srcMeta.commit : '')
-  + ', ' + (srcMeta.path ?? 'packages/data/src/generated/' + character + '.json'))
+  + ', ' + sourcePath)
 body.push('-- Licence: CC-BY-SA-4.0  https://creativecommons.org/licenses/by-sa/4.0/')
 body.push('-- Modifications: reduced to the fields the candidate generator reads, and')
 body.push('--   re-encoded as a Lua table. No values were altered.')
@@ -71,7 +101,9 @@ body.push(`        license = ${val(data.source?.license)},`)
 body.push(`        fetched_at = ${val(srcMeta.fetchedAt ?? data.source?.fetchedAt)},`)
 body.push(`        obtained_via = ${val(srcMeta.repository ?? 'RyoSogawa/sf6-sensei')},`)
 body.push(`        commit = ${val(srcMeta.commit)},`)
-body.push(`        source_path = ${val(srcMeta.path)},`)
+body.push(`        catalog_character = ${val(entry.catalog)},`)
+body.push(`        fighter_id = ${val(entry.fighter_id)},`)
+body.push(`        source_path = ${val(sourcePath)},`)
 body.push(`    },`)
 body.push(`    moves = {`)
 
