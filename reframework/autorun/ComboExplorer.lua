@@ -39,13 +39,17 @@ local i18n          = require("func/i18n")
 local Provenance  = require("func/ComboExplorer/core/Provenance")
 local InputMask   = require("func/ComboExplorer/core/InputMask")
 local ProbeA      = require("func/ComboExplorer/core/ProbeA")
+local ProbeC      = require("func/ComboExplorer/core/ProbeC")
 local ClockStats  = require("func/ComboExplorer/core/ClockStats")
+local Catalog     = require("func/ComboExplorer/core/Catalog")
+local CatalogAudit = require("func/ComboExplorer/core/CatalogAudit")
 
 local Config      = require("func/ComboExplorer/runtime/Config")
 local GameAdapter = require("func/ComboExplorer/runtime/GameAdapter")
 local Clock       = require("func/ComboExplorer/runtime/Clock")
+local JsonIO      = require("func/ComboExplorer/runtime/JsonIO")
 
-local VERSION = "0.2.0-diagnostics"
+local VERSION = "0.3.0-diagnostics"
 local MODE_ID = 6
 
 local GEN = (_G._ce_gen or 0) + 1
@@ -93,6 +97,15 @@ i18n.register("combo_explorer", {
         hdr_live     = "--- LIVE READOUT ---",
         hdr_probe_a  = "--- PROBE A: CAN DAMAGE BE READ ---",
         hdr_probe_b  = "--- PROBE B: IS A TICK A FRAME ---",
+        hdr_probe_c  = "--- PROBE C: WHAT A RESET COSTS ---",
+        hdr_probe_d  = "--- PROBE D: DOES THE CATALOG MATCH THIS GAME ---",
+        probe_c_help = "Leave this running and reset the stage from the training menu a dozen "
+                    .. "times. It times how long a reset actually takes to settle - which is "
+                    .. "what decides how big the brute-force sweep can be.",
+        probe_d_help = "Loads the shipped move catalog for P1's character and checks it against "
+                    .. "the action ids the game has actually produced. Play for a while with "
+                    .. "PROBE A running first, so there is something to compare against.",
+        load_catalog = "LOAD CATALOG",
         mode_off     = "Select training mode 6 (COMBO EXPLORER) to use this panel.",
         readonly     = "READ-ONLY BUILD - this build never writes an input.",
         no_battle    = "Waiting for a battle (no players resolved).",
@@ -117,6 +130,11 @@ i18n.register("combo_explorer", {
         hdr_live     = "--- 实时读数 ---",
         hdr_probe_a  = "--- 探针 A：伤害能否读取 ---",
         hdr_probe_b  = "--- 探针 B：一个 tick 是否等于一帧 ---",
+        hdr_probe_c  = "--- 探针 C：一次重置的代价 ---",
+        hdr_probe_d  = "--- 探针 D：目录是否与本作匹配 ---",
+        probe_c_help = "保持运行，并从训练菜单重置场景十余次。它会测量一次重置真正稳定下来所需的时间。",
+        probe_d_help = "加载 1P 角色的招式目录，并与游戏实际产生的 action id 比对。请先运行探针 A 一段时间。",
+        load_catalog = "加载目录",
         mode_off     = "请选择训练模式 6（连段探索器）以使用此面板。",
         readonly     = "只读版本 —— 此版本不会写入任何输入。",
         no_battle    = "等待对战开始（尚未获取到角色）。",
@@ -167,6 +185,44 @@ local probe_a = {
 
 local probe_b = { last_status = nil }
 
+local probe_c = { on = false, probe = ProbeC.new(), last_status = nil }
+
+local probe_d = {
+    catalog = nil,
+    problems = nil,
+    load_error = nil,
+    last_status = nil,
+}
+
+-- The catalog is loaded on demand rather than at file scope: the character is
+-- not known until a battle exists, and loading the wrong one would be worse
+-- than loading none.
+local function load_catalog()
+    local info = live.p1_char
+    local key = info and info.name
+    if not key or key == "" or key == "Unknown" then
+        probe_d.load_error = "P1's character is not resolved yet - start a battle first"
+        return
+    end
+    -- Sanitised the way the suite does it, since this becomes a filename.
+    key = tostring(key):gsub("[^%w_]", "")
+    local path = "TrainingComboTrials_data/command_display/" .. key .. ".json"
+
+    -- Read RAW. Never through CommandDisplay's slim map, which falls back
+    -- simple->motion and would credit ~50 moves with a one-button input they
+    -- do not have.
+    local decoded, err = JsonIO.load(path)
+    if type(decoded) ~= "table" then
+        probe_d.load_error = ("could not load %s: %s"):format(path, tostring(err))
+        probe_d.catalog = nil
+        return
+    end
+    local cat, problems = Catalog.build(decoded)
+    probe_d.catalog = cat
+    probe_d.problems = problems
+    probe_d.load_error = cat and nil or (problems and problems[1] and problems[1].reason)
+end
+
 -- Control scheme is polled on its own counter rather than on Clock.frame: the
 -- anchor can fail to install, in which case Clock.frame stays at zero forever
 -- and a value cached against it would never be re-read. Re-polled while nil for
@@ -209,7 +265,7 @@ Clock.on_frame(function(frame)
     -- this runs inside a battle-sim hook. Taking one every frame when nothing
     -- is looking at it is pure cost, so it is only taken when a probe is
     -- running or the panel was drawn recently enough to still be on screen.
-    local wanted = probe_a.on
+    local wanted = probe_a.on or probe_c.on
         or (live.panel_frame ~= nil and (frame - live.panel_frame) < 30)
     if not wanted then
         live.snap = nil
@@ -221,6 +277,18 @@ Clock.on_frame(function(frame)
 
     if probe_a.on then
         probe_a.probe:tick(snap, frame)
+    end
+
+    if probe_c.on then
+        probe_c.probe:tick({
+            refreshing = GameAdapter.is_refreshing(),
+            combo_count = snap and snap.combo_count,
+            attacker_act_st = snap and snap.attacker_act_st,
+            victim_act_st = snap and snap.victim_act_st,
+            attacker_pos = snap and snap.attacker_pos,
+            victim_pos = snap and snap.victim_pos,
+            wall_clock = os.clock(),
+        }, frame)
     end
 end)
 
@@ -449,6 +517,117 @@ local function draw_probe_b()
     end
 end
 
+
+local function draw_probe_c()
+    imgui.text_colored(T("probe_c_help"), UIKit.COLORS.Grey)
+
+    if probe_c.on then
+        if UIKit.styled_button(T("stop") .. "##ce_c", THEME.stop, UIKit.COLORS.White) then
+            probe_c.on = false
+        end
+    else
+        if UIKit.styled_button(T("start") .. "##ce_c", THEME.go, UIKit.COLORS.White) then
+            probe_c.on = true
+        end
+    end
+    imgui.same_line()
+    if UIKit.styled_button(T("clear") .. "##ce_c_clear", THEME.neutral, UIKit.COLORS.White) then
+        probe_c.probe:reset()
+        probe_c.last_status = nil
+    end
+    imgui.same_line()
+    if UIKit.styled_button(T("write") .. "##ce_c_write", THEME.neutral, UIKit.COLORS.White) then
+        local rep = ProbeC.conclude(probe_c.probe.episodes)
+        rep.probe = "C.reset_cost"
+        rep.episodes_detail = probe_c.probe.episodes
+        local path, err = Config.write_diag("probe_c_reset", rep, artifact_ctx())
+        probe_c.last_status = path and (T("wrote") .. " " .. path)
+            or (T("write_failed") .. ": " .. tostring(err))
+    end
+
+    local rep = ProbeC.conclude(probe_c.probe.episodes)
+    kv("resets observed", tostring(rep.episodes),
+       rep.sufficient and UIKit.COLORS.Green or UIKit.COLORS.DarkGrey)
+    imgui.text_colored(rep.verdict, rep.sufficient and UIKit.COLORS.Green or UIKit.COLORS.Yellow)
+    if rep.total_ticks then
+        kv("total ticks", ("min %d  median %d  max %d")
+            :format(rep.total_ticks.min, rep.total_ticks.median, rep.total_ticks.max))
+        kv("of which refresh", ("min %d  median %d  max %d")
+            :format(rep.refresh_ticks.min, rep.refresh_ticks.median, rep.refresh_ticks.max))
+    end
+    if rep.suggested_settle_ticks then
+        kv("suggested reset_settle_ticks", tostring(rep.suggested_settle_ticks), UIKit.COLORS.Cyan)
+    end
+    if probe_c.last_status then
+        imgui.text_colored(probe_c.last_status, UIKit.COLORS.Cyan)
+    end
+end
+
+local function draw_probe_d()
+    imgui.text_colored(T("probe_d_help"), UIKit.COLORS.Grey)
+
+    if UIKit.styled_button(T("load_catalog") .. "##ce_d_load", THEME.go, UIKit.COLORS.White) then
+        load_catalog()
+    end
+    imgui.same_line()
+    if UIKit.styled_button(T("write") .. "##ce_d_write", THEME.neutral, UIKit.COLORS.White) then
+        if probe_d.catalog then
+            local observed = {}
+            for _, row in ipairs(probe_a.probe:action_id_histogram()) do
+                observed[row.action_id] = row.entries
+            end
+            local rep = CatalogAudit.audit(probe_d.catalog, observed)
+            local path, err = Config.write_diag("probe_d_catalog", rep, artifact_ctx())
+            probe_d.last_status = path and (T("wrote") .. " " .. path)
+                or (T("write_failed") .. ": " .. tostring(err))
+        else
+            probe_d.last_status = "load the catalog first"
+        end
+    end
+
+    if probe_d.load_error then
+        imgui.text_colored(probe_d.load_error, UIKit.COLORS.Red)
+    end
+
+    local cat = probe_d.catalog
+    if not cat then
+        imgui.text_colored("no catalog loaded", UIKit.COLORS.DarkGrey)
+        return
+    end
+
+    kv("catalog", ("%s (fighter %s), generated %s")
+        :format(tostring(cat.character), tostring(cat.fighter_id), tostring(cat.generated_at)),
+       UIKit.COLORS.Cyan)
+    kv("entries / rows", ("%d / %d"):format(cat.counts.entries, cat.counts.rows))
+    kv("standalone / excluded", ("%d / %d"):format(cat.counts.standalone, cat.counts.excluded))
+    kv("ambiguous notation groups", tostring(cat.counts.ambiguous_groups),
+       cat.counts.ambiguous_groups > 0 and UIKit.COLORS.Orange or UIKit.COLORS.Green)
+
+    if probe_d.problems and #probe_d.problems > 0 then
+        imgui.text_colored(("%d entries the classifier could not place:")
+            :format(#probe_d.problems), UIKit.COLORS.Orange)
+        for i = 1, math.min(3, #probe_d.problems) do
+            local p = probe_d.problems[i]
+            imgui.text(("   %s: %s"):format(tostring(p.action_id), tostring(p.reason)))
+        end
+    end
+
+    local observed = {}
+    for _, row in ipairs(probe_a.probe:action_id_histogram()) do
+        observed[row.action_id] = row.entries
+    end
+    local audit = CatalogAudit.audit(cat, observed)
+    if audit then
+        kv("observed ids matched", ("%d of %d"):format(audit.matched, audit.observed_action_ids))
+        imgui.text_colored(audit.verdict,
+            audit.conclusive and UIKit.COLORS.Green or UIKit.COLORS.Yellow)
+    end
+
+    if probe_d.last_status then
+        imgui.text_colored(probe_d.last_status, UIKit.COLORS.Cyan)
+    end
+end
+
 re.on_draw_ui(function()
     if not current() then return end
     if not imgui.tree_node(T("title")) then return end
@@ -478,6 +657,8 @@ re.on_draw_ui(function()
     if UIKit.styled_header(T("hdr_live"), THEME.hdr) then draw_live() end
     if UIKit.styled_header(T("hdr_probe_a"), THEME.hdr) then draw_probe_a() end
     if UIKit.styled_header(T("hdr_probe_b"), THEME.hdr) then draw_probe_b() end
+    if UIKit.styled_header(T("hdr_probe_c"), THEME.hdr) then draw_probe_c() end
+    if UIKit.styled_header(T("hdr_probe_d"), THEME.hdr) then draw_probe_d() end
 
     imgui.tree_pop()
 end)

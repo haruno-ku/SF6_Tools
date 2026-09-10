@@ -14,7 +14,7 @@ said so.
 
 ---
 
-## Current build: `0.2.0-diagnostics` — READ ONLY
+## Current build: `0.3.0-diagnostics` — READ ONLY
 
 This build **never injects input**. It watches and measures.
 
@@ -26,8 +26,11 @@ them is built, and none of them can be settled by reading source:
 | **A** | Is combo damage actually readable? | `mpTeam.mComboDamage` is read at exactly one site in all of upstream, inside a `pcall`, with an HP-delta fallback its author wrote because it may read zero. If it reads zero here, every recorded edge gets damage 0 and the scoring phase produces garbage that looks fine. |
 | **B** | Is one input-hook call one frame? | The hook fires at least once per player per frame, and upstream says hitstop makes hook ticks drift from engine frames. Until that is measured, a recorded "delay 5" has no unit. |
 | **C** | What does one attempt cost in real time? | That single number decides how large the brute-force matrix can be. There is no way to run the game faster. |
+| **D** | Does the shipped move catalog describe *this* build? | Everything downstream is keyed on its action ids. If they have moved, every recorded edge is about a move nobody meant — and the failure is silent. |
 
-Probes A and B are in this build. C follows once injection exists.
+All four are in this build, and none of them presses a button. C turned out
+to be measurable by watching the operator reset the stage, rather than needing
+injection first.
 
 ---
 
@@ -146,6 +149,37 @@ The result to hope for is *one call per player per frame* and *no gap*. Any
 other answer is still useful — it just means delays stay in ticks and get
 converted later.
 
+### Probe C — what a reset costs
+
+1. Expand **PROBE C**, press **START**.
+2. Reset the stage from the training menu **a dozen times**. Play a little
+   between resets; it does not matter what you do.
+3. Press **WRITE REPORT**.
+
+This times how long a reset takes to actually settle, which is not the same as
+how long the game's refresh flag is up — the flag clears well before the stage
+is reproducible. That number is what decides how large the brute-force sweep
+can be, and it also replaces the current guess for how long to wait before
+starting a trial.
+
+The suggested value it reports is the **worst** reset seen, not the average. A
+settle gate that is right on average starts half its trials against a stale
+combo counter.
+
+### Probe D — does the catalog match this game
+
+1. Run **PROBE A** for a while first, so there are observed action ids to
+   compare against. Just playing normally is enough.
+2. Expand **PROBE D**, press **LOAD CATALOG**, then **WRITE REPORT**.
+
+This loads the shipped `command_display` file for P1's character — raw, never
+through the suite's own reader — and checks it against the action ids the game
+actually produced.
+
+> If it reports that **none** of the observed ids are in the catalog, stop and
+> send that report. It means the catalog is for a different character or the
+> game data has moved, and every id in the project would be wrong.
+
 ### Send the results back
 
 ```powershell
@@ -153,7 +187,7 @@ converted later.
 Copy-Item "…\StreetFighter6\reframework\data\ComboExplorer_data\diagnostics\*.json" `
           ".\reframework\data\ComboExplorer_data\diagnostics\"
 git add reframework/data/ComboExplorer_data/diagnostics
-git commit -m "probe: A and B results from <machine>"
+git commit -m "probe: A-D results from <machine>"
 git push
 ```
 

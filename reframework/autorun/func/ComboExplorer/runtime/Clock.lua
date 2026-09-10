@@ -196,7 +196,9 @@ end
 -- somebody opened a menu to click STOP.
 re.on_frame(function()
     if not current() or not diag.on or not diag.stats then return end
-    ClockStats.add_engine_frame(diag.stats, GameAdapter.in_pause_menu())
+    ClockStats.add_engine_frame(diag.stats,
+        GameAdapter.in_pause_menu(),
+        GameAdapter.players_valid())
 end)
 
 return M

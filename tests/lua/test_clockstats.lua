@@ -123,6 +123,23 @@ t.eq(r.engine_frames.counted, 100, "paused render frames are not counted as engi
 t.eq(r.engine_frames.skipped_while_paused, 250, "they are reported separately")
 t.eq(r.tick_vs_engine_gap, 0, "so a long pause does not masquerade as clock drift")
 
+-- The commoner case than a pause: the probe is left running while the operator
+-- leaves the battle. re.on_frame keeps firing, UpdateFrameMain does not, and
+-- the gap inflates for a reason that has nothing to do with hitstop.
+s = CS.new()
+for _ = 1, 100 do
+    CS.add_frame(s, frame({ hitstop = true, hitstop_value = 1 }))
+    CS.add_engine_frame(s, false, true)
+end
+for _ = 1, 400 do CS.add_engine_frame(s, false, false) end   -- menu / scene change
+r = CS.report(s)
+t.eq(r.engine_frames.counted, 100, "render frames outside a battle are not counted")
+t.eq(r.engine_frames.skipped_out_of_battle, 400, "and are reported separately")
+t.eq(r.tick_vs_engine_gap, 0, "so leaving the battle does not look like clock drift")
+t.eq(r.assessment.usable, false, "and the sample is disqualified rather than interpreted")
+t.ok(table.concat(r.assessment.problems, " "):find("outside a battle", 1, true) ~= nil,
+     "with the reason named")
+
 -- --- hitstop, which is the actual question -----------------------------------
 
 t.group("hitstop is measured against the input-hook tick")

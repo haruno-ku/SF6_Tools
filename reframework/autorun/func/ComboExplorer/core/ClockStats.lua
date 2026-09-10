@@ -67,6 +67,7 @@ function M.new()
         hitstop_frames = 0,
         engine_frames = 0,    -- re.on_frame ticks over the same window
         engine_paused_frames = 0,
+        engine_out_of_battle_frames = 0,
         hist = {},            -- [player] = { [calls] = frames }
         max_calls = {},
         total_calls = {},
@@ -163,11 +164,26 @@ function M.add_frame(s, rec)
     return true
 end
 
--- The re.on_frame side of the comparison. Counted separately, and pause frames
--- are counted rather than dropped: upstream's engine_frame_count is explicitly
--- gated on pause (TrainingComboTrials_v1.0.lua:6004-6008), so an ungated render
--- counter would diverge for reasons that have nothing to do with hitstop.
-function M.add_engine_frame(s, paused)
+-- The re.on_frame side of the comparison.
+--
+-- Upstream's engine_frame_count is gated twice, and both gates matter here.
+-- TrainingComboTrials_v1.0.lua:6006 skips paused frames - but :6000 skips the
+-- frame entirely unless the trainer is in its own mode, i.e. unless there is a
+-- battle to count frames of.
+--
+-- The pause case is the narrow one. The common one is the operator leaving the
+-- battle with the probe still running: re.on_frame keeps firing (GameState's
+-- own callback is written for exactly that state) while UpdateFrameMain does
+-- not, so the gap inflates for a reason that has nothing to do with hitstop -
+-- and it is the hitstop question this counter exists to help answer.
+--
+-- Both skips are counted rather than dropped, so a sample that spent time
+-- outside a battle can be disqualified rather than interpreted.
+function M.add_engine_frame(s, paused, in_battle)
+    if in_battle == false then
+        s.engine_out_of_battle_frames = (s.engine_out_of_battle_frames or 0) + 1
+        return false
+    end
     if paused then
         s.engine_paused_frames = s.engine_paused_frames + 1
         return false
@@ -200,6 +216,11 @@ function M.assess(s, opts)
         -- Hitstop is the specific thing suspected of decoupling the two clocks,
         -- so a sample without any says nothing about the interesting case.
         problems[#problems + 1] = "no hitstop was observed - land some hits during the sample"
+    end
+    if (s.engine_out_of_battle_frames or 0) > 0 then
+        problems[#problems + 1] = ("%d render frames were counted outside a battle - "
+            .. "the probe was left running through a menu or a scene change")
+            :format(s.engine_out_of_battle_frames)
     end
     if s.gate_closed_frames > 0 and s.included_frames > 0
         and (s.gate_closed_frames / (s.gate_closed_frames + s.included_frames)) > 0.5 then
@@ -241,6 +262,7 @@ function M.report(s, opts)
         engine_frames = {
             counted = s.engine_frames,
             skipped_while_paused = s.engine_paused_frames,
+            skipped_out_of_battle = s.engine_out_of_battle_frames or 0,
         },
         -- Both clocks over the same window. Reported as two numbers and their
         -- difference; what causes the difference is not asserted here.

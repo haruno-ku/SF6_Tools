@@ -15,8 +15,7 @@
 -- What is left here is genuine preference: what the operator wants the tool to
 -- do, not what the game does.
 
-local json = json
-local fs = fs
+local JsonIO = require("func/ComboExplorer/runtime/JsonIO")
 
 local M = { name = "ComboExplorer.Config" }
 
@@ -55,14 +54,7 @@ local dirty = false
 local save_timer = 0
 
 function M.load()
-    local loaded
-    if type(_G.safe_load_json) == "function" then
-        local ok, r = pcall(_G.safe_load_json, M.FILE)
-        loaded = ok and r or nil
-    elseif json and json.load_file then
-        local ok, r = pcall(json.load_file, M.FILE)
-        loaded = ok and r or nil
-    end
+    local loaded = JsonIO.load(M.FILE)
     if type(loaded) ~= "table" then return M.data end
 
     for k, default in pairs(DEFAULTS) do
@@ -81,8 +73,7 @@ function M.load()
 end
 
 function M.save()
-    if fs and fs.create_dir then pcall(fs.create_dir, M.DIR) end
-    pcall(json.dump_file, M.FILE, M.data)
+    JsonIO.dump(M.FILE, M.data, { M.DIR })
     dirty = false
 end
 
@@ -143,20 +134,21 @@ end
 -- so the path in a README stays true.
 function M.write_diag(name, payload, ctx)
     if not M.data.write_diag_files then return nil, "diagnostic writing is off" end
-    if fs and fs.create_dir then
-        pcall(fs.create_dir, M.DIR)
-        pcall(fs.create_dir, M.DIAG_DIR)
-    end
 
     local doc = { header = M.header(ctx), body = payload }
+    local dirs = { M.DIR, M.DIAG_DIR }
 
     local stamped = ("%s/%s-%s.json"):format(M.DIAG_DIR, tostring(name), stamp())
     local latest  = ("%s/%s-latest.json"):format(M.DIAG_DIR, tostring(name))
 
-    local ok_stamped = pcall(json.dump_file, stamped, doc)
-    local ok_latest  = pcall(json.dump_file, latest, doc)
+    local ok_stamped, err_stamped = JsonIO.dump(stamped, doc, dirs)
+    local ok_latest = JsonIO.dump(latest, doc, dirs)
 
-    if not ok_stamped and not ok_latest then return nil, "write failed" end
+    -- Reporting a path when nothing was written is worse than reporting the
+    -- failure: the operator would go looking for a file that is not there.
+    if not ok_stamped and not ok_latest then
+        return nil, tostring(err_stamped or "write failed")
+    end
     return (ok_stamped and stamped or latest)
 end
 
