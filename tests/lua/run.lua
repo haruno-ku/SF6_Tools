@@ -3,9 +3,10 @@
 --   lua tests/lua/run.lua        (from the repo root)
 --
 -- Only the pure modules are testable this way: anything touching sdk / re /
--- imgui needs the game. That split is deliberate -- InputMask, Catalog and the
--- scoring logic are written as pure functions precisely so they can be checked
--- here, on the dev machine, instead of on the machine running SF6.
+-- imgui needs the game. That split is deliberate - InputMask, Catalog, the
+-- state machines and the scoring logic are written as pure functions precisely
+-- so they can be checked here, on the dev machine, instead of on the machine
+-- running SF6.
 
 package.path = table.concat({
     "./?.lua",
@@ -13,22 +14,50 @@ package.path = table.concat({
     package.path,
 }, ";")
 
+-- REFramework resolves require("func/X/Y") relative to reframework/autorun,
+-- with forward slashes and no extension. Teaching the stock interpreter the
+-- same rule means the shipped modules can use the paths they will actually run
+-- under, rather than carrying a second set of require strings that only exist
+-- to satisfy the tests - and that would then be the untested spelling.
+table.insert(package.searchers, 2, function(name)
+    if not name:match("^func/") then return nil end
+    local path = "reframework/autorun/" .. name .. ".lua"
+    local f = io.open(path, "r")
+    if not f then return ("\n\tno file '%s'"):format(path) end
+    f:close()
+    local chunk, err = loadfile(path)
+    if not chunk then return "\n\t" .. tostring(err) end
+    return chunk, path
+end)
+
+local H = require("tests.lua.harness")
+
 local SUITES = {
+    "tests.lua.test_provenance",
     "tests.lua.test_inputmask",
+    "tests.lua.test_damagetracker",
+    "tests.lua.test_clockstats",
+    "tests.lua.test_probea",
 }
 
+local total_passed, total_failed = 0, 0
 local all_ok = true
+
 for _, suite in ipairs(SUITES) do
     print("========================================")
     print("  " .. suite)
     print("========================================")
+    H.reset()
     local ok = require(suite)
+    total_passed = total_passed + H.passed
+    total_failed = total_failed + H.failed
     if ok == false then all_ok = false end
 end
 
 print("")
 print("========================================")
-if all_ok then
+print(("  TOTAL: %d passed, %d failed"):format(total_passed, total_failed))
+if all_ok and total_failed == 0 then
     print("  ALL SUITES PASSED")
     os.exit(0)
 else

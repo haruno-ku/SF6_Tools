@@ -1,30 +1,27 @@
 -- =========================================================
 -- ComboExplorer.lua - automated combo discovery for Street Fighter 6.
 -- Training Script Manager mode 6. This build is READ-ONLY: it observes and
--- measures, it does not inject input.
+-- measures, it never writes an input.
 -- Receives shared state via _G (GameState, CurrentTrainerMode); owns its own
--- frame anchor in func/ComboExplorer/Clock.lua.
+-- frame anchor in func/ComboExplorer/runtime/Clock.lua.
 -- =========================================================
 --
 -- WHAT THIS BUILD IS FOR
 --
--- Phase 1 of the plan (docs/ComboExplorer/plan-v3-implementation.md) says the
--- Explorer must not assume things that can only be settled on the real game.
--- Three of those gate everything downstream:
+-- Three things decide how the rest of the project is built, and none of them
+-- can be settled by reading source:
 --
---   A. Can combo damage actually be read? mpTeam.mComboDamage is read at one
---      site in all of upstream, inside a pcall, with an HP-delta fallback the
---      author wrote because it may read zero. If it reads zero here, every
---      recorded edge gets damage 0 and the scoring phase produces garbage that
---      looks fine.
---   B. Is one input-hook call one frame? The hook fires at least once per
---      player per frame, and upstream says hitstop makes hook ticks and engine
---      frames drift. Until that is measured, "delay = 5" has no unit.
---   C. What does an attempt actually cost in wall-clock time? That single
---      number decides how large the brute-force matrix can be.
+--   A. Can combo damage be read at all? If mpTeam.mComboDamage silently reads
+--      zero and the Explorer believes it, every edge records damage 0 and the
+--      scoring phase ranks by a constant while looking healthy.
+--   B. Is one input-hook call one battle frame? Until that is measured, a
+--      recorded "delay 5" has no unit.
+--   C. What does one attempt cost in wall-clock time? That number decides how
+--      large the brute-force matrix can be.
 --
--- All three are answered by watching, not by driving, so this build injects
--- nothing at all. Input injection arrives only after the clock is understood.
+-- A and B are in this build. Both are answered by watching, so nothing here
+-- presses a button. Injection arrives only after calibration, and
+-- core/Provenance.lua refuses it until then - structurally, not by convention.
 
 local sdk = sdk
 local re = re
@@ -39,19 +36,51 @@ local RuntimeSafety = require("func/RuntimeSafety")
 local UIKit         = require("func/UIKit")
 local i18n          = require("func/i18n")
 
-local Config    = require("func/ComboExplorer/Config")
-local Clock     = require("func/ComboExplorer/Clock")
-local Telemetry = require("func/ComboExplorer/Telemetry")
-local InputMask = require("func/ComboExplorer/InputMask")
+local Provenance  = require("func/ComboExplorer/core/Provenance")
+local InputMask   = require("func/ComboExplorer/core/InputMask")
+local ProbeA      = require("func/ComboExplorer/core/ProbeA")
+local ClockStats  = require("func/ComboExplorer/core/ClockStats")
 
+local Config      = require("func/ComboExplorer/runtime/Config")
+local GameAdapter = require("func/ComboExplorer/runtime/GameAdapter")
+local Clock       = require("func/ComboExplorer/runtime/Clock")
+
+local VERSION = "0.2.0-diagnostics"
 local MODE_ID = 6
 
--- Same generation guard the rest of the suite uses: after a REFramework script
--- reset the previous run's callbacks may still be reachable, and they must
--- no-op rather than fight the new ones.
 local GEN = (_G._ce_gen or 0) + 1
 _G._ce_gen = GEN
 local function current() return _G._ce_gen == GEN end
+
+-- =========================================================
+-- PROVENANCE
+-- =========================================================
+
+-- The register of what has and has not been measured on a real machine. Every
+-- unverified value in the project lives here; nothing else is allowed to spell
+-- one out as a constant.
+local reg = Provenance.new()
+
+local CAL_DIR = "ComboExplorer_data/calibration"
+local CAL_LATEST = CAL_DIR .. "/latest.json"
+
+local calibration_status = "none found"
+
+local function load_calibration()
+    local loaded
+    if type(_G.safe_load_json) == "function" then
+        local ok, r = pcall(_G.safe_load_json, CAL_LATEST)
+        loaded = ok and r or nil
+    end
+    if type(loaded) ~= "table" then
+        calibration_status = "none found - every value is unverified"
+        return
+    end
+    local applied, rejected = reg:apply_calibration(loaded)
+    calibration_status = ("%s: %d value(s) applied, %d rejected")
+        :format(tostring(loaded.calibration_id or "unnamed"), #applied, #rejected)
+end
+load_calibration()
 
 -- =========================================================
 -- STRINGS
@@ -60,297 +89,163 @@ local function current() return _G._ce_gen == GEN end
 i18n.register("combo_explorer", {
     en = {
         title        = "SF6 COMBO EXPLORER",
-        hdr_status   = "--- STATUS ---",
+        hdr_state    = "--- WHAT IS KNOWN ---",
         hdr_live     = "--- LIVE READOUT ---",
-        hdr_spike_a  = "--- PROBE A: DAMAGE READABILITY ---",
-        hdr_spike_b  = "--- PROBE B: CLOCK ---",
+        hdr_probe_a  = "--- PROBE A: CAN DAMAGE BE READ ---",
+        hdr_probe_b  = "--- PROBE B: IS A TICK A FRAME ---",
         mode_off     = "Select training mode 6 (COMBO EXPLORER) to use this panel.",
-        readonly     = "READ-ONLY BUILD - this build never injects input.",
+        readonly     = "READ-ONLY BUILD - this build never writes an input.",
         no_battle    = "Waiting for a battle (no players resolved).",
         anchor_dead  = "FRAME ANCHOR DEAD: app.BattleFlow::UpdateFrameMain not found. "
-                    .. "All timing on this build is invalid - report this.",
-        p1_char      = "P1 character",
-        p2_char      = "P2 character",
-        control      = "P1 control",
-        modern       = "MODERN",
-        classic      = "CLASSIC",
-        spike_a_help = "Land combos on the dummy yourself. Every combo is sampled and both "
-                    .. "damage measurements are compared. 5+ combos of different lengths is enough.",
-        spike_b_help = "Leave this running in a normal training situation, including some hits, "
-                    .. "so hitstop is represented in the sample.",
+                    .. "Every timing measurement on this build is invalid - report this.",
+        probe_a_help = "Land combos on the dummy yourself. Vary the length, and include at least one "
+                    .. "that does NOT kill. Both damage measurements are compared per combo.",
+        probe_b_help = "Play normally for a while, INCLUDING some hits - hitstop is the thing being "
+                    .. "tested for, so a sample without it proves nothing.",
         start        = "START",
         stop         = "STOP",
         clear        = "CLEAR",
         write        = "WRITE REPORT",
-        samples      = "combos sampled",
         wrote        = "wrote",
         write_failed = "write failed",
+        calibration  = "Calibration",
+        unverified   = "unverified",
     },
     zh = {
         title        = "SF6 连段探索器",
-        hdr_status   = "--- 状态 ---",
+        hdr_state    = "--- 已知情况 ---",
         hdr_live     = "--- 实时读数 ---",
-        hdr_spike_a  = "--- 探针 A：伤害可读性 ---",
-        hdr_spike_b  = "--- 探针 B：时钟 ---",
+        hdr_probe_a  = "--- 探针 A：伤害能否读取 ---",
+        hdr_probe_b  = "--- 探针 B：一个 tick 是否等于一帧 ---",
         mode_off     = "请选择训练模式 6（连段探索器）以使用此面板。",
-        readonly     = "只读版本 —— 此版本不会注入任何输入。",
+        readonly     = "只读版本 —— 此版本不会写入任何输入。",
         no_battle    = "等待对战开始（尚未获取到角色）。",
-        anchor_dead  = "帧锚点失效：未找到 app.BattleFlow::UpdateFrameMain。此版本的所有计时均无效。",
-        p1_char      = "1P 角色",
-        p2_char      = "2P 角色",
-        control      = "1P 操作方式",
-        modern       = "现代",
-        classic      = "经典",
-        spike_a_help = "请自行对假人打出连段。每次连段都会被采样并比较两种伤害测量值。5 次以上不同长度的连段即可。",
-        spike_b_help = "在包含命中的普通训练场景中保持运行，使采样包含命中停顿。",
+        anchor_dead  = "帧锚点失效：未找到 app.BattleFlow::UpdateFrameMain，本版本所有计时均无效。",
+        probe_a_help = "请自行对假人打出连段。长度要有变化，并且至少包含一次不会击杀的连段。",
+        probe_b_help = "正常游玩一段时间，并且要包含命中 —— 命中停顿正是待测对象。",
         start        = "开始",
         stop         = "停止",
         clear        = "清除",
         write        = "写入报告",
-        samples      = "已采样连段",
         wrote        = "已写入",
         write_failed = "写入失败",
+        calibration  = "校准",
+        unverified   = "未验证",
     },
 })
 local T = i18n.scope("combo_explorer")
 
 local THEME = {
-    hdr = UIKit.THEME.hdr_skyblue,
-    go  = UIKit.THEME.btn_green,
-    stop = UIKit.THEME.btn_red,
+    hdr     = UIKit.THEME.hdr_skyblue,
+    go      = UIKit.THEME.btn_green,
+    stop    = UIKit.THEME.btn_red,
     neutral = UIKit.THEME.btn_neutral,
 }
 
 -- =========================================================
--- LIVE READOUT
+-- LIVE STATE
 -- =========================================================
 
 local live = {
-    valid = false,
-    p1_action = nil, p1_action_frame = nil, p1_act_st = 0,
-    p1_combo = 0, p2_guard = 0,
-    p1_hp = nil, p2_hp = nil, p2_hp_max = nil,
-    p1_drive = nil, p1_super = nil,
-    p1_pos = nil, p2_pos = nil, p1_facing = nil,
-    p1_hitstop = nil,
-    dmg_attacker = nil, dmg_victim = nil,
-    p1_modern = nil,
+    snap = nil,
+    p1_control = nil,
+    p1_control_polls = 0,
+    p1_char = nil,
+    p2_char = nil,
 }
 
--- InputType == 1 means Modern, read off the training SelectMenu
--- (ComboTrials_D2D.lua:339-352). Cached: the control type cannot change
--- mid-session, and this walks four managed fields.
-local _modern_cache = { frame = -1, value = nil }
-local function p1_is_modern()
-    if _modern_cache.frame == Clock.frame then return _modern_cache.value end
-    local v = nil
-    pcall(function()
-        local tm = sdk.get_managed_singleton("app.training.TrainingManager")
-        local td = tm and tm:get_field("_tData")
-        local sm = td and td:get_field("SelectMenu")
-        local pd = sm and sm.PlayerDatas and sm.PlayerDatas[0]
-        if pd and pd.InputType ~= nil then
-            v = (tonumber(tostring(pd.InputType)) == 1)
-        end
-    end)
-    _modern_cache.frame = Clock.frame
-    _modern_cache.value = v
-    return v
-end
-
-local function refresh_live()
-    local p1, p2 = GS.p1, GS.p2
-    live.valid = GS.valid and p1 ~= nil and p2 ~= nil
-    if not live.valid then return end
-
-    live.p1_action       = Telemetry.action_id(p1)
-    live.p1_action_frame = Telemetry.action_frame(p1)
-    live.p1_act_st       = GS.p1_act_st
-    live.p1_combo        = Telemetry.combo_count(p1)
-    live.p2_guard        = Telemetry.guard_count(p2)
-    live.p1_hp           = Telemetry.hp(p1)
-    live.p2_hp           = Telemetry.hp(p2)
-    live.p2_hp_max       = Telemetry.hp_max(p2)
-    live.p1_drive        = Telemetry.drive(p1)
-    live.p1_super        = Telemetry.super_gauge(0)
-    live.p1_pos          = Telemetry.pos_x_units(p1)
-    live.p2_pos          = Telemetry.pos_x_units(p2)
-    live.p1_facing       = Telemetry.facing_right(p1)
-    live.p1_hitstop      = Telemetry.hitstop(p1)
-    live.dmg_attacker    = Telemetry.combo_damage_raw(p1)
-    live.dmg_victim      = Telemetry.combo_damage_raw(p2)
-    live.p1_modern       = p1_is_modern()
-end
-
--- =========================================================
--- PROBE A - is combo damage actually readable?
--- =========================================================
-
-local spike_a = {
+local probe_a = {
     on = false,
-    tracker = nil,
-    in_combo = false,
-    idle_ticks = 0,
-    peak_hits = 0,
-    samples = {},
+    probe = ProbeA.new({ idle_ticks_to_close = Config.data.probe_a_idle_ticks }),
     last_status = nil,
 }
 
--- A combo is over once the counter has been back at zero for a moment. The
--- grace exists because the counter is not trustworthy the instant it drops -
--- upstream distrusts it for 15 frames after a reset for the same reason.
-local COMBO_END_TICKS = 20
+local probe_b = { last_status = nil }
 
-local function spike_a_tick()
-    local p1, p2 = GS.p1, GS.p2
-    if not p1 or not p2 then return end
+-- Control scheme is polled on its own counter rather than on Clock.frame: the
+-- anchor can fail to install, in which case Clock.frame stays at zero forever
+-- and a value cached against it would never be re-read. Re-polled while nil for
+-- the same reason - the first read can land before SelectMenu resolves.
+local poll_counter = 0
+re.on_frame(function()
+    if not current() then return end
+    Config.tick_save()
 
-    local hits = Telemetry.combo_count(p1)
-
-    if not spike_a.in_combo then
-        if hits > 0 then
-            spike_a.in_combo = true
-            spike_a.idle_ticks = 0
-            spike_a.peak_hits = hits
-            spike_a.tracker = Telemetry.new_damage_tracker()
-            spike_a.tracker:begin(p1, p2)
-        end
-    else
-        if hits > spike_a.peak_hits then spike_a.peak_hits = hits end
-        if hits == 0 then
-            spike_a.idle_ticks = spike_a.idle_ticks + 1
-        else
-            spike_a.idle_ticks = 0
-        end
+    poll_counter = poll_counter + 1
+    if live.p1_control == nil or (poll_counter % 120) == 0 then
+        live.p1_control = GameAdapter.control_scheme(0)
+        live.p1_control_polls = live.p1_control_polls + 1
     end
-
-    if spike_a.tracker then spike_a.tracker:tick(p1, p2) end
-
-    if spike_a.in_combo and spike_a.idle_ticks >= COMBO_END_TICKS then
-        local r = spike_a.tracker:result()
-        r.hits = spike_a.peak_hits
-        r.tick_index = Clock.frame
-        spike_a.samples[#spike_a.samples + 1] = r
-        spike_a.in_combo = false
-        spike_a.tracker = nil
-        spike_a.peak_hits = 0
-        spike_a.idle_ticks = 0
-    end
-end
-
-local function spike_a_report()
-    local resolved, nonzero, agreed, compared = 0, 0, 0, 0
-    for _, s in ipairs(spike_a.samples) do
-        if s.field_resolved then resolved = resolved + 1 end
-        if s.field_nonzero then nonzero = nonzero + 1 end
-        if s.agree ~= nil then
-            compared = compared + 1
-            if s.agree then agreed = agreed + 1 end
-        end
-    end
-
-    -- The conclusion is stated in the file rather than left for someone to
-    -- infer, because the person reading it is on the other machine.
-    local verdict
-    if #spike_a.samples == 0 then
-        verdict = "NO SAMPLES - land some combos with the probe running"
-    elseif nonzero == 0 then
-        verdict = "mComboDamage NEVER READ NON-ZERO - the Explorer must use the HP delta"
-    elseif compared > 0 and agreed == compared then
-        verdict = "mComboDamage AGREES with the HP delta on every comparable sample - safe to use"
-    elseif compared > 0 then
-        verdict = "mComboDamage and the HP delta DISAGREE on some samples - keep recording both"
-    else
-        verdict = "mComboDamage reads non-zero but nothing was comparable (lethal combos only)"
-    end
-
-    return {
-        probe = "A.damage_readability",
-        verdict = verdict,
-        samples_total = #spike_a.samples,
-        field_resolved = resolved,
-        field_nonzero = nonzero,
-        comparable = compared,
-        agreed = agreed,
-        p1_modern = live.p1_modern,
-        p2_hp_max = live.p2_hp_max,
-        samples = spike_a.samples,
-    }
-end
+    live.p1_char = GameAdapter.character(0)
+    live.p2_char = GameAdapter.character(1)
+end)
 
 -- =========================================================
--- PROBE B - clock
+-- THE FRAME TICK
 -- =========================================================
 
-local spike_b = { last_report = nil, last_path = nil }
+-- Driven from the frame anchor, NOT from the input callback: SharedHooks
+-- dispatches that array only while injection is permitted, and a read-only
+-- build must not go blind on the frames where it is not.
+Clock.on_frame(function(frame)
+    if not current() then return end
+    if not Config.data.enabled then return end
+    if _G.CurrentTrainerMode ~= MODE_ID then return end
 
-local function spike_b_report()
-    local r = Clock.diag_report()
-    r.probe = "B.clock"
+    local snap = GameAdapter.snapshot(0)
+    live.snap = snap
 
-    local per_frame = r.calls_per_frame.p1
-    local single = (#per_frame == 1 and per_frame[1].calls == 1)
-    if not r.anchor_hooked then
-        r.verdict = "FRAME ANCHOR DEAD - UpdateFrameMain hook missing, timing invalid"
-    elseif r.frames_sampled == 0 then
-        r.verdict = "NO SAMPLES - start the probe during a battle"
-    elseif single and r.frame_gap == 0 then
-        r.verdict = "one input call per player per frame, and no gap vs re.on_frame - ticks are frames"
-    elseif single then
-        r.verdict = ("one input call per player per frame, but the tick clock and re.on_frame "
-            .. "differ by %d over %d frames (%d with hitstop) - delays must stay in ticks")
-            :format(r.frame_gap, r.frames_sampled, r.hitstop_frames)
-    else
-        r.verdict = "MORE THAN ONE input call per player per frame - the once-per-frame latch is load-bearing"
+    if probe_a.on then
+        probe_a.probe:tick(snap, frame)
     end
-    return r
-end
+end)
 
--- =========================================================
--- THE TICK
--- =========================================================
-
--- Registered at file scope: SharedHooks clears both arrays when it loads and
--- again on script reset, so a late registration would simply never fire.
+-- The input callback does exactly one thing: count calls. It cannot write,
+-- because this build has nothing that writes.
 if _G._shared_input_post then
     table.insert(_G._shared_input_post, function(p_id, retval)
         if not current() then return end
         if not Config.data.enabled then return end
-
         Clock.count_call(p_id)
-
-        -- One tick per player per frame. Everything below is P1's tick.
-        if p_id ~= 0 then return end
-        if not Clock.claim_tick(0) then return end
-        if _G.CurrentTrainerMode ~= MODE_ID then return end
-
-        pcall(refresh_live)
-        if spike_a.on then pcall(spike_a_tick) end
     end)
 else
     if _G._mod_errors then
         _G._mod_errors.count = _G._mod_errors.count + 1
         _G._mod_errors.list[#_G._mod_errors.list + 1] = {
             ctx = "ComboExplorer", t = os.clock(),
-            err = "_G._shared_input_post missing - SharedHooks did not load, Explorer is inert",
+            err = "_G._shared_input_post missing - SharedHooks did not load, the call histogram is dead",
         }
     end
 end
 
-re.on_frame(function()
-    if not current() then return end
-    Config.tick_save()
-end)
+-- =========================================================
+-- ARTIFACT CONTEXT
+-- =========================================================
+
+local function artifact_ctx()
+    return {
+        version = VERSION,
+        game_patch = reg.game_patch,
+        calibration_id = reg.calibration_id,
+        frame = Clock.frame,
+        anchor_hooked = Clock.hooked,
+        p1 = live.p1_char,
+        p2 = live.p2_char,
+        p1_control_scheme = live.p1_control,
+        provenance = reg:snapshot(),
+    }
+end
 
 -- =========================================================
 -- UI
 -- =========================================================
 
-local function fmt(v, suffix)
+local function fmt(v)
     if v == nil then return "--" end
+    if type(v) == "boolean" then return v and "true" or "false" end
     if type(v) == "number" then
-        if v == math.floor(v) then return tostring(math.floor(v)) .. (suffix or "") end
-        return string.format("%.3f%s", v, suffix or "")
+        if v == math.floor(v) then return tostring(math.floor(v)) end
+        return string.format("%.3f", v)
     end
     return tostring(v)
 end
@@ -361,90 +256,120 @@ local function kv(label, value, color)
     imgui.text_colored(value, color or UIKit.COLORS.White)
 end
 
+local function draw_state()
+    kv(T("calibration"), calibration_status,
+       reg.calibration_id and UIKit.COLORS.Green or UIKit.COLORS.Orange)
+
+    local n = reg:summary()
+    kv("values", ("%d verified / %d refuted / %d %s")
+        :format(n.verified, n.refuted, n.unverified, T("unverified")),
+       n.unverified > 0 and UIKit.COLORS.Orange or UIKit.COLORS.Green)
+
+    -- The capability list is the honest statement of what this install can do.
+    -- Injection appearing as blocked is not a fault; it is the design.
+    for _, cap in ipairs({ Provenance.CAPABILITY.INJECTION, Provenance.CAPABILITY.TIMING,
+                           Provenance.CAPABILITY.DAMAGE, Provenance.CAPABILITY.STAGE_RESET,
+                           Provenance.CAPABILITY.PROBING }) do
+        local ok, blocked = reg:can(cap)
+        kv("  " .. cap, ok and "available" or ("blocked by " .. #blocked),
+           ok and UIKit.COLORS.Green or UIKit.COLORS.DarkGrey)
+    end
+end
+
 local function draw_live()
-    if not live.valid then
+    local s = live.snap
+    if not s then
         imgui.text_colored(T("no_battle"), UIKit.COLORS.DarkGrey)
         return
     end
 
-    local mode_txt = (live.p1_modern == true) and T("modern")
-        or (live.p1_modern == false) and T("classic") or "--"
-    kv(T("control"), mode_txt, live.p1_modern and UIKit.COLORS.Green or UIKit.COLORS.Orange)
+    kv("P1 control", fmt(live.p1_control),
+       live.p1_control == "modern" and UIKit.COLORS.Green or UIKit.COLORS.Orange)
+    kv("P1 / P2", (live.p1_char and live.p1_char.name or "--") .. " / "
+        .. (live.p2_char and live.p2_char.name or "--"))
 
-    kv("P1 action id", fmt(live.p1_action) .. " @f" .. fmt(live.p1_action_frame), UIKit.COLORS.Cyan)
-    kv("P1 act_st", fmt(live.p1_act_st))
-    kv("P1 combo_cnt", fmt(live.p1_combo),
-       (live.p1_combo or 0) > 0 and UIKit.COLORS.Green or UIKit.COLORS.White)
-    kv("P2 gard_combo_cnt", fmt(live.p2_guard),
-       (live.p2_guard or 0) > 0 and UIKit.COLORS.Orange or UIKit.COLORS.White)
+    kv("P1 action id", fmt(s.attacker_action_id) .. " @f" .. fmt(s.attacker_action_frame),
+       s.attacker_action_frame and UIKit.COLORS.Cyan or UIKit.COLORS.Red)
+    kv("P1 act_st", fmt(s.attacker_act_st))
+    kv("P1 combo_cnt", fmt(s.combo_count),
+       (s.combo_count or 0) > 0 and UIKit.COLORS.Green or UIKit.COLORS.White)
+    kv("P2 gard_combo_cnt", fmt(s.guard_count),
+       (s.guard_count or 0) > 0 and UIKit.COLORS.Orange or UIKit.COLORS.White)
 
-    -- The two damage reads side by side: this is the whole point of probe A,
-    -- and upstream takes max() of them because it did not know which carries
-    -- the value.
-    kv("mComboDamage P1 / P2", fmt(live.dmg_attacker) .. " / " .. fmt(live.dmg_victim),
-       (live.dmg_attacker or live.dmg_victim) and UIKit.COLORS.Yellow or UIKit.COLORS.Red)
+    -- The two damage reads side by side: this is what probe A exists to settle,
+    -- and upstream takes max() of them because it never established which side
+    -- carries the value.
+    kv("mComboDamage P1 / P2", fmt(s.combo_damage_attacker) .. " / " .. fmt(s.combo_damage_victim),
+       (s.combo_damage_attacker or s.combo_damage_victim) and UIKit.COLORS.Yellow or UIKit.COLORS.Red)
 
-    kv("P1 hp / P2 hp", fmt(live.p1_hp) .. " / " .. fmt(live.p2_hp)
-        .. " (max " .. fmt(live.p2_hp_max) .. ")")
-    kv("P1 drive / super", fmt(live.p1_drive) .. " / " .. fmt(live.p1_super))
-    kv("P1 hit_stop", fmt(live.p1_hitstop),
-       (live.p1_hitstop or 0) > 0 and UIKit.COLORS.Orange or UIKit.COLORS.White)
-    kv("pos P1 / P2", fmt(live.p1_pos) .. " / " .. fmt(live.p2_pos)
-        .. "   dist " .. fmt(live.p1_pos and live.p2_pos and math.abs(live.p1_pos - live.p2_pos)))
-    kv("P1 rl_dir", live.p1_facing == nil and "--" or (live.p1_facing and "right" or "left"))
-    kv("explorer tick", fmt(Clock.frame))
+    kv("P1 hp / P2 hp", fmt(s.attacker_hp) .. " / " .. fmt(s.victim_hp)
+        .. " (max " .. fmt(s.victim_hp_max) .. ")")
+    kv("P1 drive / super", fmt(s.attacker_drive) .. " / " .. fmt(s.attacker_super))
+    kv("P1 hit_stop", fmt(s.attacker_hitstop),
+       (s.attacker_hitstop or 0) > 0 and UIKit.COLORS.Orange or UIKit.COLORS.White)
+    kv("pos P1 / P2", fmt(s.attacker_pos) .. " / " .. fmt(s.victim_pos)
+        .. "   dist " .. fmt(s.attacker_pos and s.victim_pos
+                             and math.abs(s.attacker_pos - s.victim_pos)))
+
+    -- RAW, plus its Lua type. Which truth value means "mirror" is unverified,
+    -- and so is whether this field is even a boolean - in Lua an integer 0 is
+    -- truthy, so an interpreted "right"/"left" would destroy the one datum
+    -- needed to settle it.
+    kv("P1 rl_dir raw", fmt(s.attacker_rl_dir_raw) .. "  (" .. fmt(s.attacker_rl_dir_type) .. ")",
+       UIKit.COLORS.Cyan)
+
+    kv("explorer tick", fmt(Clock.frame) .. (Clock.hooked and "" or "  [ANCHOR DEAD]"))
 end
 
-local function draw_spike_a()
-    imgui.text_colored(T("spike_a_help"), UIKit.COLORS.Grey)
+local function draw_probe_a()
+    imgui.text_colored(T("probe_a_help"), UIKit.COLORS.Grey)
 
-    if spike_a.on then
+    if probe_a.on then
         if UIKit.styled_button(T("stop") .. "##ce_a", THEME.stop, UIKit.COLORS.White) then
-            spike_a.on = false
+            probe_a.on = false
+            probe_a.probe:flush(Clock.frame)
         end
     else
         if UIKit.styled_button(T("start") .. "##ce_a", THEME.go, UIKit.COLORS.White) then
-            spike_a.on = true
+            probe_a.on = true
         end
     end
     imgui.same_line()
     if UIKit.styled_button(T("clear") .. "##ce_a_clear", THEME.neutral, UIKit.COLORS.White) then
-        spike_a.samples = {}
-        spike_a.in_combo = false
-        spike_a.tracker = nil
-        spike_a.last_status = nil
+        probe_a.probe:reset()
+        probe_a.last_status = nil
     end
     imgui.same_line()
     if UIKit.styled_button(T("write") .. "##ce_a_write", THEME.neutral, UIKit.COLORS.White) then
-        local path = Config.write_diag("probe_a_damage", spike_a_report())
-        spike_a.last_status = path and (T("wrote") .. " " .. path) or T("write_failed")
+        local report = probe_a.probe:report({ min_comparable = Config.data.probe_a_min_samples })
+        local path, err = Config.write_diag("probe_a_damage", report, artifact_ctx())
+        probe_a.last_status = path and (T("wrote") .. " " .. path)
+            or (T("write_failed") .. ": " .. tostring(err))
     end
 
-    kv(T("samples"), tostring(#spike_a.samples),
-       #spike_a.samples > 0 and UIKit.COLORS.Green or UIKit.COLORS.DarkGrey)
+    local rep = probe_a.probe:report({ min_comparable = Config.data.probe_a_min_samples })
+    kv("combos sampled", tostring(#rep.samples),
+       #rep.samples > 0 and UIKit.COLORS.Green or UIKit.COLORS.DarkGrey)
+    imgui.text_colored(rep.verdict, rep.sufficient and UIKit.COLORS.Green or UIKit.COLORS.Yellow)
 
-    local r = spike_a_report()
-    imgui.text_colored(r.verdict, UIKit.COLORS.Yellow)
-
-    -- Most recent few, newest first: enough to see it working without
-    -- rendering a hundred rows every frame.
-    local n = #spike_a.samples
+    local n = #rep.samples
     for i = n, math.max(1, n - 4), -1 do
-        local s = spike_a.samples[i]
-        local agree = (s.agree == nil) and "n/a" or (s.agree and "agree" or "DISAGREE")
+        local s = rep.samples[i]
+        local note = s.agree_reason and ("  [" .. s.agree_reason .. "]") or ""
         imgui.text_colored(
-            ("  #%d  hits %s  mComboDamage %s  hpDelta %s  %s")
-                :format(i, fmt(s.hits), fmt(s.combo_damage), fmt(s.hp_delta), agree),
+            ("  #%d  hits %s  field %s  hpDelta %s  %s%s")
+                :format(i, fmt(s.hits), fmt(s.combo_damage), fmt(s.hp_delta),
+                        (s.agree == nil) and "n/a" or (s.agree and "agree" or "DISAGREE"), note),
             (s.agree == false) and UIKit.COLORS.Red or UIKit.COLORS.White)
     end
 
-    if spike_a.last_status then
-        imgui.text_colored(spike_a.last_status, UIKit.COLORS.Cyan)
+    if probe_a.last_status then
+        imgui.text_colored(probe_a.last_status, UIKit.COLORS.Cyan)
     end
 end
 
-local function draw_spike_b()
-    imgui.text_colored(T("spike_b_help"), UIKit.COLORS.Grey)
+local function draw_probe_b()
+    imgui.text_colored(T("probe_b_help"), UIKit.COLORS.Grey)
 
     if Clock.diag_running() then
         if UIKit.styled_button(T("stop") .. "##ce_b", THEME.stop, UIKit.COLORS.White) then
@@ -457,23 +382,41 @@ local function draw_spike_b()
     end
     imgui.same_line()
     if UIKit.styled_button(T("write") .. "##ce_b_write", THEME.neutral, UIKit.COLORS.White) then
-        local r = spike_b_report()
-        spike_b.last_report = r
-        spike_b.last_path = Config.write_diag("probe_b_clock", r)
+        local rep = Clock.diag_report({ min_frames = Config.data.probe_b_min_frames })
+        local path, err = Config.write_diag("probe_b_clock", rep, artifact_ctx())
+        probe_b.last_status = path and (T("wrote") .. " " .. path)
+            or (T("write_failed") .. ": " .. tostring(err))
     end
 
-    local r = spike_b_report()
-    kv("frames sampled", fmt(r.frames_sampled))
-    kv("re.on_frame ticks", fmt(r.engine_frames) .. "   gap " .. fmt(r.frame_gap))
-    kv("frames with hitstop", fmt(r.hitstop_frames))
-    kv("max calls/frame P1 / P2", fmt(r.max_calls.p1) .. " / " .. fmt(r.max_calls.p2))
-    for _, row in ipairs(r.calls_per_frame.p1) do
-        imgui.text(("  P1: %d call(s) on %d frame(s)"):format(row.calls, row.frames))
-    end
-    imgui.text_colored(r.verdict, UIKit.COLORS.Yellow)
+    local r = Clock.diag_report({ min_frames = Config.data.probe_b_min_frames })
+    kv("frames usable / total", fmt(r.frames.included) .. " / " .. fmt(r.frames.total))
+    kv("excluded", ("gate %s, paused %s, partial %s")
+        :format(fmt(r.frames.excluded_gate_closed), fmt(r.frames.excluded_paused),
+                fmt(r.frames.excluded_partial)))
+    kv("frames with hitstop", fmt(r.frames.with_hitstop),
+       (r.frames.with_hitstop or 0) > 0 and UIKit.COLORS.Green or UIKit.COLORS.Orange)
+    kv("engine frames", fmt(r.engine_frames.counted)
+        .. "   gap " .. fmt(r.tick_vs_engine_gap))
 
-    if spike_b.last_path then
-        imgui.text_colored(T("wrote") .. " " .. spike_b.last_path, UIKit.COLORS.Cyan)
+    local p1 = r.players and r.players["0"]
+    if p1 then
+        for _, row in ipairs(p1.calls_per_frame or {}) do
+            imgui.text(("  P1: %d call(s) on %d frame(s)"):format(row.calls, row.frames))
+        end
+    end
+
+    if r.assessment and not r.assessment.usable then
+        for _, prob in ipairs(r.assessment.problems) do
+            imgui.text_colored("  ! " .. prob, UIKit.COLORS.Orange)
+        end
+    end
+    if r.finding then
+        imgui.text_colored(r.finding.reason or "",
+            r.finding.conclusive and UIKit.COLORS.Green or UIKit.COLORS.Yellow)
+    end
+
+    if probe_b.last_status then
+        imgui.text_colored(probe_b.last_status, UIKit.COLORS.Cyan)
     end
 end
 
@@ -482,7 +425,6 @@ re.on_draw_ui(function()
     if not imgui.tree_node(T("title")) then return end
 
     imgui.text_colored(T("readonly"), UIKit.COLORS.Orange)
-
     if not Clock.hooked then
         imgui.text_colored(T("anchor_dead"), UIKit.COLORS.Red)
     end
@@ -499,22 +441,25 @@ re.on_draw_ui(function()
         Config.mark_dirty()
     end
 
+    if UIKit.styled_header(T("hdr_state"), THEME.hdr) then draw_state() end
     if UIKit.styled_header(T("hdr_live"), THEME.hdr) then draw_live() end
-    if UIKit.styled_header(T("hdr_spike_a"), THEME.hdr) then draw_spike_a() end
-    if UIKit.styled_header(T("hdr_spike_b"), THEME.hdr) then draw_spike_b() end
+    if UIKit.styled_header(T("hdr_probe_a"), THEME.hdr) then draw_probe_a() end
+    if UIKit.styled_header(T("hdr_probe_b"), THEME.hdr) then draw_probe_b() end
 
     imgui.tree_pop()
 end)
 
--- Exposed so a later build (and the eventual Runner) can reach the same state
--- without re-deriving it, following the suite's flat _G convention.
+-- Exposed following the suite's flat _G convention, so later stages reach the
+-- same register rather than building a second one that disagrees.
 _G._ce_api = {
-    version   = "0.1.0-diagnostics",
-    mode_id   = MODE_ID,
-    live      = live,
-    clock     = Clock,
-    telemetry = Telemetry,
-    inputmask = InputMask,
-    config    = Config,
-    safety    = RuntimeSafety,
+    version     = VERSION,
+    mode_id     = MODE_ID,
+    provenance  = reg,
+    Provenance  = Provenance,
+    InputMask   = InputMask,
+    adapter     = GameAdapter,
+    clock       = Clock,
+    config      = Config,
+    safety      = RuntimeSafety,
+    input_profile = function() return InputMask.profile_from_provenance(Provenance, reg) end,
 }

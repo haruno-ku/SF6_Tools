@@ -4,6 +4,13 @@
 
 local H = { passed = 0, failed = 0, failures = {}, current = "(ungrouped)" }
 
+-- require() caches, so the counters would accumulate across suites and every
+-- suite after the first would report the total instead of its own result.
+function H.reset()
+    H.passed, H.failed, H.failures = 0, 0, {}
+    H.current = "(ungrouped)"
+end
+
 local function record_pass() H.passed = H.passed + 1 end
 
 local function record_fail(msg, detail)

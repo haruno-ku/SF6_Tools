@@ -14,7 +14,7 @@ said so.
 
 ---
 
-## Current build: `0.1.0-diagnostics` — READ ONLY
+## Current build: `0.2.0-diagnostics` — READ ONLY
 
 This build **never injects input**. It watches and measures.
 
@@ -108,24 +108,39 @@ Expand **LIVE READOUT** and hit the dummy a few times. Every row should move:
 ### Probe A — damage readability
 
 1. Expand **PROBE A**, press **START**.
-2. Land **at least 5 combos of different lengths** on the dummy. Vary the hit
-   count; include one that does not kill.
+2. Land **at least 5 combos on the dummy, of clearly different lengths**, and
+   include at least one that does **not** kill.
+
+   Both of those matter. A lethal combo cannot be used for the comparison at
+   all: the HP delta is capped at the health that existed while the damage
+   field is not, so the two legitimately diverge. And combos that are all the
+   same size cannot tell a scale factor from a fixed per-hit offset - the probe
+   will say so rather than guess.
 3. Press **WRITE REPORT**.
 
-Writes `reframework/data/ComboExplorer_data/diagnostics/probe_a_damage.json`.
+Writes `diagnostics/probe_a_damage-<timestamp>.json` plus a `-latest.json`
+copy. The timestamped file is the record: a re-run after a patch must not
+destroy the sample a decision was made on.
 
-The panel states its own conclusion, so you can see whether you have enough
-before you stop.
+The panel states its own conclusion and says when it does not yet have enough
+to offer one.
 
 ### Probe B — clock
 
 1. Expand **PROBE B**, press **START**.
-2. Play normally for **30 seconds or so, including some hits** — hitstop has to
-   be represented in the sample, because it is exactly what makes the two
-   clocks disagree.
+2. Play normally for **30 seconds or so, including some hits**. Hitstop has to
+   be represented in the sample, because it is exactly what is suspected of
+   making the two clocks disagree — the probe refuses to draw a conclusion from
+   a sample without any.
 3. Press **WRITE REPORT**.
 
-Writes `…/diagnostics/probe_b_clock.json`.
+Writes `diagnostics/probe_b_clock-<timestamp>.json`.
+
+Frames where the injection gate was shut, where the game was paused, and the
+partial frame the probe started in are excluded from the arithmetic and
+reported separately. That exclusion is the whole point: those frames cannot be
+observed, and counting them as "frames where the engine called nothing" is how
+a perfectly clean build gets reported as a broken one.
 
 The result to hope for is *one call per player per frame* and *no gap*. Any
 other answer is still useful — it just means delays stay in ticks and get
@@ -189,22 +204,33 @@ later as "these links do not work".
 ```
 reframework/autorun/
   ComboExplorer.lua                  entry point, mode 6, panel
-  func/ComboExplorer/
-    Clock.lua                        frame anchor + tick latch (read this first)
-    Telemetry.lua                    every game-state read, and the damage tracker
-    InputMask.lua                    notation <-> bitmask; pure, unit-tested
-    Config.lua                       settings + diagnostic report writing
+
+  func/ComboExplorer/core/           PURE - no sdk, unit-tested on the dev machine
+    Provenance.lua                   the register of what has not been measured yet
+    InputMask.lua                    notation <-> bitmask, given a button profile
+    DamageTracker.lua                two damage measurements and whether they agree
+    ProbeA.lua                       segments a snapshot stream into combos
+    ClockStats.lua                   per-frame clock accounting
+
+  func/ComboExplorer/runtime/        GAME - the only files that touch sdk
+    GameAdapter.lua                  every read, in one place
+    Clock.lua                        the frame anchor and its callback registry
+    Config.lua                       preferences and artifact writing
+
 reframework/data/ComboExplorer_data/
-  Config.json                        settings
+  Config.json                        preferences
+  calibration/latest.json            measured values, once they exist
   diagnostics/                       probe reports (committed back)
 scripts/install-dev.ps1              repo -> game folder sync
 tools/                               dev-machine generators and runners
-tests/lua/                           unit tests
-docs/ComboExplorer/                  the plan
+tests/lua/                           unit tests (314 assertions)
+docs/ComboExplorer/                  the plan and the work split
 ```
 
-`Clock.lua` is the one to read first. It explains why the Explorer counts ticks
-rather than frames, which is the single assumption everything else rests on.
+`core/Provenance.lua` is the one to read first. It lists everything nobody has
+measured yet, why each guess is only a guess, and what breaks if it is wrong.
+Everything else in the Explorer reads its unknowns from there rather than
+spelling them out, which is what stops a wrong guess from becoming a dataset.
 
 ---
 
