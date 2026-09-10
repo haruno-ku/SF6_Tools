@@ -76,12 +76,17 @@ local function facts_for(node, frame_idx)
                 is_super = (node.category == "super"),
                 known = {} }
     if frame_idx then
-        local rec = FrameData.lookup(frame_idx, node.classic)
+        local rec, info = FrameData.lookup(frame_idx, node.classic)
         if rec then
             f.damage = FrameData.damage(rec)
             f.drive_gain = FrameData.drive_gain(rec)
             f.super_gain = FrameData.super_gain(rec)
         end
+        -- The join saying it had to guess is part of what is known about this
+        -- move. Discarding it here made a coin-flip damage figure - 3200 for
+        -- (Close) where (Far) says 3000 - arrive in a route sum as fact.
+        f.join_uncertain = FrameData.uncertain(info)
+        f.join_uncertainty = f.join_uncertain and FrameData.uncertainty_reason(info) or nil
     end
     f.known.damage = f.damage ~= nil
     f.known.drive = f.drive_gain ~= nil
@@ -108,6 +113,7 @@ local function new_partial(node, facts)
             super_steps = facts.is_super and 1 or 0,
             unknown_steps = (facts.known.damage and facts.known.drive and facts.known.super)
                 and 0 or 1,
+            guessed_join_steps = facts.join_uncertain and 1 or 0,
         },
         confidence_counts = {},
         min_confidence_rank = 4,
@@ -202,6 +208,11 @@ local function extend(p, edge, node, facts)
     if facts.is_super then r.super_steps = r.super_steps + 1 end
     if not (facts.known.damage and facts.known.drive and facts.known.super) then
         r.unknown_steps = r.unknown_steps + 1
+    end
+    if facts.join_uncertain then
+        r.guessed_join_steps = (r.guessed_join_steps or 0) + 1
+        note_unknown(q, "frame_data_variant_ambiguous", facts.join_uncertainty
+            or "the frame-data join could not decide which record this move is")
     end
 
     local c = edge.confidence or "low"
@@ -306,6 +317,7 @@ local function to_route(p, cfg, provenance)
             od_steps = p.resources.od_steps,
             super_steps = p.resources.super_steps,
             steps_with_missing_data = p.resources.unknown_steps,
+            steps_with_guessed_frame_join = p.resources.guessed_join_steps or 0,
         },
         provenance = provenance,
     })

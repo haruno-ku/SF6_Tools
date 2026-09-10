@@ -93,6 +93,12 @@ M.RUNTIME_UNKNOWNS = {
     SIDE_SWITCH      = "side_switch",
     MODERN_SCALING   = "modern_specific_scaling",
     INPUT_TIMING     = "actual_input_timing",
+    -- The join between the catalog and the frame source could not decide which
+    -- record a move is: several distance variants share a stem, or the source
+    -- lists one key twice with different numbers. The numbers that came back
+    -- are one reading of several, so every margin computed from them is a coin
+    -- flip until the game says which move actually comes out.
+    FRAME_DATA_AMBIGUOUS = "frame_data_variant_ambiguous",
     -- Frame advantage after a knockdown is oki advantage, not link advantage.
     -- No property in the frame source distinguishes them - Zangief's data has
     -- no knockdown property at all - so a large on-hit number is a suspicion,

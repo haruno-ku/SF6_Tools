@@ -122,7 +122,15 @@ function M.lookup(idx, classic)
         tried[#tried + 1] = cand.key
         local hit = idx.by_key[cand.key]
         if hit then
-            return hit, { matched = true, match = cand.match, key = cand.key, tried = tried }
+            -- A key the source lists twice - "720+P" appears with damage 4800
+            -- and 5300 - resolves to whichever row came first, which is a
+            -- choice, not a fact. Reported here because index() recording it in
+            -- idx.duplicates is no use to a caller that never looks: without
+            -- this the losing row's numbers are simply gone and the winner is
+            -- consumed as if the source agreed with itself.
+            local dupes = idx.duplicates and idx.duplicates[cand.key]
+            return hit, { matched = true, match = cand.match, key = cand.key, tried = tried,
+                          duplicate = dupes and true or nil, duplicate_count = dupes }
         end
     end
 
@@ -189,6 +197,31 @@ function M.has_property(rec, prop)
     return false
 end
 
+-- Did the join have to guess? True when the key matched only by prefix over
+-- several distance variants, or when the source lists the key more than once.
+--
+-- Both are the same failure from a consumer's point of view: the numbers that
+-- came back are one of several readings, and using them as fact turns a coin
+-- flip into a frame margin. A caller that ignores this gets a confident edge
+-- built on an arbitrary choice.
+function M.uncertain(info)
+    if type(info) ~= "table" or not info.matched then return false end
+    return (info.ambiguous == true) or (info.duplicate == true)
+end
+
+-- Why the join was uncertain, in words, or nil when it was not.
+function M.uncertainty_reason(info)
+    if not M.uncertain(info) then return nil end
+    if info.ambiguous then
+        local alts = table.concat(info.alternatives or {}, ", ")
+        return ("the frame source spells this move as several distance variants (%s) and "
+            .. "the join picked %s by sort order, not by knowing which one applies")
+            :format(alts, tostring(info.key))
+    end
+    return ("the frame source lists %q %d times with different values, and the join took "
+        .. "whichever came first"):format(tostring(info.key), info.duplicate_count or 2)
+end
+
 -- What is missing from a record, named. Goes straight onto the candidate so a
 -- reader can see which of its reasoning rested on data that was not there.
 function M.missing(rec)
@@ -217,7 +250,14 @@ function M.coverage(idx, rows)
         if rec then
             n.matched = n.matched + 1
             if info.match == M.MATCH.EXACT then n.exact = n.exact + 1 else n.fuzzy = n.fuzzy + 1 end
-            if info.ambiguous then n.ambiguous = n.ambiguous + 1 end
+            if M.uncertain(info) then
+                n.ambiguous = n.ambiguous + 1
+                n.uncertain_detail = n.uncertain_detail or {}
+                n.uncertain_detail[#n.uncertain_detail + 1] = {
+                    action_id = row.action_id, classic = row.classic,
+                    key = info.key, why = M.uncertainty_reason(info),
+                }
+            end
         else
             n.unmatched = n.unmatched + 1
             unmatched[#unmatched + 1] = { action_id = row.action_id, classic = row.classic,

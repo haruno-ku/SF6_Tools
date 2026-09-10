@@ -75,11 +75,22 @@ local function contains(list, v)
     return false
 end
 
+-- Several distinct gaps can land under one unknown key - an edge missing
+-- from_on_hit, to_startup AND the cancel list has three reasons for
+-- CANCEL_WINDOW - so the explanations accumulate instead of the last one
+-- winning. Overwriting lost the earlier reasons on 98 of 387 Zangief edges, and
+-- the exporter then hoisted one arbitrary survivor as the document-wide
+-- definition of what that unknown means.
 local function add_unknown(edge, what, why)
     if not contains(edge.requires_runtime_validation, what) then
         edge.requires_runtime_validation[#edge.requires_runtime_validation + 1] = what
     end
-    edge.unknown_detail[what] = why
+    local existing = edge.unknown_detail[what]
+    if existing == nil then
+        edge.unknown_detail[what] = why
+    elseif not existing:find(why, 1, true) then
+        edge.unknown_detail[what] = existing .. "; " .. why
+    end
 end
 
 local function edge_id(a, b)
@@ -174,6 +185,13 @@ end
 local function confidence_of(a)
     if contains(a.reasons, M.REASON.FRAME_DATA_INCOMPLETE) then return "low" end
 
+    -- Numbers from a join that had to guess cannot support a confident case,
+    -- however clean the arithmetic on top of them looks. Zangief's 63214+KK
+    -- resolves to the (Close) variant at startup 10 purely by sort order, while
+    -- (Mid) is 23 and (Far) is 54 - three readings that turn the same margin
+    -- from +26 into -18.
+    if a.frame_join_uncertain then return "low" end
+
     -- A suspected knockdown caps the case: the advantage the reasoning rests on
     -- may not be the kind of advantage that links.
     local capped = a.advantage_may_be_knockdown
@@ -232,35 +250,72 @@ function M.generate(catalog, frame_idx, opts)
     local stats = { pairs_considered = 0, by_reason = {}, by_confidence = {},
                     by_exclusion = {}, followup_edges = 0 }
 
+    -- Cached as a pair. The match info is not decoration: it is how the join
+    -- says it had to guess, and dropping it here is what let an arbitrarily
+    -- chosen distance variant's numbers become a frame margin nobody could
+    -- argue with.
     local frame_of = {}
     local function frame_for(row)
-        if frame_of[row] ~= nil then
-            return frame_of[row] ~= false and frame_of[row] or nil
+        local hit = frame_of[row]
+        if hit == nil then
+            if not frame_idx then
+                hit = { rec = false, info = { matched = false, reason = "no frame data loaded" } }
+            else
+                local rec, info = FrameData.lookup(frame_idx, row.classic)
+                hit = { rec = rec or false, info = info }
+            end
+            frame_of[row] = hit
         end
-        if not frame_idx then frame_of[row] = false return nil end
-        local rec = FrameData.lookup(frame_idx, row.classic)
-        frame_of[row] = rec or false
-        return rec
+        return hit.rec ~= false and hit.rec or nil, hit.info
     end
 
     local function consider(a_row, b_row, context_dependent)
         stats.pairs_considered = stats.pairs_considered + 1
 
-        local a_frame = frame_for(a_row)
-        local b_frame = frame_for(b_row)
+        local a_frame, a_info = frame_for(a_row)
+        local b_frame, b_info = frame_for(b_row)
         local a = assess(a_row, b_row, a_frame, b_frame, opts)
 
-        -- A move repeated straight into itself only works as a chain. Without
-        -- one it is the same move twice, not a link.
-        if a_row.action_id == b_row.action_id and a_row.input_method == b_row.input_method then
-            if not contains(a.reasons, M.REASON.CHAIN_CANCEL) then
+        -- If either half's numbers came from a guessed join, the reasoning
+        -- built on them is a guess too, whatever the arithmetic says.
+        local a_uncertain = FrameData.uncertain(a_info)
+        local b_uncertain = FrameData.uncertain(b_info)
+        if a_uncertain or b_uncertain then
+            a.frame_join_uncertain = true
+            a.basis.from_frame_key = a_info and a_info.key
+            a.basis.to_frame_key = b_info and b_info.key
+            a.basis.frame_join_guessed = true
+        end
+
+        -- A move repeated straight into itself only works as a chain - but only
+        -- a chain property the source actually STATES may exclude it.
+        --
+        -- This read `not contains(reasons, CHAIN_CANCEL)`, which is true both
+        -- when the source says the move does not chain and when the source says
+        -- nothing at all. Running with no frame data took self-pair exclusions
+        -- from 9 to 14, deleting 5LP into 5LP and 2LP into 2LP among others:
+        -- moves that do chain, removed for want of a record. That is the
+        -- corollary this module is built on, broken in its own file.
+        if a_row.action_id == b_row.action_id and a_row.input_method == b_row.input_method
+            and not contains(a.reasons, M.REASON.CHAIN_CANCEL) then
+            local chains = FrameData.can_cancel_into(a_frame, "chain")
+            if chains == false then
                 excluded[#excluded + 1] = {
                     from = a_row.action_id, to = b_row.action_id,
+                    from_notation = a_row.notation, to_notation = b_row.notation,
                     reason = M.EXCLUDED.SELF_NOT_CHAINABLE,
+                    basis = a.basis,
+                    evidence = "the frame source lists this move's cancels and chain is not "
+                        .. "among them",
                 }
                 stats.by_exclusion[M.EXCLUDED.SELF_NOT_CHAINABLE] =
                     (stats.by_exclusion[M.EXCLUDED.SELF_NOT_CHAINABLE] or 0) + 1
                 return
+            end
+            -- chains == nil: unknown. The pair survives, saying so.
+            a.self_pair_chain_unknown = true
+            if not contains(a.reasons, M.REASON.FRAME_DATA_INCOMPLETE) then
+                a.reasons[#a.reasons + 1] = M.REASON.FRAME_DATA_INCOMPLETE
             end
         end
 
@@ -329,6 +384,21 @@ function M.generate(catalog, frame_idx, opts)
                 "the first move's advantage is large enough to be a knockdown, and a "
                 .. "knockdown's advantage is time before the opponent stands up rather "
                 .. "than time to land another hit; no property in the source distinguishes them")
+        end
+        if a.frame_join_uncertain then
+            if a_uncertain then
+                add_unknown(edge, U.FRAME_DATA_AMBIGUOUS,
+                    "for the first move, " .. tostring(FrameData.uncertainty_reason(a_info)))
+            end
+            if b_uncertain then
+                add_unknown(edge, U.FRAME_DATA_AMBIGUOUS,
+                    "for the second move, " .. tostring(FrameData.uncertainty_reason(b_info)))
+            end
+        end
+        if a.self_pair_chain_unknown then
+            add_unknown(edge, U.CANCEL_WINDOW,
+                "whether this move chains into itself is not stated by the source, so the "
+                .. "pair is here on the strength of not having been refuted")
         end
         if a_row.canonical_status ~= "verified" or b_row.canonical_status ~= "verified" then
             add_unknown(edge, U.HITBOX,

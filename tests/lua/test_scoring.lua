@@ -93,8 +93,26 @@ t.eq(bad, 0, "every scored route still validates"
 
 -- The damage sum that IS present says what it is.
 t.eq(s.combo_scaling_applied, false, "the damage sum has no scaling applied")
-t.eq(s.predicted_damage_is_upper_bound, true, "and says it is an upper bound")
 t.ok(s.predicted_damage_known_steps ~= nil, "with the number of steps it actually knew")
+
+-- The sum is a ceiling only when every step contributed one. A step the join
+-- has no damage for contributed zero, and zero is not that move's damage, so
+-- such a sum is neither a ceiling nor a floor - and must not claim to be one.
+local complete_route, partial_route
+for _, r in ipairs(routes) do
+    if r.offline_score.predicted_damage_complete then complete_route = complete_route or r
+    else partial_route = partial_route or r end
+end
+t.ok(complete_route ~= nil, "a route whose every step has a damage figure exists")
+t.eq(complete_route.offline_score.predicted_damage_bound, "upper",
+     "and its sum is an upper bound, because scaling only reduces")
+t.ok(partial_route ~= nil, "so does one with a step the join could not price")
+t.eq(partial_route.offline_score.predicted_damage_bound, "none",
+     "and that sum claims to bound nothing in either direction")
+t.ok(partial_route.offline_score.predicted_damage_bound_reason:find("neither") ~= nil,
+     "with the reason stated, not just a flag")
+t.is_nil(s.predicted_damage_is_upper_bound,
+     "and the old unconditional flag is gone, not left alongside the honest one")
 
 -- Drive spend is genuinely absent from the source, and is left absent.
 t.is_nil(s.predicted_drive_spend, "drive spend is not invented")

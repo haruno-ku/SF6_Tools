@@ -145,7 +145,19 @@ function M.score(route, opts)
         predicted_damage_known_steps = damage_known,
         predicted_damage_complete = (damage_known == n),
         combo_scaling_applied = false,
-        predicted_damage_is_upper_bound = true,
+        -- An unscaled sum bounds the real figure from above only when every
+        -- step contributed. Scaling can only reduce, so a complete sum is a
+        -- ceiling - but a step the join has no damage for contributed zero, and
+        -- zero is not that move's damage. Such a sum is neither a ceiling nor a
+        -- floor, and saying "upper bound" of it was a claim nobody could
+        -- support: 240 of 1037 Zangief routes carried that flag alongside
+        -- predicted_damage_complete = false.
+        predicted_damage_bound = (damage_known == n) and "upper" or "none",
+        predicted_damage_bound_reason = (damage_known == n)
+            and "combo scaling only reduces, so the unscaled sum is a ceiling"
+            or ("%d of %d steps contributed no damage figure, so this sum is neither a "
+                .. "ceiling nor a floor"):format(n - damage_known, n),
+        steps_with_guessed_frame_join = basis.steps_with_guessed_frame_join or 0,
 
         predicted_drive_gain = basis.predicted_drive_gain,
         predicted_super_gain = basis.predicted_super_gain,
