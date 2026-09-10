@@ -1,0 +1,474 @@
+{
+    "body": {
+        "ac_sha256": "753d02204cec89c5a885d5748cda2d51bde0769144a15be93f1e717f219006b2",
+        "ambiguous_groups": [
+            {
+                "action_ids": [
+                    627,
+                    628,
+                    629
+                ],
+                "canonical_status": "unverified",
+                "display_group": "assist|AUTO + 弱",
+                "input_method": "assist",
+                "notation": "AUTO + 弱",
+                "seen": null,
+                "unseen": [
+                    627,
+                    628,
+                    629
+                ]
+            },
+            {
+                "action_ids": [
+                    617,
+                    618,
+                    619
+                ],
+                "canonical_status": "unverified",
+                "display_group": "manual|2 + 弱",
+                "input_method": "manual",
+                "notation": "2 + 弱",
+                "seen": [
+                    617
+                ],
+                "single_candidate": 617,
+                "unseen": [
+                    618,
+                    619
+                ]
+            },
+            {
+                "action_ids": [
+                    1218,
+                    1222
+                ],
+                "canonical_status": "unverified",
+                "display_group": "manual|720 + 强",
+                "input_method": "manual",
+                "notation": "720 + 强",
+                "seen": null,
+                "unseen": [
+                    1218,
+                    1222
+                ]
+            },
+            {
+                "action_ids": [
+                    605,
+                    606,
+                    679,
+                    680
+                ],
+                "canonical_status": "unverified",
+                "display_group": "manual|> 中",
+                "input_method": "manual",
+                "notation": "> 中",
+                "seen": null,
+                "unseen": [
+                    605,
+                    606,
+                    679,
+                    680
+                ]
+            },
+            {
+                "action_ids": [
+                    850,
+                    855
+                ],
+                "canonical_status": "unverified",
+                "display_group": "manual|DI",
+                "input_method": "manual",
+                "notation": "DI",
+                "seen": [
+                    855
+                ],
+                "single_candidate": 855,
+                "unseen": [
+                    850
+                ]
+            },
+            {
+                "action_ids": [
+                    480,
+                    489
+                ],
+                "canonical_status": "unverified",
+                "display_group": "manual|DP",
+                "input_method": "manual",
+                "notation": "DP",
+                "seen": [
+                    480
+                ],
+                "single_candidate": 480,
+                "unseen": [
+                    489
+                ]
+            },
+            {
+                "action_ids": [
+                    900,
+                    903
+                ],
+                "canonical_status": "unverified",
+                "display_group": "manual|中 + 强",
+                "input_method": "manual",
+                "notation": "中 + 强",
+                "seen": [
+                    900
+                ],
+                "single_candidate": 900,
+                "unseen": [
+                    903
+                ]
+            },
+            {
+                "action_ids": [
+                    601,
+                    602,
+                    611
+                ],
+                "canonical_status": "unverified",
+                "display_group": "manual|弱",
+                "input_method": "manual",
+                "notation": "弱",
+                "seen": [
+                    611
+                ],
+                "single_candidate": 611,
+                "unseen": [
+                    601,
+                    602
+                ]
+            },
+            {
+                "action_ids": [
+                    901,
+                    1497
+                ],
+                "canonical_status": "unverified",
+                "display_group": "manual|弱 + 中 + 强",
+                "input_method": "manual",
+                "notation": "弱 + 中 + 强",
+                "seen": null,
+                "unseen": [
+                    901,
+                    1497
+                ]
+            },
+            {
+                "action_ids": [
+                    950,
+                    952
+                ],
+                "canonical_status": "unverified",
+                "display_group": "manual|空中 360 + 任意键",
+                "input_method": "manual",
+                "notation": "空中 360 + 任意键",
+                "seen": null,
+                "unseen": [
+                    950,
+                    952
+                ]
+            },
+            {
+                "action_ids": [
+                    900,
+                    903
+                ],
+                "canonical_status": "unverified",
+                "display_group": "simple|2 + SP",
+                "input_method": "simple",
+                "notation": "2 + SP",
+                "seen": [
+                    900
+                ],
+                "single_candidate": 900,
+                "unseen": [
+                    903
+                ]
+            },
+            {
+                "action_ids": [
+                    1218,
+                    1222
+                ],
+                "canonical_status": "unverified",
+                "display_group": "simple|2 + SP + 强",
+                "input_method": "simple",
+                "notation": "2 + SP + 强",
+                "seen": null,
+                "unseen": [
+                    1218,
+                    1222
+                ]
+            },
+            {
+                "action_ids": [
+                    950,
+                    952
+                ],
+                "canonical_status": "unverified",
+                "display_group": "simple|空中 SP",
+                "input_method": "simple",
+                "notation": "空中 SP",
+                "seen": null,
+                "unseen": [
+                    950,
+                    952
+                ]
+            }
+        ],
+        "bcm_sha256": "09e9334a458b4e7073d13c5a0e25255d2b35b0cb71ccdccbd67c8774b62d4053",
+        "catalogued_action_ids": 71,
+        "character": "Zangief",
+        "conclusive": false,
+        "coverage": 0.15492957746478872,
+        "matched": 11,
+        "observed_action_ids": 18,
+        "probe": "D.catalog_audit",
+        "unknown_observed": [
+            {
+                "action_id": 9,
+                "seen": 7
+            },
+            {
+                "action_id": 6,
+                "seen": 3
+            },
+            {
+                "action_id": 482,
+                "seen": 2
+            },
+            {
+                "action_id": 609,
+                "seen": 2
+            },
+            {
+                "action_id": 1,
+                "seen": 1
+            },
+            {
+                "action_id": 941,
+                "seen": 1
+            },
+            {
+                "action_id": 1016,
+                "seen": 1
+            }
+        ],
+        "unseen_standalone": [
+            601,
+            602,
+            618,
+            619,
+            627,
+            633,
+            637,
+            655,
+            660,
+            678,
+            785,
+            918,
+            924,
+            930,
+            935,
+            940,
+            945,
+            1010,
+            1195,
+            1200,
+            1206,
+            1218,
+            1222
+        ],
+        "verdict": "only 18 distinct action ids observed - play for longer before reading anything into this"
+    },
+    "header": {
+        "anchor_hooked": true,
+        "config": {
+            "probe_a_idle_ticks": 20,
+            "probe_a_min_samples": 3,
+            "probe_b_min_frames": 300,
+            "sources": {
+                "allow_injection": "default",
+                "enabled": "default",
+                "probe_a_idle_ticks": "default",
+                "probe_a_min_samples": "default",
+                "probe_b_min_frames": "default",
+                "write_diag_files": "default"
+            }
+        },
+        "frame": 18743,
+        "mod_version": "0.3.0-diagnostics",
+        "p1": {
+            "id": 6,
+            "key": "ESF_006",
+            "name": "ESF_006"
+        },
+        "p1_control_scheme": "modern",
+        "p2": {
+            "id": 2,
+            "key": "ESF_002",
+            "name": "ESF_002"
+        },
+        "provenance": {
+            "capabilities": {
+                "catalog": {
+                    "available": false,
+                    "blocked_by": [
+                        "action_id_canonical"
+                    ]
+                },
+                "damage": {
+                    "available": false,
+                    "blocked_by": [
+                        "combo_damage_readable"
+                    ]
+                },
+                "frame_data": {
+                    "available": false,
+                    "blocked_by": [
+                        "frame_meter_semantics",
+                        "tick_equals_frame"
+                    ]
+                },
+                "injection": {
+                    "available": false,
+                    "blocked_by": [
+                        "direction_bits",
+                        "modern_button_bits",
+                        "rl_dir_polarity"
+                    ]
+                },
+                "probing": {
+                    "available": false,
+                    "blocked_by": [
+                        "direction_bits",
+                        "hitstop_advances_tick",
+                        "input_hook_calls_per_frame",
+                        "modern_button_bits",
+                        "reset_settle_ticks",
+                        "rl_dir_polarity",
+                        "tick_equals_frame"
+                    ]
+                },
+                "stage_reset": {
+                    "available": false,
+                    "blocked_by": [
+                        "reset_settle_ticks"
+                    ]
+                },
+                "timing": {
+                    "available": false,
+                    "blocked_by": [
+                        "hitstop_advances_tick",
+                        "input_hook_calls_per_frame",
+                        "tick_equals_frame"
+                    ]
+                }
+            },
+            "entries": {
+                "action_id_canonical": {
+                    "gates": [
+                        "catalog"
+                    ],
+                    "measured_by": "calibration_action_sweep",
+                    "status": "unverified"
+                },
+                "combo_damage_readable": {
+                    "gates": [
+                        "damage"
+                    ],
+                    "measured_by": "probe_a_damage",
+                    "status": "unverified"
+                },
+                "direction_bits": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": {
+                        "DOWN": 2,
+                        "LEFT": 4,
+                        "RIGHT": 8,
+                        "UP": 1
+                    }
+                },
+                "frame_meter_semantics": {
+                    "gates": [
+                        "frame_data"
+                    ],
+                    "measured_by": "calibration_frame_meter",
+                    "status": "unverified",
+                    "value": {
+                        "BLOCKSTUN": 10,
+                        "HITSTUN": 9,
+                        "RECOVERY": 8,
+                        "STARTUP": 7
+                    }
+                },
+                "hitstop_advances_tick": {
+                    "gates": [
+                        "timing"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified",
+                    "value": false
+                },
+                "input_hook_calls_per_frame": {
+                    "gates": [
+                        "timing"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified",
+                    "value": 1
+                },
+                "modern_button_bits": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": {
+                        "AUTO": 512,
+                        "DI": 4096,
+                        "H": 256,
+                        "L": 16,
+                        "M": 128,
+                        "PARRY": 64,
+                        "SP": 32,
+                        "THROW": 8192
+                    }
+                },
+                "reset_settle_ticks": {
+                    "gates": [
+                        "stage_reset"
+                    ],
+                    "measured_by": "calibration_reset_cost",
+                    "status": "unverified",
+                    "value": 25
+                },
+                "rl_dir_polarity": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": "mirror_when_falsy"
+                },
+                "tick_equals_frame": {
+                    "gates": [
+                        "timing",
+                        "frame_data"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified"
+                }
+            }
+        },
+        "written_at": "20260910T145748Z"
+    }
+}

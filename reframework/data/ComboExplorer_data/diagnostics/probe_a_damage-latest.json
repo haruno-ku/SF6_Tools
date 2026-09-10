@@ -1,0 +1,1269 @@
+{
+    "body": {
+        "action_id_histogram": [
+            {
+                "action_id": 9,
+                "entries": 9
+            },
+            {
+                "action_id": 621,
+                "entries": 4
+            },
+            {
+                "action_id": 660,
+                "entries": 4
+            },
+            {
+                "action_id": 901,
+                "entries": 4
+            },
+            {
+                "action_id": 6,
+                "entries": 3
+            },
+            {
+                "action_id": 604,
+                "entries": 2
+            },
+            {
+                "action_id": 617,
+                "entries": 2
+            },
+            {
+                "action_id": 627,
+                "entries": 2
+            },
+            {
+                "action_id": 919,
+                "entries": 2
+            },
+            {
+                "action_id": 1,
+                "entries": 1
+            },
+            {
+                "action_id": 11,
+                "entries": 1
+            },
+            {
+                "action_id": 601,
+                "entries": 1
+            },
+            {
+                "action_id": 605,
+                "entries": 1
+            },
+            {
+                "action_id": 606,
+                "entries": 1
+            },
+            {
+                "action_id": 609,
+                "entries": 1
+            },
+            {
+                "action_id": 611,
+                "entries": 1
+            },
+            {
+                "action_id": 618,
+                "entries": 1
+            },
+            {
+                "action_id": 623,
+                "entries": 1
+            },
+            {
+                "action_id": 637,
+                "entries": 1
+            },
+            {
+                "action_id": 655,
+                "entries": 1
+            },
+            {
+                "action_id": 855,
+                "entries": 1
+            },
+            {
+                "action_id": 900,
+                "entries": 1
+            },
+            {
+                "action_id": 903,
+                "entries": 1
+            },
+            {
+                "action_id": 946,
+                "entries": 1
+            },
+            {
+                "action_id": 1015,
+                "entries": 1
+            },
+            {
+                "action_id": 1206,
+                "entries": 1
+            },
+            {
+                "action_id": 1209,
+                "entries": 1
+            },
+            {
+                "action_id": 1211,
+                "entries": 1
+            },
+            {
+                "action_id": 1218,
+                "entries": 1
+            },
+            {
+                "action_id": 1219,
+                "entries": 1
+            }
+        ],
+        "carrying_side": "attacker",
+        "counts": {
+            "agreed": 15,
+            "comparable": 18,
+            "nonzero": 20,
+            "recovered": 0,
+            "resolved": 20,
+            "total": 20
+        },
+        "hp_arm_usable": true,
+        "idle_ticks_to_close": 20,
+        "probe": "A.damage_readability",
+        "recommended_source": "both",
+        "samples": [
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 3.0,
+                        "action_id": 627,
+                        "combo_count": 1,
+                        "tick": 185118
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 601,
+                        "combo_count": 1,
+                        "tick": 185136
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 901,
+                        "combo_count": 2,
+                        "tick": 185149
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 649.524658203125,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 1270,
+                "combo_damage": 1270,
+                "counter_hit": false,
+                "end_tick": 185253,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 3,
+                "hitstop_ticks": 34,
+                "hp_arm_usable": true,
+                "hp_base": 4200,
+                "hp_delta": 1270,
+                "hp_min": 2930,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 185118,
+                "ticks": 137,
+                "victim_hp_at_start": 4200,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 765.0,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 7.0,
+                        "action_id": 621,
+                        "combo_count": 1,
+                        "tick": 185346
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 901,
+                        "combo_count": 1,
+                        "tick": 185358
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 1206,
+                        "combo_count": 2,
+                        "tick": 185385
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 1209,
+                        "combo_count": 4,
+                        "tick": 185503
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 1211,
+                        "combo_count": 4,
+                        "tick": 185592
+                    }
+                ],
+                "agree_reason": "victim reached zero HP - the delta is capped and the two are not comparable",
+                "attacker_pos_at_start": 679.0,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 3928,
+                "combo_damage": 3928,
+                "counter_hit": false,
+                "end_tick": 185887,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 5,
+                "hitstop_ticks": 30,
+                "hp_arm_usable": true,
+                "hp_base": 2930,
+                "hp_delta": 2930,
+                "hp_min": 0,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.3406143344709898,
+                "start_tick": 185346,
+                "ticks": 543,
+                "victim_hp_at_start": 2930,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 765.0,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 13.0,
+                        "action_id": 660,
+                        "combo_count": 1,
+                        "tick": 186407
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 901,
+                        "combo_count": 1,
+                        "tick": 186423
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 1218,
+                        "combo_count": 2,
+                        "tick": 186450
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 1219,
+                        "combo_count": 2,
+                        "tick": 186553
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 1,
+                        "combo_count": 0,
+                        "tick": 187098
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 108.6783447265625,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 4165,
+                "combo_damage": 4165,
+                "counter_hit": false,
+                "end_tick": 187112,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 5,
+                "hitstop_ticks": 28,
+                "hp_arm_usable": true,
+                "hp_base": 10000,
+                "hp_delta": 4165,
+                "hp_min": 5835,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 186407,
+                "ticks": 707,
+                "victim_hp_at_start": 10000,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 194.6783447265625,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 13.0,
+                        "action_id": 660,
+                        "combo_count": 1,
+                        "tick": 187453
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 900,
+                        "combo_count": 1,
+                        "tick": 187486
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 9,
+                        "combo_count": 0,
+                        "tick": 187573
+                    }
+                ],
+                "agree": false,
+                "attacker_pos_at_start": 429.8948059082031,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 1120,
+                "combo_damage": 1120,
+                "counter_hit": false,
+                "end_tick": 187589,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 28,
+                "hp_arm_usable": true,
+                "hp_base": 5835,
+                "hp_delta": 2120,
+                "hp_min": 3715,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 0.5283018867924528,
+                "start_tick": 187453,
+                "ticks": 138,
+                "victim_hp_at_start": 5835,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 515.8948059082031,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 13.0,
+                        "action_id": 660,
+                        "combo_count": 1,
+                        "tick": 187690
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 655,
+                        "combo_count": 1,
+                        "tick": 187723
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 903,
+                        "combo_count": 2,
+                        "tick": 187743
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 670.9369506835938,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 2328,
+                "combo_damage": 2328,
+                "counter_hit": false,
+                "end_tick": 187846,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 3,
+                "hitstop_ticks": 39,
+                "hp_arm_usable": true,
+                "hp_base": 3715,
+                "hp_delta": 2328,
+                "hp_min": 1387,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 187690,
+                "ticks": 158,
+                "victim_hp_at_start": 3715,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 756.9369201660156,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 25.0,
+                        "action_id": 855,
+                        "combo_count": 1,
+                        "tick": 187930
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 679.0000305175781,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 800,
+                "combo_damage": 800,
+                "counter_hit": false,
+                "end_tick": 188046,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 25,
+                "hp_arm_usable": true,
+                "hp_base": 1387,
+                "hp_delta": 800,
+                "hp_min": 587,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 187930,
+                "ticks": 118,
+                "victim_hp_at_start": 1387,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 765.0,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 78.0,
+                        "action_id": 919,
+                        "combo_count": 1,
+                        "tick": 190083
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 9,
+                        "combo_count": 0,
+                        "tick": 190180
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 426.1410827636719,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 2160,
+                "combo_damage": 2160,
+                "counter_hit": false,
+                "end_tick": 190194,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 0,
+                "hp_arm_usable": true,
+                "hp_base": 10000,
+                "hp_delta": 2160,
+                "hp_min": 7840,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 190083,
+                "ticks": 113,
+                "victim_hp_at_start": 10000,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 346.1410827636719,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 6.0,
+                        "action_id": 611,
+                        "combo_count": 1,
+                        "tick": 190328
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 9,
+                        "combo_count": 0,
+                        "tick": 190365
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 538.1570587158203,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 400,
+                "combo_damage": 400,
+                "counter_hit": false,
+                "end_tick": 190373,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 9,
+                "hp_arm_usable": true,
+                "hp_base": 7840,
+                "hp_delta": 400,
+                "hp_min": 7440,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 190328,
+                "ticks": 47,
+                "victim_hp_at_start": 7840,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 624.1570587158203,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 8.0,
+                        "action_id": 604,
+                        "combo_count": 1,
+                        "tick": 190406
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 9,
+                        "combo_count": 1,
+                        "tick": 190438
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 11,
+                        "combo_count": 0,
+                        "tick": 190450
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 637,
+                        "combo_count": 0,
+                        "tick": 190459
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 543.0870819091797,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 700,
+                "combo_damage": 700,
+                "counter_hit": false,
+                "end_tick": 190459,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 11,
+                "hp_arm_usable": true,
+                "hp_base": 7440,
+                "hp_delta": 700,
+                "hp_min": 6740,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 190406,
+                "ticks": 55,
+                "victim_hp_at_start": 7440,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 655.9197387695313,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 15.0,
+                        "action_id": 609,
+                        "combo_count": 1,
+                        "tick": 190475
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 9,
+                        "combo_count": 0,
+                        "tick": 190533
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 624.1630249023438,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 1000,
+                "combo_damage": 1000,
+                "counter_hit": false,
+                "end_tick": 190535,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 13,
+                "hp_arm_usable": true,
+                "hp_base": 6740,
+                "hp_delta": 1000,
+                "hp_min": 5740,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 190475,
+                "ticks": 62,
+                "victim_hp_at_start": 6740,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 710.1629943847656,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 3.0,
+                        "action_id": 627,
+                        "combo_count": 1,
+                        "tick": 190607
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 6,
+                        "combo_count": 0,
+                        "tick": 190631
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 638.633056640625,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 250,
+                "combo_damage": 250,
+                "counter_hit": false,
+                "end_tick": 190650,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 9,
+                "hp_arm_usable": true,
+                "hp_base": 5740,
+                "hp_delta": 250,
+                "hp_min": 5490,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 190607,
+                "ticks": 45,
+                "victim_hp_at_start": 5740,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 765.0,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 7.0,
+                        "action_id": 621,
+                        "combo_count": 1,
+                        "tick": 190721
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 6,
+                        "combo_count": 1,
+                        "tick": 190751
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 664.9699096679688,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 700,
+                "combo_damage": 700,
+                "counter_hit": false,
+                "end_tick": 190773,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 11,
+                "hp_arm_usable": true,
+                "hp_base": 5490,
+                "hp_delta": 700,
+                "hp_min": 4790,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 190721,
+                "ticks": 54,
+                "victim_hp_at_start": 5490,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 765.0,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 13.0,
+                        "action_id": 660,
+                        "combo_count": 1,
+                        "tick": 190795
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 9,
+                        "combo_count": 0,
+                        "tick": 190854
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 666.2810974121094,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 1000,
+                "combo_damage": 1000,
+                "counter_hit": false,
+                "end_tick": 190855,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 13,
+                "hp_arm_usable": true,
+                "hp_base": 4790,
+                "hp_delta": 1000,
+                "hp_min": 3790,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 190795,
+                "ticks": 62,
+                "victim_hp_at_start": 4790,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 765.0,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 5.0,
+                        "action_id": 617,
+                        "combo_count": 1,
+                        "tick": 190977
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 621,
+                        "combo_count": 0,
+                        "tick": 191016
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 679.0,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 300,
+                "combo_damage": 300,
+                "counter_hit": false,
+                "end_tick": 191021,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 9,
+                "hp_arm_usable": true,
+                "hp_base": 3790,
+                "hp_delta": 300,
+                "hp_min": 3490,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 190977,
+                "ticks": 46,
+                "victim_hp_at_start": 3790,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 765.0,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 7.0,
+                        "action_id": 621,
+                        "combo_count": 1,
+                        "tick": 191023
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 623,
+                        "combo_count": 0,
+                        "tick": 191061
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 6,
+                        "combo_count": 0,
+                        "tick": 191128
+                    }
+                ],
+                "agree": false,
+                "attacker_pos_at_start": 671.8125,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 1000,
+                "combo_damage": 1000,
+                "counter_hit": false,
+                "end_tick": 191137,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 25,
+                "hp_arm_usable": true,
+                "hp_base": 3490,
+                "hp_delta": 1700,
+                "hp_min": 1790,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 0.5882352941176471,
+                "start_tick": 191023,
+                "ticks": 116,
+                "victim_hp_at_start": 3490,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 765.0,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 5.0,
+                        "action_id": 617,
+                        "combo_count": 1,
+                        "tick": 191302
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 618,
+                        "combo_count": 1,
+                        "tick": 191319
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 1015,
+                        "combo_count": 2,
+                        "tick": 191331
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 679.0,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 540,
+                "combo_damage": 540,
+                "counter_hit": false,
+                "end_tick": 191365,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 2,
+                "hitstop_ticks": 18,
+                "hp_arm_usable": true,
+                "hp_base": 1790,
+                "hp_delta": 540,
+                "hp_min": 1250,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 191302,
+                "ticks": 65,
+                "victim_hp_at_start": 1790,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 765.0,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 78.0,
+                        "action_id": 919,
+                        "combo_count": 1,
+                        "tick": 191501
+                    }
+                ],
+                "agree_reason": "victim reached zero HP - the delta is capped and the two are not comparable",
+                "attacker_pos_at_start": 765.0,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 2160,
+                "combo_damage": 2160,
+                "counter_hit": false,
+                "end_tick": 191672,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 0,
+                "hp_arm_usable": true,
+                "hp_base": 1250,
+                "hp_delta": 1250,
+                "hp_min": 0,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.728,
+                "start_tick": 191501,
+                "ticks": 173,
+                "victim_hp_at_start": 1250,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 685.0,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 125.0,
+                        "action_id": 946,
+                        "combo_count": 1,
+                        "tick": 192482
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 9,
+                        "combo_count": 0,
+                        "tick": 192576
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 70.12992858886719,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 2720,
+                "combo_damage": 2720,
+                "counter_hit": false,
+                "end_tick": 192593,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 0,
+                "hp_arm_usable": true,
+                "hp_base": 10000,
+                "hp_delta": 2720,
+                "hp_min": 7280,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 192482,
+                "ticks": 113,
+                "victim_hp_at_start": 10000,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 70.12992858886719,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 8.0,
+                        "action_id": 604,
+                        "combo_count": 1,
+                        "tick": 192675
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 605,
+                        "combo_count": 1,
+                        "tick": 192702
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 606,
+                        "combo_count": 1,
+                        "tick": 192731
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 9,
+                        "combo_count": 0,
+                        "tick": 192803
+                    }
+                ],
+                "agree": false,
+                "attacker_pos_at_start": 171.75152587890625,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 1500,
+                "combo_damage": 1500,
+                "counter_hit": false,
+                "end_tick": 192807,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 2,
+                "hitstop_ticks": 33,
+                "hp_arm_usable": true,
+                "hp_base": 7280,
+                "hp_delta": 2200,
+                "hp_min": 5080,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 0.6818181818181818,
+                "start_tick": 192675,
+                "ticks": 134,
+                "victim_hp_at_start": 7280,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 257.75152587890625,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 11.0,
+                        "action_id": 901,
+                        "combo_count": 1,
+                        "tick": 193130
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 9,
+                        "combo_count": 0,
+                        "tick": 193231
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 394.67189025878906,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 1360,
+                "combo_damage": 1360,
+                "counter_hit": false,
+                "end_tick": 193238,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 2,
+                "hitstop_ticks": 31,
+                "hp_arm_usable": true,
+                "hp_base": 5080,
+                "hp_delta": 1360,
+                "hp_min": 3720,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 193130,
+                "ticks": 110,
+                "victim_hp_at_start": 5080,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 480.67189025878906,
+                "victim_side_max": 0
+            }
+        ],
+        "sufficient": true,
+        "ticks_observed": 15762,
+        "ticks_skipped": 0,
+        "verdict": "mComboDamage and the HP delta disagree on 3 of 18 comparable samples - record both and do not trust either alone"
+    },
+    "header": {
+        "anchor_hooked": true,
+        "config": {
+            "probe_a_idle_ticks": 20,
+            "probe_a_min_samples": 3,
+            "probe_b_min_frames": 300,
+            "sources": {
+                "allow_injection": "default",
+                "enabled": "default",
+                "probe_a_idle_ticks": "default",
+                "probe_a_min_samples": "default",
+                "probe_b_min_frames": "default",
+                "write_diag_files": "default"
+            }
+        },
+        "frame": 197840,
+        "mod_version": "0.3.0-diagnostics",
+        "p1": {
+            "id": 6,
+            "key": "ESF_006",
+            "name": "ESF_006"
+        },
+        "p1_control_scheme": "modern",
+        "p2": {
+            "id": 2,
+            "key": "ESF_002",
+            "name": "ESF_002"
+        },
+        "provenance": {
+            "capabilities": {
+                "catalog": {
+                    "available": false,
+                    "blocked_by": [
+                        "action_id_canonical"
+                    ]
+                },
+                "damage": {
+                    "available": false,
+                    "blocked_by": [
+                        "combo_damage_readable"
+                    ]
+                },
+                "frame_data": {
+                    "available": false,
+                    "blocked_by": [
+                        "frame_meter_semantics",
+                        "tick_equals_frame"
+                    ]
+                },
+                "injection": {
+                    "available": false,
+                    "blocked_by": [
+                        "direction_bits",
+                        "modern_button_bits",
+                        "rl_dir_polarity"
+                    ]
+                },
+                "probing": {
+                    "available": false,
+                    "blocked_by": [
+                        "direction_bits",
+                        "hitstop_advances_tick",
+                        "input_hook_calls_per_frame",
+                        "modern_button_bits",
+                        "reset_settle_ticks",
+                        "rl_dir_polarity",
+                        "tick_equals_frame"
+                    ]
+                },
+                "stage_reset": {
+                    "available": false,
+                    "blocked_by": [
+                        "reset_settle_ticks"
+                    ]
+                },
+                "timing": {
+                    "available": false,
+                    "blocked_by": [
+                        "hitstop_advances_tick",
+                        "input_hook_calls_per_frame",
+                        "tick_equals_frame"
+                    ]
+                }
+            },
+            "entries": {
+                "action_id_canonical": {
+                    "gates": [
+                        "catalog"
+                    ],
+                    "measured_by": "calibration_action_sweep",
+                    "status": "unverified"
+                },
+                "combo_damage_readable": {
+                    "gates": [
+                        "damage"
+                    ],
+                    "measured_by": "probe_a_damage",
+                    "status": "unverified"
+                },
+                "direction_bits": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": {
+                        "DOWN": 2,
+                        "LEFT": 4,
+                        "RIGHT": 8,
+                        "UP": 1
+                    }
+                },
+                "frame_meter_semantics": {
+                    "gates": [
+                        "frame_data"
+                    ],
+                    "measured_by": "calibration_frame_meter",
+                    "status": "unverified",
+                    "value": {
+                        "BLOCKSTUN": 10,
+                        "HITSTUN": 9,
+                        "RECOVERY": 8,
+                        "STARTUP": 7
+                    }
+                },
+                "hitstop_advances_tick": {
+                    "gates": [
+                        "timing"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified",
+                    "value": false
+                },
+                "input_hook_calls_per_frame": {
+                    "gates": [
+                        "timing"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified",
+                    "value": 1
+                },
+                "modern_button_bits": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": {
+                        "AUTO": 512,
+                        "DI": 4096,
+                        "H": 256,
+                        "L": 16,
+                        "M": 128,
+                        "PARRY": 64,
+                        "SP": 32,
+                        "THROW": 8192
+                    }
+                },
+                "reset_settle_ticks": {
+                    "gates": [
+                        "stage_reset"
+                    ],
+                    "measured_by": "calibration_reset_cost",
+                    "status": "unverified",
+                    "value": 25
+                },
+                "rl_dir_polarity": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": "mirror_when_falsy"
+                },
+                "tick_equals_frame": {
+                    "gates": [
+                        "timing",
+                        "frame_data"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified"
+                }
+            }
+        },
+        "written_at": "20260910T144757Z"
+    }
+}
