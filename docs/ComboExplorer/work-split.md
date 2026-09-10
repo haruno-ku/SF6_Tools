@@ -8,6 +8,24 @@
 
 ---
 
+## 進捗（このドキュメント作成後）
+
+| 項目 | 状態 |
+|---|---|
+| A0 未検証値レジストリ `core/Provenance.lua` | **完了** — 10項目、能力ゲート、キャリブレーション適用 |
+| A1 現ビルドのレビューと修正 | **完了** — 5観点 × 敵対的検証。確認された欠陥はすべて修正 |
+| A2 実機依存 / 非依存の分離 | **完了** — `core/` は純粋、`runtime/GameAdapter.lua` が `sdk` に触れる唯一のファイル |
+| A3 raw JSON loader / slim map 回帰 / 分類 / canonical・variant / Catalog | **完了** — `core/Catalog.lua` |
+| A5 `LinkVerdict`（combo count 増加で判定） | **完了** — `core/LinkVerdict.lua` |
+| A4 Schema 固定 | 未着手 |
+| A5 `StageControlFsm` / `RunnerFsm` / `SequenceCompiler` | 未着手 |
+| A6 `ResultCollector` / `GraphStore` / `RouteSearch` / `Scoring` / `Exporter` / KDB adapter | 未着手 |
+| A7 Calibration 手順・injection smoke test の確定 | 未着手 |
+
+テスト: **554 アサーション**（Lua 5.4.6、SF6 不要）。
+
+---
+
 ## A. 実機なしで進める作業
 
 上から順に依存している。上が終わらないと下が正しく書けない。
