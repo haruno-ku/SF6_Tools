@@ -44,6 +44,9 @@ local ClockStats  = require("func/ComboExplorer/core/ClockStats")
 local Catalog     = require("func/ComboExplorer/core/Catalog")
 local CatalogAudit = require("func/ComboExplorer/core/CatalogAudit")
 
+local Calibration = require("func/ComboExplorer/core/Calibration")
+local CalRunner   = require("func/ComboExplorer/runtime/CalibrationRunner")
+
 local Config      = require("func/ComboExplorer/runtime/Config")
 local GameAdapter = require("func/ComboExplorer/runtime/GameAdapter")
 local Clock       = require("func/ComboExplorer/runtime/Clock")
@@ -99,6 +102,12 @@ i18n.register("combo_explorer", {
         hdr_probe_b  = "--- PROBE B: IS A TICK A FRAME ---",
         hdr_probe_c  = "--- PROBE C: WHAT A RESET COSTS ---",
         hdr_probe_d  = "--- PROBE D: DOES THE CATALOG MATCH THIS GAME ---",
+        hdr_calib    = "--- CALIBRATION: WHICH BIT IS WHICH BUTTON ---",
+        calib_help   = "The only part of this build that writes an input, and it writes from the "
+                    .. "GUESS on purpose - it is testing the button map, not using it. Put the pad "
+                    .. "down: whatever you hold is ORed in on top. It will ask you to swap sides.",
+        calib_start  = "START SWEEP",
+        calib_write  = "WRITE PROFILE",
         probe_c_help = "Leave this running and reset the stage from the training menu a dozen "
                     .. "times. It times how long a reset actually takes to settle - which is "
                     .. "what decides how big the brute-force sweep can be.",
@@ -132,6 +141,11 @@ i18n.register("combo_explorer", {
         hdr_probe_b  = "--- 探针 B：一个 tick 是否等于一帧 ---",
         hdr_probe_c  = "--- 探针 C：一次重置的代价 ---",
         hdr_probe_d  = "--- 探针 D：目录是否与本作匹配 ---",
+        hdr_calib    = "--- 校准：哪个位对应哪个按键 ---",
+        calib_help   = "本版本中唯一会写入输入的部分，且刻意使用推测值——它是在检验按键表，"
+                    .. "而不是在使用它。请放开手柄：你按住的任何键都会被叠加进去。中途会要求你换边。",
+        calib_start  = "开始扫描",
+        calib_write  = "写入配置",
         probe_c_help = "保持运行，并从训练菜单重置场景十余次。它会测量一次重置真正稳定下来所需的时间。",
         probe_d_help = "加载 1P 角色的招式目录，并与游戏实际产生的 action id 比对。请先运行探针 A 一段时间。",
         load_catalog = "加载目录",
@@ -333,6 +347,10 @@ Clock.on_frame(function(frame)
         probe_a.probe:tick(snap, frame)
     end
 
+    -- Ticked from the anchor, like the probes. The runner parks a mask here and
+    -- the shared input callback spends it on the same frame.
+    if CalRunner.running() then CalRunner.tick() end
+
     if probe_c.on then
         probe_c.probe:tick({
             refreshing = GameAdapter.is_refreshing(),
@@ -348,6 +366,11 @@ end)
 
 -- The input callback does exactly one thing: count calls. It cannot write,
 -- because this build has nothing that writes.
+-- Installed once per script generation, beside the counting callback below.
+-- The error, if any, is kept on the module so the panel can show it: the local
+-- the panel reads is not in scope this far up the file.
+CalRunner.install(current)
+
 if _G._shared_input_post then
     table.insert(_G._shared_input_post, function(p_id, retval)
         if not current() then return end
@@ -617,6 +640,74 @@ local function draw_probe_c()
     end
 end
 
+-- The sweep. Kept beside the probes rather than in its own tree so the panel
+-- reads in the order the runbook does: measure, then calibrate.
+local calib = { last_status = nil }
+
+local function draw_calibration()
+    imgui.text_colored(T("calib_help"), UIKit.COLORS.Grey)
+
+    local ierr = CalRunner.install_error()
+    if ierr then imgui.text_colored(ierr, UIKit.COLORS.Red) end
+
+    if CalRunner.running() then
+        if UIKit.styled_button(T("stop") .. "##ce_cal", THEME.stop, UIKit.COLORS.White) then
+            CalRunner.stop()
+        end
+    else
+        if UIKit.styled_button(T("calib_start") .. "##ce_cal", THEME.go, UIKit.COLORS.White) then
+            local r, err = CalRunner.start(reg, {})
+            calib.last_status = r and "sweep started" or ("could not start: " .. tostring(err))
+        end
+    end
+    imgui.same_line()
+    if UIKit.styled_button(T("calib_write") .. "##ce_cal_write", THEME.neutral, UIKit.COLORS.White) then
+        local probe_values = Calibration.from_probes({
+            probe_a = probe_a.probe:report({ min_comparable = Config.data.probe_a_min_samples }),
+            probe_b = Clock.diag_report({ min_frames = Config.data.probe_b_min_frames }),
+            -- ProbeC has no :report(); the verdict is a module function over
+            -- the episode list, the same way draw_probe_c does it.
+            probe_c = ProbeC.conclude(probe_c.probe.episodes),
+        }, { provenance = reg })
+        local path, err = CalRunner.write_profile({
+            calibration_id = ("%s-%s"):format(tostring(live.p1_char and live.p1_char.key),
+                                              os.date("!%Y%m%dT%H%M%SZ")),
+            game_patch = reg.game_patch or Config.data.game_patch or "unknown",
+            control_scheme = live.p1_control or "modern",
+        }, probe_values)
+        calib.last_status = path and (T("wrote") .. " " .. path)
+            or (T("write_failed") .. ": " .. tostring(err))
+    end
+
+    local p = CalRunner.progress()
+    if p then
+        kv("step", ("%d / %d  [%s]"):format(p.index, p.total, tostring(p.state)),
+           p.done and UIKit.COLORS.Green or UIKit.COLORS.Cyan)
+        if p.purpose then imgui.text_colored("  " .. p.purpose, UIKit.COLORS.White) end
+        if p.note then imgui.text_colored("  " .. p.note, UIKit.COLORS.Yellow) end
+        kv("idle action id", fmt(p.neutral_action_id))
+        kv("masks written", tostring(p.writes))
+    else
+        imgui.text_colored("not running", UIKit.COLORS.DarkGrey)
+    end
+
+    -- The verdict so far, so a run that is going wrong is visible before it
+    -- ends rather than after.
+    local rep = CalRunner.running() and CalRunner.report() or nil
+    if rep then
+        local n = 0
+        for _ in pairs(rep.values) do n = n + 1 end
+        kv("entries settled", ("%d"):format(n), n > 0 and UIKit.COLORS.Green or UIKit.COLORS.DarkGrey)
+        for _, note in ipairs(rep.notes) do
+            imgui.text_colored(("  %s: %s"):format(note.key, note.reason), UIKit.COLORS.Orange)
+        end
+    end
+
+    if calib.last_status then
+        imgui.text_colored(calib.last_status, UIKit.COLORS.Cyan)
+    end
+end
+
 local function draw_probe_d()
     imgui.text_colored(T("probe_d_help"), UIKit.COLORS.Grey)
 
@@ -713,6 +804,7 @@ re.on_draw_ui(function()
     if UIKit.styled_header(T("hdr_probe_b"), THEME.hdr) then draw_probe_b() end
     if UIKit.styled_header(T("hdr_probe_c"), THEME.hdr) then draw_probe_c() end
     if UIKit.styled_header(T("hdr_probe_d"), THEME.hdr) then draw_probe_d() end
+    if UIKit.styled_header(T("hdr_calib"), THEME.hdr) then draw_calibration() end
 
     imgui.tree_pop()
 end)
