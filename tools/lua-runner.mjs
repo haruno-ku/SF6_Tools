@@ -57,9 +57,10 @@ if (mode === 'syntax') {
   // Only our own files: upstream's are not ours to police, and several are
   // large enough that checking them on every run is pure latency.
   const files = [
+    'reframework/autorun/ComboExplorer.lua',
     ...walk('reframework/autorun/func/ComboExplorer'),
     ...walk('tests/lua'),
-  ]
+  ].filter((f) => existsSync(f))
   if (files.length === 0) {
     console.error('no Lua files found - wrong working directory? Run from the repo root.')
     process.exit(2)

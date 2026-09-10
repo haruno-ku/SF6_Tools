@@ -23,6 +23,7 @@ i18n.register("scriptmanager", {
         waiting = "[!] INACTIVE: Waiting for Training Mode...",
         m_disabled = "DISABLED", m_execution = "EXECUTION", m_hitconfirm = "HIT CONFIRM",
         m_reaction = "REACTION DRILLS", m_postguard = "POST GUARD", m_combo = "CUSTOM COMBO TRIALS",
+        m_explorer = "COMBO EXPLORER",
     },
     zh = {
         lang_label = "语言",
@@ -35,6 +36,7 @@ i18n.register("scriptmanager", {
         waiting = "[!] 未激活：等待进入训练模式……",
         m_disabled = "禁用", m_execution = "执行训练", m_hitconfirm = "确认训练",
         m_reaction = "反应训练", m_postguard = "防御后训练", m_combo = "自定义连段训练",
+        m_explorer = "连段探索器",
     },
 })
 local T_sm = i18n.scope("scriptmanager")
@@ -324,6 +326,12 @@ local function update_guard_logic()
         -- >>> EXECUTION >>> NO GUARD (0)
         set_guard_type(GUARD_NO)
 
+    elseif current_mode == 6 then
+        -- >>> COMBO EXPLORER >>> NO GUARD (0)
+        -- The Explorer records whether move A links into move B. A guarding
+        -- dummy turns every hit into a block, so every probe would be recorded
+        -- as "does not link" - the failure would look like data.
+        set_guard_type(GUARD_NO)
 
     elseif current_mode == 0 then
         -- >>> DISABLED / COMBO TRIALS >>> RESTORE
@@ -351,7 +359,14 @@ local TSM_MODE_NAMES = {
     [3] = "POST GUARD",
     [4] = "COMBO TRIALS",
     [5] = "EXECUTION",
+    [6] = "COMBO EXPLORER",
 }
+
+-- Mode 6 is deliberately absent from MODE_CYCLE and from both top bars. It is
+-- an unattended automation mode that can run for an hour; landing on it by
+-- cycling with a pad shortcut would be a surprise, and adding a seventh button
+-- would narrow the existing six for everyone. It is selected from the
+-- REFramework menu, which is where you go when you mean it.
 
 local MODE_CYCLE = { 0, 5, 2, 1, 3, 4 }
 local MODE_CYCLE_INDEX = {} -- reverse lookup: mode_id → position in cycle
@@ -1073,6 +1088,9 @@ re.on_draw_ui(function()
 
             local c4, v4 = imgui.checkbox(T_sm("m_combo"), _G.CurrentTrainerMode == 4)
             if c4 and v4 then _G.CurrentTrainerMode = 4 end
+
+            local c6, v6 = imgui.checkbox(T_sm("m_explorer"), _G.CurrentTrainerMode == 6)
+            if c6 and v6 then _G.CurrentTrainerMode = 6 end
         end
 
         -- HOTKEY BINDINGS now live in their own top-level REFramework menu

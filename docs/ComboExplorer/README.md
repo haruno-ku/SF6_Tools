@@ -1,0 +1,214 @@
+# SF6 Combo Explorer
+
+Automated combo discovery for Street Fighter 6, built on
+[Wael3rd/SF6_Tools](https://github.com/Wael3rd/SF6_Tools). It drives Training
+Mode, records which moves actually link into which, and exports the verified
+results.
+
+The guiding rule, from the plan: **theory generates candidates, the game decides
+what is true.** Nothing is written down as a fact because a frame-data table
+said so.
+
+- Plan: [`plan-v3-implementation.md`](plan-v3-implementation.md) (the current one)
+- Original: [`plan-v2-modern-first.md`](plan-v2-modern-first.md)
+
+---
+
+## Current build: `0.1.0-diagnostics` — READ ONLY
+
+This build **never injects input**. It watches and measures.
+
+That is not caution for its own sake. Three things decide how everything after
+them is built, and none of them can be settled by reading source:
+
+| Probe | Question | Why it blocks everything |
+|---|---|---|
+| **A** | Is combo damage actually readable? | `mpTeam.mComboDamage` is read at exactly one site in all of upstream, inside a `pcall`, with an HP-delta fallback its author wrote because it may read zero. If it reads zero here, every recorded edge gets damage 0 and the scoring phase produces garbage that looks fine. |
+| **B** | Is one input-hook call one frame? | The hook fires at least once per player per frame, and upstream says hitstop makes hook ticks drift from engine frames. Until that is measured, a recorded "delay 5" has no unit. |
+| **C** | What does one attempt cost in real time? | That single number decides how large the brute-force matrix can be. There is no way to run the game faster. |
+
+Probes A and B are in this build. C follows once injection exists.
+
+---
+
+## Two machines
+
+The code is written on a machine with no SF6 on it; the game runs somewhere
+else. Git is the link.
+
+```
+[dev machine]                            [gaming PC]
+  edit Lua, run tests      --push-->       git pull
+  read the reports                         scripts/install-dev.ps1
+        ^                                  play, run the probes
+        |                                  reframework/data/ComboExplorer_data/
+        +----------------pull------------  diagnostics/*.json  --commit-->
+```
+
+Diagnostic reports are written as JSON inside the game folder, so they get
+copied back into the repo and committed. That is the whole feedback loop.
+
+---
+
+## Install (gaming PC)
+
+**Prerequisites:** Street Fighter 6 (Steam), and the base SF6_Tools suite
+working — REFramework menu opens on `Insert`, Training Script Manager appears.
+If that is not already true, set it up and confirm it before going further.
+
+```powershell
+git clone https://github.com/haruno-ku/SF6_Tools.git sf6-combo-explorer
+cd sf6-combo-explorer
+git checkout feat/combo-explorer
+
+# See what would be copied, without writing anything
+.\scripts\install-dev.ps1 -WhatIf
+
+# First install on this machine: also places REFramework (dinput8.dll) and the
+# D2D plugin. Later runs should omit -Bootstrap.
+.\scripts\install-dev.ps1 -Bootstrap
+```
+
+The script finds the game through the Steam library index. If it cannot,
+pass `-GameDir "…\steamapps\common\StreetFighter6"` or set `$env:SF6_DIR`.
+
+It will not run while SF6 is open, and it never overwrites recorded combos,
+slot exports, session stats or your own config — those live in the same tree as
+the shipped data files, so the exclusions are what keep a sync from wiping a
+training setup.
+
+To update later: `git pull` then `.\scripts\install-dev.ps1` (no `-Bootstrap`).
+
+---
+
+## Running the probes
+
+1. Launch SF6, enter **Training Mode**, pick **Zangief** on **Modern** for P1.
+2. `Insert` → REFramework menu.
+3. **Training Script Manager → TRAINING MODES → COMBO EXPLORER**.
+   (It is not on the top bar and not in the `SWITCH` cycle, on purpose: it is an
+   unattended mode that can run for an hour, and landing on it by accident
+   while cycling with a pad would be unwelcome.)
+4. Open **SF6 COMBO EXPLORER** in the REFramework menu.
+
+### First: sanity-check the live readout
+
+Expand **LIVE READOUT** and hit the dummy a few times. Every row should move:
+
+- `P1 control` reads **MODERN**
+- `P1 action id` changes when you press a button
+- `P1 combo_cnt` counts your hits
+- `P2 gard_combo_cnt` counts when the dummy blocks instead
+- `mComboDamage P1 / P2` shows a number on at least one side during a combo
+
+> **If `mComboDamage P1 / P2` stays `-- / --`**, that is the important
+> finding, not a bug to work around. Run probe A anyway and send the report:
+> it means the Explorer has to measure damage from HP instead.
+
+### Probe A — damage readability
+
+1. Expand **PROBE A**, press **START**.
+2. Land **at least 5 combos of different lengths** on the dummy. Vary the hit
+   count; include one that does not kill.
+3. Press **WRITE REPORT**.
+
+Writes `reframework/data/ComboExplorer_data/diagnostics/probe_a_damage.json`.
+
+The panel states its own conclusion, so you can see whether you have enough
+before you stop.
+
+### Probe B — clock
+
+1. Expand **PROBE B**, press **START**.
+2. Play normally for **30 seconds or so, including some hits** — hitstop has to
+   be represented in the sample, because it is exactly what makes the two
+   clocks disagree.
+3. Press **WRITE REPORT**.
+
+Writes `…/diagnostics/probe_b_clock.json`.
+
+The result to hope for is *one call per player per frame* and *no gap*. Any
+other answer is still useful — it just means delays stay in ticks and get
+converted later.
+
+### Send the results back
+
+```powershell
+# from the game folder
+Copy-Item "…\StreetFighter6\reframework\data\ComboExplorer_data\diagnostics\*.json" `
+          ".\reframework\data\ComboExplorer_data\diagnostics\"
+git add reframework/data/ComboExplorer_data/diagnostics
+git commit -m "probe: A and B results from <machine>"
+git push
+```
+
+---
+
+## Regression check
+
+The Explorer adds a mode; it must not disturb the ones already there. After
+installing, confirm each still behaves normally:
+
+- Hit Confirm, Reaction Drills, Post Guard, Custom Combo Trials, Execution Drill
+- Distance Viewer, Sheldon's Boxes, Recording Slot Manager
+- **REFramework menu → Training Suite → Script Errors is empty.**
+  In particular there must be no `pl_input_sub hook not installed` — that hook
+  is the foundation of the whole approach.
+
+Switching to COMBO EXPLORER sets the dummy to no-guard, the same way the other
+modes set their own guard type. Switching back to DISABLED restores it.
+
+---
+
+## Development (dev machine)
+
+```bash
+pnpm test           # parse every Explorer Lua file, then run the unit tests
+pnpm lint:lua       # parse only
+pnpm gen:fixtures   # regenerate the notation fixture from the shipped catalog
+```
+
+Needs Node 20+ and Lua 5.4 (`winget install --id DEVCOM.Lua`). A shell opened
+before that install will not have Lua on PATH yet; the runner falls back to the
+default install location.
+
+Only the pure modules are testable off-game — `InputMask`, and later the catalog
+and scoring logic. That split is the design: anything touching `sdk` / `re` /
+`imgui` needs the game, so everything that does not is kept out of those files
+deliberately.
+
+The notation fixture is generated from the shipped `command_display` catalog
+rather than typed by hand. A notation the parser cannot handle is a move that
+disappears from the Move Catalog without any error, which would show up much
+later as "these links do not work".
+
+---
+
+## Layout
+
+```
+reframework/autorun/
+  ComboExplorer.lua                  entry point, mode 6, panel
+  func/ComboExplorer/
+    Clock.lua                        frame anchor + tick latch (read this first)
+    Telemetry.lua                    every game-state read, and the damage tracker
+    InputMask.lua                    notation <-> bitmask; pure, unit-tested
+    Config.lua                       settings + diagnostic report writing
+reframework/data/ComboExplorer_data/
+  Config.json                        settings
+  diagnostics/                       probe reports (committed back)
+scripts/install-dev.ps1              repo -> game folder sync
+tools/                               dev-machine generators and runners
+tests/lua/                           unit tests
+docs/ComboExplorer/                  the plan
+```
+
+`Clock.lua` is the one to read first. It explains why the Explorer counts ticks
+rather than frames, which is the single assumption everything else rests on.
+
+---
+
+## Licence
+
+MIT, inherited from SF6_Tools — `Copyright (c) 2026 Wael Hadjmouldi`. See
+[`LICENSE`](../../LICENSE); it stays with any copy.
