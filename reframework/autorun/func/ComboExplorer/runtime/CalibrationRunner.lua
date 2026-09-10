@@ -47,7 +47,8 @@ local JsonIO      = require("func/ComboExplorer/runtime/JsonIO")
 local M = { name = "ComboExplorer.CalibrationRunner" }
 
 local run = nil          -- the live run, or nil
-local pending_mask = nil -- decided by the tick, spent by the input callback
+local pending_mask = nil   -- decided by the tick, spent by the input callback
+local pending_mirror = nil -- and whether that mask may be flipped for facing
 local hooked = false
 local install_error = nil
 
@@ -67,9 +68,9 @@ function M.install(is_current)
     table.insert(_G._shared_input_post, function(p_id, _retval)
         if not is_current() then return end
         if p_id ~= 0 then return end
-        local mask = pending_mask
+        local mask, mirror = pending_mask, pending_mirror
         -- Spent. Not left for the next call to find.
-        pending_mask = nil
+        pending_mask, pending_mirror = nil, nil
         if not mask or mask == 0 then return end
         if not run then return end
 
@@ -77,18 +78,27 @@ function M.install(is_current)
             local p1 = GameAdapter.player(0)
             if not p1 then return end
 
-            -- Mirrored here rather than in the plan, because which way to
-            -- mirror is one of the things being measured: the profile carries
-            -- the provisional polarity, and a step that comes out backwards is
-            -- the finding.
-            local final = InputMask.mirror(mask, p1:get_field("rl_dir"), run.session.profile)
-            -- mirror() returns nil when the profile is malformed. Writing
-            -- `now | nil` would raise inside this pcall and vanish, and the
-            -- sweep would record every step as "nothing came out" - a full set
-            -- of confident negatives about the button map.
-            if final == nil then
-                run.write_error = "InputMask.mirror refused the profile"
-                return
+            -- Mirrored only when the STEP says so.
+            --
+            -- It used to be mirrored unconditionally, which silently broke the
+            -- one phase that must not be: the direction steps measure what the
+            -- raw bit does on each side, and mirroring them first applied the
+            -- provisional polarity to the experiment measuring that polarity.
+            -- Both worlds with a real answer then looked identical and were
+            -- refused, and the world that should have been refused produced a
+            -- confident VERIFIED polarity that would double-mirror half of
+            -- every later dataset.
+            local final = mask
+            if mirror then
+                -- mirror() returns nil for a malformed profile. Writing
+                -- `now | nil` raises inside this pcall and vanishes, and the
+                -- sweep would record every step as "nothing came out" - a full
+                -- set of confident negatives about the button map.
+                final = InputMask.mirror(mask, p1:get_field("rl_dir"), run.session.profile)
+                if final == nil then
+                    run.write_error = "InputMask.mirror refused the profile"
+                    return
+                end
             end
             local now = p1:get_field("pl_input_new") or 0
             p1:set_field("pl_input_new", now | final)
@@ -149,12 +159,12 @@ function M.start(reg, opts)
         ticks = 0,
         last_note = nil,
     }
-    pending_mask = nil
+    pending_mask, pending_mirror = nil, nil
     return run
 end
 
 function M.stop()
-    pending_mask = nil
+    pending_mask, pending_mirror = nil, nil
     run = nil
 end
 
@@ -206,6 +216,7 @@ function M.tick()
     })
 
     pending_mask = cmd.write_mask
+    pending_mirror = cmd.mirror
     run.last_note = cmd.note
     run.last_state = cmd.state
     return cmd

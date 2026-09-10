@@ -284,6 +284,7 @@ function M.plan(session)
     add {
         phase = M.PHASE.NEUTRAL,
         mask = 0,
+        mirror = false,
         hold_ticks = session.hold_ticks,
         purpose = "record the action id of a character that was asked to do nothing",
         tests = {},
@@ -309,6 +310,10 @@ function M.plan(session)
             phase = M.PHASE.BUTTON_BITS,
             mask = bit,
             bit = bit,
+            -- A single button bit carries no left or right, so there is nothing
+            -- to mirror. Stated rather than left to the writer's default,
+            -- because the writer's default is what broke the direction phase.
+            mirror = false,
             hold_ticks = session.hold_ticks,
             purpose = ("hold bit 0x%X alone and record what came out"):format(bit),
             tests = { "modern_button_bits" },
@@ -330,6 +335,16 @@ function M.plan(session)
                     bit = bit,
                     direction = name,
                     side = side,
+                    -- NEVER mirrored, and this is the whole correctness of #8.
+                    -- What the step measures is what the RAW bit does on each
+                    -- side. Mirroring it first would apply the provisional
+                    -- polarity to the experiment that exists to measure that
+                    -- polarity: the two worlds with a real answer would then
+                    -- look identical to each other and be refused, and the one
+                    -- world that should be refused would come out VERIFIED with
+                    -- a polarity that double-mirrors half of every later
+                    -- dataset - "flaky links rather than a bug".
+                    mirror = false,
                     hold_ticks = session.hold_ticks,
                     purpose = ("hold %s (0x%X) with %s and record which way the character went")
                         :format(name, bit, side),
@@ -343,20 +358,71 @@ function M.plan(session)
     -- the catalog rather than off a written-out {5,2,4,6,1,3}x{L,M,H,SP} grid,
     -- so the sweep asks exactly the questions the data still has open and
     -- carries the catalog's own notation string into the answer.
+    -- Unlike the phases above, these steps have to PRESS a notation rather than
+    -- hold a named bit, so a mask has to be built. A step with no mask presses
+    -- nothing, completes normally, and records the IDLE action id against the
+    -- group - nine confident, wrong observations and not one error.
+    --
+    -- Everything the plan cannot build a single-tick mask for is recorded in
+    -- `groups_unaddressed` rather than dropped, because conclude() judges
+    -- completeness against what was actually attempted: a group nobody could
+    -- press must not read the same as a group that was pressed and did nothing.
+    session.groups_addressed = {}
+    session.groups_unaddressed = {}
+
+    local function cannot(g, why)
+        session.groups_unaddressed[#session.groups_unaddressed + 1] =
+            { display_group = g.display_group, notation = g.notation, reason = why }
+    end
+
     for _, g in ipairs(Catalog.ambiguous_groups(session.catalog)) do
         local parsed = InputMask.parse(g.notation)
-        if parsed and not parsed.followup and not parsed.air then
-            add {
-                phase = M.PHASE.ACTION_SWEEP,
-                notation = g.notation,
-                input_method = g.input_method,
-                display_group = g.display_group,
-                candidates = copy(g.action_ids),
-                hold_ticks = session.hold_ticks,
-                purpose = ("%s produces one of %d ids; find out which")
-                    :format(g.notation, #(g.action_ids or {})),
-                tests = { "action_id_canonical" },
-            }
+        if not parsed then
+            cannot(g, "the notation carries no input")
+        elseif parsed.followup then
+            cannot(g, "a follow-up only comes out after a preceding action, "
+                   .. "so it cannot be produced from neutral")
+        elseif parsed.air then
+            cannot(g, "an air move cannot be produced from a standing neutral")
+        else
+            local btn, berr = InputMask.button_mask(parsed.buttons, session.profile)
+            local dirs, derr
+            if parsed.dirs ~= "" then
+                dirs, derr = InputMask.dirs_from_numpad(parsed.dirs, session.profile)
+            end
+
+            if not btn then
+                cannot(g, tostring(berr))
+            elseif parsed.dirs ~= "" and not dirs then
+                cannot(g, tostring(derr))
+            elseif dirs and #dirs > 1 then
+                -- A motion is one direction per tick and this sweep writes a
+                -- single mask for the whole hold. Playing 720 needs a compiled
+                -- tick program: SequenceCompiler builds those and the Injector
+                -- runs them, and neither is this.
+                cannot(g, ("the motion %q needs %d direction ticks, and this sweep "
+                       .. "writes one mask"):format(parsed.dirs, #dirs))
+            else
+                local mask = btn | (dirs and dirs[1] or 0)
+                session.groups_addressed[g.display_group] = true
+                add {
+                    phase = M.PHASE.ACTION_SWEEP,
+                    notation = g.notation,
+                    input_method = g.input_method,
+                    display_group = g.display_group,
+                    candidates = copy(g.action_ids),
+                    mask = mask,
+                    -- Player-relative: "6" means forward, and which screen
+                    -- direction that is depends on the side. Nothing here is
+                    -- measuring the polarity, so the profile's value is used
+                    -- rather than tested.
+                    mirror = true,
+                    hold_ticks = session.hold_ticks,
+                    purpose = ("%s (mask 0x%X) produces one of %d ids; find out which")
+                        :format(g.notation, mask, #(g.action_ids or {})),
+                    tests = { "action_id_canonical" },
+                }
+            end
         end
     end
 
@@ -439,20 +505,41 @@ local function conclude_button_bits(session, steps)
         return nil, problems, "no button bit produced an action"
     end
 
-    -- Completeness is judged against the guess: the register's map names eight
-    -- buttons, and a profile that can express six of them is a profile that
-    -- silently cannot press the other two.
+    -- Completeness is judged against what this catalog can WITNESS, not against
+    -- the guess's key list.
+    --
+    -- The derivation reads a bit's identity off the single-button notation that
+    -- contains the action it produced, so a button with no single-button
+    -- notation anywhere in the catalog can never be derived however perfectly
+    -- the sweep runs. On every shipped character that is at least AUTO, which
+    -- only ever appears as "AUTO + <strength>", and PARRY, which InputMask has
+    -- no token for at all. Judging against the guess's eight keys therefore
+    -- meant `missing` was never empty and the entry that gates INJECTION was
+    -- skipped on every possible run - the sweep could not succeed.
+    --
+    -- So: every button the catalog COULD have witnessed must have a bit, and
+    -- the ones it could not are named. They stay out of the map. A map without
+    -- AUTO cannot express AUTO, and InputMask.button_mask reports an unknown
+    -- name rather than quietly pressing nothing - which is the loud failure,
+    -- and the right one.
     local provisional = Provenance.provisional(reg, "modern_button_bits") or {}
-    local missing = {}
+    local missing, underivable = {}, {}
     for _, name in ipairs(sorted_keys(provisional)) do
-        if derived[name] == nil then missing[#missing + 1] = name end
+        if derived[name] == nil then
+            if by_button[name] then
+                missing[#missing + 1] = name
+            else
+                underivable[#underivable + 1] = name
+            end
+        end
     end
     if #missing > 0 then
         return nil, problems,
-            ("no bit was found for %s"):format(table.concat(missing, ", "))
+            ("no bit was found for %s, which this catalog does name"):format(
+                table.concat(missing, ", "))
     end
 
-    return derived, problems, nil
+    return derived, problems, nil, underivable
 end
 
 -- --- deriving the directions and the polarity --------------------------------
@@ -547,9 +634,18 @@ function M.conclude(session)
         }
     end
 
-    local bits, bit_problems, bit_err = conclude_button_bits(session, steps)
+    local bits, bit_problems, bit_err, underivable = conclude_button_bits(session, steps)
     if bits then
-        settle("modern_button_bits", bits, ("derived from %d single-bit step(s)"):format(#steps))
+        local note = ("derived from %d single-bit step(s)"):format(#steps)
+        -- Named in the note rather than left to be noticed by whoever later
+        -- asks the profile to press one of them. The map genuinely does not
+        -- contain these, and it must be obvious why.
+        if underivable and #underivable > 0 then
+            note = note .. ("; no bit for %s - this catalog has no single-button "
+                .. "notation for them, so the sweep could not witness one")
+                :format(table.concat(underivable, ", "))
+        end
+        settle("modern_button_bits", bits, note)
     else
         skip("modern_button_bits", bit_err or "not measured")
     end
@@ -589,21 +685,46 @@ function M.conclude(session)
         applied, conflicts = Catalog.apply_observations(session.catalog, observations)
     end
 
-    local ambiguous_left = #Catalog.ambiguous_groups(session.catalog)
-    local unresolved = 0
+    -- Completeness is judged against the groups the plan ATTEMPTED, not against
+    -- every ambiguous group in the catalog.
+    --
+    -- plan() emits no step for a group that is an air move, a follow-up, or a
+    -- motion this sweep cannot press in one tick, so those can never be
+    -- observed. Counting them as unresolved made the total permanently non-zero
+    -- - every character has at least one - and action_id_canonical could never
+    -- settle on any run. A group nobody could press is a limit of the sweep,
+    -- not an outstanding question about the run.
+    local addressed = session.groups_addressed or {}
+    local unresolved = {}
     for _, g in ipairs(Catalog.ambiguous_groups(session.catalog)) do
-        if g.canonical_status ~= "verified" then unresolved = unresolved + 1 end
+        if addressed[g.display_group] and g.canonical_status ~= "verified" then
+            unresolved[#unresolved + 1] = g.display_group
+        end
     end
-    if unresolved > 0 then
+
+    local attempted = 0
+    for _ in pairs(addressed) do attempted = attempted + 1 end
+
+    if attempted == 0 then
+        skip("action_id_canonical", "the plan could press none of the ambiguous groups")
+    elseif #unresolved > 0 then
         skip("action_id_canonical",
-             ("%d of %d ambiguous group(s) still unresolved"):format(unresolved, ambiguous_left))
+             ("%d of the %d group(s) the sweep pressed are still unresolved: %s")
+                 :format(#unresolved, attempted, table.concat(unresolved, ", ")))
     else
         local canonical = {}
         for _, g in ipairs(Catalog.ambiguous_groups(session.catalog)) do
-            canonical[g.display_group] = g.canonical_action_id
+            if addressed[g.display_group] then
+                canonical[g.display_group] = g.canonical_action_id
+            end
         end
-        settle("action_id_canonical", canonical,
-               ("%d group(s) resolved by observation"):format(#applied))
+        local note = ("%d group(s) resolved by observation"):format(#applied)
+        local out_of_reach = session.groups_unaddressed or {}
+        if #out_of_reach > 0 then
+            note = note .. ("; %d group(s) were out of this sweep's reach and remain open")
+                :format(#out_of_reach)
+        end
+        settle("action_id_canonical", canonical, note)
     end
 
     table.sort(notes, function(a, b) return a.key < b.key end)

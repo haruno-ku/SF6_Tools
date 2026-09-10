@@ -227,6 +227,12 @@ function M.tick(fsm, snapshot)
         end
 
         cmd.write_mask = step.mask
+        -- Carried with the mask, never inferred by the writer. The direction
+        -- phase measures what the RAW bit does, so mirroring it there would
+        -- feed the provisional polarity into the experiment that measures that
+        -- polarity; the action sweep presses player-relative notations and does
+        -- need it. Only the plan knows which is which.
+        cmd.mirror = step.mirror and true or false
         fsm.held = fsm.held + 1
 
         -- The action can appear while the input is still held; a three-frame

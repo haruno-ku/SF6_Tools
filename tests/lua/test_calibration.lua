@@ -10,6 +10,7 @@ local t = require("tests.lua.harness")
 local Calibration = require("func/ComboExplorer/core/Calibration")
 local Provenance  = require("func/ComboExplorer/core/Provenance")
 local Catalog     = require("func/ComboExplorer/core/Catalog")
+local InputMask   = require("func/ComboExplorer/core/InputMask")
 
 local RAW = dofile("tests/lua/fixtures/zangief_catalog.lua")
 
@@ -418,4 +419,138 @@ do
     local s = new_session()
     local ok = Calibration.observe(s, Calibration.plan(s)[1].id, "not a table")
     t.eq(ok, false, "and a non-table observation is refused")
+end
+
+-- =========================================================
+-- Everything below fixes a bug that shipped. Each one made the sweep produce a
+-- confident wrong answer, or no answer at all, on every possible run - and the
+-- tests above all passed while it did, because none of them drove the path.
+-- =========================================================
+
+t.group("every step presses something, and says whether it may be flipped")
+
+do
+    local s = new_session()
+    local steps = Calibration.plan(s)
+
+    local no_mask = {}
+    for _, st in ipairs(steps) do
+        if st.mask == nil then no_mask[#no_mask + 1] = st.id end
+    end
+    -- The action sweep used to carry no mask at all. Nothing was pressed, the
+    -- step completed normally, and the IDLE action id was recorded against the
+    -- notation - a confident wrong observation per ambiguous group, no error.
+    t.eq(#no_mask, 0, "no step reaches the writer without a mask")
+
+    for _, st in ipairs(steps) do
+        if st.phase == "direction" then
+            -- The whole correctness of #8. Mirroring here would feed the
+            -- provisional polarity into the experiment that measures it.
+            t.eq(st.mirror, false, "a direction step is never mirrored: " .. st.id)
+        elseif st.phase == "button_bits" then
+            t.eq(st.mirror, false, "a lone button bit has no left or right: " .. st.id)
+        elseif st.phase == "action_sweep" then
+            t.eq(st.mirror, true, "a player-relative notation is mirrored: " .. st.id)
+            t.ok(st.mask > 0, "and it presses something: " .. st.notation)
+        end
+    end
+end
+
+do
+    local s = new_session()
+    Calibration.plan(s)
+    -- A group the sweep cannot press is recorded with its reason, not dropped.
+    -- Counting those as "unresolved" is what made action_id_canonical
+    -- unsettleable on every character.
+    t.ok(#s.groups_unaddressed > 0, "the groups out of reach are listed")
+    local motion, air = false, false
+    for _, u in ipairs(s.groups_unaddressed) do
+        t.ok(u.reason ~= nil and u.reason ~= "", "each with a reason: " .. tostring(u.notation))
+        if tostring(u.reason):find("direction ticks") then motion = true end
+        if tostring(u.reason):find("air move") then air = true end
+    end
+    t.ok(motion, "a multi-direction motion is named as out of reach, not silently skipped")
+    t.ok(air, "so is an air move")
+end
+
+t.group("a clean sweep actually settles the button map")
+
+-- The buttons this catalog can witness: those with a notation naming exactly
+-- one button and no direction. Derived here the same way the module does,
+-- rather than hardcoded, so the test says what it means.
+local function derivable_buttons(cat)
+    local out = {}
+    for _, g in pairs(cat.groups) do
+        local parsed = InputMask.parse(g.notation)
+        if parsed and not parsed.followup and not parsed.air and not parsed.any_button
+            and parsed.dirs == "" and #parsed.buttons == 1 then
+            local name = parsed.buttons[1]
+            if not out[name] then out[name] = g.action_ids[1] end
+        end
+    end
+    return out
+end
+
+do
+    local s = new_session()
+    local steps = Calibration.plan(s)
+    local witnessable = derivable_buttons(s.catalog)
+
+    local names = {}
+    for name in pairs(witnessable) do names[#names + 1] = name end
+    table.sort(names)
+    t.ok(#names > 0, "the fixture catalog can witness some buttons")
+
+    -- AUTO only ever appears as "AUTO + <strength>" and PARRY has no InputMask
+    -- token at all, so no catalog can witness either. Judging completeness
+    -- against the guess's eight keys meant `missing` was never empty and the
+    -- entry that gates INJECTION was skipped on every possible run.
+    local has_auto = false
+    for _, n in ipairs(names) do if n == "AUTO" then has_auto = true end end
+    t.eq(has_auto, false, "AUTO has no single-button notation, so it can never be witnessed")
+
+    Calibration.observe(s, steps[1].id, { action_id = 1 })
+
+    local i = 0
+    for _, st in ipairs(steps) do
+        if st.phase == "button_bits" then
+            i = i + 1
+            local name = names[i]
+            Calibration.observe(s, st.id, { action_id = name and witnessable[name] or 1 })
+        end
+    end
+
+    local rep = Calibration.conclude(s)
+    local v = rep.values.modern_button_bits
+    t.ok(v ~= nil, "a sweep that witnessed every witnessable button settles the map")
+    if v then
+        for _, n in ipairs(names) do
+            t.ok(v.value[n] ~= nil, "the map carries a bit for " .. n)
+        end
+        t.ok(tostring(v.note):find("AUTO"),
+             "and the note names what could not be witnessed: " .. tostring(v.note))
+        t.is_nil(v.value.AUTO, "a button nobody could witness is absent from the map, not guessed")
+    end
+end
+
+t.group("the canonical entry settles on what the sweep could press")
+
+do
+    local s = new_session()
+    local steps = Calibration.plan(s)
+    for _, st in ipairs(steps) do
+        if st.phase == "action_sweep" then
+            Calibration.observe(s, st.id, { action_id = st.candidates[1] })
+        end
+    end
+    local rep = Calibration.conclude(s)
+    -- Every group the plan pressed resolved. The ones it could not press are
+    -- out of the sweep's reach, not outstanding questions about this run - and
+    -- counting them kept this entry permanently unsettleable.
+    t.ok(rep.values.action_id_canonical ~= nil,
+         "action_id_canonical settles when every group the sweep pressed resolved")
+    if rep.values.action_id_canonical then
+        t.ok(tostring(rep.values.action_id_canonical.note):find("out of this sweep's reach"),
+             "and the note still says how many were out of reach")
+    end
 end
