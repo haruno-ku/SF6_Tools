@@ -11,7 +11,7 @@ local t = require("tests.lua.harness")
 local FD = require("func/ComboExplorer/core/FrameData")
 local Catalog = require("func/ComboExplorer/core/Catalog")
 
-local RAW_FRAMES = dofile("tests/lua/fixtures/zangief_framedata.lua")
+local RAW_FRAMES = dofile("data/frame-data/zangief.lua")
 local RAW_CATALOG = dofile("tests/lua/fixtures/zangief_catalog.lua")
 
 local idx = FD.index(RAW_FRAMES)

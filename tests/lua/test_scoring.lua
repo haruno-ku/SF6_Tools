@@ -19,7 +19,7 @@ local FrameData = require("func/ComboExplorer/core/FrameData")
 local Schema = require("func/ComboExplorer/core/Schema")
 
 local cat = Catalog.build(dofile("tests/lua/fixtures/zangief_catalog.lua"))
-local idx = FrameData.index(dofile("tests/lua/fixtures/zangief_framedata.lua"))
+local idx = FrameData.index(dofile("data/frame-data/zangief.lua"))
 
 local gen = CG.generate(cat, idx, {
     from = { categories = { "normal", "command_normal" }, input_methods = { "manual" } },

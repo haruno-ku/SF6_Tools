@@ -4,7 +4,7 @@
 --
 -- Source (original work): SuperCombo Wiki - Street Fighter 6 Frame Data
 --   https://wiki.supercombo.gg/w/Street_Fighter_6
--- Obtained via: RyoSogawa/sf6-sensei, packages/data/src/generated/zangief.json
+-- Obtained via: RyoSogawa/sf6-sensei @ a64f2acf90fffc855ddc1a958a4ee752e15c571c, packages/data/src/generated/zangief.json
 -- Licence: CC-BY-SA-4.0  https://creativecommons.org/licenses/by-sa/4.0/
 -- Modifications: reduced to the fields the candidate generator reads, and
 --   re-encoded as a Lua table. No values were altered.
@@ -19,7 +19,10 @@ return {
         game_version = nil,
         source_url = "https://wiki.supercombo.gg/w/Street_Fighter_6",
         license = "CC-BY-SA",
-        fetched_at = "2026-08-19T04:05:24.993Z",
+        fetched_at = "2026-09-10T09:58:49Z",
+        obtained_via = "RyoSogawa/sf6-sensei",
+        commit = "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
+        source_path = "packages/data/src/generated/zangief.json",
     },
     moves = {
         { numpad = "1LPLK", category = "throw", startup = 5, active = "3", recovery = 23, on_hit = 9, on_block = nil, on_punish_counter = 9, damage = 1500, hitstun = nil, blockstun = nil, hitstop = nil, attack_range = 1.02, pushback = nil, cancel = {}, properties = { "throw" }, drive_gain = 2000, drive_dealt_on_hit = 10000, super_gain_on_hit = 3000 },

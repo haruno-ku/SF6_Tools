@@ -1,4 +1,4 @@
-// Emits tests/lua/fixtures/<char>_framedata.lua from an sf6-sensei character file.
+// Emits data/frame-data/<char>.lua from an sf6-sensei character file.
 //
 //   node tools/gen-framedata-fixture.mjs [character] [path-to-json]
 //
@@ -17,9 +17,15 @@ import { dirname } from 'node:path'
 
 const character = process.argv[2] ?? 'zangief'
 const src = process.argv[3] ?? `external-data/sf6-sensei/${character}.json`
-const out = `tests/lua/fixtures/${character.toLowerCase()}_framedata.lua`
+const out = `data/frame-data/${character.toLowerCase()}.lua`
+const srcMetaPath = `external-data/sf6-sensei/source.json`
 
 const data = JSON.parse(readFileSync(src, 'utf8'))
+
+// The pin. Without the commit the numbers cannot be checked against the source
+// they came from, and an unverifiable derived work is one nobody may re-use.
+let srcMeta = {}
+try { srcMeta = JSON.parse(readFileSync(srcMetaPath, 'utf8')) } catch { /* absent */ }
 
 const lua = (s) =>
   '"' + [...Buffer.from(String(s), 'utf8')]
@@ -45,7 +51,9 @@ body.push('-- Street Fighter 6 frame data for ' + (data.name?.en ?? character) +
 body.push('--')
 body.push('-- Source (original work): SuperCombo Wiki - Street Fighter 6 Frame Data')
 body.push('--   https://wiki.supercombo.gg/w/Street_Fighter_6')
-body.push('-- Obtained via: RyoSogawa/sf6-sensei, packages/data/src/generated/' + character + '.json')
+body.push('-- Obtained via: ' + (srcMeta.repository ?? 'RyoSogawa/sf6-sensei')
+  + (srcMeta.commit ? ' @ ' + srcMeta.commit : '')
+  + ', ' + (srcMeta.path ?? 'packages/data/src/generated/' + character + '.json'))
 body.push('-- Licence: CC-BY-SA-4.0  https://creativecommons.org/licenses/by-sa/4.0/')
 body.push('-- Modifications: reduced to the fields the candidate generator reads, and')
 body.push('--   re-encoded as a Lua table. No values were altered.')
@@ -60,7 +68,10 @@ body.push(`        name_en = ${val(data.name?.en)},`)
 body.push(`        game_version = ${val(data.gameVersion)},`)
 body.push(`        source_url = ${val(data.source?.url)},`)
 body.push(`        license = ${val(data.source?.license)},`)
-body.push(`        fetched_at = ${val(data.source?.fetchedAt)},`)
+body.push(`        fetched_at = ${val(srcMeta.fetchedAt ?? data.source?.fetchedAt)},`)
+body.push(`        obtained_via = ${val(srcMeta.repository ?? 'RyoSogawa/sf6-sensei')},`)
+body.push(`        commit = ${val(srcMeta.commit)},`)
+body.push(`        source_path = ${val(srcMeta.path)},`)
 body.push(`    },`)
 body.push(`    moves = {`)
 
