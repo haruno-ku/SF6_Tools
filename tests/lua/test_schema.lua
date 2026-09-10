@@ -239,4 +239,45 @@ t.eq(S.validate(S.KIND.EDGE, { schema = "something.else" }), false, "the wrong s
 t.eq(S.validate("ce.nonexistent.v1", { schema = "ce.nonexistent.v1" }), false,
      "an unknown kind has no validator and is refused")
 
+-- --- re-testing after a patch ------------------------------------------------
+
+t.group("leaving a runtime status")
+
+-- The vocabulary allows verified -> runtime_pending, which is how a record gets
+-- re-tested after a patch. It has to actually work: if the record keeps
+-- runtime_verified = true and last patch's evidence, validate() refuses it, and
+-- the re-test cannot be written down at all.
+local requeued = S.new(S.KIND.EDGE, {
+    id = "a->b", from = { action_id = 1 }, to = { action_id = 2 },
+    reasons = { "frame_link" },
+    requires_runtime_validation = { "actual_input_timing" },
+    provenance = { game_patch = "old", calibration_id = "cal-1" },
+})
+t.ok(S.transition(requeued, S.STATUS.RUNTIME_PENDING), "queued")
+t.ok(S.transition(requeued, S.STATUS.VERIFIED, { attempts = 3, successes = 3 }), "verified")
+t.eq(requeued.runtime_verified, true, "and it says it was run")
+
+t.ok(S.transition(requeued, S.STATUS.RUNTIME_PENDING), "the patch re-test transition is allowed")
+t.eq(requeued.status, "runtime_pending", "and takes effect")
+t.eq(requeued.runtime_verified, false, "the record no longer claims to have been run")
+t.is_nil(requeued.evidence, "and the stale evidence is not left attached")
+t.ok(S.validate(S.KIND.EDGE, requeued), "so the re-queued record validates, and can be written")
+
+-- The old measurement is not thrown away; it is filed as history, under a name
+-- that cannot be mistaken for a current claim.
+t.ok(requeued.superseded_evidence ~= nil, "the previous evidence is kept as history")
+t.eq(requeued.superseded_status, "verified", "with the status it was evidence for")
+
+local rerejected = S.new(S.KIND.EDGE, {
+    id = "c->d", from = { action_id = 3 }, to = { action_id = 4 },
+    reasons = { "frame_link" },
+    requires_runtime_validation = { "actual_input_timing" },
+    provenance = { game_patch = "old", calibration_id = "cal-1" },
+})
+S.transition(rerejected, S.STATUS.RUNTIME_PENDING)
+S.transition(rerejected, S.STATUS.REJECTED, { attempts = 3, successes = 0 })
+t.ok(S.transition(rerejected, S.STATUS.RUNTIME_PENDING), "a rejected record re-queues too")
+t.eq(rerejected.runtime_verified, false, "and stops claiming a runtime answer")
+t.ok(S.validate(S.KIND.EDGE, rerejected), "and validates")
+
 return t.finish()

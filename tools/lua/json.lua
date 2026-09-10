@@ -242,12 +242,31 @@ decode_value = function(s, i)
         end
     elseif c == "[" then
         local arr = {}
+        local n = 0
         i = skip_ws(s, i + 1)
         if s:sub(i, i) == "]" then return arr, i + 1 end
         while true do
             local val
             val, i = decode_value(s, i)
-            arr[#arr + 1] = val
+            n = n + 1
+            -- A null inside an array is the one place nil-as-absence does not
+            -- work. In an object a missing field IS absence, which is what the
+            -- whole pipeline reads as unknown. In an array, `arr[#arr+1] = nil`
+            -- is a no-op, so [1, null, 3] would come back as a two-element list
+            -- with every later element renumbered - a cancel list losing a slot
+            -- and every entry after it answering to the wrong index, with no
+            -- error and no trace.
+            --
+            -- Refused rather than encoded around: Lua has no value that means
+            -- "a present element that is null", so any representation would be
+            -- a convention the writer of the file never agreed to. Neither
+            -- command_display nor the frame source contains one (checked), so
+            -- this firing at all means an input changed shape.
+            if val == nil then
+                error(("null at index %d of an array (byte %d): Lua cannot hold a null "
+                    .. "array element without renumbering the rest"):format(n, i), 0)
+            end
+            arr[n] = val
             i = skip_ws(s, i)
             local d = s:sub(i, i)
             if d == "," then i = i + 1

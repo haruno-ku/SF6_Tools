@@ -90,6 +90,27 @@ t.eq(json.decode('"\\ud83c\\udfae"'), utf8.char(0x1F3AE), "a surrogate pair deco
 
 t.eq(json.decode('"a\\/b"'), "a/b", "an escaped slash decodes")
 
+-- --- null inside an array ----------------------------------------------------
+
+t.group("a null inside an array")
+
+-- In an object, a null field is absence, which is exactly what the pipeline
+-- reads as unknown. In an array there is no such reading: appending nil is a
+-- no-op, so the list would silently shorten and every element after the null
+-- would answer to the wrong index.
+t.is_nil(json.decode('[1, null, 3]'), "an array containing null is refused, not shortened")
+local _, nerr = json.decode('[1, null, 3]')
+t.ok(tostring(nerr):find("renumbering") ~= nil, "and says what it would have done: "
+     .. tostring(nerr))
+t.eq_list(json.decode('[1, 2, 3]'), { 1, 2, 3 }, "while an array without one decodes")
+t.is_nil(json.decode('{"cancel": ["special", null]}'), "nested in a document, too")
+
+-- The object case is untouched: absence there is the representation the whole
+-- project depends on.
+local obj_null = json.decode('{"startup": null}')
+t.ok(obj_null ~= nil, "a null OBJECT field is still fine")
+t.is_nil(obj_null.startup, "and still means unknown")
+
 -- --- shape -------------------------------------------------------------------
 
 t.group("empty tables")

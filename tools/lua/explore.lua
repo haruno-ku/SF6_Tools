@@ -90,7 +90,16 @@ while i <= #arg do
             io.stderr:write(("--%s needs a value\n"):format(key))
             os.exit(2)
         end
-        opt[key] = tonumber(v) or v
+        -- "false" is a non-empty string, and a non-empty string is truthy in
+        -- Lua, so `--collapse false` used to turn collapsing ON and then record
+        -- the string "false" in the exported document's copy of the search
+        -- configuration - a file whose own account of the run said the opposite
+        -- of what the run did.
+        if v == "true" or v == "false" then
+            opt[key] = (v == "true")
+        else
+            opt[key] = tonumber(v) or v
+        end
         i = i + 2
     end
 end
@@ -292,8 +301,14 @@ end
 -- Several moves share one notation and the data cannot say which action id the
 -- button produces. Carried through the whole pipeline rather than resolved by
 -- picking one, because the game resolves it in Phase 1.
-say("- unresolved canonical ids %d groups of %d rows",
-    cat.counts.ambiguous_groups, #Catalog.ambiguous_groups(cat))
+say("- unresolved canonical ids %d groups covering %d rows",
+    cat.counts.ambiguous_groups, cat.counts.ambiguous_rows)
+-- Not the same thing as an excluded row: these entries produce no row at all,
+-- because the source gives them no Modern input to press.
+say("- no Modern form at all     %d", cat.counts.unreachable)
+for _, u in ipairs(cat.unreachable) do
+    say("    %d  %s", u.action_id, tostring(u.classic))
+end
 say("")
 
 say("## Theoretical edges")

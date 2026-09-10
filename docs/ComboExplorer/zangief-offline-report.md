@@ -21,7 +21,17 @@ not combos that are known to work.
 - target moves            33  (normal,command_normal,special,od_special,super / manual,simple)
 - excluded from probing   51  (classic-only, air, throws, system, follow-ups)
 - frame data coverage     14 of 14 (100%)
-- unresolved canonical ids 13 groups of 13 rows
+- unresolved canonical ids 13 groups covering 31 rows
+- no Modern form at all     9
+    34  8
+    600  LP
+    613  MK
+    615  HK
+    631  2+MK
+    685  3+HK
+    852  6
+    1015  63214+LK+MK
+    1020  63214+KK
 
 ## Theoretical edges
 
@@ -38,9 +48,9 @@ by reason:
   target_combo             4
 
 by confidence:
-  high                     128
-  medium                   148
-  low                      111
+  high                     88
+  medium                   133
+  low                      166
 
 excluded because the numbers said no:
   frame_margin_negative    122
@@ -70,16 +80,16 @@ frame table and neither does Modern's own damage reduction, so this is an
 upper bound for ordering, never a damage figure.
 
 #   route                                            dmg~   cost conf    unknowns
-1   3 + 强 > 6 + 强 > 720 + 强                    7100   15.4 medium  7
-2   3 + 强 > 6 + 强 > 2 + SP + 强                 7100    8.5 medium  7
-3   6 + 强 > 2 + 强 > 720 + 强                    7100   15.4 medium  7
-4   6 + 强 > 2 + 强 > 2 + SP + 强                 7100    8.5 medium  7
-5   6 + 强 > 3 + 强 > 720 + 强                    7100   15.4 medium  7
-6   6 + 强 > 3 + 强 > 2 + SP + 强                 7100    8.5 medium  7
-7   6 + 强 > 3 + 中 > 720 + 强                    6900   15.4 medium  7
-8   6 + 强 > 3 + 中 > 2 + SP + 强                 6900    8.5 medium  7
-9   2 + 强 > 3 + 强 > 720 + 强                    6800   15.4 medium  7
-10  2 + 强 > 3 + 强 > 2 + SP + 强                 6800    8.5 medium  7
+1   3 + 强 > 6 + 强 > 720 + 强                    7100   15.4 low     8
+2   3 + 强 > 6 + 强 > 2 + SP + 强                 7100    8.5 low     8
+3   6 + 强 > 2 + 强 > 720 + 强                    7100   15.4 low     8
+4   6 + 强 > 2 + 强 > 2 + SP + 强                 7100    8.5 low     8
+5   6 + 强 > 3 + 强 > 720 + 强                    7100   15.4 low     8
+6   6 + 强 > 3 + 强 > 2 + SP + 强                 7100    8.5 low     8
+7   6 + 强 > 3 + 中 > 720 + 强                    6900   15.4 low     8
+8   6 + 强 > 3 + 中 > 2 + SP + 强                 6900    8.5 low     8
+9   2 + 强 > 3 + 强 > 720 + 强                    6800   15.4 low     8
+10  2 + 强 > 3 + 强 > 2 + SP + 强                 6800    8.5 low     8
 
 ## Top 10 by fewest inputs
 
@@ -114,6 +124,8 @@ upper bound for ordering, never a damage figure.
   the actual input window is what the sweep exists to measure
 - **cancel_window_conditions**
   the frame source is missing to_startup for this pair
+- **frame_data_variant_ambiguous**
+  the frame source spells this move as several distance variants (63214KK (Close), 63214KK (Far), 63214KK (Mid)) and the join picked 63214KK (Close) by sort order, not by knowing which one applies
 - **hitbox_hurtbox**
   which action id this input actually produces is unresolved, so the move being described may not be the move that comes out
 - **juggle_behaviour**
@@ -132,8 +144,8 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/zangief/modern/candidate-edges.json  (478827 bytes)
-- candidates/zangief/modern/candidate-routes.json  (4228917 bytes)
+- candidates/zangief/modern/candidate-edges.json  (499589 bytes)
+- candidates/zangief/modern/candidate-routes.json  (4456237 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

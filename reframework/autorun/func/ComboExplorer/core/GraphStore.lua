@@ -253,7 +253,14 @@ function M.orphans(g)
         if not has_in[k] then unreachable[#unreachable + 1] = n end
         if #(g.out[k] or {}) == 0 then dead_ends[#dead_ends + 1] = n end
     end
-    local function by_id(a, b) return a.action_id < b.action_id end
+    -- Tied on action_id, two rows differing only by input method would keep
+    -- their arbitrary pairs() position and the same graph would report a
+    -- different order each run. nodes_list already breaks the tie; this had the
+    -- same need and not the same comparator.
+    local function by_id(a, b)
+        if a.action_id ~= b.action_id then return a.action_id < b.action_id end
+        return tostring(a.input_method) < tostring(b.input_method)
+    end
     table.sort(unreachable, by_id)
     table.sort(dead_ends, by_id)
     return { unreachable = unreachable, dead_ends = dead_ends }

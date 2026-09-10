@@ -198,6 +198,31 @@ t.eq(s.identity.character, "zangief", "and names the character")
 t.ok(s.by_reason.frame_link ~= nil, "reasons are tallied")
 t.ok(s.by_confidence.medium ~= nil, "so is confidence")
 
+-- Two nodes sharing an action id must not come back in pairs() order: the same
+-- graph would list them differently on every process, because Lua 5.4 seeds
+-- string hashes per run. nodes_list already breaks the tie on input method and
+-- orphans had the same need with a comparator that did not.
+local tied = GraphStore.new(IDENTITY)
+for _, m in ipairs({ "simple", "manual" }) do
+    GraphStore.add(tied, Schema.new(Schema.KIND.EDGE, {
+        id = ("700:%s->701:manual"):format(m),
+        from = { action_id = 700, input_method = m, notation = "x", classic = "LP",
+                 category = "normal", canonical_status = "verified" },
+        to = { action_id = 701, input_method = "manual", notation = "y", classic = "MP",
+               category = "normal", canonical_status = "verified" },
+        reasons = { "frame_link" }, confidence = "medium",
+        requires_runtime_validation = { "actual_input_timing" },
+        provenance = Schema.provenance({}),
+    }))
+end
+local tied_orph = GraphStore.orphans(tied)
+local seq = {}
+for _, n in ipairs(tied_orph.unreachable) do
+    if n.action_id == 700 then seq[#seq + 1] = n.input_method end
+end
+t.eq_list(seq, { "manual", "simple" },
+          "two nodes sharing an action id are ordered by input method, not by hash order")
+
 local orph = GraphStore.orphans(g)
 t.ok(orph.unreachable ~= nil and orph.dead_ends ~= nil, "orphans are reported")
 for _, n in ipairs(orph.dead_ends) do

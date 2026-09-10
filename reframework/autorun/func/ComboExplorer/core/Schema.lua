@@ -317,6 +317,19 @@ function M.transition(obj, to, evidence)
         end
         obj.evidence = evidence
         obj.runtime_verified = true
+    else
+        -- Leaving a runtime status has to undo what entering one set, or the
+        -- sanctioned re-test transitions (verified -> runtime_pending after a
+        -- patch, and the same from rejected) produce a record that still claims
+        -- runtime_verified with last patch's evidence attached - which
+        -- validate() then refuses, so the re-test cannot be written down.
+        -- The old evidence is kept under a name that says it is history.
+        if obj.runtime_verified == true then
+            obj.superseded_evidence = obj.evidence
+            obj.superseded_status = obj.status
+        end
+        obj.evidence = nil
+        obj.runtime_verified = false
     end
     obj.status = to
     return true
