@@ -107,6 +107,36 @@ end
 -- One row per character. Everything here is read back off what Catalog.build
 -- produced; nothing is recomputed by a second implementation that could
 -- disagree with the one that ships.
+-- What each action-id band is normally written as. Catalog.lua records the band
+-- alongside every row and deliberately gives it NO vote in classification, so
+-- this is not a second classifier - it is the disagreement between the two,
+-- reported so a human can look.
+--
+-- That distinction earned its keep: 623 (the dragon punch) was missing from the
+-- classifier's vocabulary for 18 characters and 147 rows, and counting `unknown`
+-- did not find it. "623+HP" starts with a digit, so it never became unknown - it
+-- became a command normal, confidently and wrongly, and the only thing that
+-- disagreed was the band.
+local BAND_CATEGORIES = {
+    system_or_movement = { system = true },
+    normals            = { normal = true, command_normal = true, air_normal = true },
+    throws             = { throw = true },
+    specials           = { special = true, od_special = true },
+    supers             = { super = true },
+}
+
+-- nil when the two agree, or when there is nothing to compare. `unknown` is
+-- excluded on purpose: it is already counted as unplaceable, and reporting it
+-- twice would make the vocabulary gap look like two problems.
+local function band_disagreement(row)
+    if row.category == nil or row.category == "unknown" then return nil end
+    local allowed = BAND_CATEGORIES[row.action_id_band]
+    if not allowed then return nil end
+    if allowed[row.category] then return nil end
+    return ("band %s but classified %s"):format(tostring(row.action_id_band),
+                                                tostring(row.category))
+end
+
 local function measure(name)
     local path = ("%s/%s.json"):format(opt.dir, name)
     local raw, jerr = json.load_file(path)
@@ -130,6 +160,14 @@ local function measure(name)
         unplaceable = 0,          -- category could not be decided
         unplaceable_lost = 0,     -- ... and that is the only reason it was dropped
         unplaceable_rows = {},
+        -- Split deliberately. Every disagreement is worth listing, but only the
+        -- ones still IN the search space can corrupt a result: an excluded row
+        -- classified against its band is a curiosity, while a standalone one is
+        -- a move being probed as something it may not be.
+        band_mismatch = 0,        -- ... and still standalone
+        band_mismatch_all = 0,
+        band_mismatch_rows = {},
+        band_mismatch_pairs = {},
         by_category = {},
     }
 
@@ -141,6 +179,24 @@ local function measure(name)
     for _, row in ipairs(cat.rows) do
         m.by_category[row.category] = (m.by_category[row.category] or 0) + 1
         if row.parse_error then m.parse_error = m.parse_error + 1 end
+
+        local disagree = band_disagreement(row)
+        if disagree then
+            m.band_mismatch_all = m.band_mismatch_all + 1
+            local pair = ("%s -> %s"):format(tostring(row.action_id_band),
+                                             tostring(row.category))
+            m.band_mismatch_pairs[pair] = (m.band_mismatch_pairs[pair] or 0) + 1
+            if row.standalone then m.band_mismatch = m.band_mismatch + 1 end
+            m.band_mismatch_rows[#m.band_mismatch_rows + 1] = {
+                action_id = row.action_id,
+                classic = row.classic,
+                input_method = row.input_method,
+                category = row.category,
+                action_id_band = row.action_id_band,
+                standalone = row.standalone,
+                why = disagree,
+            }
+        end
 
         if row.category == "unknown" then
             m.unplaceable = m.unplaceable + 1
@@ -168,6 +224,7 @@ local function measure(name)
     end
 
     table.sort(m.unplaceable_rows, function(a, b) return a.action_id < b.action_id end)
+    table.sort(m.band_mismatch_rows, function(a, b) return a.action_id < b.action_id end)
     return m
 end
 
@@ -249,13 +306,13 @@ end
 say("## Per character")
 say("")
 say("```")
-say("%-10s %5s %5s %5s %5s %5s %6s %6s %5s %5s",
-    "char", "entr", "rows", "stand", "excl", "unrch", "unplc", "LOST", "perr", "prob")
+say("%-10s %5s %5s %5s %5s %5s %6s %6s %5s %5s %5s",
+    "char", "entr", "rows", "stand", "excl", "unrch", "unplc", "LOST", "perr", "prob", "bnd?")
 for _, m in ipairs(rows) do
     local c = m.counts
-    say("%-10s %5d %5d %5d %5d %5d %6d %6d %5d %5d",
+    say("%-10s %5d %5d %5d %5d %5d %6d %6d %5d %5d %5d",
         m.character, c.entries, c.rows, c.standalone, c.excluded, c.unreachable,
-        m.unplaceable, m.unplaceable_lost, m.parse_error, m.problems)
+        m.unplaceable, m.unplaceable_lost, m.parse_error, m.problems, m.band_mismatch)
 end
 say("```")
 say("")
@@ -263,6 +320,13 @@ say("- `unrch` no Modern command form at all, so the row never exists")
 say("- `unplc` rows the classifier could not place a category on")
 say("- `LOST`  of those, the ones excluded as `unclassified` - dropped for no reason")
 say("          other than that the classifier had no vocabulary for the notation")
+say("- `bnd?`  rows the classifier placed somewhere the action-id band does not")
+say("          suggest, AND that are still standalone. Not an error on its own -")
+say("          the band has no vote in classification and is expected to disagree.")
+say("          It is here because counting `unplc` cannot find a move that was")
+say("          confidently misclassified, and 623 was exactly that for 18")
+say("          characters. Excluded rows that disagree are counted in the")
+say("          breakdown below but not in this column: they cannot reach a trial")
 say("- `perr`  rows whose notation InputMask could not parse")
 say("- `prob`  entries Catalog.build reported as problems")
 say("")
@@ -283,6 +347,47 @@ end
 say("```")
 say("")
 
+say("## Where the classifier and the action-id band disagree")
+say("")
+say("`Catalog.lua` records `action_id_band` next to every row and gives it no")
+say("vote. This is the disagreement between the two, which is how 623 was found:")
+say("\"623+HP\" starts with a digit, so it never became `unknown` - it became a")
+say("command normal, confidently and wrongly, for 18 characters and 147 rows.")
+say("")
+say("A disagreement is not a verdict. The band is a range of numbers, and moves")
+say("legitimately sit outside the range their notation suggests - install-state")
+say("normals carry special-band ids, for one. What matters is the `standalone`")
+say("column: those rows are in the search space right now.")
+say("")
+do
+    local totals, standalone_totals = {}, {}
+    for _, m in ipairs(rows) do
+        for pair, n in pairs(m.band_mismatch_pairs) do
+            totals[pair] = (totals[pair] or 0) + n
+        end
+        for _, r in ipairs(m.band_mismatch_rows) do
+            if r.standalone then
+                local pair = ("%s -> %s"):format(tostring(r.action_id_band),
+                                                 tostring(r.category))
+                standalone_totals[pair] = (standalone_totals[pair] or 0) + 1
+            end
+        end
+    end
+    local order = {}
+    for pair in pairs(totals) do order[#order + 1] = pair end
+    table.sort(order, function(a, b)
+        local sa, sb = standalone_totals[a] or 0, standalone_totals[b] or 0
+        if sa ~= sb then return sa > sb end
+        return totals[a] > totals[b]
+    end)
+    say("```")
+    say("%-40s %6s %11s", "band -> category", "rows", "standalone")
+    for _, pair in ipairs(order) do
+        say("%-40s %6d %11d", pair, totals[pair], standalone_totals[pair] or 0)
+    end
+    say("```")
+end
+say("")
 say("## Notations the classifier could not place")
 say("")
 if #unplaced_sorted == 0 then

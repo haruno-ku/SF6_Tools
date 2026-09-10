@@ -6,44 +6,51 @@ game: this measures the classifier, not the moves.
 ## Per character
 
 ```
-char        entr  rows stand  excl unrch  unplc   LOST  perr  prob
-AKI           72    77    48    29     8      3      1     4     2
-Akuma        108   116    64    52     8      1      1     6    16
-Alex          87    96    54    42     6      3      2     5     2
-Blanka       138   112    49    63    58      9      6     4     0
-CViper       101   117    53    64    17      1      1     4    10
-Cammy         92    93    53    40    22      1      1     4     2
-ChunLi        96   109    56    53     6      3      2     4     2
-DeeJay       121   125    84    41     7      1      1     4    10
-Dhalsim      102   108    62    46    17      1      1     4     2
-EHonda        95   122    65    57     7     13      1     4     2
-Ed            80    82    48    34     6      4      2     4    16
-Elena        108   126    91    35     7      1      1     4     4
-Guile        117   144   109    35     6      4      2     4     4
-Ingrid       130   158    61    97    14      1      1     4    12
-JP            83    93    60    33     6      1      1     4     0
-Jamie        132   171    89    82     7      8      1     4     2
-Juri         121   182   136    46     5      1      1     4     4
-Ken           87   110    46    64     7      2      2     4     4
-Kimberly     103   123    59    64    11      1      1     4    10
-Lily          92   126    73    53     8      1      1     4     0
-Luke          80    93    45    48     7      7      4     4     4
-MBison        81    94    57    37     8      1      1     4     0
-Mai           99   137    83    54     6      1      1     4     4
-Manon        105   139   104    35    11      1      1     4     4
-Marisa        84    89    47    42    12      1      1     4     4
-Rashid       115   135    63    72     4      5      2     4    10
-Ryu           87   102    59    43     6      1      1     4     4
-Sagat         82   100    55    45     4      1      1     5     2
-Terry         81    87    51    36     8      5      1     4     0
-Yasmine      120   138    65    73     8      1      1     4    38
-Zangief       80    88    37    51     9      8      8     5     0
+char        entr  rows stand  excl unrch  unplc   LOST  perr  prob  bnd?
+AKI           72    77    48    29     8      3      1     4     2     3
+Akuma        108   116    64    52     8      1      1     6    16     5
+Alex          87    96    54    42     6      3      2     5     2     7
+Blanka       138   112    49    63    58      9      6     4     0     6
+CViper       101   117    53    64    17      1      1     4    10     8
+Cammy         92    93    53    40    22      1      1     4     2     0
+ChunLi        96   109    56    53     6      3      2     4     2     0
+DeeJay       121   125    84    41     7      1      1     4    10    35
+Dhalsim      102   108    62    46    17      1      1     4     2     4
+EHonda        95   122    65    57     7     13      1     4     2     0
+Ed            80    82    48    34     6      4      2     4    16     2
+Elena        108   126    91    35     7      1      1     4     4    32
+Guile        117   144   109    35     6      4      2     4     4    35
+Ingrid       130   158    61    97    14      1      1     4    12     5
+JP            83    93    60    33     6      1      1     4     0     0
+Jamie        132   171    89    82     7      8      1     4     2    22
+Juri         121   182   136    46     5      1      1     4     4    51
+Ken           87   110    46    64     7      2      2     4     4     0
+Kimberly     103   123    59    64    11      1      1     4    10     5
+Lily          92   126    73    53     8      1      1     4     0     0
+Luke          80    93    45    48     7      7      4     4     4     0
+MBison        81    94    57    37     8      1      1     4     0     2
+Mai           99   137    83    54     6      1      1     4     4     0
+Manon        105   139   104    35    11      1      1     4     4     0
+Marisa        84    89    47    42    12      1      1     4     4     0
+Rashid       115   135    63    72     4      5      2     4    10     1
+Ryu           87   102    59    43     6      1      1     4     4     0
+Sagat         82   100    55    45     4      1      1     5     2     0
+Terry         81    87    51    36     8      5      1     4     0     0
+Yasmine      120   138    65    73     8      1      1     4    38     2
+Zangief       80    88    37    51     9      8      8     5     0     2
 ```
 
 - `unrch` no Modern command form at all, so the row never exists
 - `unplc` rows the classifier could not place a category on
 - `LOST`  of those, the ones excluded as `unclassified` - dropped for no reason
           other than that the classifier had no vocabulary for the notation
+- `bnd?`  rows the classifier placed somewhere the action-id band does not
+          suggest, AND that are still standalone. Not an error on its own -
+          the band has no vote in classification and is expected to disagree.
+          It is here because counting `unplc` cannot find a move that was
+          confidently misclassified, and 623 was exactly that for 18
+          characters. Excluded rows that disagree are counted in the
+          breakdown below but not in this column: they cannot reach a trial
 - `perr`  rows whose notation InputMask could not parse
 - `prob`  entries Catalog.build reported as problems
 
@@ -82,6 +89,43 @@ Sagat                 3            6            3            2           16     
 Terry                 0            6            7            2            7            0           11            2            1
 Yasmine               0           12            5            4           38            0           11            2            1
 Zangief               2           12            5            2            4            0           12            6            8
+```
+
+## Where the classifier and the action-id band disagree
+
+`Catalog.lua` records `action_id_band` next to every row and gives it no
+vote. This is the disagreement between the two, which is how 623 was found:
+"623+HP" starts with a digit, so it never became `unknown` - it became a
+command normal, confidently and wrongly, for 18 characters and 147 rows.
+
+A disagreement is not a verdict. The band is a range of numbers, and moves
+legitimately sit outside the range their notation suggests - install-state
+normals carry special-band ids, for one. What matters is the `standalone`
+column: those rows are in the search space right now.
+
+```
+band -> category                           rows  standalone
+specials -> command_normal                  251         107
+specials -> normal                           65          61
+supers -> normal                             44          44
+supers -> command_normal                     14           6
+normals -> od_special                         3           3
+supers -> od_special                          4           2
+normals -> special                           12           1
+throws -> command_normal                      3           1
+throws -> od_special                          1           1
+throws -> special                             1           1
+system_or_movement -> command_normal        155           0
+specials -> air_normal                       76           0
+specials -> system                           72           0
+throws -> system                             36           0
+normals -> system                            26           0
+supers -> special                            23           0
+supers -> air_normal                         12           0
+supers -> system                              6           0
+specials -> throw                             4           0
+throws -> air_normal                          2           0
+supers -> throw                               1           0
 ```
 
 ## Notations the classifier could not place
