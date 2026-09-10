@@ -117,16 +117,38 @@ local function excluded_reason(action_id, method)
     return row and row.exclusion
 end
 
--- Modern cannot reach these at all.
+-- Modern cannot reach these at all, and the way they are absent matters.
+--
+-- They produce no ROW - the source gives them no Modern input, so there is
+-- nothing to build a row from and nothing to exclude. The loop that used to
+-- stand here looked them up in by_id, found nil every time, and executed zero
+-- assertions while reading as though it had checked nine moves. Nine real moves
+-- were leaving the catalog with no trace at all, which from the outside is
+-- indistinguishable from the source never having mentioned them.
 t.eq(cat.counts.classic_only, 9, "nine entries are classic_only, as the catalog says")
-for _, id in ipairs({ 600, 613, 615, 631, 685 }) do
-    local rows = by_id[id]
-    if rows then
-        for _, row in pairs(rows) do
-            t.eq(row.exclusion, "classic_only", ("%d is excluded as classic_only"):format(id))
-        end
+t.eq(cat.counts.unreachable, 9, "and all nine are recorded as having no Modern form")
+
+local unreachable_by_id = {}
+for _, u in ipairs(cat.unreachable) do unreachable_by_id[u.action_id] = u end
+for _, id in ipairs({ 600, 613, 615, 631, 685, 34, 852, 1015, 1020 }) do
+    local u = unreachable_by_id[id]
+    t.ok(u ~= nil, ("%d is named as unreachable rather than silently missing"):format(id))
+    if u then
+        t.eq(u.reason, "classic_only", ("%d says why"):format(id))
+        t.ok(u.classic ~= nil, ("%d keeps its classic notation, so a reader knows what it is")
+             :format(id))
     end
+    t.is_nil(by_id[id], ("%d produces no probeable row, because there is no input to press")
+             :format(id))
 end
+
+-- Stable between runs: pairs() over the source keys is in per-process hash
+-- order, and this list is printed in a report somebody diffs.
+local ordered = true
+for i = 2, #cat.unreachable do
+    if cat.unreachable[i - 1].action_id > cat.unreachable[i].action_id then ordered = false end
+end
+t.ok(ordered, "and the list is in a stable order")
 
 -- Target-combo derivations: ">" means a preceding action is required, so a
 -- standalone probe can never produce them.
@@ -249,11 +271,65 @@ t.eq(#conflicts, 0, "no conflicts")
 t.eq(crouch_light.canonical_action_id, 617, "the observed id becomes canonical")
 t.eq(crouch_light.canonical_status, "verified", "and the group is verified")
 
+local inherited, wrong_flag = 0, 0
 for _, row in ipairs(cat.rows) do
     if row.display_group == crouch_light.display_group then
+        inherited = inherited + 1
         t.eq(row.canonical_status, "verified", ("row %d inherits the verdict"):format(row.action_id))
         t.eq(row.is_canonical, row.action_id == 617,
              ("row %d knows whether it is the canonical one"):format(row.action_id))
+    end
+end
+t.ok(inherited > 1, "the resolved group really has more than one row in it")
+
+-- The rows NOBODY observed are the ones that matter here, and the old test
+-- never looked at them: it was fenced inside the resolved group.
+--
+-- is_canonical is a measured claim - "this input does not produce this action
+-- id" - and an unobserved row has no business making it. The spelling
+-- `(x == nil) and nil or (...)` cannot yield nil in Lua, so every unobserved
+-- row was carrying a hard false: 85 of 88 rows on this catalog, manufactured
+-- out of an absence of measurement.
+local unobserved, false_claims = 0, 0
+for _, row in ipairs(cat.rows) do
+    if row.display_group ~= crouch_light.display_group then
+        unobserved = unobserved + 1
+        if row.is_canonical == false then false_claims = false_claims + 1 end
+    end
+end
+t.ok(unobserved > 50, "most of the catalog is still unobserved (" .. unobserved .. " rows)")
+t.eq(false_claims, 0,
+     "and not one of them claims to be known NOT to be canonical - unknown stays nil")
+
+-- A recorded conflict is not undone by the next observation that agrees with
+-- the first. Two ids from one input is what that input does; a run of matching
+-- samples afterwards is a sample, not a retraction. Letting it flip back made
+-- the group's verdict depend on the order the sweep happened to run in, and
+-- dropped the hitbox unknown off every edge built from those rows.
+local group2 = crouch_light
+local other_id
+for _, id in ipairs(group2.action_ids) do
+    if id ~= 617 then other_id = id break end
+end
+t.ok(other_id ~= nil, "the crouching-light group holds more than one id")
+
+Catalog.apply_observations(cat, {
+    { notation = group2.notation, input_method = group2.input_method, action_id = other_id },
+})
+t.eq(group2.canonical_status, "conflicting", "a second, different id makes the group conflict")
+
+local _, again = Catalog.apply_observations(cat, {
+    { notation = group2.notation, input_method = group2.input_method, action_id = 617 },
+})
+t.eq(group2.canonical_status, "conflicting",
+     "and observing the first id again does NOT restore the verdict")
+t.ok(#again > 0, "the agreeing observation is reported as a conflict of its own")
+t.ok(#group2.conflicting_action_ids >= 2, "with both ids kept")
+
+for _, row in ipairs(cat.rows) do
+    if row.display_group == group2.display_group then
+        t.eq(row.canonical_status, "conflicting",
+             ("row %d still carries the conflict"):format(row.action_id))
     end
 end
 

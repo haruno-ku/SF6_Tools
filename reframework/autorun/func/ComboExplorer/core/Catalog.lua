@@ -160,6 +160,12 @@ function M.build(decoded, opts)
         rows = {},
         groups = {},
         counts = {},
+        -- Entries with no Modern form at all. They produce no row - there is no
+        -- input to probe - but they must not simply be absent: a move that
+        -- vanished from the catalog with no trace looks the same as a move the
+        -- source never mentioned, and the difference is the whole question of
+        -- whether Modern can reach it.
+        unreachable = {},
     }
     local problems = {}
 
@@ -208,6 +214,22 @@ function M.build(decoded, opts)
                         display = simple,
                     }
                 end
+            end
+
+            if #candidates == 0 and support ~= "classic_modern" then
+                -- The ordinary case for a classic-only move, and the reason the
+                -- CLASSIC_ONLY exclusion below almost never fires: an entry with
+                -- neither a motion nor a simple command produces no row to
+                -- exclude in the first place. Recorded here so the nine Zangief
+                -- moves in this state are countable and nameable rather than
+                -- silently missing.
+                catalog.unreachable[#catalog.unreachable + 1] = {
+                    action_id = action_id,
+                    classic = classic,
+                    control_support = support,
+                    ownership = ownership,
+                    reason = M.EXCLUSION.CLASSIC_ONLY,
+                }
             end
 
             if #candidates == 0 and support == "classic_modern" then
@@ -332,9 +354,12 @@ function M.build(decoded, opts)
         g.ambiguous = (#g.action_ids > 1)
     end
 
+    table.sort(catalog.unreachable, function(a, b) return a.action_id < b.action_id end)
+
     local counts = { entries = entry_count, rows = #catalog.rows, classic_only = classic_only,
+                     unreachable = #catalog.unreachable,
                      standalone = 0, excluded = 0, by_method = {}, by_exclusion = {},
-                     ambiguous_groups = 0 }
+                     ambiguous_groups = 0, ambiguous_rows = 0 }
     for _, row in ipairs(catalog.rows) do
         if row.standalone then counts.standalone = counts.standalone + 1
         else
@@ -344,9 +369,26 @@ function M.build(decoded, opts)
         counts.by_method[row.input_method] = (counts.by_method[row.input_method] or 0) + 1
     end
     for _, g in pairs(catalog.groups) do
-        if g.ambiguous then counts.ambiguous_groups = counts.ambiguous_groups + 1 end
+        if g.ambiguous then
+            counts.ambiguous_groups = counts.ambiguous_groups + 1
+            -- The rows, not just the groups. A reader judging how much of the
+            -- catalog is still unpinned needs the number of moves affected, and
+            -- every ambiguous group holds at least two.
+            counts.ambiguous_rows = counts.ambiguous_rows + #g.action_ids
+        end
     end
     catalog.counts = counts
+
+    -- Sorted before returning: pairs() over the command_display keys is in hash
+    -- order, which Lua 5.4 seeds per process. Without this the report's "could
+    -- not place" section lists a different arbitrary subset every run, making
+    -- it the one non-reproducible output of a pipeline whose documents are
+    -- otherwise byte-identical between runs.
+    table.sort(problems, function(a, b)
+        local ai, bi = tonumber(a.action_id) or 0, tonumber(b.action_id) or 0
+        if ai ~= bi then return ai < bi end
+        return tostring(a.reason) < tostring(b.reason)
+    end)
 
     return catalog, problems
 end
@@ -443,6 +485,21 @@ function M.apply_observations(catalog, observations)
                     observation = obs, previously = g.canonical_action_id,
                 }
                 g.canonical_status = "conflicting"
+                g.conflicting_action_ids = g.conflicting_action_ids or { g.canonical_action_id }
+                g.conflicting_action_ids[#g.conflicting_action_ids + 1] = obs.action_id
+            elseif g.canonical_status == "conflicting" then
+                -- A disagreement is not undone by the next observation that
+                -- happens to agree with the first. If one input has been seen
+                -- to produce two action ids, that is what it does, and a run of
+                -- matching observations afterwards is not evidence otherwise -
+                -- it is a sample that happened to come out one way. Letting
+                -- this fall through to the else branch would make the group's
+                -- verdict depend on the order the sweep ran in, and would drop
+                -- the hitbox_hurtbox unknown off every edge built from it.
+                conflicts[#conflicts + 1] = {
+                    reason = "observation matches, but this group is already known to conflict",
+                    observation = obs, previously = g.canonical_action_id,
+                }
             else
                 g.canonical_action_id = obs.action_id
                 g.canonical_status = "verified"
@@ -457,8 +514,18 @@ function M.apply_observations(catalog, observations)
         local g = catalog.groups[row.display_group]
         if g then
             row.canonical_status = g.canonical_status
-            row.is_canonical = (g.canonical_action_id == nil) and nil
-                or (g.canonical_action_id == row.action_id)
+            -- Written with an explicit branch, not `cond and nil or v`: in Lua
+            -- the `and` arm evaluating to nil always falls through to `or`, so
+            -- that spelling can never yield nil and would stamp a hard
+            -- is_canonical = false onto every row whose group nobody has
+            -- observed. False is a measured negative - "this input does not
+            -- produce this action id" - and manufacturing one out of an absence
+            -- of measurement is the exact thing this project must not do.
+            if g.canonical_action_id == nil then
+                row.is_canonical = nil          -- nobody has looked
+            else
+                row.is_canonical = (g.canonical_action_id == row.action_id)
+            end
         end
     end
 
