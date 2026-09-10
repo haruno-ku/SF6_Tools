@@ -165,6 +165,14 @@ function M.on_hit(rec)   return rec and num(rec.on_hit) or nil end
 function M.on_block(rec) return rec and num(rec.on_block) or nil end
 function M.damage(rec)   return rec and num(rec.damage) or nil end
 
+-- Drive and super are recorded as GAIN in this source, and a negative gain is a
+-- spend: the super arts carry `super_gain_on_hit = -10000`, which is the cost of
+-- using them. There is no separate spend field, and the drive cost of an OD move
+-- appears nowhere at all - so `drive_spend` deliberately does not exist here.
+-- Route search counts OD steps instead of inventing a gauge figure for them.
+function M.drive_gain(rec) return rec and num(rec.drive_gain) or nil end
+function M.super_gain(rec) return rec and num(rec.super_gain_on_hit) or nil end
+
 function M.can_cancel_into(rec, kind)
     if not rec or type(rec.cancel) ~= "table" then return nil end   -- unknown, not false
     for _, c in ipairs(rec.cancel) do
