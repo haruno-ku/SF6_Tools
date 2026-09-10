@@ -110,6 +110,16 @@ $ExcludeDirs = @(
     'Stats'                         # session statistics
     'Backups'                       # RSM pre-import slot backups
     'SF6_RecordingSlotManager_data' # per-character slot exports
+
+    # Combo Explorer output. These are produced on THIS machine and travel the
+    # other way - written here, copied into the repo, committed, read on the dev
+    # machine. Syncing them repo -> game would overwrite a fresh probe result
+    # with whatever was last committed, which is silent data loss in exactly the
+    # workflow they exist for.
+    'diagnostics'
+    'calibration'
+    'catalog'
+    'results'
 )
 
 # Per-user config written by the mod. Shipping our copies would reset the user's
