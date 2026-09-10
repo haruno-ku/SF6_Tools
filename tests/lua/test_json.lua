@@ -60,13 +60,18 @@ t.group("null is absence")
 local nulled = json.decode('{"startup": null, "on_hit": 3}')
 t.is_nil(nulled.startup, "a null field decodes to nil")
 t.eq(nulled.on_hit, 3, "while its neighbours come through")
--- Both ways of encoding a hole are wrong: as a list it drops entries, as an
--- object it turns a list into a map whose shape depends on where the hole is.
--- Refused where it can still be traced.
-t.eq(pcall(json.encode, { 1, nil, 3 }), false, "a list with a hole in it is refused")
-local _, herr = pcall(json.encode, { 1, nil, 3 })
-t.ok(tostring(herr):find("neither a list nor an object") ~= nil, "and says why")
-t.eq(json.encode({ 1, 2, 3 }), "[1,2,3]", "while a dense list encodes normally")
+-- A JSON array cannot have a hole in it, so a Lua table that has one is not an
+-- array. It encodes as an object, which is lossless.
+t.eq(json.encode({ 1, nil, 3 }), '{"1":1,"3":3}', "a numeric table with a hole is an object")
+t.eq(json.encode({ 1, 2, 3 }), "[1,2,3]", "while a dense list is a list")
+
+-- This is not a corner case. These documents are full of maps keyed by an
+-- integer - counts by route length, partials dropped by depth - and
+-- { [2] = 188, [3] = 849 } is a map, not a list missing its first element.
+t.eq(json.encode({ [2] = 188, [3] = 849 }), '{"2":188,"3":849}',
+     "a map keyed by integers encodes as a map")
+local by_length = json.decode(json.encode({ [2] = 188, [3] = 849 }))
+t.eq(by_length["2"], 188, "and comes back with string keys, as JSON objects do")
 
 -- --- strings -----------------------------------------------------------------
 

@@ -21,6 +21,9 @@
 -- candidates, reasons, unknowns, steps - and a caller that needs {} passes an
 -- explicit marker.
 --
+-- The related question, a table with numeric keys that are not 1..n, is settled
+-- the other way: it is an object. See shape_of.
+--
 -- ORDERING
 --
 -- Object keys are sorted. Two runs over the same data then produce
@@ -45,14 +48,16 @@ local function escape(s)
     end))
 end
 
--- "array" (all numeric keys, 1..n with no hole), "sparse" (all numeric, with a
--- hole) or "object" (anything else).
+-- A table is a list only when its keys are exactly 1..n. Anything else is an
+-- object, including a table whose keys are all numbers but not contiguous.
 --
--- The sparse case is separated out because both ways of handling it are wrong.
--- Encoding it as a list drops entries; encoding it as an object silently turns a
--- list into a map whose shape depends on where the hole is. A table like that in
--- these documents is a bug upstream, so it is refused where it can still be
--- traced rather than written out in a shape nobody expects.
+-- That last case is not a corner: these documents are full of maps keyed by an
+-- integer - counts by route length, partials dropped by depth - and
+-- { [2] = 188, [3] = 849 } is a map, not a list with a missing first element.
+--
+-- A JSON array cannot have a hole in it, so a Lua table that has one is not an
+-- array by definition, and encoding it as an object is the only lossless answer
+-- available. It comes back with string keys, which is what JSON objects have.
 local function shape_of(t)
     local n = 0
     for k in pairs(t) do
@@ -60,7 +65,7 @@ local function shape_of(t)
         n = n + 1
     end
     if n == 0 then return "array" end       -- empty defaults to a list; see above
-    for i = 1, n do if t[i] == nil then return "sparse" end end
+    for i = 1, n do if t[i] == nil then return "object" end end
     return "array"
 end
 
@@ -99,10 +104,6 @@ local function encode(v, indent, level, seen)
     end
 
     local shape = (v == M.EMPTY_OBJECT) and "object" or shape_of(v)
-    if shape == "sparse" then
-        error("cannot encode a table with numeric keys and a hole in them - it is "
-            .. "neither a list nor an object", 0)
-    end
 
     local out
     if shape == "array" then
