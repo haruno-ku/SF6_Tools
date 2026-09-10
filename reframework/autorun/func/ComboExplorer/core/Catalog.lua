@@ -52,6 +52,7 @@ M.EXCLUSION = {
     SYSTEM         = "system",           -- dash, DI, parry, drive rush, stance labels
     NO_INPUT       = "no_input",         -- a pure label, no performable input
     ANY_BUTTON     = "any_button",       -- notation names no concrete strength
+    UNCLASSIFIED   = "unclassified",     -- the classifier had no opinion; NOT a statement about the move
 }
 
 -- --- helpers -----------------------------------------------------------------
@@ -100,15 +101,41 @@ local function has_system_token(c)
     return false
 end
 
+-- A charge motion is written with the held direction in brackets: [4]6 is
+-- "hold back, then forward". Zangief has none, which is why the classifier
+-- below was written without them and why six characters lost every special they
+-- have - see docs/ComboExplorer/catalog-audit.md.
+--
+-- The super form is the doubled one, by the same shape rule that makes 236236 a
+-- super and 236 a special: [4]6 is one cardinal after the charge, [4]646 is
+-- three. Read off the notation, not off the action id - the id band is recorded
+-- on the row beside this and deliberately does not get a vote, so that a
+-- disagreement between the two stays visible.
+local function charge_category(c)
+    local after = c:match("^%s*%[[1-9]%]([0-9]+)")
+    if not after then return nil end
+    if #after >= 3 then return "super" end
+    if c:match("PP") or c:match("KK") then return "od_special" end
+    return "special"
+end
+
 local function category_from_classic(classic)
     if not classic then return "unknown" end
     local c = classic:upper()
     if has_system_token(c) then return "system" end
     if c == "N" then return "system" end
     if contains(c, "THROW") or c == "THROW" then return "throw" end
+
+    local charge = charge_category(c)
+    if charge then return charge end
+
     if c:match("^%d*236236") or c:match("^%d*214214") or c:match("^720") then return "super" end
+    -- 623 is the dragon punch. It was absent because Zangief has none, and its
+    -- absence did not show up as "unknown": 623+HP starts with a digit, so it
+    -- fell through to the command-normal branch below and 147 rows across 18
+    -- characters were searched as command normals.
     if c:match("236") or c:match("214") or c:match("360") or c:match("63214")
-        or c:match("^22") or c:match("^41236") then
+        or c:match("^22") or c:match("^41236") or c:match("623") then
         -- PP / KK is the OD form of the same motion.
         if c:match("PP") or c:match("KK") then return "od_special" end
         return "special"
@@ -309,9 +336,22 @@ function M.build(decoded, opts)
                     exclusion = M.EXCLUSION.AIR
                 elseif row.category == "throw" then
                     exclusion = M.EXCLUSION.THROW
-                elseif row.category == "system" or ownership == "runtime_common"
-                    or row.category == "unknown" then
+                elseif row.category == "system" or ownership == "runtime_common" then
                     exclusion = M.EXCLUSION.SYSTEM
+                elseif row.category == "unknown" then
+                    -- "The classifier could not place this" is not the same
+                    -- statement as "this is a dash". Both used to come out as
+                    -- SYSTEM, which turned a gap in our vocabulary into a fact
+                    -- about the move - the exact pattern this project exists to
+                    -- avoid - and made the loss uncountable, because an
+                    -- unclassified row was indistinguishable from a real system
+                    -- action in every report downstream.
+                    --
+                    -- It is still excluded: a row whose category is unknown
+                    -- cannot be scored or budgeted. But it is excluded UNDER ITS
+                    -- OWN NAME, so `by_exclusion.unclassified` says how much
+                    -- vocabulary is missing.
+                    exclusion = M.EXCLUSION.UNCLASSIFIED
                 end
 
                 row.standalone = (exclusion == nil)

@@ -21,8 +21,9 @@
           "air": 7,
           "any_button": 7,
           "assist_combo": 1,
-          "system": 12,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 11,
@@ -59,10 +60,10 @@
       "ac_sha256": "48ca8bf84eb7ef41f87bb1b769a4b6f312b9023d137fbebb0bab981fc2b136e2",
       "by_category": {
         "air_normal": 9,
-        "command_normal": 27,
+        "command_normal": 20,
         "normal": 8,
-        "od_special": 16,
-        "special": 23,
+        "od_special": 19,
+        "special": 27,
         "super": 17,
         "system": 8,
         "throw": 3,
@@ -77,8 +78,9 @@
           "any_button": 9,
           "assist_combo": 2,
           "followup": 4,
-          "system": 14,
-          "throw": 3
+          "system": 13,
+          "throw": 3,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 15,
@@ -115,10 +117,10 @@
       "ac_sha256": "3f208fbb93b989829c8a5435a8b83ced717c87ebe16020058efba0dcac3d6dda",
       "by_category": {
         "air_normal": 7,
-        "command_normal": 27,
+        "command_normal": 19,
         "normal": 14,
-        "od_special": 7,
-        "special": 11,
+        "od_special": 10,
+        "special": 16,
         "super": 8,
         "system": 6,
         "throw": 5,
@@ -135,8 +137,9 @@
           "assist_combo": 2,
           "followup": 2,
           "no_input": 1,
-          "system": 19,
-          "throw": 5
+          "system": 11,
+          "throw": 5,
+          "unclassified": 8
         },
         "by_method": {
           "assist": 11,
@@ -217,12 +220,12 @@
         "air_normal": 32,
         "command_normal": 20,
         "normal": 5,
-        "od_special": 3,
-        "special": 8,
+        "od_special": 9,
+        "special": 16,
         "super": 10,
         "system": 6,
         "throw": 3,
-        "unknown": 25
+        "unknown": 11
       },
       "character": "Blanka",
       "counts": {
@@ -232,8 +235,9 @@
           "air": 26,
           "any_button": 15,
           "assist_combo": 1,
-          "system": 31,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 8
         },
         "by_method": {
           "assist": 19,
@@ -242,9 +246,9 @@
         },
         "classic_only": 58,
         "entries": 138,
-        "excluded": 75,
+        "excluded": 63,
         "rows": 112,
-        "standalone": 37,
+        "standalone": 49,
         "unreachable": 58
       },
       "generated_at": "2026-08-03T00:00:00.000Z",
@@ -252,45 +256,9 @@
       "problems": 0,
       "problems_by_reason": [],
       "source_character": "Blanka",
-      "unplaceable": 25,
-      "unplaceable_lost": 20,
+      "unplaceable": 11,
+      "unplaceable_lost": 8,
       "unplaceable_rows": [
-        {
-          "action_id": 859,
-          "classic": "[4]6+LP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 867,
-          "classic": "[4]6+MP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 867,
-          "classic": "[4]6+MP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 873,
-          "classic": "[4]6+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 885,
-          "classic": "[4]6+PP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 885,
-          "classic": "[4]6+PP",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
         {
           "action_id": 929,
           "classic": "P",
@@ -328,42 +296,6 @@
           "ownership": "direct"
         },
         {
-          "action_id": 971,
-          "classic": "[2]8+LK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 971,
-          "classic": "[2]8+LK",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 975,
-          "classic": "[2]8+MK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 984,
-          "classic": "[2]8+HK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 990,
-          "classic": "[2]8+KK",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 990,
-          "classic": "[2]8+KK",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
           "action_id": 1004,
           "classic": "P",
           "input_method": "manual",
@@ -381,10 +313,10 @@
       "ac_sha256": "a9e27462064db02e61c86e7ca3087956b778a2311566e73f6937224181d161ea",
       "by_category": {
         "air_normal": 26,
-        "command_normal": 37,
+        "command_normal": 28,
         "normal": 6,
-        "od_special": 14,
-        "special": 17,
+        "od_special": 17,
+        "special": 23,
         "super": 8,
         "system": 6,
         "throw": 2,
@@ -398,8 +330,9 @@
           "air": 38,
           "any_button": 11,
           "assist_combo": 1,
-          "system": 12,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 25,
@@ -436,10 +369,10 @@
       "ac_sha256": "41ddf70bd1d5575d721ea88168ef4239bc3fb16c4f082d5a9dbc7dbb9ac89868",
       "by_category": {
         "air_normal": 6,
-        "command_normal": 24,
+        "command_normal": 17,
         "normal": 6,
-        "od_special": 15,
-        "special": 23,
+        "od_special": 18,
+        "special": 27,
         "super": 8,
         "system": 6,
         "throw": 3,
@@ -454,8 +387,9 @@
           "any_button": 6,
           "assist_combo": 2,
           "followup": 1,
-          "system": 12,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 16,
@@ -494,12 +428,12 @@
         "air_normal": 8,
         "command_normal": 15,
         "normal": 12,
-        "od_special": 11,
-        "special": 29,
+        "od_special": 15,
+        "special": 36,
         "super": 8,
         "system": 6,
         "throw": 3,
-        "unknown": 17
+        "unknown": 6
       },
       "character": "ChunLi",
       "counts": {
@@ -510,8 +444,9 @@
           "any_button": 17,
           "assist_combo": 1,
           "followup": 3,
-          "system": 22,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 2
         },
         "by_method": {
           "assist": 12,
@@ -520,9 +455,9 @@
         },
         "classic_only": 6,
         "entries": 96,
-        "excluded": 62,
+        "excluded": 53,
         "rows": 109,
-        "standalone": 47,
+        "standalone": 56,
         "unreachable": 6
       },
       "generated_at": "2026-08-03T00:00:00.000Z",
@@ -533,67 +468,13 @@
         "simple_command names neither SP nor AUTO": 1
       },
       "source_character": "ChunLi",
-      "unplaceable": 17,
-      "unplaceable_lost": 11,
+      "unplaceable": 6,
+      "unplaceable_lost": 2,
       "unplaceable_rows": [
-        {
-          "action_id": 900,
-          "classic": "[4]6+LP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 901,
-          "classic": "[4]6+MP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 902,
-          "classic": "[4]6+HP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 902,
-          "classic": "[4]6+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 904,
-          "classic": "[4]6+PP",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 904,
-          "classic": "[4]6+PP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
         {
           "action_id": 919,
           "classic": "KK",
           "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 942,
-          "classic": "[2]8+LK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 943,
-          "classic": "[2]8+MK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 944,
-          "classic": "[2]8+HK",
-          "input_method": "manual",
           "ownership": "direct"
         },
         {
@@ -610,12 +491,12 @@
         "air_normal": 9,
         "command_normal": 16,
         "normal": 37,
-        "od_special": 10,
-        "special": 8,
+        "od_special": 19,
+        "special": 16,
         "super": 8,
         "system": 6,
         "throw": 2,
-        "unknown": 29
+        "unknown": 12
       },
       "character": "DeeJay",
       "counts": {
@@ -626,8 +507,9 @@
           "any_button": 5,
           "assist_combo": 2,
           "followup": 11,
-          "system": 26,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 12,
@@ -636,9 +518,9 @@
         },
         "classic_only": 7,
         "entries": 121,
-        "excluded": 55,
+        "excluded": 41,
         "rows": 125,
-        "standalone": 70,
+        "standalone": 84,
         "unreachable": 7
       },
       "generated_at": "2026-08-03T00:00:00.000Z",
@@ -649,93 +531,9 @@
         "simple_command names neither SP nor AUTO": 5
       },
       "source_character": "DeeJay",
-      "unplaceable": 29,
-      "unplaceable_lost": 15,
+      "unplaceable": 12,
+      "unplaceable_lost": 1,
       "unplaceable_rows": [
-        {
-          "action_id": 900,
-          "classic": "[4]6+LP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 902,
-          "classic": "[4]6+MP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 902,
-          "classic": "[4]6+MP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 905,
-          "classic": "[4]6+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 906,
-          "classic": "[4]6+PP",
-          "input_method": "assist",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 906,
-          "classic": "[4]6+PP",
-          "input_method": "simple",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 907,
-          "classic": "[4]6+PP",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 907,
-          "classic": "[4]6+PP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 955,
-          "classic": "[2]8+LK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 956,
-          "classic": "[2]8+MK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 957,
-          "classic": "[2]8+HK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 957,
-          "classic": "[2]8+HK",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 959,
-          "classic": "[2]8+KK",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 959,
-          "classic": "[2]8+KK",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
         {
           "action_id": 1497,
           "classic": "LP+MP+HP+LK+MK+HK",
@@ -767,8 +565,9 @@
           "any_button": 2,
           "assist_combo": 2,
           "followup": 4,
-          "system": 12,
-          "throw": 3
+          "system": 11,
+          "throw": 3,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 16,
@@ -807,12 +606,12 @@
         "air_normal": 10,
         "command_normal": 19,
         "normal": 5,
-        "od_special": 14,
-        "special": 22,
-        "super": 6,
+        "od_special": 20,
+        "special": 29,
+        "super": 8,
         "system": 6,
         "throw": 2,
-        "unknown": 38
+        "unknown": 23
       },
       "character": "EHonda",
       "counts": {
@@ -823,8 +622,9 @@
           "any_button": 9,
           "assist_combo": 2,
           "followup": 20,
-          "system": 27,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 3
         },
         "by_method": {
           "assist": 22,
@@ -833,9 +633,9 @@
         },
         "classic_only": 7,
         "entries": 95,
-        "excluded": 70,
+        "excluded": 57,
         "rows": 122,
-        "standalone": 52,
+        "standalone": 65,
         "unreachable": 7
       },
       "generated_at": "2026-08-03T00:00:00.000Z",
@@ -846,75 +646,9 @@
         "simple_command names neither SP nor AUTO": 1
       },
       "source_character": "EHonda",
-      "unplaceable": 38,
-      "unplaceable_lost": 16,
+      "unplaceable": 23,
+      "unplaceable_lost": 3,
       "unplaceable_rows": [
-        {
-          "action_id": 900,
-          "classic": "[4]6+LP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 901,
-          "classic": "[4]6+MP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 901,
-          "classic": "[4]6+MP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 902,
-          "classic": "[4]6+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 911,
-          "classic": "[4]6+PP",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 911,
-          "classic": "[4]6+PP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 946,
-          "classic": "[2]8+LK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 947,
-          "classic": "[2]8+MK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 948,
-          "classic": "[2]8+HK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 949,
-          "classic": "[2]8+KK",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 949,
-          "classic": "[2]8+KK",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
         {
           "action_id": 976,
           "classic": ">2+HK",
@@ -928,18 +662,6 @@
           "ownership": "verified_alias"
         },
         {
-          "action_id": 1203,
-          "classic": "[4]646+K",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1203,
-          "classic": "[4]646+K",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
           "action_id": 1496,
           "classic": "LP+MP+HP+LK+MK+HK",
           "input_method": "manual",
@@ -951,10 +673,10 @@
       "ac_sha256": "d14a103a006e85bdd8cf04f5f51e0ec1931381127cfe86c3b0b75bbb355a6917",
       "by_category": {
         "air_normal": 6,
-        "command_normal": 24,
+        "command_normal": 17,
         "normal": 8,
-        "od_special": 8,
-        "special": 9,
+        "od_special": 11,
+        "special": 13,
         "super": 10,
         "system": 6,
         "throw": 2,
@@ -968,8 +690,9 @@
           "air": 6,
           "any_button": 8,
           "followup": 5,
-          "system": 13,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 2
         },
         "by_method": {
           "assist": 10,
@@ -1012,10 +735,10 @@
       "ac_sha256": "5ea2b2aa212ea33b373336853ddb0efd1fe3774ac55b7b2cc77d3e8861508033",
       "by_category": {
         "air_normal": 10,
-        "command_normal": 59,
+        "command_normal": 52,
         "normal": 6,
-        "od_special": 10,
-        "special": 14,
+        "od_special": 13,
+        "special": 18,
         "super": 14,
         "system": 6,
         "throw": 2,
@@ -1030,8 +753,9 @@
           "any_button": 5,
           "assist_combo": 2,
           "followup": 4,
-          "system": 12,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 22,
@@ -1070,12 +794,12 @@
         "air_normal": 6,
         "command_normal": 38,
         "normal": 22,
-        "od_special": 1,
-        "special": 4,
-        "super": 2,
+        "od_special": 12,
+        "special": 37,
+        "super": 12,
         "system": 6,
         "throw": 4,
-        "unknown": 61
+        "unknown": 7
       },
       "character": "Guile",
       "counts": {
@@ -1086,8 +810,9 @@
           "any_button": 7,
           "assist_combo": 2,
           "followup": 3,
-          "system": 64,
-          "throw": 3
+          "system": 11,
+          "throw": 3,
+          "unclassified": 2
         },
         "by_method": {
           "assist": 20,
@@ -1096,9 +821,9 @@
         },
         "classic_only": 6,
         "entries": 117,
-        "excluded": 86,
+        "excluded": 35,
         "rows": 144,
-        "standalone": 58,
+        "standalone": 109,
         "unreachable": 6
       },
       "generated_at": "2026-08-03T00:00:00.000Z",
@@ -1109,318 +834,12 @@
         "simple_command names neither SP nor AUTO": 2
       },
       "source_character": "Guile",
-      "unplaceable": 61,
-      "unplaceable_lost": 53,
+      "unplaceable": 7,
+      "unplaceable_lost": 2,
       "unplaceable_rows": [
-        {
-          "action_id": 898,
-          "classic": "[4]6+PP",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 898,
-          "classic": "[4]6+PP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 899,
-          "classic": "[4]6+LP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 900,
-          "classic": "[4]6+LP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 900,
-          "classic": "[4]6+LP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 901,
-          "classic": "[4]6+LP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 901,
-          "classic": "[4]6+LP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 902,
-          "classic": "[4]6+MP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 903,
-          "classic": "[4]6+MP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 904,
-          "classic": "[4]6+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 905,
-          "classic": "[4]6+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 905,
-          "classic": "[4]6+HP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 905,
-          "classic": "[4]6+HP",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 906,
-          "classic": "[4]6+PP",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 906,
-          "classic": "[4]6+PP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 955,
-          "classic": "[4]6+LP",
-          "input_method": "manual",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 955,
-          "classic": "[4]6+LP",
-          "input_method": "simple",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 956,
-          "classic": "[4]6+LP",
-          "input_method": "simple",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 956,
-          "classic": "[4]6+LP",
-          "input_method": "manual",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 957,
-          "classic": "[4]6+MP",
-          "input_method": "manual",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 958,
-          "classic": "[4]6+MP",
-          "input_method": "manual",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 959,
-          "classic": "[4]6+HP",
-          "input_method": "manual",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 960,
-          "classic": "[4]6+HP",
-          "input_method": "manual",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 960,
-          "classic": "[4]6+HP",
-          "input_method": "simple",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 960,
-          "classic": "[4]6+HP",
-          "input_method": "assist",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 961,
-          "classic": "[4]6+LP",
-          "input_method": "manual",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 961,
-          "classic": "[4]6+LP",
-          "input_method": "simple",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 962,
-          "classic": "[4]6+PP",
-          "input_method": "assist",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 962,
-          "classic": "[4]6+PP",
-          "input_method": "simple",
-          "ownership": "verified_alias"
-        },
-        {
-          "action_id": 989,
-          "classic": "[2]8+LK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 990,
-          "classic": "[2]8+LK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 991,
-          "classic": "[2]8+MK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 991,
-          "classic": "[2]8+MK",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 992,
-          "classic": "[2]8+MK",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 992,
-          "classic": "[2]8+MK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 993,
-          "classic": "[2]8+HK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 994,
-          "classic": "[2]8+HK",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 994,
-          "classic": "[2]8+HK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 994,
-          "classic": "[2]8+HK",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 995,
-          "classic": "[2]8+KK",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 995,
-          "classic": "[2]8+KK",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1200,
-          "classic": "[4]646+LP+MP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1201,
-          "classic": "[4]646+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
         {
           "action_id": 1213,
           "classic": "PP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1240,
-          "classic": "[4]646+K",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1240,
-          "classic": "[4]646+K",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1241,
-          "classic": "[4]646+K",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1241,
-          "classic": "[4]646+K",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1243,
-          "classic": "[4]646+K",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1243,
-          "classic": "[4]646+K",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1244,
-          "classic": "[4]646+K",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1244,
-          "classic": "[4]646+K",
           "input_method": "manual",
           "ownership": "direct"
         },
@@ -1455,8 +874,9 @@
           "any_button": 20,
           "assist_combo": 5,
           "followup": 3,
-          "system": 16,
-          "throw": 3
+          "system": 15,
+          "throw": 3,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 17,
@@ -1511,8 +931,9 @@
           "any_button": 1,
           "assist_combo": 1,
           "followup": 5,
-          "system": 18,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 7
         },
         "by_method": {
           "assist": 13,
@@ -1582,10 +1003,10 @@
       "ac_sha256": "abf8fbad51d9f39507e644780ed58c00abc1e4ec4299e8b9449daca84df7c04a",
       "by_category": {
         "air_normal": 7,
-        "command_normal": 74,
+        "command_normal": 67,
         "normal": 6,
-        "od_special": 20,
-        "special": 31,
+        "od_special": 23,
+        "special": 35,
         "super": 8,
         "system": 8,
         "throw": 2,
@@ -1600,8 +1021,9 @@
           "any_button": 34,
           "assist_combo": 1,
           "followup": 16,
-          "system": 14,
-          "throw": 2
+          "system": 13,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 19,
@@ -1638,10 +1060,10 @@
       "ac_sha256": "58905c345ed46631cb36794997051ebbf8a1f7cb190046f55090b7367447512b",
       "by_category": {
         "air_normal": 14,
-        "command_normal": 32,
+        "command_normal": 25,
         "normal": 60,
-        "od_special": 12,
-        "special": 33,
+        "od_special": 15,
+        "special": 37,
         "super": 14,
         "system": 6,
         "throw": 3,
@@ -1656,8 +1078,9 @@
           "any_button": 5,
           "assist_combo": 1,
           "followup": 10,
-          "system": 12,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 39,
@@ -1694,14 +1117,14 @@
       "ac_sha256": "3f8582aecd0f559a3c04f82e837832ccc6ce80a52ceec1edaf6c78fabd41dd57",
       "by_category": {
         "air_normal": 7,
-        "command_normal": 24,
+        "command_normal": 13,
         "normal": 8,
-        "od_special": 9,
-        "special": 13,
+        "od_special": 14,
+        "special": 21,
         "super": 8,
         "system": 6,
         "throw": 2,
-        "unknown": 33
+        "unknown": 31
       },
       "character": "Ken",
       "counts": {
@@ -1712,8 +1135,9 @@
           "any_button": 7,
           "assist_combo": 2,
           "followup": 30,
-          "system": 16,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 5
         },
         "by_method": {
           "assist": 19,
@@ -1735,7 +1159,7 @@
         "simple_command names neither SP nor AUTO": 2
       },
       "source_character": "Ken",
-      "unplaceable": 33,
+      "unplaceable": 31,
       "unplaceable_lost": 5,
       "unplaceable_rows": [
         {
@@ -1792,8 +1216,9 @@
           "any_button": 14,
           "assist_combo": 1,
           "followup": 9,
-          "system": 20,
-          "throw": 2
+          "system": 17,
+          "throw": 2,
+          "unclassified": 3
         },
         "by_method": {
           "assist": 21,
@@ -1842,10 +1267,10 @@
       "ac_sha256": "36d9b3d87d425b093aeee36ae7acc355efb5609db17438a5f2e90a13abdb0c6c",
       "by_category": {
         "air_normal": 20,
-        "command_normal": 35,
+        "command_normal": 17,
         "normal": 5,
-        "od_special": 12,
-        "special": 32,
+        "od_special": 18,
+        "special": 44,
         "super": 10,
         "system": 6,
         "throw": 2,
@@ -1860,8 +1285,9 @@
           "any_button": 9,
           "assist_combo": 2,
           "followup": 3,
-          "system": 12,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 19,
@@ -1895,10 +1321,10 @@
       "ac_sha256": "24c3454b415d170f911ba87056d50ceb194c350d6ec3e3db985d578bd6a2426d",
       "by_category": {
         "air_normal": 8,
-        "command_normal": 23,
+        "command_normal": 16,
         "normal": 4,
-        "od_special": 11,
-        "special": 13,
+        "od_special": 14,
+        "special": 17,
         "super": 8,
         "system": 6,
         "throw": 2,
@@ -1913,8 +1339,9 @@
           "any_button": 7,
           "assist_combo": 1,
           "followup": 16,
-          "system": 15,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 4
         },
         "by_method": {
           "assist": 13,
@@ -1969,14 +1396,14 @@
       "ac_sha256": "9436ca0bf5ace2722e4e9ac35c3d5b79cf26f2f2a139a8e0543f37e6701e7785",
       "by_category": {
         "air_normal": 6,
-        "command_normal": 21,
+        "command_normal": 18,
         "normal": 6,
-        "od_special": 6,
-        "special": 8,
+        "od_special": 15,
+        "special": 16,
         "super": 13,
         "system": 6,
         "throw": 2,
-        "unknown": 26
+        "unknown": 12
       },
       "character": "MBison",
       "counts": {
@@ -1987,8 +1414,9 @@
           "any_button": 9,
           "assist_combo": 1,
           "followup": 3,
-          "system": 24,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 13,
@@ -1997,9 +1425,9 @@
         },
         "classic_only": 8,
         "entries": 81,
-        "excluded": 49,
+        "excluded": 37,
         "rows": 94,
-        "standalone": 45,
+        "standalone": 57,
         "unreachable": 8
       },
       "generated_at": "2026-08-03T00:00:00.000Z",
@@ -2007,81 +1435,9 @@
       "problems": 0,
       "problems_by_reason": [],
       "source_character": "MBison",
-      "unplaceable": 26,
-      "unplaceable_lost": 13,
+      "unplaceable": 12,
+      "unplaceable_lost": 1,
       "unplaceable_rows": [
-        {
-          "action_id": 908,
-          "classic": "[2]8+LK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 909,
-          "classic": "[2]8+MK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 909,
-          "classic": "[2]8+MK",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 910,
-          "classic": "[2]8+HK",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 943,
-          "classic": "[2]8+KK",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 943,
-          "classic": "[2]8+KK",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1018,
-          "classic": "[4]6+LP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1018,
-          "classic": "[4]6+LP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1024,
-          "classic": "[4]6+MP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1030,
-          "classic": "[4]6+HP",
-          "input_method": "manual",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1038,
-          "classic": "[4]6+PP",
-          "input_method": "simple",
-          "ownership": "direct"
-        },
-        {
-          "action_id": 1038,
-          "classic": "[4]6+PP",
-          "input_method": "assist",
-          "ownership": "direct"
-        },
         {
           "action_id": 1491,
           "classic": "LP+MP+HP+LK+MK+HK",
@@ -2094,10 +1450,10 @@
       "ac_sha256": "3157a731c060c85a10397a96d99f82d39ef7d3f973e72fac3223e968dc2a3027",
       "by_category": {
         "air_normal": 6,
-        "command_normal": 31,
+        "command_normal": 17,
         "normal": 7,
-        "od_special": 28,
-        "special": 38,
+        "od_special": 34,
+        "special": 46,
         "super": 16,
         "system": 6,
         "throw": 4,
@@ -2111,8 +1467,9 @@
           "air": 24,
           "any_button": 14,
           "assist_combo": 2,
-          "system": 12,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 22,
@@ -2167,8 +1524,9 @@
           "any_button": 7,
           "assist_combo": 2,
           "followup": 6,
-          "system": 12,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 29,
@@ -2205,10 +1563,10 @@
       "ac_sha256": "bf938898975f2df9c4c6180eb348b2a92762f239dbb47908513e7536adc6827f",
       "by_category": {
         "air_normal": 7,
-        "command_normal": 24,
+        "command_normal": 17,
         "normal": 4,
-        "od_special": 10,
-        "special": 11,
+        "od_special": 13,
+        "special": 15,
         "super": 8,
         "system": 6,
         "throw": 2,
@@ -2223,8 +1581,9 @@
           "any_button": 3,
           "assist_combo": 2,
           "followup": 16,
-          "system": 12,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 13,
@@ -2280,8 +1639,9 @@
           "any_button": 4,
           "assist_combo": 2,
           "followup": 10,
-          "system": 13,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 2
         },
         "by_method": {
           "assist": 28,
@@ -2324,10 +1684,10 @@
       "ac_sha256": "afedc65f24d5968174fdcdd8e42720199564623ba993c35870f4d6084d94c195",
       "by_category": {
         "air_normal": 6,
-        "command_normal": 27,
+        "command_normal": 20,
         "normal": 6,
-        "od_special": 16,
-        "special": 19,
+        "od_special": 19,
+        "special": 23,
         "super": 16,
         "system": 6,
         "throw": 2,
@@ -2342,8 +1702,9 @@
           "any_button": 12,
           "assist_combo": 2,
           "followup": 3,
-          "system": 12,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 14,
@@ -2380,10 +1741,10 @@
       "ac_sha256": "424195e69fc11d9f0738c712bb85f24cbcb90a653c1e8ada0a7f87dda0bc89e2",
       "by_category": {
         "air_normal": 6,
-        "command_normal": 29,
+        "command_normal": 22,
         "normal": 6,
-        "od_special": 6,
-        "special": 15,
+        "od_special": 9,
+        "special": 19,
         "super": 12,
         "system": 7,
         "throw": 2,
@@ -2399,8 +1760,9 @@
           "any_button": 3,
           "assist_combo": 2,
           "followup": 16,
-          "system": 13,
-          "throw": 2
+          "system": 12,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 19,
@@ -2437,10 +1799,10 @@
       "ac_sha256": "604c0f7279f24805c20f70e1f4f780f9d5804cb7ee9f0744ebaaf3ea9c5d71ca",
       "by_category": {
         "air_normal": 6,
-        "command_normal": 23,
+        "command_normal": 16,
         "normal": 6,
-        "od_special": 8,
-        "special": 12,
+        "od_special": 11,
+        "special": 16,
         "super": 12,
         "system": 6,
         "throw": 2,
@@ -2455,8 +1817,9 @@
           "any_button": 7,
           "assist_combo": 2,
           "followup": 7,
-          "system": 12,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 1
         },
         "by_method": {
           "assist": 12,
@@ -2490,10 +1853,10 @@
       "ac_sha256": "e895dc76d9702cbec027de99375383925b339352f5192420b5a78b6270eb8723",
       "by_category": {
         "air_normal": 12,
-        "command_normal": 26,
+        "command_normal": 19,
         "normal": 5,
-        "od_special": 14,
-        "special": 22,
+        "od_special": 17,
+        "special": 26,
         "super": 12,
         "system": 6,
         "throw": 2,
@@ -2508,8 +1871,9 @@
           "any_button": 5,
           "assist_combo": 4,
           "followup": 35,
-          "system": 15,
-          "throw": 2
+          "system": 11,
+          "throw": 2,
+          "unclassified": 4
         },
         "by_method": {
           "assist": 27,
@@ -2583,8 +1947,9 @@
           "any_button": 5,
           "assist_combo": 2,
           "followup": 4,
-          "system": 20,
-          "throw": 6
+          "system": 12,
+          "throw": 6,
+          "unclassified": 8
         },
         "by_method": {
           "assist": 11,
@@ -2658,7 +2023,7 @@
     }
   ],
   "failures": [],
-  "generated_at": "2026-09-10T13:53:37Z",
+  "generated_at": "2026-09-10T16:10:04Z",
   "schema": "ce.catalog_audit.v1",
   "source_dir": "reframework/data/TrainingComboTrials_data/command_display",
   "unplaced_notations": [
@@ -2701,101 +2066,6 @@
     },
     {
       "characters": [
-        "Blanka",
-        "ChunLi",
-        "DeeJay",
-        "EHonda",
-        "Guile",
-        "MBison"
-      ],
-      "notation": "[4]6+PP",
-      "rows": 18
-    },
-    {
-      "characters": [
-        "Blanka",
-        "ChunLi",
-        "DeeJay",
-        "EHonda",
-        "Guile",
-        "MBison"
-      ],
-      "notation": "[4]6+LP",
-      "rows": 17
-    },
-    {
-      "characters": [
-        "Blanka",
-        "ChunLi",
-        "DeeJay",
-        "EHonda",
-        "Guile",
-        "MBison"
-      ],
-      "notation": "[4]6+HP",
-      "rows": 14
-    },
-    {
-      "characters": [
-        "Blanka",
-        "ChunLi",
-        "DeeJay",
-        "EHonda",
-        "Guile",
-        "MBison"
-      ],
-      "notation": "[4]6+MP",
-      "rows": 12
-    },
-    {
-      "characters": [
-        "Blanka",
-        "ChunLi",
-        "DeeJay",
-        "EHonda",
-        "Guile",
-        "MBison"
-      ],
-      "notation": "[2]8+HK",
-      "rows": 10
-    },
-    {
-      "characters": [
-        "Blanka",
-        "ChunLi",
-        "DeeJay",
-        "EHonda",
-        "Guile",
-        "MBison"
-      ],
-      "notation": "[2]8+MK",
-      "rows": 10
-    },
-    {
-      "characters": [
-        "Blanka",
-        "ChunLi",
-        "DeeJay",
-        "EHonda",
-        "Guile",
-        "MBison"
-      ],
-      "notation": "[2]8+LK",
-      "rows": 8
-    },
-    {
-      "characters": [
-        "Blanka",
-        "DeeJay",
-        "EHonda",
-        "Guile",
-        "MBison"
-      ],
-      "notation": "[2]8+KK",
-      "rows": 10
-    },
-    {
-      "characters": [
         "ChunLi",
         "Ed",
         "Ken",
@@ -2812,14 +2082,6 @@
       ],
       "notation": "PP",
       "rows": 8
-    },
-    {
-      "characters": [
-        "EHonda",
-        "Guile"
-      ],
-      "notation": "[4]646+K",
-      "rows": 10
     },
     {
       "characters": [
@@ -2907,20 +2169,6 @@
         "Alex"
       ],
       "notation": ">6",
-      "rows": 1
-    },
-    {
-      "characters": [
-        "Guile"
-      ],
-      "notation": "[4]646+HP",
-      "rows": 1
-    },
-    {
-      "characters": [
-        "Guile"
-      ],
-      "notation": "[4]646+LP+MP",
       "rows": 1
     }
   ]

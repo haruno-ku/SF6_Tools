@@ -145,19 +145,16 @@ local function measure(name)
         if row.category == "unknown" then
             m.unplaceable = m.unplaceable + 1
 
-            -- The row is excluded as a system action, and "unknown" is the only
-            -- thing that put it there: the classifier did not recognise the
-            -- notation, and the fallback at the end of the exclusion chain in
-            -- Catalog.build turns an unrecognised category into a system
-            -- action. A move dropped this way leaves no trace saying it was a
-            -- move - which is exactly the failure this audit is looking for.
+            -- Dropped for no reason other than that the classifier had no
+            -- vocabulary for the notation.
             --
-            -- Rows whose ownership is runtime_common are held out: those reach
-            -- the same exclusion on their own and would be excluded whatever
-            -- the classifier decided.
-            local lost = (row.exclusion == "system")
-                and row.ownership ~= "runtime_common"
-                and row.category ~= "system"
+            -- This used to look for exclusion == "system", because that is what
+            -- an unrecognised category turned into. Catalog.build now gives it
+            -- its own name, and this check followed the rename rather than
+            -- being left to read zero - a metric that goes quiet because the
+            -- thing it counted was renamed is worse than no metric, since it
+            -- reports the problem as solved.
+            local lost = (row.exclusion == "unclassified")
             if lost then
                 m.unplaceable_lost = m.unplaceable_lost + 1
                 m.unplaceable_rows[#m.unplaceable_rows + 1] = {
@@ -264,7 +261,8 @@ say("```")
 say("")
 say("- `unrch` no Modern command form at all, so the row never exists")
 say("- `unplc` rows the classifier could not place a category on")
-say("- `LOST`  of those, the ones dropped as a system action for no other reason")
+say("- `LOST`  of those, the ones excluded as `unclassified` - dropped for no reason")
+say("          other than that the classifier had no vocabulary for the notation")
 say("- `perr`  rows whose notation InputMask could not parse")
 say("- `prob`  entries Catalog.build reported as problems")
 say("")
@@ -290,9 +288,10 @@ say("")
 if #unplaced_sorted == 0 then
     say("None. Every row got a category.")
 else
-    say("Sorted by how many characters each one costs. A row here was excluded as")
-    say("a system action because the category came back unknown, not because")
-    say("anything in the data says it is a system action.")
+    say("Sorted by how many characters each one costs. A row here was excluded")
+    say("as `unclassified`: the category came back unknown, and nothing in the")
+    say("data says the move is unusable - only that this classifier has no word")
+    say("for how it is written.")
     say("")
     say("```")
     say("%-5s %-5s %-24s %s", "chars", "rows", "notation", "characters")
@@ -346,9 +345,9 @@ for _, m in ipairs(rows) do
     if m.unplaceable_lost > worst_n then worst_n, worst = m.unplaceable_lost, m end
 end
 
-say("%d row(s) across %d of %d character(s) are excluded as system actions only",
+say("%d row(s) across %d of %d character(s) are excluded as `unclassified`:",
     total_lost, affected, #rows)
-say("because the classifier could not place them.")
+say("dropped for no reason other than that the classifier could not place them.")
 say("")
 if baseline then
     say("Zangief, the character the pipeline was built against, loses %d.",
