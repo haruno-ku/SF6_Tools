@@ -1,0 +1,7 @@
+# Combo Explorer generated data. Verified results are committed deliberately
+# (see docs/ComboExplorer/plan-v3-implementation.md 2.1) - these are the
+# scratch products that must not be.
+external-data/
+exports/_rejected.jsonl
+node_modules/
+*.log
