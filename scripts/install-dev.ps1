@@ -53,23 +53,40 @@ function Find-GameDir {
         (Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Valve\Steam' -ErrorAction SilentlyContinue).InstallPath
     ) | Where-Object { $_ }
 
+    # The folder name is not a constant. Steam's own default for app 1364780 is
+    # 'Street Fighter 6' (with spaces); 'StreetFighter6' shows up on installs
+    # made by other means. Only the app manifest knows which one this machine
+    # has, so read it and fall back to both spellings.
+    $leaves = @('Street Fighter 6', 'StreetFighter6')
+
     foreach ($root in $steamRoots) {
         $vdf = Join-Path $root 'steamapps\libraryfolders.vdf'
         if (Test-Path -LiteralPath $vdf -ErrorAction SilentlyContinue) {
             foreach ($m in [regex]::Matches((Get-Content $vdf -Raw), '"path"\s*"([^"]+)"')) {
                 $lib = $m.Groups[1].Value -replace '\\\\', '\'
-                $candidates += (Join-Path $lib 'steamapps\common\StreetFighter6')
+
+                $acf = Join-Path $lib 'steamapps\appmanifest_1364780.acf'
+                if (Test-Path -LiteralPath $acf -ErrorAction SilentlyContinue) {
+                    $im = [regex]::Match((Get-Content $acf -Raw), '"installdir"\s*"([^"]+)"')
+                    if ($im.Success) {
+                        $candidates += (Join-Path $lib "steamapps\common\$($im.Groups[1].Value)")
+                    }
+                }
+
+                foreach ($leaf in $leaves) { $candidates += (Join-Path $lib "steamapps\common\$leaf") }
             }
         }
     }
 
-    $candidates += @(
-        'C:\Program Files (x86)\Steam\steamapps\common\StreetFighter6'
-        'C:\SteamLibrary\steamapps\common\StreetFighter6'
-        'D:\SteamLibrary\steamapps\common\StreetFighter6'
-        'D:\Steam\steamapps\common\StreetFighter6'
-        'E:\SteamLibrary\steamapps\common\StreetFighter6'
-    )
+    foreach ($leaf in $leaves) {
+        $candidates += @(
+            "C:\Program Files (x86)\Steam\steamapps\common\$leaf"
+            "C:\SteamLibrary\steamapps\common\$leaf"
+            "D:\SteamLibrary\steamapps\common\$leaf"
+            "D:\Steam\steamapps\common\$leaf"
+            "E:\SteamLibrary\steamapps\common\$leaf"
+        )
+    }
 
     # -ErrorAction SilentlyContinue matters here: a candidate on a drive letter
     # that does not exist makes Test-Path raise "Cannot find drive", and the
