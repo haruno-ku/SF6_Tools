@@ -60,6 +60,7 @@ if (mode === 'syntax') {
     'reframework/autorun/ComboExplorer.lua',
     ...walk('reframework/autorun/func/ComboExplorer'),
     ...walk('tests/lua'),
+    ...walk('tools/lua'),
   ].filter((f) => existsSync(f))
   if (files.length === 0) {
     console.error('no Lua files found - wrong working directory? Run from the repo root.')
