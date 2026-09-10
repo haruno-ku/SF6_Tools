@@ -12,17 +12,30 @@
 
 | 項目 | 状態 |
 |---|---|
-| A0 未検証値レジストリ `core/Provenance.lua` | **完了** — 10項目、能力ゲート、キャリブレーション適用 |
-| A1 現ビルドのレビューと修正 | **完了** — 5観点 × 敵対的検証。確認された欠陥はすべて修正 |
-| A2 実機依存 / 非依存の分離 | **完了** — `core/` は純粋、`runtime/GameAdapter.lua` が `sdk` に触れる唯一のファイル |
+| A0 未検証値レジストリ `core/Provenance.lua` | **完了** — 10項目、能力ゲート（injection と probing を分離）、キャリブレーション適用 |
+| A1 現ビルドのレビューと修正 | **完了** — 5観点 × 敵対的検証（31エージェント / 60件提起 / 38件維持）。維持されたもののうち現行ツリーに該当する分はすべて対応 |
+| A2 実機依存 / 非依存の分離 | **完了** — `core/` は純粋、`runtime/GameAdapter.lua` が `sdk` に、`runtime/JsonIO.lua` が `json`/`fs` に触れる唯一のファイル |
 | A3 raw JSON loader / slim map 回帰 / 分類 / canonical・variant / Catalog | **完了** — `core/Catalog.lua` |
 | A5 `LinkVerdict`（combo count 増加で判定） | **完了** — `core/LinkVerdict.lua` |
+| A7 読み取り専用プローブ（A/B/C/D） | **完了** — 注入なしで4つの未知すべてに答えられる |
 | A4 Schema 固定 | 未着手 |
 | A5 `StageControlFsm` / `RunnerFsm` / `SequenceCompiler` | 未着手 |
 | A6 `ResultCollector` / `GraphStore` / `RouteSearch` / `Scoring` / `Exporter` / KDB adapter | 未着手 |
-| A7 Calibration 手順・injection smoke test の確定 | 未着手 |
 
-テスト: **554 アサーション**（Lua 5.4.6、SF6 不要）。
+テスト: **634 アサーション**（Lua 5.4.6、SF6 不要）。
+`pnpm test` は構文＋**require 解決**もチェックする（実機でしか出ないロードエラーを開発機で捕まえる）。
+
+### 読み取り専用プローブが答えるもの
+
+| プローブ | 質問 | 注入 |
+|---|---|---|
+| A | `mComboDamage` は読めるか | 不要 |
+| B | 1 input tick = 1 battle frame か / ヒットストップで止まるか | 不要 |
+| C | リセット1回の実コスト（= 総当たり行列の上限） | 不要 |
+| D | 同梱カタログはこのビルドを記述しているか | 不要 |
+
+**C は当初「注入後」の予定だったが、操作者のリセットを観測すれば測れると分かったため前倒しした。**
+結果として、実機初日に未知の4項目すべてを埋められる。
 
 ---
 
