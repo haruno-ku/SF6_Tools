@@ -52,6 +52,7 @@ local GameAdapter = require("func/ComboExplorer/runtime/GameAdapter")
 local Clock       = require("func/ComboExplorer/runtime/Clock")
 local JsonIO      = require("func/ComboExplorer/runtime/JsonIO")
 local CatalogLocator = require("func/ComboExplorer/runtime/CatalogLocator")
+local StageControl = require("func/ComboExplorer/runtime/StageControl")
 
 local VERSION = "0.3.0-diagnostics"
 local MODE_ID = 6
@@ -117,7 +118,18 @@ i18n.register("combo_explorer", {
                     .. "PROBE A running first, so there is something to compare against.",
         load_catalog = "LOAD CATALOG",
         mode_off     = "Select training mode 6 (COMBO EXPLORER) to use this panel.",
-        readonly     = "READ-ONLY BUILD - this build never writes an input.",
+        -- This used to say "this build never writes an input", which stopped
+        -- being true when the calibration sweep landed and is about to be less
+        -- true again. What the operator needs is not a label but the two
+        -- things that decide whether a write can surprise them.
+        readonly     = "This build CAN write: the calibration sweep writes inputs, and a stage "
+                    .. "reset writes the training menu. Neither runs unless you start it here.",
+        hdr_stage    = "STAGE RESET",
+        stage_help   = "Performs one training-stage reset and reports what it took. Writes NO "
+                    .. "input - only the refresh request - so this is safe to run before the "
+                    .. "calibration sweep. It measures the numbers the sweep does not produce.",
+        stage_start  = "RESET ONCE",
+        stage_write  = "WRITE REPORT",
         no_battle    = "Waiting for a battle (no players resolved).",
         anchor_dead  = "FRAME ANCHOR DEAD: app.BattleFlow::UpdateFrameMain not found. "
                     .. "Every timing measurement on this build is invalid - report this.",
@@ -151,7 +163,13 @@ i18n.register("combo_explorer", {
         probe_d_help = "加载 1P 角色的招式目录，并与游戏实际产生的 action id 比对。请先运行探针 A 一段时间。",
         load_catalog = "加载目录",
         mode_off     = "请选择训练模式 6（连段探索器）以使用此面板。",
-        readonly     = "只读版本 —— 此版本不会写入任何输入。",
+        readonly     = "此版本可以写入：校准扫描会写入输入，场地重置会写入训练菜单。"
+                    .. "两者都必须在此面板中手动启动。",
+        hdr_stage    = "场地重置",
+        stage_help   = "执行一次训练场地重置并报告耗时。不写入任何输入，仅发送刷新请求，"
+                    .. "因此可以在校准扫描之前安全运行。",
+        stage_start  = "重置一次",
+        stage_write  = "写入报告",
         no_battle    = "等待对战开始（尚未获取到角色）。",
         anchor_dead  = "帧锚点失效：未找到 app.BattleFlow::UpdateFrameMain，本版本所有计时均无效。",
         probe_a_help = "请自行对假人打出连段。长度要有变化，并且至少包含一次不会击杀的连段。",
@@ -261,6 +279,8 @@ re.on_frame(function()
     probe_a.probe:set_hp_arm(usable, why)
 end)
 
+local stage = { last_status = nil, last_result = nil }
+
 -- =========================================================
 -- THE FRAME TICK
 -- =========================================================
@@ -294,6 +314,20 @@ Clock.on_frame(function(frame)
     -- Ticked from the anchor, like the probes. The runner parks a mask here and
     -- the shared input callback spends it on the same frame.
     if CalRunner.running() then CalRunner.tick() end
+
+    -- The stage reset takes its own snapshot rather than reusing `snap`: it
+    -- needs `refreshing`, which GameAdapter.snapshot does not carry, and a
+    -- reset that polled a stale flag would leave WAIT_REFRESH on the wrong
+    -- frame. StageControl.tick calls tick_snapshot for exactly that reason.
+    if StageControl.running() then
+        local cmd = StageControl.tick()
+        if cmd and cmd.outcome ~= nil then
+            stage.last_result = StageControl.result()
+            stage.last_status = ("reset %s in %d ticks"):format(
+                tostring(cmd.outcome), stage.last_result.ticks)
+            StageControl.stop()
+        end
+    end
 
     if probe_c.on then
         probe_c.probe:tick({
@@ -675,6 +709,89 @@ local function draw_calibration()
     end
 end
 
+-- One reset, and what it cost. This is the first thing to run on a machine
+-- that has the game, because everything after it depends on the stage being
+-- reproducible and because it writes no input at all.
+local function draw_stage_reset()
+    imgui.text_colored(T("stage_help"), UIKit.COLORS.Grey)
+
+    if StageControl.running() then
+        if UIKit.styled_button(T("stop") .. "##ce_stage", THEME.stop, UIKit.COLORS.White) then
+            stage.last_result = StageControl.result()
+            StageControl.stop()
+            stage.last_status = "stopped by the operator"
+        end
+    else
+        if UIKit.styled_button(T("stage_start") .. "##ce_stage", THEME.go, UIKit.COLORS.White) then
+            stage.last_result = nil
+            local ok, err = StageControl.start({})
+            stage.last_status = ok and "reset started" or ("could not start: " .. tostring(err))
+        end
+    end
+
+    imgui.same_line()
+    if UIKit.styled_button(T("stage_write") .. "##ce_stage_write", THEME.neutral,
+                           UIKit.COLORS.White) then
+        local body = stage.last_result or StageControl.result()
+        if body then
+            local path, err = Config.write_diag("stage_reset", body, artifact_ctx())
+            stage.last_status = path and (T("wrote") .. " " .. path)
+                or (T("write_failed") .. ": " .. tostring(err))
+        else
+            stage.last_status = "nothing to write - run a reset first"
+        end
+    end
+
+    local p = StageControl.progress()
+    if p then
+        kv("tick", ("%d  [%s]"):format(p.ticks, tostring(p.state)),
+           p.outcome and UIKit.COLORS.Green or UIKit.COLORS.Cyan)
+        if p.polling then imgui.text_colored("  waiting on " .. p.polling, UIKit.COLORS.Yellow) end
+        if p.reason then imgui.text_colored("  " .. p.reason, UIKit.COLORS.Yellow) end
+        if p.attempt then kv("position attempt", tostring(p.attempt)) end
+        if p.position_error then kv("position error", ("%.3f"):format(p.position_error)) end
+        kv("inject allowed", tostring(p.inject_allowed))
+        if p.unreadable > 0 then
+            kv("unreadable ticks", tostring(p.unreadable), UIKit.COLORS.Orange)
+        end
+        if p.write_errors > 0 then
+            kv("FAILED WRITES", tostring(p.write_errors), UIKit.COLORS.Red)
+        end
+    else
+        imgui.text_colored("not running", UIKit.COLORS.DarkGrey)
+    end
+
+    -- The numbers this run exists to take. Shown after it finishes, because
+    -- that is when they mean something.
+    local res = stage.last_result
+    if res then
+        kv("outcome", tostring(res.outcome),
+           res.outcome == "ready" and UIKit.COLORS.Green or UIKit.COLORS.Red)
+        kv("ticks to ready", tostring(res.stage and res.stage.ticks_to_ready))
+        for _, w in ipairs(res.write_errors or {}) do
+            imgui.text_colored(("  tick %s: %s failed - %s"):format(
+                tostring(w.tick), tostring(w.write), tostring(w.reason)), UIKit.COLORS.Red)
+        end
+        -- Named as guesses on screen as well as in the file. A budget read
+        -- back as a measurement is how an unverified number gets promoted.
+        imgui.text_colored("  settings this ran under:", UIKit.COLORS.DarkGrey)
+        for _, key in ipairs({ "settle_ticks", "grace_ticks", "refresh_timeout_ticks",
+                               "settle_timeout_ticks" }) do
+            local set = res.settings and res.settings[key]
+            if set then
+                imgui.text_colored(("    %s = %s  (%s)"):format(
+                    key, tostring(set.value), tostring(set.provenance)),
+                    tostring(set.provenance):find("measured") and UIKit.COLORS.Green
+                        or UIKit.COLORS.Orange)
+            end
+        end
+    end
+
+    if stage.last_status then
+        imgui.text_colored(stage.last_status, UIKit.COLORS.Cyan)
+    end
+end
+
 local function draw_probe_d()
     imgui.text_colored(T("probe_d_help"), UIKit.COLORS.Grey)
 
@@ -771,6 +888,7 @@ re.on_draw_ui(function()
     if UIKit.styled_header(T("hdr_probe_b"), THEME.hdr) then draw_probe_b() end
     if UIKit.styled_header(T("hdr_probe_c"), THEME.hdr) then draw_probe_c() end
     if UIKit.styled_header(T("hdr_probe_d"), THEME.hdr) then draw_probe_d() end
+    if UIKit.styled_header(T("hdr_stage"), THEME.hdr) then draw_stage_reset() end
     if UIKit.styled_header(T("hdr_calib"), THEME.hdr) then draw_calibration() end
 
     imgui.tree_pop()
