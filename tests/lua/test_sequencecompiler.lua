@@ -103,6 +103,43 @@ t.eq(preview.profile_status, "unverified",
 
 t.is_nil(SC.compile(two, { delay = 4 }), "no profile at all is refused")
 
+-- --- who owns the observation window -----------------------------------------
+
+t.group("the tail a caller did not ask for")
+
+-- The default used to be 30 ticks of neutral. The runner then observed for
+-- `observe_ticks` MORE on top of them, and the evidence row recorded only the
+-- second number - so the window in the data was shorter than the one that ran.
+-- Nothing pinned the default, so putting 30 back broke no test.
+--
+-- Asserted on the default path, which is the path that matters: a caller who
+-- passes tail_ticks has thought about it, and a caller who does not is the one
+-- who gets whatever this number says.
+
+do
+    t.eq(SC.DEFAULTS.tail_ticks, 0,
+         "the compiler appends no neutral of its own unless asked")
+
+    local bare = SC.compile(three, { profile = VERIFIED, delays = { 4, 6 } })
+    t.ok(bare ~= nil, "a route compiles with no tick options at all")
+    t.eq(bare.tail_ticks, 0, "and the program says it has no tail")
+
+    local last = bare.seq[#bare.seq]
+    t.ok(last.mask ~= 0,
+         "the program ends on the last move's input rather than on neutral padding")
+    t.eq(bare.observe_from_tick, bare.total_ticks,
+         "so there is nothing after the point observation would start")
+
+    -- A preview still gets one, and says so - which is how the runner tells the
+    -- two apart.
+    local preview = SC.compile(three, { profile = VERIFIED, delays = { 4, 6 },
+                                        tail_ticks = 7 })
+    t.eq(preview.tail_ticks, 7, "a tail asked for by name is reported")
+    t.eq(preview.total_ticks, bare.total_ticks + 7, "and is on top of the program")
+    t.eq(preview.observe_from_tick, bare.total_ticks,
+         "with observe_from_tick still at the end of the last input")
+end
+
 -- --- the program shape -------------------------------------------------------
 
 t.group("the program")

@@ -289,6 +289,9 @@ local function digest_of(program)
         profile_status = program.profile_status,
         profile_source = program.profile_source,
         observe_from_tick = program.observe_from_tick,
+        -- Expected to be 0 or absent on anything a runner produced. Kept anyway,
+        -- so a row built by some other path says which window it was watched in.
+        tail_ticks = program.tail_ticks,
         swept_gap = program.swept_gap,
     }
 end

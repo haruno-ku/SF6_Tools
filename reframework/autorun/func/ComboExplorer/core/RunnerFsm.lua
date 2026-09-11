@@ -250,6 +250,21 @@ function Runner:begin(spec)
     -- A budget that cannot cover the program is not a timeout, it is a
     -- guarantee that every trial reports a timeout - and a sweep of those looks
     -- exactly like a sweep of hardware trouble.
+    -- One window, and it is this machine's. A program built with a tail has
+    -- neutral ticks of its own after the last input, and those would be watched
+    -- as part of the program and then `observe_ticks` more on top - while the
+    -- evidence row records `observe_ticks` alone. Rather than adding the two and
+    -- hoping every reader does the same, a program with a tail is refused: it is
+    -- a preview build, and previews are not trials.
+    --
+    -- `> 0`, not `~= 0`. A program that does not carry the field has not said it
+    -- has a tail, and silence is not a reason to refuse anything.
+    if type(program.tail_ticks) == "number" and program.tail_ticks > 0 then
+        return nil, ("this program carries %d tail ticks of its own; the observation "
+            .. "window belongs to the runner, so compile it with tail_ticks = 0")
+            :format(program.tail_ticks)
+    end
+
     local floor_ticks = program.total_ticks + self.cfg.observe_ticks
     if self.cfg.trial_timeout_ticks <= floor_ticks then
         return nil, ("the trial budget is %d ticks but the program plus its "

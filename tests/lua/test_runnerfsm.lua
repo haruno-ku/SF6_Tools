@@ -59,13 +59,16 @@ local ROUTE = {
     },
 }
 
+-- tail_ticks = 0, and not by habit: the observation window is the runner's, and
+-- a program that brings its own tail is refused by begin(). See the block at
+-- the end of this file.
 local PROGRAM = SC.compile(ROUTE, { profile = VERIFIED, delay = 4,
-                                    lead_ticks = 4, hold_ticks = 2, tail_ticks = 6 })
+                                    lead_ticks = 4, hold_ticks = 2, tail_ticks = 0 })
 
 t.group("the program these tests are driven from")
 
 t.ok(PROGRAM ~= nil, "a two-step program compiles under a verified profile")
-t.eq(PROGRAM.total_ticks, 18, "and is 18 ticks: 4 lead, 2, 4 delay, 2, 6 tail")
+t.eq(PROGRAM.total_ticks, 12, "and is 12 ticks: 4 lead, 2, 4 delay, 2, and no tail")
 t.eq(PROGRAM.steps[1].input_starts_at_tick, 4, "move A's input begins after the lead")
 t.eq(PROGRAM.steps[2].input_starts_at_tick, 10, "and move B's after the delay")
 t.eq(PROGRAM.steps[2].input_ends_at_tick, 12, "ending two ticks later")
@@ -238,7 +241,11 @@ t.is_nil(play({ spec = { judge_gap = 4 } }),
 
 -- A budget smaller than the program guarantees every trial times out, and a
 -- sweep of timeouts looks exactly like a sweep of hardware trouble.
-local tight, tight_why = play({ runner = { trial_timeout_ticks = 20 } })
+-- Derived from the program rather than written out, so it stays below the floor
+-- when the program's length changes. It did: dropping the tail took the program
+-- from 18 ticks to 12, and a hardcoded 20 quietly stopped being too small.
+local tight, tight_why = play({
+    runner = { trial_timeout_ticks = PROGRAM.total_ticks + 1 } })
 t.is_nil(tight, "a tick budget that cannot cover the program is refused up front")
 t.ok(tight_why:find("budget") ~= nil, "and says so: " .. tostring(tight_why))
 
@@ -528,5 +535,46 @@ for _ = 1, 12 do half:tick(nil) end
 local hres = half:result()
 t.is_nil(hres.outcome, "ticking with no snapshot at all reaches no conclusion")
 t.eq(hres.state, ST.RESETTING, "and the trial is still waiting for a stage it can read")
+
+-- --- one window, and it belongs to this machine ------------------------------
+
+t.group("a program that brings its own observation window is refused")
+
+-- The tail used to default to 30. The runner watched the program's ticks,
+-- including those 30, and then observed for `observe_ticks` MORE - while the
+-- evidence row recorded `observe_ticks` alone. The number a reader would use to
+-- say "we watched long enough" was smaller than the window that actually ran,
+-- and the 30 itself was an unmeasured constant that was never in Provenance.
+
+do
+    local preview = SC.compile(ROUTE, { profile = VERIFIED, delay = 4,
+                                        lead_ticks = 4, hold_ticks = 2, tail_ticks = 6 })
+    t.eq(preview.total_ticks, 18, "a preview build still gets its tail")
+    t.eq(preview.tail_ticks, 6, "and says how long it is")
+
+    local f = RF.new(runner_cfg(SF.new(stage_cfg())))
+    local ok, why = f:begin(trial_spec({ program = preview }))
+    t.is_nil(ok, "and the runner will not run it")
+    t.ok(tostring(why):find("tail ticks of its own") ~= nil,
+         "saying which window it objects to: " .. tostring(why))
+    t.ok(tostring(why):find("tail_ticks = 0") ~= nil, "and how to fix it")
+end
+
+do
+    t.eq(PROGRAM.tail_ticks, 0, "the trial program has no tail of its own")
+    local f = RF.new(runner_cfg(SF.new(stage_cfg())))
+    t.ok(f:begin(trial_spec()) == true, "so it starts")
+end
+
+do
+    -- Silence is not a tail. A program from an older build carries no such
+    -- field, and refusing it would be reading "nobody said" as bad news.
+    local quiet = {}
+    for k, v in pairs(PROGRAM) do quiet[k] = v end
+    quiet.tail_ticks = nil
+    local f = RF.new(runner_cfg(SF.new(stage_cfg())))
+    t.ok(f:begin(trial_spec({ program = quiet })) == true,
+         "a program that does not mention a tail is not refused for having one")
+end
 
 return t.finish()

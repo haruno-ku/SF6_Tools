@@ -27,6 +27,30 @@
 -- the move never comes out, and the trial is recorded as "these moves do not
 -- link" - a confident negative that looks exactly like a real one.
 --
+-- THE TAIL IS NOT THE OBSERVATION WINDOW
+--
+-- `tail_ticks` appends neutral ticks to the PROGRAM. It is a preview aid - it
+-- makes `describe` show the release, and it gives an offline reader something
+-- after the last button - and it is not how long anybody watches.
+--
+-- The window belongs to RunnerFsm. After the program's last tick the runner
+-- enters OBSERVING and keeps watching for `observe_ticks`, a value it refuses
+-- to start without (RunnerFsm.REQUIRED) precisely because nobody has measured
+-- how late a result can arrive: a hit that lands during a super freeze or a
+-- slow knockdown shows up long after the pad is neutral.
+--
+-- These were being added together. The default tail was 30 ticks, the runner
+-- observed for another `observe_ticks` on top, and the evidence row recorded
+-- only the second number - so the window in the data was shorter than the
+-- window that actually ran, and the one figure an analyst would use to say
+-- "we watched long enough" was the wrong one. Worse, the 30 was picked by
+-- nobody from nothing. It is the sort of unmeasured constant this project
+-- keeps in Provenance, and it was not in Provenance.
+--
+-- So the default is 0 and RunnerFsm refuses a program that carries a tail.
+-- A caller that wants trailing neutral for a preview asks for it by name, and
+-- such a program is then, correctly, not something a trial will run.
+--
 -- FOLLOW-UPS
 --
 -- A target-combo derivation cannot be produced from neutral, which is why
@@ -41,7 +65,11 @@ local M = { name = "ComboExplorer.SequenceCompiler" }
 M.DEFAULTS = {
     lead_ticks = 10,     -- neutral before the first move, so the reset settles
     hold_ticks = 3,      -- how long each move's final direction + button is held
-    tail_ticks = 30,     -- neutral after the last move, to observe the result
+    -- Neutral appended after the last move. Zero by default: the observation
+    -- window is RunnerFsm's (see the header). A preview asks for a tail by
+    -- name, and gets a program a runner will refuse - which is the right way
+    -- round, because a preview is not a trial.
+    tail_ticks = 0,
     max_ticks = 600,     -- a program longer than this is a bug, not a combo
 }
 
@@ -217,6 +245,9 @@ function M.compile(route, opts)
         steps = steps,
         boundaries = boundaries,
         observe_from_tick = observe_from,
+        -- Carried so the runner can tell a trial program from a preview one.
+        -- Without it the runner cannot see a second window being counted.
+        tail_ticks = cfg.tail_ticks,
         context_dependent = context_dependent,
         -- Carried so a program can never be replayed under a different profile
         -- than the one it was built for without that being visible.
