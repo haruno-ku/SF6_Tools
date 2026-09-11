@@ -54,6 +54,8 @@ local JsonIO      = require("func/ComboExplorer/runtime/JsonIO")
 local CatalogLocator = require("func/ComboExplorer/runtime/CatalogLocator")
 local StageControl = require("func/ComboExplorer/runtime/StageControl")
 local Injector = require("func/ComboExplorer/runtime/Injector")
+local Sweep = require("func/ComboExplorer/runtime/Sweep")
+local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
 
 local VERSION = "0.3.0-diagnostics"
 local MODE_ID = 6
@@ -138,6 +140,12 @@ i18n.register("combo_explorer", {
                     .. "Load the catalog in PROBE D first.",
         trial_run    = "RUN ONE TRIAL",
         trial_next   = "NEXT PAIR",
+        hdr_sweep    = "SWEEP",
+        sweep_help   = "Runs the whole worklist for this character unattended. Start it and "
+                    .. "leave it: it resumes where a previous run stopped, retries what came "
+                    .. "back inconclusive, and stops if nothing is being measured. Run the "
+                    .. "calibration first - it refuses until the input map is measured.",
+        sweep_start  = "START SWEEP",
         no_battle    = "Waiting for a battle (no players resolved).",
         anchor_dead  = "FRAME ANCHOR DEAD: app.BattleFlow::UpdateFrameMain not found. "
                     .. "Every timing measurement on this build is invalid - report this.",
@@ -183,6 +191,10 @@ i18n.register("combo_explorer", {
                     .. "因此在校准扫描确定全部三项输入条目之前会拒绝启动。请先在 PROBE D 中加载目录。",
         trial_run    = "执行一次试行",
         trial_next   = "下一组",
+        hdr_sweep    = "全量扫描",
+        sweep_help   = "无人值守地跑完该角色的整个工作清单。可以启动后离开：会从上次中断处继续，"
+                    .. "重试无结论的组合，并在没有任何测量发生时停止。请先完成校准。",
+        sweep_start  = "开始扫描",
         no_battle    = "等待对战开始（尚未获取到角色）。",
         anchor_dead  = "帧锚点失效：未找到 app.BattleFlow::UpdateFrameMain，本版本所有计时均无效。",
         probe_a_help = "请自行对假人打出连段。长度要有变化，并且至少包含一次不会击杀的连段。",
@@ -298,6 +310,7 @@ local stage = { last_status = nil, last_result = nil }
 -- than a typed action id: the panel has no numeric input widget, and picking
 -- from the catalog means the pair is always one the catalog says is reachable.
 local trial = { pair = 1, delay = 4, last_status = nil, last_result = nil }
+local sweep = { last_status = nil, last_result = nil }
 
 -- =========================================================
 -- THE FRAME TICK
@@ -325,7 +338,7 @@ Clock.on_frame(function(frame)
     -- purpose is "start it and walk away", that was the opposite of the
     -- behaviour wanted.
     local machines_running = CalRunner.running() or StageControl.running()
-        or Injector.running()
+        or Injector.running() or Sweep.running()
     local wanted = machines_running or probe_a.on or probe_c.on
         or (live.panel_frame ~= nil and (frame - live.panel_frame) < 30)
     if not wanted then
@@ -358,10 +371,18 @@ Clock.on_frame(function(frame)
         end
     end
 
-    -- Same reason as the stage reset: it takes its own snapshot, because it
-    -- needs `can_inject` and `refreshing`, and it parks a mask that the shared
-    -- input callback spends on this same frame.
-    if Injector.running() then
+    -- The sweep drives the injector itself, so it is ticked INSTEAD of the
+    -- injector rather than beside it. Ticking both would advance one trial
+    -- twice per frame.
+    if Sweep.running() then
+        Sweep.tick()
+        local sp = Sweep.progress()
+        if sp and sp.done then
+            sweep.last_result = Sweep.result()
+            sweep.last_status = tostring(sp.stopped_because)
+            Sweep.stop()
+        end
+    elseif Injector.running() then
         local cmd = Injector.tick()
         if cmd and cmd.outcome ~= nil then
             trial.last_result = Injector.result()
@@ -1004,6 +1025,116 @@ local function draw_trial()
     end
 end
 
+-- The whole worklist for this character, unattended.
+local function draw_sweep()
+    imgui.text_colored(T("sweep_help"), UIKit.COLORS.Grey)
+
+    local char = live.p1_char and tostring(live.p1_char.key) or nil
+    local scheme = live.p1_control or "modern"
+    local wl_path = char
+        and ("ComboExplorer_data/worklist/%s-%s.json"):format(char:lower(), scheme)
+        or nil
+    local log_path = char
+        and ("ComboExplorer_data/trials/%s-%s.jsonl"):format(char:lower(), scheme)
+        or nil
+
+    if wl_path then kv("worklist", wl_path) end
+
+    if Sweep.running() then
+        if UIKit.styled_button(T("stop") .. "##ce_sweep", THEME.stop, UIKit.COLORS.White) then
+            sweep.last_result = Sweep.result()
+            Sweep.stop()
+            Injector.stop()
+            sweep.last_status = "stopped by the operator"
+        end
+    else
+        if UIKit.styled_button(T("sweep_start") .. "##ce_sweep", THEME.go, UIKit.COLORS.White) then
+            sweep.last_status = nil
+            sweep.last_result = nil
+            local wl, werr = wl_path and Sweep.load_worklist(wl_path) or nil, nil
+            if not wl then
+                sweep.last_status = tostring(werr or ("no worklist for " .. tostring(char)))
+            else
+                -- Resume reads the previous file as TEXT, because a truncated
+                -- last line is information the collector knows how to read.
+                -- Resume reads the previous file as TEXT. If this build has
+                -- no decoder the sweep still runs; it just repeats work, and
+                -- saying so is the difference between that and a silent
+                -- first-run-every-time.
+                local prior = JsonIO.read_text(log_path)
+                if prior and not JsonIO.can_decode() then
+                    sweep.last_status = "WARNING: no json.load_string on this build, so "
+                        .. "the previous run's results cannot be read back - trials "
+                        .. "already answered will be run again"
+                    prior = nil
+                end
+                local collector, cerr = ResultCollector.new({
+                    append = function(line)
+                        return JsonIO.append(log_path, line,
+                                             { "ComboExplorer_data", "ComboExplorer_data/trials" })
+                    end,
+                    encode = JsonIO.encode_line,
+                    decode = JsonIO.decode_line,
+                    identity = {
+                        calibration_id = reg.calibration_id,
+                        game_patch = reg.game_patch or Config.data.game_patch or "unknown",
+                    },
+                    resume = prior,
+                })
+                if not collector then
+                    sweep.last_status = "collector refused: " .. tostring(cerr)
+                else
+                    local ok, err = Sweep.start({
+                        worklist = wl,
+                        catalog = probe_d.catalog,
+                        collector = collector,
+                        provenance = reg,
+                        allow_injection = Config.data.allow_injection,
+                        delay = trial.delay,
+                        sink = { path = log_path,
+                                 dirs = { "ComboExplorer_data", "ComboExplorer_data/trials" } },
+                    })
+                    sweep.last_status = ok and "sweep started"
+                        or ("could not start: " .. tostring(err))
+                end
+            end
+        end
+    end
+
+    local p = Sweep.progress()
+    if p then
+        kv("pair", ("%d / %d"):format(p.index, p.total),
+           p.done and UIKit.COLORS.Green or UIKit.COLORS.Cyan)
+        kv("finished", tostring(p.finished))
+        kv("skipped (already answered)", tostring(p.skipped))
+        if p.requeued > 0 then kv("waiting for another go", tostring(p.requeued)) end
+        if p.start_failures > 0 then
+            kv("would not start", tostring(p.start_failures), UIKit.COLORS.Orange)
+        end
+        if p.problems > 0 then kv("problems", tostring(p.problems), UIKit.COLORS.Orange) end
+        if p.current then imgui.text_colored("  " .. tostring(p.current), UIKit.COLORS.White) end
+    else
+        imgui.text_colored("not running", UIKit.COLORS.DarkGrey)
+    end
+
+    local res = sweep.last_result
+    if res and res.summary then
+        kv("recorded", tostring(res.summary.written or 0))
+        for verdict, n in pairs(res.summary.by_verdict or {}) do
+            kv("  " .. tostring(verdict), tostring(n),
+               verdict == "link" and UIKit.COLORS.Green or UIKit.COLORS.White)
+        end
+        for _, pr in ipairs(res.problem_detail or {}) do
+            imgui.text_colored(("  %s: %s"):format(tostring(pr.pair), tostring(pr.reason)),
+                               UIKit.COLORS.Orange)
+        end
+    end
+
+    if sweep.last_status then
+        imgui.text_colored(sweep.last_status, UIKit.COLORS.Cyan)
+    end
+end
+
 local function draw_probe_d()
     imgui.text_colored(T("probe_d_help"), UIKit.COLORS.Grey)
 
@@ -1103,6 +1234,7 @@ re.on_draw_ui(function()
     if UIKit.styled_header(T("hdr_stage"), THEME.hdr) then draw_stage_reset() end
     if UIKit.styled_header(T("hdr_calib"), THEME.hdr) then draw_calibration() end
     if UIKit.styled_header(T("hdr_trial"), THEME.hdr) then draw_trial() end
+    if UIKit.styled_header(T("hdr_sweep"), THEME.hdr) then draw_sweep() end
 
     imgui.tree_pop()
 end)

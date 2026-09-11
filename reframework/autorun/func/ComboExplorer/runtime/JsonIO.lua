@@ -41,6 +41,54 @@ function M.load(path)
     return nil, "no JSON reader available"
 end
 
+-- One line of text back to a record, for a resume.
+--
+-- The mirror of encode_line, and carrying the same unverified assumption:
+-- json.load_string is not used anywhere else in the suite (30 calls to
+-- load_file and none to this), so whether this build's REFramework provides it
+-- is not known.
+--
+-- What a missing decoder costs here is different from a missing encoder, and
+-- worth saying. Without an encoder nothing can be recorded and the sweep must
+-- refuse. Without a DECODER the sweep can still run - it just cannot tell what
+-- a previous run already answered, so it repeats work. That is wasteful rather
+-- than wrong, which is why it degrades instead of refusing. It must still be
+-- visible: a resume that quietly did nothing looks exactly like a first run.
+function M.can_decode()
+    return (json ~= nil and json.load_string ~= nil)
+end
+
+function M.decode_line(text)
+    if type(text) ~= "string" then return nil, "not a line" end
+    if not M.can_decode() then
+        return nil, "this build's REFramework has no json.load_string, so a previous "
+            .. "run's file cannot be read back and its trials will be run again"
+    end
+    local ok, v = pcall(json.load_string, text)
+    if not ok then return nil, tostring(v) end
+    if type(v) ~= "table" then return nil, "the decoder returned no record" end
+    return v
+end
+
+-- The whole trial log back as text, for a resume.
+--
+-- ResultCollector.index takes the file's contents and works out what was
+-- already answered. It wants the raw text rather than parsed lines on purpose:
+-- a truncated last line is information - the trial ran and the result was lost -
+-- and splitting it away before the collector sees it would turn that into "this
+-- pair was never tried".
+--
+-- A file that is not there is not an error. It is the first run.
+function M.read_text(path)
+    if type(path) ~= "string" or path == "" then return nil, "no path" end
+    local f = io.open(path, "r")
+    if not f then return nil end
+    local ok, text = pcall(function() return f:read("a") end)
+    f:close()
+    if not ok then return nil, tostring(text) end
+    return text
+end
+
 -- One record to one line of text, for the trial log.
 --
 -- ResultCollector takes `encode` as an injected function and names no json
