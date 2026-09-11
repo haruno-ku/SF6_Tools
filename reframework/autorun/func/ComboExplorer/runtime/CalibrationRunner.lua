@@ -368,8 +368,49 @@ function M.report()
     return Calibration.conclude(run.session)
 end
 
--- Writes calibration/<Character>/<scheme>-<patch>.json, the file
--- Provenance.apply_calibration reads back.
+-- os.date the way Config.stamp() takes it: through pcall, because a host that
+-- does not hand this Lua state an os table must lose the ordering, not the
+-- write. Returns nil rather than a placeholder so the caller decides what an
+-- absent clock means for the field it is filling.
+local function utc(fmt)
+    local ok, s = pcall(os.date, fmt)
+    if ok and type(s) == "string" then return s end
+    return nil
+end
+
+-- Record copies already written in this session, keyed by the name they would
+-- have taken.
+--
+-- A stamp on its own does not make the name unique. It has one-second
+-- resolution, and on a host with no os.date every stamp is the same word - so
+-- two writes would land on one file again, which is the whole of #39. Session
+-- state cannot see files written before this load, but it does cover the case
+-- within one session: press WRITE PROFILE, keep sweeping, press it again.
+local record_names = {}
+
+-- Builds the record path, disambiguating against what this session already
+-- wrote. First use of a name takes it as-is so the common case reads cleanly;
+-- a repeat gets -2, -3, and so on.
+local function record_path(dir, base)
+    local name = ("%s/%s-%s"):format(dir, base, utc("!%Y%m%dT%H%M%SZ") or "unstamped")
+    local used = record_names[name]
+    record_names[name] = (used or 0) + 1
+    if used then name = ("%s-%d"):format(name, used + 1) end
+    return name .. ".json"
+end
+
+-- Writes two copies under calibration/: a stamped record named
+-- <Character>-<scheme>-<patch>-<stamp>.json, and latest.json, the file
+-- ComboExplorer.lua loads at startup and Provenance.apply_calibration reads.
+--
+-- The split is Config.write_diag's, for its reason: the record must survive a
+-- re-run, because a later sweep that measures fewer values must not be the only
+-- thing left on disk. Both copies were named for the BUILD rather than for the
+-- run, so they replaced each other: four sweeps on build 24176760 on 2026-09-11
+-- left one file. Whether any of the three lost ones witnessed something the
+-- survivor did not cannot now be answered, which is the point - a record you
+-- can overwrite is not a record. That is the half of #39 this closes; the half
+-- that silently emptied the values block is b5dd12f.
 --
 -- probe_values is the block from Calibration.from_probes, merged in so one file
 -- carries everything measured on this build rather than the register having to
@@ -382,7 +423,7 @@ function M.write_profile(identity, probe_values)
     identity.character = identity.character or run.character
     identity.ac_sha256 = identity.ac_sha256 or run.catalog.ac_sha256
     identity.bcm_sha256 = identity.bcm_sha256 or run.catalog.bcm_sha256
-    identity.generated_at = identity.generated_at or os.date("!%Y-%m-%dT%H:%M:%SZ")
+    identity.generated_at = identity.generated_at or utc("!%Y-%m-%dT%H:%M:%SZ")
 
     local blocks = {}
     if probe_values then blocks[#blocks + 1] = probe_values end
@@ -392,16 +433,23 @@ function M.write_profile(identity, probe_values)
     if not doc then return nil, err end
 
     local dir = "ComboExplorer_data/calibration"
+    local dirs = { "ComboExplorer_data", dir }
     local char = tostring(identity.character):gsub("[^%w_]", "")
-    local path = ("%s/%s-%s-%s.json"):format(dir, char,
+    local base = ("%s-%s-%s"):format(char,
         tostring(identity.control_scheme or "modern"), tostring(identity.game_patch))
 
-    local ok, werr = JsonIO.dump(path, doc, { "ComboExplorer_data", dir })
+    local path = record_path(dir, base)
+    local ok, werr = JsonIO.dump(path, doc, dirs)
+    -- Refusing to go on rather than write_diag's "try both". latest.json is live
+    -- configuration, not a report: if the disk is turning writes away, the
+    -- previous latest.json is the last profile that loads, and truncating it
+    -- would cost the operator a working calibration on top of this sweep.
     if not ok then return nil, werr end
 
-    -- latest.json is what ComboExplorer.lua loads at startup. Written second so
-    -- a failure above leaves the previous one intact rather than truncated.
-    JsonIO.dump(dir .. "/latest.json", doc, { "ComboExplorer_data", dir })
+    -- Written second for that same reason. A path is returned only because the
+    -- record above actually landed; reporting one for a file that is not there
+    -- would send the operator looking for it.
+    JsonIO.dump(dir .. "/latest.json", doc, dirs)
     return path, rep
 end
 

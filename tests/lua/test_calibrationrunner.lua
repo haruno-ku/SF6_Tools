@@ -243,4 +243,98 @@ do
     _G._shared_input_post = saved
 end
 
+-- --- the record copy ---------------------------------------------------------
+
+t.group("a second write on the same build does not land on the first one's name")
+
+-- CalibrationRunner holds the JsonIO module table, not its functions, so
+-- swapping the field is enough of a seam - the same shape test_config uses for
+-- Config.io, with the restore stated rather than left implicit.
+local JsonIO = require("func/ComboExplorer/runtime/JsonIO")
+
+local function with_fake_dump(opts, fn)
+    opts = opts or {}
+    local seen = {}
+    local saved = JsonIO.dump
+    JsonIO.dump = function(path, tbl, dirs)
+        seen[#seen + 1] = { path = path, tbl = tbl, dirs = dirs }
+        if opts.fail_record and not tostring(path):find("latest.json", 1, true) then
+            return false, "disk is full"
+        end
+        return true
+    end
+    local ok, err = pcall(fn, seen)
+    JsonIO.dump = saved
+    if not ok then error(err, 0) end
+    return seen
+end
+
+-- Fresh each call: write_profile fills the blanks in the table it is handed.
+local function identity()
+    return { calibration_id = "ESF_TEST-20260912T000000Z",
+             game_patch = "24176760", control_scheme = "modern" }
+end
+
+-- One measured value is the minimum Calibration.document will accept; what is
+-- under test here is the naming, not the contents.
+local VALUES = { direction_bits = { status = "verified", value = { up = 4 } } }
+
+do
+    local run, err = start({ identity = identity() })
+    t.ok(run ~= nil, tostring(err))
+
+    local seen = with_fake_dump(nil, function()
+        local first = CalRunner.write_profile(identity(), VALUES)
+        t.ok(first ~= nil, "the first write reports a path")
+
+        local second = CalRunner.write_profile(identity(), VALUES)
+        t.ok(second ~= nil, "and so does the second")
+
+        -- #39: both copies were named <Character>-<scheme>-<patch>.json, so the
+        -- second sweep took the first one's name and nothing on the machine
+        -- still held what only the first had witnessed. A stamp alone would not
+        -- fix it here either - these two writes are inside the same second.
+        t.ok(first ~= second,
+             ("the record copies differ: %s vs %s"):format(tostring(first), tostring(second)))
+        t.ok(tostring(first):find("Zangief", 1, true) ~= nil,
+             "and still say which character: " .. tostring(first))
+        t.ok(tostring(first):find("24176760", 1, true) ~= nil, "and which build")
+        t.ok(tostring(first):find("%d%d%d%d%d%d%d%dT") ~= nil
+             or tostring(first):find("unstamped", 1, true) ~= nil,
+             "carrying a timestamp the way the diagnostics do: " .. tostring(first))
+    end)
+
+    t.eq(#seen, 4, "two writes, two copies each")
+
+    -- latest.json is the convenience: ComboExplorer.lua loads that one path at
+    -- startup, so it is SUPPOSED to be replaced. The record is what must not be.
+    local LATEST = "ComboExplorer_data/calibration/latest.json"
+    t.eq(seen[2].path, LATEST, "the stable name is where startup looks")
+    t.eq(seen[4].path, LATEST, "and the second write replaces it, same path")
+    t.ok(seen[1].path ~= seen[3].path, "while the record copies are two files")
+
+    t.ok(type(seen[1].tbl) == "table" and type(seen[1].tbl.values) == "table",
+         "each copy carries the document")
+    t.eq(seen[1].tbl.values.direction_bits.status, "verified", "including the measured value")
+
+    CalRunner.stop({ force = true })
+end
+
+do
+    -- A record copy that did not land must not be reported as one, and must not
+    -- cost the operator the latest.json that still loads: unlike a diagnostic
+    -- report, that file is live configuration.
+    local run, err = start({ identity = identity() })
+    t.ok(run ~= nil, tostring(err))
+
+    local seen = with_fake_dump({ fail_record = true }, function()
+        local path, why = CalRunner.write_profile(identity(), VALUES)
+        t.is_nil(path, "when the record write fails, no path is returned")
+        t.ok(tostring(why):find("disk") ~= nil, "and the reason comes back: " .. tostring(why))
+    end)
+    t.eq(#seen, 1, "and latest.json was left alone rather than truncated")
+
+    CalRunner.stop({ force = true })
+end
+
 return t.finish()
