@@ -332,7 +332,7 @@ lua tools/lua/explore.lua
 **この971は「繋がるコンボ」ではない。** 全件 `status: theoretical` /
 `runtime_verified: false`。全文は `zangief-offline-report.md`。
 
-テスト: **2853 アサーション**（Lua 5.4、SF6 不要）。
+テスト: **3129 アサーション**（Lua 5.4、SF6 不要）。
 
 ### 未実装（実機の結果を見てから書くもの）
 
