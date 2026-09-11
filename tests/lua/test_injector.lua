@@ -271,6 +271,7 @@ do
         provenance = reg, allow_injection = true, route = ROUTE, delay = 4,
         expected = { [1] = { 601 }, [2] = { 621 } },
         edge_id = "601:manual->621:manual", attempt = 1,
+        frame = 4242,
         sink = false, adapter = adapter(),
     })
     t.ok(ok, "a trial starts with recording switched off: " .. tostring(why))
@@ -288,6 +289,17 @@ do
     if spec then
         t.eq(type(spec), "table", "record(nil) returns the spec itself")
         t.eq(spec.edge_id, "601:manual->621:manual", "naming the pair it was about")
+
+        -- THE ONE THAT WAS MISSING. `recorded_at` has been on the record shape
+        -- since ResultCollector was written and nothing ever set it, so every
+        -- tick number on a trial line was relative to that trial and reset on
+        -- the next - a line could not be located in anything at all.
+        t.ok(type(spec.recorded_at) == "string",
+             "the trial says when it ran: " .. tostring(spec.recorded_at))
+        t.ok(tostring(spec.recorded_at):find("T") ~= nil,
+             "as an ISO timestamp, which is what a recording can be aligned to")
+        t.eq(spec.started_at_frame, 4242,
+             "and the engine frame travels beside it when the caller had one")
     else
         -- An outcome in M.NO_RECORD produces no record, and that IS its answer.
         t.ok(true, "this outcome produces no record, which is its answer")

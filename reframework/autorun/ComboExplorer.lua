@@ -977,6 +977,7 @@ local function draw_trial()
                     edge_id = ("%d:%s->%d:%s"):format(a.action_id, a.input_method,
                                                       b.action_id, b.input_method),
                     attempt = 1,
+                    frame = Clock.frame,
                     sink = {
                         path = "ComboExplorer_data/trials/trials.jsonl",
                         dirs = { "ComboExplorer_data", "ComboExplorer_data/trials" },

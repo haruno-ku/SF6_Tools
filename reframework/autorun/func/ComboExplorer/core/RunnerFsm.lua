@@ -545,6 +545,10 @@ function Runner:record_spec()
         conditions = spec.conditions,
         program = self.program,
         recorded_at = spec.recorded_at,
+        -- The frame the trial started on, when the caller knew it. Kept beside
+        -- recorded_at rather than instead of it: the wall clock locates a trial
+        -- in a recording, the frame locates it in the engine's own time.
+        started_at_frame = spec.frame,
         notes = spec.notes,
     }
 end

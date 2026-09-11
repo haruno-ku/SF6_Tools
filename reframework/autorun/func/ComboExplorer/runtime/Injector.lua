@@ -262,6 +262,21 @@ function M.start(opts)
     local ok, berr = runner:begin({
         program = program,
         expected = opts.expected,
+        -- When this trial started, in wall time.
+        --
+        -- The field has existed on the record since ResultCollector was written
+        -- and nothing ever set it, so every tick number on a trial line was
+        -- relative to that trial and reset on the next one: a line could not be
+        -- located in anything. That matters now, because the plan for the
+        -- published videos is to film verified combos and cut them, and a cut
+        -- list has to be anchored to something.
+        --
+        -- os.date rather than a frame counter: Clock is a runtime module that
+        -- calls sdk at file scope, so requiring it here would undo the seam that
+        -- makes this file testable. A caller that has the frame counter can pass
+        -- opts.frame and it travels alongside.
+        recorded_at = opts.recorded_at or os.date("!%Y-%m-%dT%H:%M:%SZ"),
+        frame = opts.frame,
         judge_gap = opts.judge_gap,
         attempt = opts.attempt or 1,
         subject = opts.subject,

@@ -374,6 +374,11 @@ function M.trial(spec)
         conditions = spec.conditions,
         program = digest_of(spec.program),
         recorded_at = spec.recorded_at,
+        -- Both clocks, when the caller had them. Every other tick number on this
+        -- record is relative to the trial and resets on the next one, so these
+        -- two are the only things that place a line anywhere: the wall clock in
+        -- a recording, the frame in the engine's own time.
+        started_at_frame = spec.started_at_frame,
         notes = spec.notes,
     })
 
