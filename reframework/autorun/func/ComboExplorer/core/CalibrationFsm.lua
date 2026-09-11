@@ -31,14 +31,27 @@
 -- state would otherwise be recorded under the follow-up's id, and a move that
 -- ends before the window does would be recorded as idle.
 --
--- SIDES CANNOT BE SCRIPTED
+-- SIDES CANNOT BE SCRIPTED WITH AN INPUT - BUT THEY CAN BE ASKED FOR
 --
--- The direction steps need both values of rl_dir, and there is no input that
+-- The direction steps need both values of rl_dir, and there is no INPUT that
 -- puts the character on the other side of the opponent without walking past
--- them - which is itself a direction input, on the side being tested. So the
--- machine does not try. A step whose side does not match what the snapshot
--- reports is reported as WAITING_FOR_SIDE, and the operator swaps sides. That
--- is a slower loop and an honest one.
+-- them, which is itself a direction input on the side being tested. That much
+-- is still true, and it is why this machine never tries to walk there.
+--
+-- What it does now is ask. A step whose side does not match the snapshot puts
+-- the machine in WAITING_FOR_SIDE and the command carries `request_side`; the
+-- runner writes the training menu's start positions and the engine reassigns
+-- rl_dir on the refresh. The wait is unchanged - it still polls rl_dir and goes
+-- when it agrees - so if the request has no effect this behaves exactly as it
+-- did before, and the operator can still move themselves.
+--
+-- That asymmetry is the whole reason this is safe: the request can save the
+-- operator a step, and it cannot produce a wrong measurement, because nothing
+-- downstream believes the request. It believes rl_dir.
+--
+-- The request is emitted ON ENTRY and then only every `side_retry_ticks`.
+-- Emitting it every tick would ask the engine to refresh the stage on every
+-- frame, which is not a swap, it is a stutter.
 
 local Calibration = require("func/ComboExplorer/core/Calibration")
 
@@ -60,6 +73,33 @@ M.DEFAULT_SETTLE_TICKS = 8
 -- FIRST non-idle id is what is taken.
 M.DEFAULT_WATCH_TICKS = 45
 
+-- BUDGETS, so that a run left alone reports instead of hanging.
+--
+-- There were none. A step whose character never returned to idle, a side that
+-- never flipped, or a gate that stayed shut waited forever and reported
+-- nothing - which is the worst possible behaviour for the thing this is for:
+-- start it, walk away, come back.
+--
+-- StageControlFsm already refuses to start without its two timeouts; this is
+-- the same discipline. And like those, these are budgets rather than
+-- measurements: too small gives up early and SAYS SO, too large only costs
+-- time. Neither can turn into a wrong answer about a button.
+--
+-- Giving up abandons THE STEP, never the run. One direction bit nobody could
+-- reach is one entry left unmeasured; the other twenty steps are still worth
+-- having.
+M.DEFAULT_SETTLE_TIMEOUT_TICKS = 900   -- 15s: the stage never reads idle
+M.DEFAULT_SIDE_TIMEOUT_TICKS   = 900   -- 15s: the side never flipped
+M.DEFAULT_SIDE_RETRY_TICKS     = 120   -- 2s between asking again
+M.DEFAULT_GATE_TIMEOUT_TICKS   = 1800  -- 30s: injection never became permitted
+
+M.PROVENANCE = {
+    settle_timeout_ticks = "guessed: a budget, reports and moves on if short",
+    side_timeout_ticks   = "guessed: a budget, reports and moves on if short",
+    side_retry_ticks     = "guessed: well above the 7-9 tick reset settle probe C measured",
+    gate_timeout_ticks   = "guessed: a budget, reports and moves on if short",
+}
+
 -- opts.session      : a Calibration session (its plan is what gets run)
 -- opts.settle_ticks : idle ticks required before a step starts
 -- opts.watch_ticks  : ticks watched after release
@@ -79,6 +119,19 @@ function M.new(opts)
         state = M.STATE.SETTLE,
         settle_ticks = tonumber(opts.settle_ticks) or M.DEFAULT_SETTLE_TICKS,
         watch_ticks = tonumber(opts.watch_ticks) or M.DEFAULT_WATCH_TICKS,
+
+        settle_timeout_ticks = tonumber(opts.settle_timeout_ticks)
+            or M.DEFAULT_SETTLE_TIMEOUT_TICKS,
+        side_timeout_ticks = tonumber(opts.side_timeout_ticks)
+            or M.DEFAULT_SIDE_TIMEOUT_TICKS,
+        side_retry_ticks = tonumber(opts.side_retry_ticks)
+            or M.DEFAULT_SIDE_RETRY_TICKS,
+        gate_timeout_ticks = tonumber(opts.gate_timeout_ticks)
+            or M.DEFAULT_GATE_TIMEOUT_TICKS,
+
+        settle_spent = 0,    -- ticks this step has been trying to settle
+        side_spent = 0,      -- ticks this step has been waiting for its side
+        abandoned = {},      -- steps given up on, with why
 
         idle_run = 0,        -- consecutive idle ticks seen in SETTLE
         held = 0,            -- ticks the mask has actually been written for
@@ -133,6 +186,27 @@ local function finish_step(fsm)
     fsm.idle_run, fsm.held, fsm.watched = 0, 0, 0
     fsm.captured, fsm.pos_at_hold, fsm.pos_at_release = nil, nil, nil
     fsm.gate_shut_ticks = 0
+    fsm.settle_spent, fsm.side_spent = 0, 0
+end
+
+-- Give up on THIS step and move to the next one.
+--
+-- No observation is recorded. That matters: Calibration.conclude distinguishes
+-- "the step ran and produced nothing" from "the step never ran", and writing a
+-- fabricated observation here would turn a step nobody could perform into a
+-- measurement that the bit does nothing.
+local function abandon_step(fsm, why)
+    local step = M.current_step(fsm)
+    fsm.abandoned[#fsm.abandoned + 1] = {
+        step = step.id, phase = step.phase, side = step.side,
+        direction = step.direction, reason = why,
+    }
+    fsm.index = fsm.index + 1
+    fsm.state = (fsm.index > #fsm.steps) and M.STATE.DONE or M.STATE.SETTLE
+    fsm.idle_run, fsm.held, fsm.watched = 0, 0, 0
+    fsm.captured, fsm.pos_at_hold, fsm.pos_at_release = nil, nil, nil
+    fsm.gate_shut_ticks = 0
+    fsm.settle_spent, fsm.side_spent = 0, 0
 end
 
 -- One tick.
@@ -157,6 +231,16 @@ function M.tick(fsm, snapshot)
     if fsm.state == M.STATE.SETTLE then
         local is_neutral_step = (step.phase == Calibration.PHASE.NEUTRAL)
         local idle = idle_id(fsm)
+
+        fsm.settle_spent = fsm.settle_spent + 1
+        if fsm.settle_spent > fsm.settle_timeout_ticks then
+            abandon_step(fsm, ("the stage never read idle for %d ticks in a row within %d")
+                :format(fsm.settle_ticks, fsm.settle_timeout_ticks))
+            cmd.state = fsm.state
+            cmd.note = "gave up settling this step and moved on"
+            cmd.abandoned = true
+            return cmd
+        end
 
         if is_neutral_step then
             -- Nothing to compare against yet. Idle is whatever is up while the
@@ -184,8 +268,13 @@ function M.tick(fsm, snapshot)
         -- there on its own.
         if step.side and step.side ~= side_of(snapshot) then
             fsm.state = M.STATE.WAITING_FOR_SIDE
+            fsm.side_spent = 0
             cmd.state = fsm.state
-            cmd.note = ("step needs %s, the character is %s - swap sides")
+            -- Asked for on entry. The runner writes the start positions; the
+            -- engine reassigns rl_dir on the refresh; the wait below polls for
+            -- it. Nothing here believes the request happened.
+            cmd.request_side = step.side
+            cmd.note = ("step needs %s, the character is %s - asking for a swap")
                 :format(step.side, side_of(snapshot))
             return cmd
         end
@@ -208,9 +297,32 @@ function M.tick(fsm, snapshot)
         if step.side == side_of(snapshot) then
             fsm.state = M.STATE.SETTLE
             fsm.idle_run = 0
+            fsm.settle_spent = 0
+            cmd.state = fsm.state
+            cmd.note = ("side is now %s"):format(tostring(step.side))
+            return cmd
         end
+
+        fsm.side_spent = fsm.side_spent + 1
+
+        if fsm.side_spent >= fsm.side_timeout_ticks then
+            abandon_step(fsm, ("the side never became %s within %d ticks")
+                :format(tostring(step.side), fsm.side_timeout_ticks))
+            cmd.state = fsm.state
+            cmd.note = "gave up waiting for the side and moved on"
+            cmd.abandoned = true
+            return cmd
+        end
+
+        -- Asked again, not continuously. Every tick would be a refresh request
+        -- every frame, which is a stutter rather than a swap.
+        if fsm.side_spent % fsm.side_retry_ticks == 0 then
+            cmd.request_side = step.side
+        end
+
         cmd.state = fsm.state
-        cmd.note = ("waiting for %s"):format(tostring(step.side))
+        cmd.note = ("waiting for %s (%d/%d)")
+            :format(tostring(step.side), fsm.side_spent, fsm.side_timeout_ticks)
         return cmd
     end
 
@@ -222,6 +334,14 @@ function M.tick(fsm, snapshot)
         -- the bit.
         if snapshot.can_inject == false then
             fsm.gate_shut_ticks = fsm.gate_shut_ticks + 1
+            if fsm.gate_shut_ticks >= fsm.gate_timeout_ticks then
+                abandon_step(fsm, ("the injection gate stayed shut for %d ticks")
+                    :format(fsm.gate_timeout_ticks))
+                cmd.state = fsm.state
+                cmd.note = "gave up on a shut gate and moved on"
+                cmd.abandoned = true
+                return cmd
+            end
             cmd.note = "injection gate shut - not counting this tick"
             return cmd
         end

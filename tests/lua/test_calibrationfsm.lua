@@ -261,3 +261,167 @@ do
     t.is_nil(f, "no session, no machine")
     t.ok(err ~= nil, "with a reason")
 end
+
+-- --- asking for the other side ------------------------------------------------
+
+t.group("the machine asks for the side instead of only waiting for it")
+
+-- It used to only wait. The header said sides cannot be scripted, and the part
+-- that is true is that no INPUT can put the character on the other side without
+-- walking past the opponent - which is itself a direction input on the side
+-- being tested. But the training menu can, and the suite already does it
+-- unattended (TrainingMoveExecution.lua:184-197).
+--
+-- What must not change is who is believed. The request is a request; the wait
+-- still polls rl_dir and only moves when rl_dir agrees.
+
+do
+    local f = new_fsm({ settle_ticks = 2 })
+    finish_neutral(f)
+    local step = advance_to_phase(f, "direction")
+    local want_truthy = (step.side == "rl_dir_truthy")
+
+    -- Present the wrong side.
+    local c
+    for _ = 1, 5 do c = Fsm.tick(f, snap({ action_id = 7, rl_dir = not want_truthy })) end
+    t.eq(c.state, "waiting_for_side", "the machine is waiting")
+
+    -- The request came on ENTRY, not on every tick since.
+    local entry = nil
+    local f2 = new_fsm({ settle_ticks = 2 })
+    finish_neutral(f2)
+    local step2 = advance_to_phase(f2, "direction")
+    local want2 = (step2.side == "rl_dir_truthy")
+    entry = Fsm.tick(f2, snap({ action_id = 7, rl_dir = not want2 }))
+    t.eq(entry.request_side, step2.side, "the tick that enters the wait asks for the side")
+    t.ok(tostring(entry.note):find("asking") ~= nil,
+         "and says so: " .. tostring(entry.note))
+end
+
+do
+    -- NOT every tick. Asking every frame is a refresh request every frame,
+    -- which is a stutter rather than a swap.
+    local f = new_fsm({ settle_ticks = 2, side_retry_ticks = 10, side_timeout_ticks = 1000 })
+    finish_neutral(f)
+    local step = advance_to_phase(f, "direction")
+    local want = (step.side == "rl_dir_truthy")
+
+    local asks = 0
+    for _ = 1, 100 do
+        local c = Fsm.tick(f, snap({ action_id = 7, rl_dir = not want }))
+        if c.request_side ~= nil then asks = asks + 1 end
+    end
+    t.ok(asks > 1, "it does ask again while it waits (" .. asks .. ")")
+    t.ok(asks < 20, "but nothing like every tick (" .. asks .. " in 100)")
+end
+
+do
+    -- And when the side does change, it proceeds - on rl_dir, not on having
+    -- asked. This is the assertion that keeps the request from becoming a
+    -- belief.
+    local f = new_fsm({ settle_ticks = 2 })
+    finish_neutral(f)
+    local step = advance_to_phase(f, "direction")
+    local want = (step.side == "rl_dir_truthy")
+
+    for _ = 1, 5 do Fsm.tick(f, snap({ action_id = 7, rl_dir = not want })) end
+    local c
+    for _ = 1, 3 do c = Fsm.tick(f, snap({ action_id = 7, rl_dir = want })) end
+    t.ok(c.state == "settle" or c.state == "hold", "it resumes once rl_dir agrees")
+end
+
+-- --- budgets ------------------------------------------------------------------
+
+t.group("a run left alone reports instead of hanging")
+
+-- There were no timeouts at all. A step whose character never returned to idle,
+-- a side that never flipped, or a gate that stayed shut waited forever and
+-- reported nothing - the worst possible behaviour for something meant to be
+-- started and walked away from.
+
+do
+    local f, session = new_fsm({ settle_ticks = 2, side_retry_ticks = 10,
+                                 side_timeout_ticks = 40 })
+    finish_neutral(f)
+    local step = advance_to_phase(f, "direction")
+    local want = (step.side == "rl_dir_truthy")
+    local before = step.id
+
+    local c
+    for _ = 1, 100 do
+        c = Fsm.tick(f, snap({ action_id = 7, rl_dir = not want }))
+        if c.abandoned then break end
+    end
+    t.eq(c.abandoned, true, "a side that never flips is given up on")
+    t.eq(#f.abandoned, 1, "and recorded")
+    t.eq(f.abandoned[1].step, before, "naming the step")
+    t.ok(tostring(f.abandoned[1].reason):find("never became") ~= nil,
+         "and why: " .. tostring(f.abandoned[1].reason))
+
+    -- THE ONE THAT MATTERS. Calibration.conclude tells "the step ran and
+    -- produced nothing" from "the step never ran", and a fabricated observation
+    -- here would turn a step nobody could perform into a measurement that the
+    -- bit does nothing.
+    t.is_nil(session.observations[before],
+             "and NO observation was recorded for the step that was abandoned")
+
+    -- The run continues. One unreachable direction bit is one entry left
+    -- unmeasured, not twenty steps thrown away.
+    t.ok(Fsm.current_step(f) == nil or Fsm.current_step(f).id ~= before,
+         "the machine moved on to the next step")
+end
+
+do
+    -- The stage never reads idle.
+    local f, session = new_fsm({ settle_ticks = 4, settle_timeout_ticks = 30 })
+    finish_neutral(f)
+    local step = advance_to_phase(f, "button_bits")
+    local before = step.id
+
+    local c, churn = nil, 0
+    for _ = 1, 200 do
+        churn = churn + 1
+        -- Never the idle id, and never the same twice in a row.
+        c = Fsm.tick(f, snap({ action_id = 5000 + (churn % 7) }))
+        if c.abandoned then break end
+    end
+    t.eq(c.abandoned, true, "a step that never settles is given up on")
+    t.ok(tostring(f.abandoned[1].reason):find("never read idle") ~= nil,
+         "saying so: " .. tostring(f.abandoned[1].reason))
+    t.is_nil(session.observations[before], "with no observation invented")
+end
+
+do
+    -- The injection gate never opens.
+    local f, session = new_fsm({ settle_ticks = 2, gate_timeout_ticks = 25 })
+    finish_neutral(f)
+    local step = advance_to_phase(f, "button_bits")
+    local before = step.id
+
+    local c
+    for _ = 1, 200 do
+        c = Fsm.tick(f, snap({ action_id = 7, can_inject = false }))
+        if c.abandoned then break end
+    end
+    t.eq(c.abandoned, true, "a gate that stays shut is given up on")
+    t.ok(tostring(f.abandoned[1].reason):find("gate stayed shut") ~= nil,
+         "saying so: " .. tostring(f.abandoned[1].reason))
+    t.is_nil(session.observations[before], "with no observation invented")
+end
+
+do
+    -- Budgets are budgets: generous ones do not change the ordinary path.
+    local f = new_fsm({ settle_ticks = 2 })
+    t.ok(f.settle_timeout_ticks > f.settle_ticks,
+         "the settle budget is larger than the settle requirement")
+    t.ok(f.side_timeout_ticks > f.side_retry_ticks,
+         "and there is room for more than one retry inside the side budget")
+    for _, key in ipairs({ "settle_timeout_ticks", "side_timeout_ticks",
+                           "side_retry_ticks", "gate_timeout_ticks" }) do
+        t.ok(Fsm.PROVENANCE[key] ~= nil, ("%s says where it came from"):format(key))
+        t.ok(tostring(Fsm.PROVENANCE[key]):find("guessed") ~= nil,
+             ("%s is marked a guess, because it is one"):format(key))
+    end
+end
+
+return t.finish()
