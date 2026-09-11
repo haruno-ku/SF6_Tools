@@ -300,7 +300,33 @@ if opt.worklist then
         game_patch = provenance.game_patch,
         count = #items,
         pairs = items,
+
+        -- This list is a derived work of the frame data and has to say so.
+        --
+        -- `confidence` is computed from startup, on-hit and the margins between
+        -- them, and the ORDER of the whole list is that confidence - which is
+        -- the one thing this document is for. docs/NOTICE.md puts it plainly:
+        -- anything generated from data/frame-data is CC-BY-SA-4.0, not MIT, and
+        -- so is anything derived from it in turn.
+        --
+        -- candidate-edges.json has carried this block from the start. This file
+        -- shipped without it, and it ships INTO reframework/data - the tree that
+        -- gets synced to the machine running the game.
+        attribution = Exporter.attribution_for(provenance.frame_data),
     }
+    -- Refused rather than written without it. This document ships into
+    -- reframework/data - the tree synced to the machine running the game - and
+    -- its confidence, and the order of the whole list, are computed from the
+    -- frame data. docs/NOTICE.md makes that CC-BY-SA-4.0, not MIT.
+    --
+    -- Checked here rather than trusted, because the first version of this file
+    -- shipped without the block and nothing noticed until the licence question
+    -- came up.
+    if idx and type(wl_doc.attribution) ~= "table" then
+        die("refusing to write a worklist with no attribution: its confidence and "
+            .. "its ordering are derived from the frame data, which is CC-BY-SA-4.0")
+    end
+
     local n, werr = json.save_file(wl_path, wl_doc)
     if not n then die(("could not write %s: %s"):format(wl_path, tostring(werr))) end
     written[#written + 1] = { path = wl_path, bytes = n }

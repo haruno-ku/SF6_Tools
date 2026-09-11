@@ -208,4 +208,41 @@ local failed = Exporter.documents({ edges = gen.candidates, routes = routes },
                                   { character = "zangief" })
 t.is_nil(failed, "and the pair fails together if the header is incomplete")
 
+-- --- the licence travels with anything derived from the frame data -------------
+
+t.group("attribution is public, because the candidate documents are not the only derived work")
+
+-- docs/NOTICE.md: anything generated from data/frame-data is CC-BY-SA-4.0 and
+-- so is anything derived from it in turn. The sweep worklist shipped without
+-- this block - its `confidence`, and the order of the whole list, are computed
+-- from these numbers - which is why the builder is no longer local.
+
+do
+    t.eq(type(Exporter.attribution_for), "function",
+         "the builder is reachable from outside this module")
+
+    local a = Exporter.attribution_for({
+        source = "RyoSogawa/sf6-sensei", commit = "abc123",
+        url = "https://example.invalid", license = "CC-BY-SA",
+        fetched_at = "2026-09-10T09:58:49Z",
+    })
+    t.ok(a ~= nil, "it builds from a frame-data provenance block")
+    t.eq(a.license, "CC-BY-SA", "carrying the licence")
+    t.eq(a.commit, "abc123", "and the exact commit, so the version is checkable")
+    t.ok(tostring(a.original_work):find("SuperCombo") ~= nil, "naming the original work")
+    t.ok(tostring(a.license_url):find("creativecommons.org") ~= nil,
+         "with the licence text reachable: " .. tostring(a.license_url))
+    t.ok(tostring(a.share_alike):find("same licence") ~= nil,
+         "and stating the ShareAlike obligation")
+
+    -- The scope sentence matters: it is what tells a reader that a derived
+    -- SCORE is covered, not only a copied number.
+    t.ok(tostring(a.applies_to):find("derived") ~= nil,
+         "and that it covers things derived from the numbers: " .. tostring(a.applies_to))
+
+    t.is_nil(Exporter.attribution_for(nil),
+             "with no frame data there is nothing to attribute")
+end
+
+
 return t.finish()

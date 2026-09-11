@@ -1,11 +1,24 @@
 {
   "ac_sha256": "753d02204cec89c5a885d5748cda2d51bde0769144a15be93f1e717f219006b2",
+  "attribution": {
+    "applies_to": "frame data: startup, on-hit, damage, cancel properties, and every candidate margin and score derived from them",
+    "commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
+    "fetched_at": "2026-09-10T09:58:49Z",
+    "license": "CC-BY-SA",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "modifications": "Joined to command_display action ids, filtered to the control scheme below, and combined into candidate edges and routes. No source value was altered.",
+    "obtained_via": "RyoSogawa/sf6-sensei",
+    "original_url": "https://wiki.supercombo.gg/w/Street_Fighter_6",
+    "original_work": "SuperCombo Wiki - Street Fighter 6 Frame Data",
+    "share_alike": "This document is a derived work of the above and is offered under the same licence.",
+    "source_url": "https://wiki.supercombo.gg/w/Street_Fighter_6"
+  },
   "bcm_sha256": "09e9334a458b4e7073d13c5a0e25255d2b35b0cb71ccdccbd67c8774b62d4053",
   "character": "Zangief",
   "control_scheme": "modern",
   "count": 378,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-11T05:22:02Z",
+  "generated_at": "2026-09-11T06:43:21Z",
   "pairs": [
     {
       "a_id": 601,

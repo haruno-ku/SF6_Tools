@@ -45,7 +45,12 @@ M.KIND = {
 
 -- The licence text that has to accompany anything derived from the frame
 -- source. Filled from the frame_data provenance so it names the actual commit.
-local function attribution_for(fd)
+--
+-- Public, because the candidate documents are not the only derived work any
+-- more: the sweep worklist carries `confidence`, which is computed from these
+-- numbers, and the order of the whole list is too. One builder means one set of
+-- words and one commit, rather than two that can drift.
+function M.attribution_for(fd)
     if type(fd) ~= "table" then return nil end
     return {
         applies_to = "frame data: startup, on-hit, damage, cancel properties, "
@@ -230,7 +235,7 @@ local function build(kind, record_kind, field, records, opts)
         generated_at = opts.generated_at,
         explorer_version = prov.explorer_version,
         provenance = prov,
-        attribution = attribution_for(prov.frame_data),
+        attribution = M.attribution_for(prov.frame_data),
 
         counts = {
             total = #kept,
