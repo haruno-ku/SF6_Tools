@@ -32,18 +32,7 @@
 -- quietly fixed the joins it was measuring would report a clean sheet for a
 -- pipeline that is not clean.
 
-package.path = table.concat({ "./?.lua", "./?/init.lua", package.path }, ";")
-
-table.insert(package.searchers, 2, function(name)
-    if not name:match("^func/") then return nil end
-    local path = "reframework/autorun/" .. name .. ".lua"
-    local f = io.open(path, "r")
-    if not f then return ("\n\tno file '%s'"):format(path) end
-    f:close()
-    local chunk, err = loadfile(path)
-    if not chunk then return "\n\t" .. tostring(err) end
-    return chunk, path
-end)
+local Cli = dofile("tools/lua/cli.lua")
 
 local json       = dofile("tools/lua/json.lua")
 local Characters = dofile("tools/lua/characters.lua")
@@ -64,22 +53,9 @@ local opt = {
     max_routes = 2000,
 }
 
-local i = 1
-while i <= #arg do
-    local key = arg[i]:match("^%-%-([%w%-]+)$")
-    local v = arg[i + 1]
-    if not key or v == nil then
-        io.stderr:write("survey: bad argument near " .. tostring(arg[i]) .. "\n")
-        os.exit(2)
-    end
-    opt[(key:gsub("%-", "_"))] = tonumber(v) or v
-    i = i + 2
-end
+opt = Cli.args("survey", arg, opt)
 
-local function die(msg)
-    io.stderr:write("survey: " .. msg .. "\n")
-    os.exit(1)
-end
+local function die(msg) Cli.die("survey", msg) end
 
 local targets = {}
 if opt.character == "all" then
@@ -188,12 +164,8 @@ if #rows == 0 then die("nothing could be measured\n  " .. table.concat(failures,
 
 -- --- the report --------------------------------------------------------------
 
-local out = {}
-local function say(fmt, ...)
-    local line = select("#", ...) > 0 and fmt:format(...) or fmt
-    out[#out + 1] = line
-    print(line)
-end
+local report = Cli.report()
+local function say(fmt, ...) report:say(fmt, ...) end
 
 local function pct(c)
     if not c or c.rows == 0 then return "  -" end
@@ -297,17 +269,8 @@ say("and that is a fact about the scope rather than about the character.")
 
 -- --- write -------------------------------------------------------------------
 
-local function mkdir(path)
-    local cmd = (package.config:sub(1, 1) == "\\")
-        and ('cmd /c if not exist "%s" mkdir "%s" >nul 2>&1'):format(
-            path:gsub("/", "\\"), path:gsub("/", "\\"))
-        or ('mkdir -p "%s"'):format(path)
-    os.execute(cmd)
-end
-mkdir(opt.out)
-
-local md = io.open(opt.out .. "/character-survey.md", "wb")
-if md then md:write(table.concat(out, "\n")) md:write("\n") md:close() end
+Cli.mkdir(opt.out)
+report:write(opt.out .. "/character-survey.md")
 
 local doc = { schema = "ce.character_survey.v1", characters = rows, failures = failures,
               scope = { from = FROM, to = TO, max_steps = opt.max_steps,

@@ -45,18 +45,7 @@
 -- would make a five-of-ten profile read as complete, which is the failure this
 -- whole register exists to prevent.
 
-package.path = table.concat({ "./?.lua", "./?/init.lua", package.path }, ";")
-
-table.insert(package.searchers, 2, function(name)
-    if not name:match("^func/") then return nil end
-    local path = "reframework/autorun/" .. name .. ".lua"
-    local f = io.open(path, "r")
-    if not f then return ("\n\tno file '%s'"):format(path) end
-    f:close()
-    local chunk, err = loadfile(path)
-    if not chunk then return "\n\t" .. tostring(err) end
-    return chunk, path
-end)
+local Cli = dofile("tools/lua/cli.lua")
 
 local json        = dofile("tools/lua/json.lua")
 local Characters  = dofile("tools/lua/characters.lua")
@@ -72,22 +61,15 @@ local opt = {
     control_scheme = "modern",
 }
 
-local i = 1
-while i <= #arg do
-    local key = arg[i]:match("^%-%-([%w%-]+)$")
-    local v = arg[i + 1]
-    if not key or v == nil then
-        io.stderr:write("calibrate-from-probes: bad argument near " .. tostring(arg[i]) .. "\n")
-        os.exit(2)
-    end
-    opt[(key:gsub("%-", "_"))] = v
-    i = i + 2
-end
+opt = Cli.args("calibrate-from-probes", arg, opt)
 
-local function die(msg)
-    io.stderr:write("calibrate-from-probes: " .. msg .. "\n")
-    os.exit(1)
-end
+local function die(msg) Cli.die("calibrate-from-probes", msg) end
+
+-- A build number is an identifier that happens to look like a number, and the
+-- shared parser coerces anything numeric. Calibration.document wants a string
+-- and is right to: "24176760" and 24176760 are the same build, but a patch
+-- label with a leading zero or a dot would not survive the round trip.
+if opt.game_patch ~= nil then opt.game_patch = tostring(opt.game_patch) end
 
 if not opt.game_patch then
     die("--game-patch is required.\n"
@@ -114,8 +96,7 @@ local WANTED = {
 
 local reports, found = {}, {}
 local header_catalog     -- the catalog the reports say they were measured against
-local listing = io.popen(('ls -1 "%s" 2>/dev/null'):format(opt.diagnostics))
-for name in (listing and listing:lines() or function() return nil end) do
+for _, name in ipairs(Cli.list_dir(opt.diagnostics)) do
     if name:match("%-latest%.json$") then
         local doc = json.load_file(opt.diagnostics .. "/" .. name)
         local body = doc and doc.body
@@ -130,7 +111,6 @@ for name in (listing and listing:lines() or function() return nil end) do
         end
     end
 end
-if listing then listing:close() end
 
 if not next(reports) then
     die(("no probe reports under %s. Expected *-latest.json documents whose body.probe "
@@ -266,10 +246,7 @@ print("")
 
 -- --- write -------------------------------------------------------------------
 
-os.execute((package.config:sub(1, 1) == "\\")
-    and ('cmd /c if not exist "%s" mkdir "%s" >nul 2>&1')
-        :format(opt.out:gsub("/", "\\"), opt.out:gsub("/", "\\"))
-    or ('mkdir -p "%s"'):format(opt.out))
+Cli.mkdir(opt.out)
 
 local path = opt.out .. "/latest.json"
 local n = json.save_file(path, doc, { indent = "  " })

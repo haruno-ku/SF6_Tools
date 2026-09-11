@@ -27,21 +27,7 @@
 -- repaired the classifier's misses while measuring them would report a clean
 -- sheet for a pipeline that is not clean.
 
-package.path = table.concat({ "./?.lua", "./?/init.lua", package.path }, ";")
-
--- Same require shim as explore.lua: REFramework resolves require("func/X/Y")
--- relative to reframework/autorun, so the shipped modules keep the paths they
--- will actually run under.
-table.insert(package.searchers, 2, function(name)
-    if not name:match("^func/") then return nil end
-    local path = "reframework/autorun/" .. name .. ".lua"
-    local f = io.open(path, "r")
-    if not f then return ("\n\tno file '%s'"):format(path) end
-    f:close()
-    local chunk, err = loadfile(path)
-    if not chunk then return "\n\t" .. tostring(err) end
-    return chunk, path
-end)
+local Cli = dofile("tools/lua/cli.lua")
 
 local json    = dofile("tools/lua/json.lua")
 local Catalog = require("func/ComboExplorer/core/Catalog")

@@ -22,21 +22,7 @@
 -- the offline output comes from the same code the runner will use, rather than
 -- from a second implementation that agrees with it until it does not.
 
-package.path = table.concat({ "./?.lua", "./?/init.lua", package.path }, ";")
-
--- REFramework resolves require("func/X/Y") relative to reframework/autorun.
--- Teaching the interpreter the same rule lets the shipped modules keep the
--- require paths they will actually run under.
-table.insert(package.searchers, 2, function(name)
-    if not name:match("^func/") then return nil end
-    local path = "reframework/autorun/" .. name .. ".lua"
-    local f = io.open(path, "r")
-    if not f then return ("\n\tno file '%s'"):format(path) end
-    f:close()
-    local chunk, err = loadfile(path)
-    if not chunk then return "\n\t" .. tostring(err) end
-    return chunk, path
-end)
+local Cli = dofile("tools/lua/cli.lua")
 
 local json      = dofile("tools/lua/json.lua")
 local Catalog   = require("func/ComboExplorer/core/Catalog")
