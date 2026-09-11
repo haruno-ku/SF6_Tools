@@ -162,16 +162,27 @@ function M.index(decoded)
         by_key = {},
         keys = {},
         duplicates = {},
+        duplicate_names = {},
     }
 
     for _, mv in ipairs(decoded.moves) do
         for _, k in ipairs(M.spellings(mv.numpad)) do
             if idx.by_key[k] then
-                -- Real in this data: "720+P" appears twice with different
-                -- damage, and the distance variants share a stem. Recorded
-                -- rather than silently overwritten, because picking one is a
-                -- decision and it should be visible.
+                -- Real in this data, and worth naming rather than counting.
+                -- Mai has 27 duplicated keys: every one is a move and its Flame
+                -- Stock version sharing an input - "Kachousen" and "Kachousen
+                -- (Flame)", 500 damage against 300. Which one comes out depends
+                -- on a resource the frame table does not model, so the names are
+                -- kept and reported: "listed twice" sends a reader digging,
+                -- while "a base and an enhanced version" is the answer.
                 idx.duplicates[k] = (idx.duplicates[k] or 1) + 1
+                local names = idx.duplicate_names[k]
+                if not names then
+                    local first = idx.by_key[k]
+                    names = { first.name_en or first.numpad }
+                    idx.duplicate_names[k] = names
+                end
+                names[#names + 1] = mv.name_en or mv.numpad
             else
                 idx.by_key[k] = mv
                 idx.keys[#idx.keys + 1] = k
@@ -204,7 +215,9 @@ function M.lookup(idx, classic)
             -- consumed as if the source agreed with itself.
             local dupes = idx.duplicates and idx.duplicates[cand.key]
             return hit, { matched = true, match = cand.match, key = cand.key, tried = tried,
-                          duplicate = dupes and true or nil, duplicate_count = dupes }
+                          duplicate = dupes and true or nil, duplicate_count = dupes,
+                          duplicate_names = dupes and idx.duplicate_names
+                              and idx.duplicate_names[cand.key] or nil }
         end
     end
 
@@ -291,6 +304,14 @@ function M.uncertainty_reason(info)
         return ("the frame source spells this move as several distance variants (%s) and "
             .. "the join picked %s by sort order, not by knowing which one applies")
             :format(alts, tostring(info.key))
+    end
+    local names = info.duplicate_names
+    if type(names) == "table" and #names > 0 then
+        return ("the frame source lists %q %d times - %s - and the join took whichever "
+            .. "came first; which one the input produces depends on something the frame "
+            .. "table does not model"):format(
+            tostring(info.key), info.duplicate_count or #names,
+            table.concat(names, " / "))
     end
     return ("the frame source lists %q %d times with different values, and the join took "
         .. "whichever came first"):format(tostring(info.key), info.duplicate_count or 2)

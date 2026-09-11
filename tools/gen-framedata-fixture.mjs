@@ -128,6 +128,11 @@ body.push(`    moves = {`)
 for (const m of data.moves ?? []) {
   const p = []
   p.push(`numpad = ${val(m.input?.numpad)}`)
+  // The move's own name. Two records can share an input - Mai's "Kachousen" and
+  // "Kachousen (Flame)" are both 236LP - and the name is the only thing that
+  // tells them apart, so a report can say WHY a join was ambiguous instead of
+  // just that it was.
+  p.push(`name_en = ${val(m.name?.en)}`)
   p.push(`category = ${val(m.category)}`)
   p.push(`startup = ${val(m.startup)}`)
   p.push(`active = ${val(m.active)}`)

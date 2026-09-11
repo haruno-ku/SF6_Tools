@@ -160,8 +160,8 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/zangief/modern/candidate-edges.json  (492169 bytes)
-- candidates/zangief/modern/candidate-routes.json  (4168188 bytes)
+- candidates/zangief/modern/candidate-edges.json  (497097 bytes)
+- candidates/zangief/modern/candidate-routes.json  (4176700 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

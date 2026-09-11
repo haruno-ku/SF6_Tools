@@ -70,139 +70,139 @@
             "action_id": 904,
             "classic": "236+HP",
             "key": "236HP",
-            "why": "the frame source lists \"236HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HP\" 2 times - Hadoken / Denjin Charge Hadoken - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 904,
             "classic": "236+HP",
             "key": "236HP",
-            "why": "the frame source lists \"236HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HP\" 2 times - Hadoken / Denjin Charge Hadoken - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1039,
             "classic": "214+HP",
             "key": "214HP",
-            "why": "the frame source lists \"214HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214HP\" 2 times - Hashogeki / Denjin Charge Hashogeki - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1052,
             "classic": "236+HP",
             "key": "236HP",
-            "why": "the frame source lists \"236HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HP\" 2 times - Hadoken / Denjin Charge Hadoken - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1052,
             "classic": "236+HP",
             "key": "236HP",
-            "why": "the frame source lists \"236HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HP\" 2 times - Hadoken / Denjin Charge Hadoken - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1053,
             "classic": "236+PP",
             "key": "236PP",
-            "why": "the frame source lists \"236PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236PP\" 2 times - Hadoken / Denjin Charge Hadoken - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1061,
             "classic": "214+HP",
             "key": "214HP",
-            "why": "the frame source lists \"214HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214HP\" 2 times - Hashogeki / Denjin Charge Hashogeki - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1200,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Shinku Hadoken / Denjin Hadoken - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1200,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Shinku Hadoken / Denjin Hadoken - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1201,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Shinku Hadoken / Denjin Hadoken - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1201,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Shinku Hadoken / Denjin Hadoken - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1212,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shin Hashogeki Lv.1 / Denjin Hashogeki Lv.1 - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1212,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shin Hashogeki Lv.1 / Denjin Hashogeki Lv.1 - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1214,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shin Hashogeki Lv.1 / Denjin Hashogeki Lv.1 - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1214,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shin Hashogeki Lv.1 / Denjin Hashogeki Lv.1 - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1233,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Shin Shoryuken / Shin Shoryuken (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1233,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Shin Shoryuken / Shin Shoryuken (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1234,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Shin Shoryuken / Shin Shoryuken (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1234,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Shin Shoryuken / Shin Shoryuken (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1238,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Shin Shoryuken / Shin Shoryuken (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1238,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Shin Shoryuken / Shin Shoryuken (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1239,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Shin Shoryuken / Shin Shoryuken (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1239,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Shin Shoryuken / Shin Shoryuken (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -391,25 +391,25 @@
             "action_id": 1215,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Pale Rider / Pale Rider (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Pale Rider / Pale Rider (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1222,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Pale Rider / Pale Rider (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1222,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Pale Rider / Pale Rider (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -563,25 +563,25 @@
             "action_id": 1220,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Bushin Ninjastar Cypher / Bushin Ninjastar Cypher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Bushin Ninjastar Cypher / Bushin Ninjastar Cypher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1224,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Bushin Ninjastar Cypher / Bushin Ninjastar Cypher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1224,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Bushin Ninjastar Cypher / Bushin Ninjastar Cypher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 2,
@@ -707,25 +707,25 @@
             "action_id": 1218,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Soten Ranka / Soten Ranka (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1218,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Soten Ranka / Soten Ranka (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1222,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Soten Ranka / Soten Ranka (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1222,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Soten Ranka / Soten Ranka (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 1,
@@ -856,49 +856,49 @@
             "action_id": 1215,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pas de Deux / Pas de Deux (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pas de Deux / Pas de Deux (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1223,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pas de Deux / Pas de Deux (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1223,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pas de Deux / Pas de Deux (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1232,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pas de Deux / Pas de Deux (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1232,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pas de Deux / Pas de Deux (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1234,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pas de Deux / Pas de Deux (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1234,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pas de Deux / Pas de Deux (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -1015,25 +1015,25 @@
             "action_id": 1218,
             "classic": "720+P",
             "key": "720+P",
-            "why": "the frame source lists \"720+P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"720+P\" 2 times - Bolshoi Storm Buster / Bolshoi Storm Buster (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1218,
             "classic": "720+P",
             "key": "720+P",
-            "why": "the frame source lists \"720+P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"720+P\" 2 times - Bolshoi Storm Buster / Bolshoi Storm Buster (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1222,
             "classic": "720+P",
             "key": "720+P",
-            "why": "the frame source lists \"720+P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"720+P\" 2 times - Bolshoi Storm Buster / Bolshoi Storm Buster (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1222,
             "classic": "720+P",
             "key": "720+P",
-            "why": "the frame source lists \"720+P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"720+P\" 2 times - Bolshoi Storm Buster / Bolshoi Storm Buster (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -1187,25 +1187,25 @@
             "action_id": 1235,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Interdiction / Interdiction (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1235,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Interdiction / Interdiction (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1239,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Interdiction / Interdiction (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1239,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Interdiction / Interdiction (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -1324,73 +1324,73 @@
             "action_id": 1282,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1282,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1283,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1283,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1284,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1284,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1289,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1289,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1290,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1290,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1291,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1291,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Merciless Yoga / Merciless Yoga (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 3,
@@ -1515,25 +1515,25 @@
             "action_id": 1231,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Delta Red Assault / Delta Red Assault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1231,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Delta Red Assault / Delta Red Assault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1241,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Delta Red Assault / Delta Red Assault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1241,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Delta Red Assault / Delta Red Assault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -1887,25 +1887,25 @@
             "action_id": 1215,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Shinryu Reppa / Shinryu Reppa (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Shinryu Reppa / Shinryu Reppa (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Shinryu Reppa / Shinryu Reppa (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Shinryu Reppa / Shinryu Reppa (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 2,
@@ -2084,49 +2084,49 @@
             "action_id": 685,
             "classic": "22+PP",
             "key": "22PP",
-            "why": "the frame source lists \"22PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"22PP\" 2 times - Speedy Maracas / Speedy Maracas (2+ Bars) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 688,
             "classic": "22+PP",
             "key": "22PP",
-            "why": "the frame source lists \"22PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"22PP\" 2 times - Speedy Maracas / Speedy Maracas (2+ Bars) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 697,
             "classic": "22+PP",
             "key": "22PP",
-            "why": "the frame source lists \"22PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"22PP\" 2 times - Speedy Maracas / Speedy Maracas (2+ Bars) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 700,
             "classic": "22+PP",
             "key": "22PP",
-            "why": "the frame source lists \"22PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"22PP\" 2 times - Speedy Maracas / Speedy Maracas (2+ Bars) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1268,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Weekend Pleasure / Weekend Pleasure (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1268,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Weekend Pleasure / Weekend Pleasure (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1272,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Weekend Pleasure / Weekend Pleasure (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1272,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Weekend Pleasure / Weekend Pleasure (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -2218,49 +2218,49 @@
             "action_id": 1206,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Thunderbird / Thunderbird (Windclad) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1206,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Thunderbird / Thunderbird (Windclad) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1207,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Thunderbird / Thunderbird (Windclad) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1207,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Thunderbird / Thunderbird (Windclad) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1216,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Raging Typhoon / Raging Typhoon (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1216,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Raging Typhoon / Raging Typhoon (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Raging Typhoon / Raging Typhoon (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Raging Typhoon / Raging Typhoon (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -2326,25 +2326,25 @@
             "action_id": 1254,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Claws of Ya Zi / Claws of Ya Zi - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1254,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Claws of Ya Zi / Claws of Ya Zi - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1260,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Claws of Ya Zi / Claws of Ya Zi - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1260,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Claws of Ya Zi / Claws of Ya Zi - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 2,
@@ -2517,25 +2517,25 @@
             "action_id": 1216,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Altair / Altair (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1216,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Altair / Altair (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Altair / Altair (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Altair / Altair (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -2621,97 +2621,97 @@
             "action_id": 859,
             "classic": "[4]6+LP",
             "key": "[4]6LP",
-            "why": "the frame source lists \"[4]6LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]6LP\" 2 times - Rolling Attack / Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 867,
             "classic": "[4]6+MP",
             "key": "[4]6MP",
-            "why": "the frame source lists \"[4]6MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]6MP\" 2 times - Rolling Attack / Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 867,
             "classic": "[4]6+MP",
             "key": "[4]6MP",
-            "why": "the frame source lists \"[4]6MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]6MP\" 2 times - Rolling Attack / Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 873,
             "classic": "[4]6+HP",
             "key": "[4]6HP",
-            "why": "the frame source lists \"[4]6HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]6HP\" 2 times - Rolling Attack / Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 885,
             "classic": "[4]6+PP",
             "key": "[4]6PP",
-            "why": "the frame source lists \"[4]6PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]6PP\" 2 times - Rolling Attack / Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 958,
             "classic": "63214+MK",
             "key": "63214MK",
-            "why": "the frame source lists \"63214MK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"63214MK\" 2 times - Backstep Rolling Attack / Backstep Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 966,
             "classic": "63214+KK",
             "key": "63214KK",
-            "why": "the frame source lists \"63214KK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"63214KK\" 2 times - Backstep Rolling Attack / Backstep Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 971,
             "classic": "[2]8+LK",
             "key": "[2]8LK",
-            "why": "the frame source lists \"[2]8LK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[2]8LK\" 2 times - Vertical Rolling Attack / Vertical Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 971,
             "classic": "[2]8+LK",
             "key": "[2]8LK",
-            "why": "the frame source lists \"[2]8LK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[2]8LK\" 2 times - Vertical Rolling Attack / Vertical Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 975,
             "classic": "[2]8+MK",
             "key": "[2]8MK",
-            "why": "the frame source lists \"[2]8MK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[2]8MK\" 2 times - Vertical Rolling Attack / Vertical Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 984,
             "classic": "[2]8+HK",
             "key": "[2]8HK",
-            "why": "the frame source lists \"[2]8HK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[2]8HK\" 2 times - Vertical Rolling Attack / Vertical Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 990,
             "classic": "[2]8+KK",
             "key": "[2]8KK",
-            "why": "the frame source lists \"[2]8KK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[2]8KK\" 2 times - Vertical Rolling Attack / Vertical Rolling Attack (SA2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Ground Shave Cannonball / Ground Shave Cannonball (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Ground Shave Cannonball / Ground Shave Cannonball (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Ground Shave Cannonball / Ground Shave Cannonball (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Ground Shave Cannonball / Ground Shave Cannonball (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 1,
@@ -2886,37 +2886,37 @@
             "action_id": 942,
             "classic": "236+HK",
             "key": "236HK",
-            "why": "the frame source lists \"236HK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HK\" 2 times - Go Ohsatsu / Go Ohsatsu (1 Stock) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 955,
             "classic": "236+HK",
             "key": "236HK",
-            "why": "the frame source lists \"236HK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HK\" 2 times - Go Ohsatsu / Go Ohsatsu (1 Stock) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1221,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Kaisen Dankai Raku / Kaisen Dankai Raku (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1221,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Kaisen Dankai Raku / Kaisen Dankai Raku (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1226,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Kaisen Dankai Raku / Kaisen Dankai Raku (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1226,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Kaisen Dankai Raku / Kaisen Dankai Raku (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -3109,37 +3109,37 @@
             "action_id": 952,
             "classic": "214+K",
             "key": "214K",
-            "why": "the frame source lists \"214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214K\" 2 times - Scutum / Scutum (Counter) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 969,
             "classic": "214+KK",
             "key": "214KK",
-            "why": "the frame source lists \"214KK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214KK\" 2 times - Scutum / Scutum (Counter) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1213,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Goddess of the Hunt / Goddess of the Hunt (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1213,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Goddess of the Hunt / Goddess of the Hunt (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1217,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Goddess of the Hunt / Goddess of the Hunt (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1217,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Goddess of the Hunt / Goddess of the Hunt (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -3320,49 +3320,49 @@
             "action_id": 1240,
             "classic": "[4]646+K",
             "key": "[4]646K",
-            "why": "the frame source lists \"[4]646K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]646K\" 2 times - Crossfire Somersault / Crossfire Somersault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1240,
             "classic": "[4]646+K",
             "key": "[4]646K",
-            "why": "the frame source lists \"[4]646K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]646K\" 2 times - Crossfire Somersault / Crossfire Somersault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1241,
             "classic": "[4]646+K",
             "key": "[4]646K",
-            "why": "the frame source lists \"[4]646K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]646K\" 2 times - Crossfire Somersault / Crossfire Somersault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1241,
             "classic": "[4]646+K",
             "key": "[4]646K",
-            "why": "the frame source lists \"[4]646K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]646K\" 2 times - Crossfire Somersault / Crossfire Somersault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1243,
             "classic": "[4]646+K",
             "key": "[4]646K",
-            "why": "the frame source lists \"[4]646K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]646K\" 2 times - Crossfire Somersault / Crossfire Somersault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1243,
             "classic": "[4]646+K",
             "key": "[4]646K",
-            "why": "the frame source lists \"[4]646K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]646K\" 2 times - Crossfire Somersault / Crossfire Somersault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1244,
             "classic": "[4]646+K",
             "key": "[4]646K",
-            "why": "the frame source lists \"[4]646K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]646K\" 2 times - Crossfire Somersault / Crossfire Somersault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1244,
             "classic": "[4]646+K",
             "key": "[4]646K",
-            "why": "the frame source lists \"[4]646K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]646K\" 2 times - Crossfire Somersault / Crossfire Somersault (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 14,
@@ -3685,25 +3685,25 @@
             "action_id": 1224,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Psycho Chamber / Psycho Chamber (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1224,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Psycho Chamber / Psycho Chamber (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1228,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Psycho Chamber / Psycho Chamber (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1228,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Psycho Chamber / Psycho Chamber (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 1,
@@ -3951,25 +3951,25 @@
             "action_id": 1215,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - The Final Bout / The Final Bout (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - The Final Bout / The Final Bout (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1221,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - The Final Bout / The Final Bout (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1221,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - The Final Bout / The Final Bout (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -4129,49 +4129,49 @@
             "action_id": 600,
             "classic": "LP",
             "key": "5LP",
-            "why": "the frame source lists \"5LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"5LP\" 2 times - Stand LP (DL0) / Stand LP (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 603,
             "classic": "LP",
             "key": "5LP",
-            "why": "the frame source lists \"5LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"5LP\" 2 times - Stand LP (DL0) / Stand LP (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 659,
             "classic": "6+MK",
             "key": "6MK",
-            "why": "the frame source lists \"6MK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"6MK\" 2 times - Falling Star Kick (DL0) / Falling Star Kick (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 660,
             "classic": "6+MK",
             "key": "6MK",
-            "why": "the frame source lists \"6MK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"6MK\" 2 times - Falling Star Kick (DL0) / Falling Star Kick (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 673,
             "classic": "4+HP",
             "key": "4HP",
-            "why": "the frame source lists \"4HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"4HP\" 2 times - Hermit's Elbow (DL2) / Hermit's Elbow (DL3) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 674,
             "classic": "4+HP",
             "key": "4HP",
-            "why": "the frame source lists \"4HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"4HP\" 2 times - Hermit's Elbow (DL2) / Hermit's Elbow (DL3) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 679,
             "classic": "6+HK",
             "key": "6HK",
-            "why": "the frame source lists \"6HK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"6HK\" 2 times - Senei Kick (DL2) / Senei Kick (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 680,
             "classic": "6+HK",
             "key": "6HK",
-            "why": "the frame source lists \"6HK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"6HK\" 2 times - Senei Kick (DL2) / Senei Kick (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -4189,133 +4189,133 @@
             "action_id": 600,
             "classic": "LP",
             "key": "5LP",
-            "why": "the frame source lists \"5LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"5LP\" 2 times - Stand LP (DL0) / Stand LP (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 603,
             "classic": "LP",
             "key": "5LP",
-            "why": "the frame source lists \"5LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"5LP\" 2 times - Stand LP (DL0) / Stand LP (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 659,
             "classic": "6+MK",
             "key": "6MK",
-            "why": "the frame source lists \"6MK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"6MK\" 2 times - Falling Star Kick (DL0) / Falling Star Kick (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 660,
             "classic": "6+MK",
             "key": "6MK",
-            "why": "the frame source lists \"6MK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"6MK\" 2 times - Falling Star Kick (DL0) / Falling Star Kick (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 673,
             "classic": "4+HP",
             "key": "4HP",
-            "why": "the frame source lists \"4HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"4HP\" 2 times - Hermit's Elbow (DL2) / Hermit's Elbow (DL3) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 674,
             "classic": "4+HP",
             "key": "4HP",
-            "why": "the frame source lists \"4HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"4HP\" 2 times - Hermit's Elbow (DL2) / Hermit's Elbow (DL3) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 679,
             "classic": "6+HK",
             "key": "6HK",
-            "why": "the frame source lists \"6HK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"6HK\" 2 times - Senei Kick (DL2) / Senei Kick (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 680,
             "classic": "6+HK",
             "key": "6HK",
-            "why": "the frame source lists \"6HK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"6HK\" 2 times - Senei Kick (DL2) / Senei Kick (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 900,
             "classic": "236+LP",
             "key": "236LP",
-            "why": "the frame source lists \"236LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236LP\" 2 times - LP Freeflow Strikes 1 (DL2) / LP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 904,
             "classic": "236+MP",
             "key": "236MP",
-            "why": "the frame source lists \"236MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236MP\" 2 times - MP Freeflow Strikes 1 (DL2) / MP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 904,
             "classic": "236+MP",
             "key": "236MP",
-            "why": "the frame source lists \"236MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236MP\" 2 times - MP Freeflow Strikes 1 (DL2) / MP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 908,
             "classic": "236+HP",
             "key": "236HP",
-            "why": "the frame source lists \"236HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HP\" 2 times - HP Freeflow Strikes 1 (DL2) / HP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 912,
             "classic": "236+PP",
             "key": "236PP",
-            "why": "the frame source lists \"236PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236PP\" 2 times - OD Freeflow Strikes 1 (DL2) / OD Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 934,
             "classic": "236+LP",
             "key": "236LP",
-            "why": "the frame source lists \"236LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236LP\" 2 times - LP Freeflow Strikes 1 (DL2) / LP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 935,
             "classic": "236+MP",
             "key": "236MP",
-            "why": "the frame source lists \"236MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236MP\" 2 times - MP Freeflow Strikes 1 (DL2) / MP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 935,
             "classic": "236+MP",
             "key": "236MP",
-            "why": "the frame source lists \"236MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236MP\" 2 times - MP Freeflow Strikes 1 (DL2) / MP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 936,
             "classic": "236+HP",
             "key": "236HP",
-            "why": "the frame source lists \"236HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HP\" 2 times - HP Freeflow Strikes 1 (DL2) / HP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 941,
             "classic": "236+PP",
             "key": "236PP",
-            "why": "the frame source lists \"236PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236PP\" 2 times - OD Freeflow Strikes 1 (DL2) / OD Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1211,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Getsuga Saiho (CA) (DL2) / Getsuga Saiho (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1211,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Getsuga Saiho (CA) (DL2) / Getsuga Saiho (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Getsuga Saiho (CA) (DL2) / Getsuga Saiho (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Getsuga Saiho (CA) (DL2) / Getsuga Saiho (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 21,
@@ -4687,49 +4687,49 @@
             "action_id": 1220,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Sip of Calamity / Sip of Calamity (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Sip of Calamity / Sip of Calamity (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1221,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Sip of Calamity / Sip of Calamity (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1221,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Sip of Calamity / Sip of Calamity (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1225,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Sip of Calamity / Sip of Calamity (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1225,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Sip of Calamity / Sip of Calamity (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1226,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Sip of Calamity / Sip of Calamity (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1226,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Sip of Calamity / Sip of Calamity (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 2,
@@ -4959,49 +4959,49 @@
             "action_id": 1228,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Tiger Vanquisher / Tiger Vanquisher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1228,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Tiger Vanquisher / Tiger Vanquisher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1229,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Tiger Vanquisher / Tiger Vanquisher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1229,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Tiger Vanquisher / Tiger Vanquisher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1235,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Tiger Vanquisher / Tiger Vanquisher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1235,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Tiger Vanquisher / Tiger Vanquisher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1236,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Tiger Vanquisher / Tiger Vanquisher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1236,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Tiger Vanquisher / Tiger Vanquisher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -5167,109 +5167,109 @@
             "action_id": 973,
             "classic": "214+LP",
             "key": "214LP",
-            "why": "the frame source lists \"214LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214LP\" 2 times - Backfist Combo / Backfist Combo (Mine) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 977,
             "classic": "214+MP",
             "key": "214MP",
-            "why": "the frame source lists \"214MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214MP\" 2 times - Backfist Combo / Backfist Combo (Mine) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 977,
             "classic": "214+MP",
             "key": "214MP",
-            "why": "the frame source lists \"214MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214MP\" 2 times - Backfist Combo / Backfist Combo (Mine) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 981,
             "classic": "214+HP",
             "key": "214HP",
-            "why": "the frame source lists \"214HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214HP\" 2 times - Backfist Combo / Backfist Combo (Mine) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 999,
             "classic": "214+PP",
             "key": "214PP",
-            "why": "the frame source lists \"214PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214PP\" 2 times - Backfist Combo / Backfist Combo (Mine) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1018,
             "classic": "[4]6+LP",
             "key": "[4]6LP",
-            "why": "the frame source lists \"[4]6LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]6LP\" 2 times - Psycho Crusher Attack / Psycho Crusher (Mine) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1018,
             "classic": "[4]6+LP",
             "key": "[4]6LP",
-            "why": "the frame source lists \"[4]6LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]6LP\" 2 times - Psycho Crusher Attack / Psycho Crusher (Mine) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1024,
             "classic": "[4]6+MP",
             "key": "[4]6MP",
-            "why": "the frame source lists \"[4]6MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]6MP\" 2 times - Psycho Crusher Attack / Psycho Crusher (Mine) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1030,
             "classic": "[4]6+HP",
             "key": "[4]6HP",
-            "why": "the frame source lists \"[4]6HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]6HP\" 2 times - Psycho Crusher Attack / Psycho Crusher (Mine) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1038,
             "classic": "[4]6+PP",
             "key": "[4]6PP",
-            "why": "the frame source lists \"[4]6PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"[4]6PP\" 2 times - Psycho Crusher Attack / Psycho Crusher (Mine) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1216,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Unlimited Psycho Crusher / Unlimited Psycho Crusher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1216,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Unlimited Psycho Crusher / Unlimited Psycho Crusher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1217,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Unlimited Psycho Crusher / Unlimited Psycho Crusher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1217,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Unlimited Psycho Crusher / Unlimited Psycho Crusher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1221,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Unlimited Psycho Crusher / Unlimited Psycho Crusher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1221,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Unlimited Psycho Crusher / Unlimited Psycho Crusher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1222,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Unlimited Psycho Crusher / Unlimited Psycho Crusher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1222,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Unlimited Psycho Crusher / Unlimited Psycho Crusher (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 2,
@@ -5424,49 +5424,49 @@
             "action_id": 1230,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Rising Fang / Rising Fang (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1230,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Rising Fang / Rising Fang (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1231,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Rising Fang / Rising Fang (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1231,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Rising Fang / Rising Fang (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1235,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Rising Fang / Rising Fang (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1235,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Rising Fang / Rising Fang (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1236,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Rising Fang / Rising Fang (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1236,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Rising Fang / Rising Fang (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -5530,337 +5530,337 @@
             "action_id": 900,
             "classic": "236+LP",
             "key": "236LP",
-            "why": "the frame source lists \"236LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236LP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 902,
             "classic": "236+MP",
             "key": "236MP",
-            "why": "the frame source lists \"236MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236MP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 902,
             "classic": "236+MP",
             "key": "236MP",
-            "why": "the frame source lists \"236MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236MP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 904,
             "classic": "236+HP",
             "key": "236HP",
-            "why": "the frame source lists \"236HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 904,
             "classic": "236+HP",
             "key": "236HP",
-            "why": "the frame source lists \"236HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 906,
             "classic": "236+PP",
             "key": "236PP",
-            "why": "the frame source lists \"236PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236PP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 950,
             "classic": "236+LP",
             "key": "236LP",
-            "why": "the frame source lists \"236LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236LP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 952,
             "classic": "236+MP",
             "key": "236MP",
-            "why": "the frame source lists \"236MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236MP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 952,
             "classic": "236+MP",
             "key": "236MP",
-            "why": "the frame source lists \"236MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236MP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 954,
             "classic": "236+HP",
             "key": "236HP",
-            "why": "the frame source lists \"236HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 954,
             "classic": "236+HP",
             "key": "236HP",
-            "why": "the frame source lists \"236HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 956,
             "classic": "236+PP",
             "key": "236PP",
-            "why": "the frame source lists \"236PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236PP\" 2 times - Kachousen / Kachousen (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1012,
             "classic": "236+LK",
             "key": "236LK",
-            "why": "the frame source lists \"236LK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236LK\" 2 times - Hissatsu Shinobi Bachi / Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1013,
             "classic": "236+MK",
             "key": "236MK",
-            "why": "the frame source lists \"236MK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236MK\" 2 times - Hissatsu Shinobi Bachi / Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1014,
             "classic": "236+HK",
             "key": "236HK",
-            "why": "the frame source lists \"236HK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HK\" 2 times - Hissatsu Shinobi Bachi / Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1015,
             "classic": "236+KK",
             "key": "236KK",
-            "why": "the frame source lists \"236KK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236KK\" 2 times - Hissatsu Shinobi Bachi / Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1018,
             "classic": "236+LK",
             "key": "236LK",
-            "why": "the frame source lists \"236LK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236LK\" 2 times - Hissatsu Shinobi Bachi / Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1019,
             "classic": "236+MK",
             "key": "236MK",
-            "why": "the frame source lists \"236MK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236MK\" 2 times - Hissatsu Shinobi Bachi / Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1020,
             "classic": "236+HK",
             "key": "236HK",
-            "why": "the frame source lists \"236HK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236HK\" 2 times - Hissatsu Shinobi Bachi / Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1021,
             "classic": "236+KK",
             "key": "236KK",
-            "why": "the frame source lists \"236KK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236KK\" 2 times - Hissatsu Shinobi Bachi / Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1024,
             "classic": "214+LP",
             "key": "214LP",
-            "why": "the frame source lists \"214LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214LP\" 2 times - Ryuuenbu / Ryuuenbu (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1024,
             "classic": "214+LP",
             "key": "214LP",
-            "why": "the frame source lists \"214LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214LP\" 2 times - Ryuuenbu / Ryuuenbu (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1026,
             "classic": "214+MP",
             "key": "214MP",
-            "why": "the frame source lists \"214MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214MP\" 2 times - Ryuuenbu / Ryuuenbu (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1027,
             "classic": "214+HP",
             "key": "214HP",
-            "why": "the frame source lists \"214HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214HP\" 2 times - Ryuuenbu / Ryuuenbu (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1028,
             "classic": "214+PP",
             "key": "214PP",
-            "why": "the frame source lists \"214PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214PP\" 2 times - Ryuuenbu / Ryuuenbu (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1031,
             "classic": "214+LP",
             "key": "214LP",
-            "why": "the frame source lists \"214LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214LP\" 2 times - Ryuuenbu / Ryuuenbu (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1031,
             "classic": "214+LP",
             "key": "214LP",
-            "why": "the frame source lists \"214LP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214LP\" 2 times - Ryuuenbu / Ryuuenbu (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1032,
             "classic": "214+MP",
             "key": "214MP",
-            "why": "the frame source lists \"214MP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214MP\" 2 times - Ryuuenbu / Ryuuenbu (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1033,
             "classic": "214+HP",
             "key": "214HP",
-            "why": "the frame source lists \"214HP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214HP\" 2 times - Ryuuenbu / Ryuuenbu (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1034,
             "classic": "214+PP",
             "key": "214PP",
-            "why": "the frame source lists \"214PP\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214PP\" 2 times - Ryuuenbu / Ryuuenbu (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1047,
             "classic": "623+LK",
             "key": "623LK",
-            "why": "the frame source lists \"623LK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"623LK\" 2 times - Hishou Ryuuenjin / Hishou Ryuuenjin (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1047,
             "classic": "623+LK",
             "key": "623LK",
-            "why": "the frame source lists \"623LK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"623LK\" 2 times - Hishou Ryuuenjin / Hishou Ryuuenjin (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1048,
             "classic": "623+MK",
             "key": "623MK",
-            "why": "the frame source lists \"623MK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"623MK\" 2 times - Hishou Ryuuenjin / Hishou Ryuuenjin (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1049,
             "classic": "623+HK",
             "key": "623HK",
-            "why": "the frame source lists \"623HK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"623HK\" 2 times - Hishou Ryuuenjin / Hishou Ryuuenjin (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1050,
             "classic": "623+KK",
             "key": "623KK",
-            "why": "the frame source lists \"623KK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"623KK\" 2 times - Hishou Ryuuenjin / Hishou Ryuuenjin (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1057,
             "classic": "623+LK",
             "key": "623LK",
-            "why": "the frame source lists \"623LK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"623LK\" 2 times - Hishou Ryuuenjin / Hishou Ryuuenjin (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1057,
             "classic": "623+LK",
             "key": "623LK",
-            "why": "the frame source lists \"623LK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"623LK\" 2 times - Hishou Ryuuenjin / Hishou Ryuuenjin (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1058,
             "classic": "623+MK",
             "key": "623MK",
-            "why": "the frame source lists \"623MK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"623MK\" 2 times - Hishou Ryuuenjin / Hishou Ryuuenjin (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1059,
             "classic": "623+HK",
             "key": "623HK",
-            "why": "the frame source lists \"623HK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"623HK\" 2 times - Hishou Ryuuenjin / Hishou Ryuuenjin (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1060,
             "classic": "623+KK",
             "key": "623KK",
-            "why": "the frame source lists \"623KK\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"623KK\" 2 times - Hishou Ryuuenjin / Hishou Ryuuenjin (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1200,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Kagerou no Mai / Kagerou no Mai (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1200,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Kagerou no Mai / Kagerou no Mai (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1204,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Kagerou no Mai / Kagerou no Mai (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1204,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Kagerou no Mai / Kagerou no Mai (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1219,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Chou Hissatsu Shinobi Bachi / Chou Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1219,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Chou Hissatsu Shinobi Bachi / Chou Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1225,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Chou Hissatsu Shinobi Bachi / Chou Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1225,
             "classic": "236236+K",
             "key": "236236K",
-            "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236K\" 2 times - Chou Hissatsu Shinobi Bachi / Chou Hissatsu Shinobi Bachi (Flame) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1233,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shiranui Ryuu: Enbu Ada Zakura / Shiranui Ryuu: Enbu Ada Zakura (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1233,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shiranui Ryuu: Enbu Ada Zakura / Shiranui Ryuu: Enbu Ada Zakura (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1234,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shiranui Ryuu: Enbu Ada Zakura / Shiranui Ryuu: Enbu Ada Zakura (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1234,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shiranui Ryuu: Enbu Ada Zakura / Shiranui Ryuu: Enbu Ada Zakura (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1237,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shiranui Ryuu: Enbu Ada Zakura / Shiranui Ryuu: Enbu Ada Zakura (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1237,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shiranui Ryuu: Enbu Ada Zakura / Shiranui Ryuu: Enbu Ada Zakura (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1238,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shiranui Ryuu: Enbu Ada Zakura / Shiranui Ryuu: Enbu Ada Zakura (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1238,
             "classic": "214214+P",
             "key": "214214P",
-            "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214P\" 2 times - Shiranui Ryuu: Enbu Ada Zakura / Shiranui Ryuu: Enbu Ada Zakura (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 0,
@@ -6008,49 +6008,49 @@
             "action_id": 1210,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Song of the Grasslands / Song of the Grasslands (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1210,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Song of the Grasslands / Song of the Grasslands (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1211,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Song of the Grasslands / Song of the Grasslands (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1211,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Song of the Grasslands / Song of the Grasslands (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Song of the Grasslands / Song of the Grasslands (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Song of the Grasslands / Song of the Grasslands (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1216,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Song of the Grasslands / Song of the Grasslands (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1216,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Song of the Grasslands / Song of the Grasslands (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 16,
@@ -6334,25 +6334,25 @@
             "action_id": 1218,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Hard Luck Rejector / Hard Luck Rejector (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1218,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Hard Luck Rejector / Hard Luck Rejector (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1222,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Hard Luck Rejector / Hard Luck Rejector (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1222,
             "classic": "214214+K",
             "key": "214214K",
-            "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"214214K\" 2 times - Hard Luck Rejector / Hard Luck Rejector (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 6,
@@ -6556,25 +6556,25 @@
             "action_id": 1230,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - The Final Prison / The Final Prison (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1230,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - The Final Prison / The Final Prison (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1242,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - The Final Prison / The Final Prison (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1242,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - The Final Prison / The Final Prison (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 1,
@@ -6714,25 +6714,25 @@
             "action_id": 1287,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Cosmic Ray / Cosmic Ray (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1287,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Cosmic Ray / Cosmic Ray (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1296,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Cosmic Ray / Cosmic Ray (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1296,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Cosmic Ray / Cosmic Ray (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 1,
@@ -7128,49 +7128,49 @@
             "action_id": 1214,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pamumukadkad ng Sampaguita / Pamumukadkad ng Sampaguita (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1214,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pamumukadkad ng Sampaguita / Pamumukadkad ng Sampaguita (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pamumukadkad ng Sampaguita / Pamumukadkad ng Sampaguita (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1215,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pamumukadkad ng Sampaguita / Pamumukadkad ng Sampaguita (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1219,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pamumukadkad ng Sampaguita / Pamumukadkad ng Sampaguita (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1219,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pamumukadkad ng Sampaguita / Pamumukadkad ng Sampaguita (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pamumukadkad ng Sampaguita / Pamumukadkad ng Sampaguita (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1220,
             "classic": "236236+P",
             "key": "236236P",
-            "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
+            "why": "the frame source lists \"236236P\" 2 times - Pamumukadkad ng Sampaguita / Pamumukadkad ng Sampaguita (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
         "unmatched": 1,
