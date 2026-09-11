@@ -20,7 +20,24 @@ not combos that are known to work.
 - starting moves          14  (normal,command_normal / manual)
 - target moves            33  (normal,command_normal,special,od_special,super / manual,simple)
 - excluded from probing   51  (classic-only, air, throws, system, follow-ups)
-- frame data coverage     14 of 14 (100%)
+- frame data coverage     30 of 37 (81%)  over every row this run uses
+    starters      14 of  14 (100%)
+    targets       30 of  33 ( 91%)
+    follow-ups     0 of   4 (  0%)
+    5 matched only by guessing between several source spellings:
+      63214+KK (924) -> 63214KK (Close)
+      720+P (1218) -> 720+P
+      720+P (1218) -> 720+P
+      720+P (1222) -> 720+P
+      720+P (1222) -> 720+P
+    7 with no frame data at all:
+      63214+LK+MK (918)
+      63214+LK+MK (918)
+      63214+HK (1010)
+      >MP (605)
+      >MP (606)
+      >MK (679)
+      >MK (680)
 - unresolved canonical ids 13 groups covering 31 rows
 - no Modern form at all     9
     34  8
@@ -40,7 +57,7 @@ not combos that are known to work.
 - excluded                131
 
 by reason:
-  chain_cancel             70
+  chain_cancel             90
   frame_data_incomplete    111
   frame_link               122
   special_cancel           88
@@ -144,8 +161,8 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/zangief/modern/candidate-edges.json  (499589 bytes)
-- candidates/zangief/modern/candidate-routes.json  (4456237 bytes)
+- candidates/zangief/modern/candidate-edges.json  (500013 bytes)
+- candidates/zangief/modern/candidate-routes.json  (4456513 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

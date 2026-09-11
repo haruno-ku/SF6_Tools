@@ -301,11 +301,65 @@ say("- target moves            %d  (%s / %s)", #targets,
 say("- excluded from probing   %d  (classic-only, air, throws, system, follow-ups)",
     cat.counts.excluded)
 if idx then
-    local cov = FrameData.coverage(idx, probeable)
-    say("- frame data coverage     %d of %d (%.0f%%)", cov.matched, cov.rows, cov.ratio * 100)
+    -- Measured over every row the run actually uses, not just the starters.
+    --
+    -- This used to pass only the from-rows, and the committed Zangief report
+    -- said "14 of 14 (100%)" - a true statement about fourteen ground normals
+    -- and no statement at all about the thirty-three specials and supers the
+    -- same run was aiming at, or about the follow-ups the generator collects
+    -- separately. A join that collapsed to nothing on specials would have
+    -- reported 100% and passed the suite.
+    local seen, rows = {}, {}
+    local function add(list)
+        for _, row in ipairs(list) do
+            local key = ("%d:%s"):format(row.action_id, tostring(row.input_method))
+            if not seen[key] then seen[key] = true rows[#rows + 1] = row end
+        end
+    end
+    add(probeable)
+    add(targets)
+    local followups = {}
+    for _, row in ipairs(cat.rows) do
+        if row.exclusion == "followup" then followups[#followups + 1] = row end
+    end
+    add(followups)
+
+    local cov = FrameData.coverage(idx, rows)
+    say("- frame data coverage     %d of %d (%.0f%%)  over every row this run uses",
+        cov.matched, cov.rows, cov.ratio * 100)
+
+    -- Broken out, because one number over a mixed set hides exactly the case
+    -- worth seeing: starters joining and targets not.
+    for _, part in ipairs({ { "starters", probeable }, { "targets", targets },
+                            { "follow-ups", followups } }) do
+        if #part[2] > 0 then
+            local c = FrameData.coverage(idx, part[2])
+            say("    %-12s %3d of %3d (%3.0f%%)", part[1], c.matched, c.rows, c.ratio * 100)
+        end
+    end
+
+    -- A guessed join is not a match. These are counted by coverage already and
+    -- were never printed, so a run could rest on a coin flip and look clean.
+    if cov.ambiguous and cov.ambiguous > 0 then
+        say("    %d matched only by guessing between several source spellings:",
+            cov.ambiguous)
+        for _, u in ipairs(cov.uncertain_detail or {}) do
+            say("      %s (%s) -> %s", tostring(u.classic), tostring(u.action_id),
+                tostring(u.key))
+        end
+    end
+
     if cov.unmatched > 0 then
+        say("    %d with no frame data at all:", cov.unmatched)
+        local shown = 0
         for _, u in ipairs(cov.unmatched_detail) do
-            say("    no frame data for %s (%s)", tostring(u.classic), tostring(u.action_id))
+            shown = shown + 1
+            if shown <= 20 then
+                say("      %s (%s)", tostring(u.classic), tostring(u.action_id))
+            end
+        end
+        if cov.unmatched > 20 then
+            say("      ... and %d more", cov.unmatched - 20)
         end
     end
 end

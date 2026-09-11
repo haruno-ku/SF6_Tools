@@ -155,6 +155,61 @@ for _, u in ipairs(cov.unmatched_detail) do
          ("unmatched %s says what was tried"):format(tostring(u.classic)))
 end
 
+-- --- the instrument has to measure the whole run -----------------------------
+
+t.group("coverage over the rows a run actually uses")
+
+-- The committed report said "frame data coverage 14 of 14 (100%)" for a run
+-- that aimed at thirty-three targets. Both halves were true and the sentence
+-- was not: coverage was being taken over the starting moves alone, so a join
+-- that collapsed to nothing on specials would have reported a clean sheet.
+--
+-- The property being pinned is that the two sets give different answers. A
+-- future change that quietly narrows the measurement back to the starters makes
+-- them equal again.
+local starters = Catalog.probeable(cat, {
+    categories = { "normal", "command_normal" }, input_methods = { "manual" },
+})
+local targets = Catalog.probeable(cat, {
+    categories = { "normal", "command_normal", "special", "od_special", "super" },
+    input_methods = { "manual", "simple" },
+})
+local derivations = {}
+for _, row in ipairs(cat.rows) do
+    if row.exclusion == "followup" then derivations[#derivations + 1] = row end
+end
+
+t.ok(#targets > #starters, "the target set is larger than the starting set")
+t.ok(#derivations > 0, "and the run collects derivations on top of both")
+
+local cov_start = FD.coverage(idx, starters)
+local cov_all = FD.coverage(idx, targets)
+t.eq(cov_start.ratio, 1.0, "every starter joins - which is the number that was being reported")
+t.ok(cov_all.ratio < 1.0,
+     ("and the targets do not: %d of %d"):format(cov_all.matched, cov_all.rows))
+t.ok(cov_all.ratio ~= cov_start.ratio,
+     "so measuring one set and printing it as the other hides a real gap")
+
+-- Derivations join for nobody, on any character. The source spells a follow-up
+-- as a chain from the move before it - "5MP~MP" - and nothing in candidate_keys
+-- turns ">MP" into that, because ">MP" does not say what it follows. Pinned as
+-- a known gap rather than left to be rediscovered; fixing it needs the move
+-- before, which a single-row lookup does not have.
+local cov_deriv = FD.coverage(idx, derivations)
+t.eq(cov_deriv.matched, 0, "no derivation joins to frame data")
+t.eq(cov_deriv.rows, #derivations, "and all of them were looked up, not skipped")
+for _, u in ipairs(cov_deriv.unmatched_detail) do
+    t.ok(#u.tried > 0, ("derivation %s records what was tried"):format(tostring(u.classic)))
+end
+
+-- A guessed match is counted separately from a clean one, and the count is what
+-- a report needs in order not to present a coin flip as a fact.
+t.ok(cov_all.ambiguous ~= nil, "uncertain matches are counted")
+if cov_all.ambiguous > 0 then
+    t.ok(cov_all.uncertain_detail ~= nil and #cov_all.uncertain_detail > 0,
+         "and each one says which key it settled on")
+end
+
 -- --- ambiguity is flagged, not hidden ---------------------------------------
 
 t.group("distance variants")
