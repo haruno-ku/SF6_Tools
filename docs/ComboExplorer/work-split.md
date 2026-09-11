@@ -27,13 +27,14 @@
 | A5 `SequenceCompiler` | **完了** — delay を**発明しない**（未指定はエラー）。未検証プロファイルは拒否 |
 | A6 `Exporter` + オフライン CLI | **完了** — `lua tools/lua/explore.lua` でゲーム無しに端から端まで通る |
 | A5 `StageControlFsm` / `RunnerFsm` | **完了** — 純関数の状態機械。未計測の tick 数が未設定なら起動を拒否する |
-| A6 `ResultCollector` / KDB adapter | **完了** — JSONL 追記と再開、切れた最終行は「実行したが結果を失った」として再実行。KDB は実測 damage が無ければ通さない |
+| A6 `ResultCollector` / KDB adapter | **完了** — JSONL 追記と再開、切れた最終行は「実行したが結果を失った」として再実行。KDB は実測 damage が無ければ通さない。**ただし KDB には呼び出し元が無い**（下記） |
+| A8 試行 → 確定エッジ | **完了**（2026-09-11）— `core/ConfirmedEdge.lua` + `tools/lua/confirm.lua`。スイープのログを「ゲームが繋がると言ったペア」に変える |
 | A7 プローブ A-D 実機実行 | **完了**（2026-09-10、SF6 build 24176760）— 4件すべて結論に到達 |
 | `Calibration` / `CalibrationFsm` / `CalibrationRunner` | **完了** — 実機投入待ち |
 | 全31キャラのカタログ監査 / 分類器の汎用化 | **完了** — `tools/lua/audit.lua` |
 | 全31キャラのフレームデータと join 計測 | **完了** — `tools/lua/survey.lua` |
 
-テスト: **3332 アサーション**（Lua 5.4.6、SF6 不要）。
+テスト: **3479 アサーション**（Lua 5.4.6、SF6 不要）。
 `node tools/lua-runner.mjs syntax` は構文＋**require 解決**もチェックする
 （実機でしか出ないロードエラーを開発機で捕まえる）。
 
