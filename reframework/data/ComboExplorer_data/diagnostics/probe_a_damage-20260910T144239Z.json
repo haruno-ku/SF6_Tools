@@ -1,0 +1,512 @@
+{
+    "body": {
+        "action_id_histogram": [
+            {
+                "action_id": 611,
+                "entries": 3
+            },
+            {
+                "action_id": 604,
+                "entries": 2
+            },
+            {
+                "action_id": 609,
+                "entries": 2
+            },
+            {
+                "action_id": 637,
+                "entries": 1
+            },
+            {
+                "action_id": 855,
+                "entries": 1
+            },
+            {
+                "action_id": 940,
+                "entries": 1
+            }
+        ],
+        "carrying_side": "attacker",
+        "counts": {
+            "agreed": 5,
+            "comparable": 7,
+            "nonzero": 7,
+            "recovered": 0,
+            "resolved": 7,
+            "total": 7
+        },
+        "hp_arm_usable": true,
+        "idle_ticks_to_close": 20,
+        "probe": "A.damage_readability",
+        "recommended_source": "both",
+        "samples": [
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 6.0,
+                        "action_id": 611,
+                        "combo_count": 1,
+                        "tick": 147072
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 940,
+                        "combo_count": 0,
+                        "tick": 147109
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 189.70986938476563,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 400,
+                "combo_damage": 400,
+                "counter_hit": false,
+                "end_tick": 147117,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 9,
+                "hp_arm_usable": true,
+                "hp_base": 10000,
+                "hp_delta": 400,
+                "hp_min": 9600,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 147072,
+                "ticks": 47,
+                "victim_hp_at_start": 10000,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 275.7098693847656,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 8.0,
+                        "action_id": 604,
+                        "combo_count": 1,
+                        "tick": 147201
+                    },
+                    {
+                        "action_frame": 0.0,
+                        "action_id": 637,
+                        "combo_count": 1,
+                        "tick": 147234
+                    },
+                    {
+                        "action_frame": 4.0,
+                        "action_id": 609,
+                        "combo_count": 0,
+                        "tick": 147238
+                    }
+                ],
+                "agree": false,
+                "attacker_pos_at_start": 150.04989624023438,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 1000,
+                "combo_damage": 1000,
+                "counter_hit": false,
+                "end_tick": 147309,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 24,
+                "hp_arm_usable": true,
+                "hp_base": 9600,
+                "hp_delta": 1700,
+                "hp_min": 7900,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 0.5882352941176471,
+                "start_tick": 147201,
+                "ticks": 110,
+                "victim_hp_at_start": 9600,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 307.47254943847656,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 25.0,
+                        "action_id": 855,
+                        "combo_count": 1,
+                        "tick": 147472
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 352.1018371582031,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 800,
+                "combo_damage": 800,
+                "counter_hit": false,
+                "end_tick": 147558,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 25,
+                "hp_arm_usable": true,
+                "hp_base": 7900,
+                "hp_delta": 800,
+                "hp_min": 7100,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 147472,
+                "ticks": 88,
+                "victim_hp_at_start": 7900,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 438.101806640625,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 6.0,
+                        "action_id": 611,
+                        "combo_count": 1,
+                        "tick": 154374
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 627.9838104248047,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 400,
+                "combo_damage": 400,
+                "counter_hit": false,
+                "end_tick": 154419,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 9,
+                "hp_arm_usable": true,
+                "hp_base": 7100,
+                "hp_delta": 400,
+                "hp_min": 6700,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 154374,
+                "ticks": 47,
+                "victim_hp_at_start": 7100,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 725.6016540527344,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 8.0,
+                        "action_id": 604,
+                        "combo_count": 1,
+                        "tick": 154785
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 588.3238372802734,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 700,
+                "combo_damage": 700,
+                "counter_hit": false,
+                "end_tick": 154838,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 11,
+                "hp_arm_usable": true,
+                "hp_base": 6700,
+                "hp_delta": 700,
+                "hp_min": 6000,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 154785,
+                "ticks": 55,
+                "victim_hp_at_start": 6700,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 757.3643341064453,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 15.0,
+                        "action_id": 609,
+                        "combo_count": 1,
+                        "tick": 154894
+                    }
+                ],
+                "agree": true,
+                "attacker_pos_at_start": 652.7642517089844,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 1000,
+                "combo_damage": 1000,
+                "counter_hit": false,
+                "end_tick": 154954,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 13,
+                "hp_arm_usable": true,
+                "hp_base": 6000,
+                "hp_delta": 1000,
+                "hp_min": 5000,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 1.0,
+                "start_tick": 154894,
+                "ticks": 62,
+                "victim_hp_at_start": 6000,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 765.0,
+                "victim_side_max": 0
+            },
+            {
+                "action_transitions": [
+                    {
+                        "action_frame": 6.0,
+                        "action_id": 611,
+                        "combo_count": 1,
+                        "tick": 158689
+                    }
+                ],
+                "agree": false,
+                "attacker_pos_at_start": 679.0,
+                "attacker_rl_dir_raw": true,
+                "attacker_rl_dir_type": "boolean",
+                "attacker_side_max": 400,
+                "combo_damage": 400,
+                "counter_hit": false,
+                "end_tick": 158777,
+                "field_nonzero": true,
+                "field_resolved": true,
+                "hits": 1,
+                "hitstop_ticks": 18,
+                "hp_arm_usable": true,
+                "hp_base": 5000,
+                "hp_delta": 800,
+                "hp_min": 4200,
+                "hp_recovered": false,
+                "idle_ticks_at_close": 20,
+                "idle_ticks_threshold": 20,
+                "punish_counter": false,
+                "ratio": 0.5,
+                "start_tick": 158689,
+                "ticks": 90,
+                "victim_hp_at_start": 5000,
+                "victim_hp_max": 10000,
+                "victim_pos_at_start": 765.0,
+                "victim_side_max": 0
+            }
+        ],
+        "sufficient": true,
+        "ticks_observed": 59662,
+        "ticks_skipped": 0,
+        "verdict": "mComboDamage and the HP delta disagree on 2 of 7 comparable samples - record both and do not trust either alone"
+    },
+    "header": {
+        "anchor_hooked": true,
+        "config": {
+            "probe_a_idle_ticks": 20,
+            "probe_a_min_samples": 3,
+            "probe_b_min_frames": 300,
+            "sources": {
+                "allow_injection": "default",
+                "enabled": "default",
+                "probe_a_idle_ticks": "default",
+                "probe_a_min_samples": "default",
+                "probe_b_min_frames": "default",
+                "write_diag_files": "default"
+            }
+        },
+        "frame": 179052,
+        "mod_version": "0.3.0-diagnostics",
+        "p1": {
+            "id": 6,
+            "key": "ESF_006",
+            "name": "ESF_006"
+        },
+        "p1_control_scheme": "modern",
+        "p2": {
+            "id": 2,
+            "key": "ESF_002",
+            "name": "ESF_002"
+        },
+        "provenance": {
+            "capabilities": {
+                "catalog": {
+                    "available": false,
+                    "blocked_by": [
+                        "action_id_canonical"
+                    ]
+                },
+                "damage": {
+                    "available": false,
+                    "blocked_by": [
+                        "combo_damage_readable"
+                    ]
+                },
+                "frame_data": {
+                    "available": false,
+                    "blocked_by": [
+                        "frame_meter_semantics",
+                        "tick_equals_frame"
+                    ]
+                },
+                "injection": {
+                    "available": false,
+                    "blocked_by": [
+                        "direction_bits",
+                        "modern_button_bits",
+                        "rl_dir_polarity"
+                    ]
+                },
+                "probing": {
+                    "available": false,
+                    "blocked_by": [
+                        "direction_bits",
+                        "hitstop_advances_tick",
+                        "input_hook_calls_per_frame",
+                        "modern_button_bits",
+                        "reset_settle_ticks",
+                        "rl_dir_polarity",
+                        "tick_equals_frame"
+                    ]
+                },
+                "stage_reset": {
+                    "available": false,
+                    "blocked_by": [
+                        "reset_settle_ticks"
+                    ]
+                },
+                "timing": {
+                    "available": false,
+                    "blocked_by": [
+                        "hitstop_advances_tick",
+                        "input_hook_calls_per_frame",
+                        "tick_equals_frame"
+                    ]
+                }
+            },
+            "entries": {
+                "action_id_canonical": {
+                    "gates": [
+                        "catalog"
+                    ],
+                    "measured_by": "calibration_action_sweep",
+                    "status": "unverified"
+                },
+                "combo_damage_readable": {
+                    "gates": [
+                        "damage"
+                    ],
+                    "measured_by": "probe_a_damage",
+                    "status": "unverified"
+                },
+                "direction_bits": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": {
+                        "DOWN": 2,
+                        "LEFT": 4,
+                        "RIGHT": 8,
+                        "UP": 1
+                    }
+                },
+                "frame_meter_semantics": {
+                    "gates": [
+                        "frame_data"
+                    ],
+                    "measured_by": "calibration_frame_meter",
+                    "status": "unverified",
+                    "value": {
+                        "BLOCKSTUN": 10,
+                        "HITSTUN": 9,
+                        "RECOVERY": 8,
+                        "STARTUP": 7
+                    }
+                },
+                "hitstop_advances_tick": {
+                    "gates": [
+                        "timing"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified",
+                    "value": false
+                },
+                "input_hook_calls_per_frame": {
+                    "gates": [
+                        "timing"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified",
+                    "value": 1
+                },
+                "modern_button_bits": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": {
+                        "AUTO": 512,
+                        "DI": 4096,
+                        "H": 256,
+                        "L": 16,
+                        "M": 128,
+                        "PARRY": 64,
+                        "SP": 32,
+                        "THROW": 8192
+                    }
+                },
+                "reset_settle_ticks": {
+                    "gates": [
+                        "stage_reset"
+                    ],
+                    "measured_by": "calibration_reset_cost",
+                    "status": "unverified",
+                    "value": 25
+                },
+                "rl_dir_polarity": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": "mirror_when_falsy"
+                },
+                "tick_equals_frame": {
+                    "gates": [
+                        "timing",
+                        "frame_data"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified"
+                }
+            }
+        },
+        "written_at": "20260910T144239Z"
+    }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "sf6-combo-explorer-tools",
+  "private": true,
+  "type": "module",
+  "description": "Dev-machine tooling for the SF6 Combo Explorer fork of Wael3rd/SF6_Tools. The mod itself is Lua under reframework/ and needs no build step; this package only covers the checks and generators that run off-game.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node tools/lua-runner.mjs syntax && node tools/lua-runner.mjs test",
+    "test:lua": "node tools/lua-runner.mjs test",
+    "lint:lua": "node tools/lua-runner.mjs syntax",
+    "gen:fixtures": "node tools/gen-notation-fixture.mjs Zangief"
+  }
+}

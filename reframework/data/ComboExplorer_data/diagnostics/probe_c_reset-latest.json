@@ -1,0 +1,369 @@
+{
+    "body": {
+        "episodes": 11,
+        "episodes_detail": [
+            {
+                "final_distance": 300.0,
+                "refresh_cleared_tick": 188307,
+                "refresh_cleared_wall": 3773.218,
+                "refresh_ticks": 1,
+                "settle_ticks": 8,
+                "settled_tick": 188315,
+                "settled_wall": 3773.367,
+                "start_tick": 188306,
+                "start_wall": 3773.199,
+                "total_ticks": 9,
+                "total_wall_ms": 168.00000000012005
+            },
+            {
+                "final_distance": 300.0,
+                "refresh_cleared_tick": 188529,
+                "refresh_cleared_wall": 3776.945,
+                "refresh_ticks": 1,
+                "settle_ticks": 6,
+                "settled_tick": 188535,
+                "settled_wall": 3777.049,
+                "start_tick": 188528,
+                "start_wall": 3776.926,
+                "total_ticks": 7,
+                "total_wall_ms": 123.0000000000473
+            },
+            {
+                "final_distance": 300.0,
+                "refresh_cleared_tick": 188570,
+                "refresh_cleared_wall": 3777.637,
+                "refresh_ticks": 1,
+                "settle_ticks": 6,
+                "settled_tick": 188576,
+                "settled_wall": 3777.745,
+                "start_tick": 188569,
+                "start_wall": 3777.616,
+                "total_ticks": 7,
+                "total_wall_ms": 128.9999999999054
+            },
+            {
+                "final_distance": 300.0,
+                "refresh_cleared_tick": 188604,
+                "refresh_cleared_wall": 3778.211,
+                "refresh_ticks": 1,
+                "settle_ticks": 6,
+                "settled_tick": 188610,
+                "settled_wall": 3778.322,
+                "start_tick": 188603,
+                "start_wall": 3778.195,
+                "total_ticks": 7,
+                "total_wall_ms": 126.9999999999527
+            },
+            {
+                "final_distance": 300.0,
+                "refresh_cleared_tick": 188635,
+                "refresh_cleared_wall": 3778.743,
+                "refresh_ticks": 1,
+                "settle_ticks": 6,
+                "settled_tick": 188641,
+                "settled_wall": 3778.854,
+                "start_tick": 188634,
+                "start_wall": 3778.722,
+                "total_ticks": 7,
+                "total_wall_ms": 131.9999999996071
+            },
+            {
+                "final_distance": 300.0,
+                "refresh_cleared_tick": 188666,
+                "refresh_cleared_wall": 3779.271,
+                "refresh_ticks": 1,
+                "settle_ticks": 6,
+                "settled_tick": 188672,
+                "settled_wall": 3779.378,
+                "start_tick": 188665,
+                "start_wall": 3779.254,
+                "total_ticks": 7,
+                "total_wall_ms": 124.00000000025102
+            },
+            {
+                "final_distance": 300.0,
+                "refresh_cleared_tick": 188697,
+                "refresh_cleared_wall": 3779.795,
+                "refresh_ticks": 1,
+                "settle_ticks": 6,
+                "settled_tick": 188703,
+                "settled_wall": 3779.903,
+                "start_tick": 188696,
+                "start_wall": 3779.778,
+                "total_ticks": 7,
+                "total_wall_ms": 125.0
+            },
+            {
+                "final_distance": 300.0,
+                "refresh_cleared_tick": 188731,
+                "refresh_cleared_wall": 3780.376,
+                "refresh_ticks": 1,
+                "settle_ticks": 6,
+                "settled_tick": 188737,
+                "settled_wall": 3780.481,
+                "start_tick": 188730,
+                "start_wall": 3780.359,
+                "total_ticks": 7,
+                "total_wall_ms": 122.00000000029831
+            },
+            {
+                "final_distance": 300.0,
+                "refresh_cleared_tick": 188762,
+                "refresh_cleared_wall": 3780.897,
+                "refresh_ticks": 1,
+                "settle_ticks": 6,
+                "settled_tick": 188768,
+                "settled_wall": 3781.006,
+                "start_tick": 188761,
+                "start_wall": 3780.881,
+                "total_ticks": 7,
+                "total_wall_ms": 125.0
+            },
+            {
+                "final_distance": 300.0,
+                "refresh_cleared_tick": 188799,
+                "refresh_cleared_wall": 3781.523,
+                "refresh_ticks": 1,
+                "settle_ticks": 6,
+                "settled_tick": 188805,
+                "settled_wall": 3781.629,
+                "start_tick": 188798,
+                "start_wall": 3781.506,
+                "total_ticks": 7,
+                "total_wall_ms": 123.0000000000473
+            },
+            {
+                "final_distance": 300.0,
+                "refresh_cleared_tick": 188834,
+                "refresh_cleared_wall": 3782.113,
+                "refresh_ticks": 1,
+                "settle_ticks": 6,
+                "settled_tick": 188840,
+                "settled_wall": 3782.223,
+                "start_tick": 188833,
+                "start_wall": 3782.096,
+                "total_ticks": 7,
+                "total_wall_ms": 126.9999999999527
+            }
+        ],
+        "probe": "C.reset_cost",
+        "refresh_ticks": {
+            "max": 1,
+            "mean": 1.0,
+            "median": 1,
+            "min": 1,
+            "n": 11
+        },
+        "settle_ticks": {
+            "max": 8,
+            "mean": 6.181818181818182,
+            "median": 6,
+            "min": 6,
+            "n": 11
+        },
+        "sufficient": true,
+        "suggested_note": "the maximum observed, not the mean - a gate that is right on average starts half its trials too early",
+        "suggested_settle_ticks": 9,
+        "total_ticks": {
+            "max": 9,
+            "mean": 7.181818181818182,
+            "median": 7,
+            "min": 7,
+            "n": 11
+        },
+        "verdict": "a reset settles in 7-9 ticks (median 7), 122-168 ms wall clock (median 125)",
+        "wall_ms": {
+            "max": 168.00000000012005,
+            "mean": 129.54545454547107,
+            "median": 125.0,
+            "min": 122.00000000029831,
+            "n": 11
+        }
+    },
+    "header": {
+        "anchor_hooked": true,
+        "config": {
+            "probe_a_idle_ticks": 20,
+            "probe_a_min_samples": 3,
+            "probe_b_min_frames": 300,
+            "sources": {
+                "allow_injection": "default",
+                "enabled": "default",
+                "probe_a_idle_ticks": "default",
+                "probe_a_min_samples": "default",
+                "probe_b_min_frames": "default",
+                "write_diag_files": "default"
+            }
+        },
+        "frame": 197762,
+        "mod_version": "0.3.0-diagnostics",
+        "p1": {
+            "id": 6,
+            "key": "ESF_006",
+            "name": "ESF_006"
+        },
+        "p1_control_scheme": "modern",
+        "p2": {
+            "id": 2,
+            "key": "ESF_002",
+            "name": "ESF_002"
+        },
+        "provenance": {
+            "capabilities": {
+                "catalog": {
+                    "available": false,
+                    "blocked_by": [
+                        "action_id_canonical"
+                    ]
+                },
+                "damage": {
+                    "available": false,
+                    "blocked_by": [
+                        "combo_damage_readable"
+                    ]
+                },
+                "frame_data": {
+                    "available": false,
+                    "blocked_by": [
+                        "frame_meter_semantics",
+                        "tick_equals_frame"
+                    ]
+                },
+                "injection": {
+                    "available": false,
+                    "blocked_by": [
+                        "direction_bits",
+                        "modern_button_bits",
+                        "rl_dir_polarity"
+                    ]
+                },
+                "probing": {
+                    "available": false,
+                    "blocked_by": [
+                        "direction_bits",
+                        "hitstop_advances_tick",
+                        "input_hook_calls_per_frame",
+                        "modern_button_bits",
+                        "reset_settle_ticks",
+                        "rl_dir_polarity",
+                        "tick_equals_frame"
+                    ]
+                },
+                "stage_reset": {
+                    "available": false,
+                    "blocked_by": [
+                        "reset_settle_ticks"
+                    ]
+                },
+                "timing": {
+                    "available": false,
+                    "blocked_by": [
+                        "hitstop_advances_tick",
+                        "input_hook_calls_per_frame",
+                        "tick_equals_frame"
+                    ]
+                }
+            },
+            "entries": {
+                "action_id_canonical": {
+                    "gates": [
+                        "catalog"
+                    ],
+                    "measured_by": "calibration_action_sweep",
+                    "status": "unverified"
+                },
+                "combo_damage_readable": {
+                    "gates": [
+                        "damage"
+                    ],
+                    "measured_by": "probe_a_damage",
+                    "status": "unverified"
+                },
+                "direction_bits": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": {
+                        "DOWN": 2,
+                        "LEFT": 4,
+                        "RIGHT": 8,
+                        "UP": 1
+                    }
+                },
+                "frame_meter_semantics": {
+                    "gates": [
+                        "frame_data"
+                    ],
+                    "measured_by": "calibration_frame_meter",
+                    "status": "unverified",
+                    "value": {
+                        "BLOCKSTUN": 10,
+                        "HITSTUN": 9,
+                        "RECOVERY": 8,
+                        "STARTUP": 7
+                    }
+                },
+                "hitstop_advances_tick": {
+                    "gates": [
+                        "timing"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified",
+                    "value": false
+                },
+                "input_hook_calls_per_frame": {
+                    "gates": [
+                        "timing"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified",
+                    "value": 1
+                },
+                "modern_button_bits": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": {
+                        "AUTO": 512,
+                        "DI": 4096,
+                        "H": 256,
+                        "L": 16,
+                        "M": 128,
+                        "PARRY": 64,
+                        "SP": 32,
+                        "THROW": 8192
+                    }
+                },
+                "reset_settle_ticks": {
+                    "gates": [
+                        "stage_reset"
+                    ],
+                    "measured_by": "calibration_reset_cost",
+                    "status": "unverified",
+                    "value": 25
+                },
+                "rl_dir_polarity": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "unverified",
+                    "value": "mirror_when_falsy"
+                },
+                "tick_equals_frame": {
+                    "gates": [
+                        "timing",
+                        "frame_data"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "unverified"
+                }
+            }
+        },
+        "written_at": "20260910T144755Z"
+    }
+}
