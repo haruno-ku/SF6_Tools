@@ -41,6 +41,24 @@ function M.load(path)
     return nil, "no JSON reader available"
 end
 
+-- Whether this host can list a directory at all, as opposed to whether a
+-- particular listing worked. A caller that cannot tell those apart ends up
+-- reporting "could not list" on a machine where nothing was ever going to list,
+-- which is a different problem with a different fix.
+function M.can_glob()
+    return (fs ~= nil and fs.glob ~= nil)
+end
+
+-- Lists the files matching a REFramework path regex. Here rather than at the
+-- call sites because this file's header says it is the only module that names
+-- `json` or `fs`, and two callers were breaking that.
+function M.glob(pattern)
+    if not M.can_glob() then return nil end
+    local ok, files = pcall(fs.glob, pattern)
+    if not ok or type(files) ~= "table" then return nil end
+    return files
+end
+
 -- Creates the directory chain first, because json.dump_file will not.
 -- `dirs` is the list of directories to ensure, outermost first.
 function M.dump(path, tbl, dirs)

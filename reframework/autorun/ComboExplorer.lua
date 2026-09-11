@@ -51,6 +51,7 @@ local Config      = require("func/ComboExplorer/runtime/Config")
 local GameAdapter = require("func/ComboExplorer/runtime/GameAdapter")
 local Clock       = require("func/ComboExplorer/runtime/Clock")
 local JsonIO      = require("func/ComboExplorer/runtime/JsonIO")
+local CatalogLocator = require("func/ComboExplorer/runtime/CatalogLocator")
 
 local VERSION = "0.3.0-diagnostics"
 local MODE_ID = 6
@@ -211,69 +212,12 @@ local probe_d = {
 -- The catalog is loaded on demand rather than at file scope: the character is
 -- not known until a battle exists, and loading the wrong one would be worse
 -- than loading none.
-local CATALOG_DIR = "TrainingComboTrials_data/command_display/"
-
--- Which shipped catalog describes P1, and its contents.
--- Returns path, decoded  or  nil, reason.
 --
--- The obvious answer - command_display/<character name>.json - is not enough.
--- _shared_player_info.name is the character enum's ToString() (SharedHooks.lua
--- :132), and on the 2026-08 build that returns the internal key "ESF_006"
--- rather than "Zangief". Measured on hardware: Probe D could load no catalog at
--- all, and said "could not load .../ESF_006.json" - an error that reads like a
--- missing file rather than a name that was never a filename.
---
--- The fallback asks the catalogs who they describe rather than carrying another
--- copy of the id->name table. Three already exist in the suite (ComboTrials,
--- DistanceViewer, RSM), each local to a file this module has no business
--- importing from, and a fourth transcription is a fourth thing to update when a
--- character is added. Every shipped catalog carries _meta.fighter_id, and that
--- is the same numbering as _shared_player_info.id - so the data answers it.
+-- Which one describes P1 - and the "ESF_006" story behind why that is not just
+-- a filename - lives in runtime/CatalogLocator.lua, because the calibration
+-- sweep needs the same answer and used to carry its own copy of it.
 local function resolve_catalog(info)
-    if not info then
-        return nil, "P1's character is not resolved yet - start a battle first"
-    end
-
-    local name = info.name and tostring(info.name) or ""
-    -- Sanitised the way the suite does it, since this becomes a filename.
-    local key = (name:gsub("[^%w_]", ""))
-
-    -- An "ESF_nnn" is recognised as the internal key rather than tried as a
-    -- filename, so the failure below can say what actually went wrong.
-    local looks_like_a_name = key ~= "" and key ~= "Unknown" and not key:match("^ESF_%d+$")
-    if looks_like_a_name then
-        local path = CATALOG_DIR .. key .. ".json"
-        -- Read RAW. Never through CommandDisplay's slim map, which falls back
-        -- simple->motion and would credit ~50 moves with a one-button input
-        -- they do not have.
-        local decoded = JsonIO.load(path)
-        if type(decoded) == "table" then return path, decoded end
-    end
-
-    local id = tonumber(info.id)
-    if not id then
-        return nil, ("P1 reports as %q, which is not a catalog name, and carries no numeric id to fall back on")
-            :format(name)
-    end
-    if not (fs and fs.glob) then
-        return nil, ("P1 reports as %q and fs.glob is unavailable, so the catalog cannot be found by fighter id")
-            :format(name)
-    end
-
-    local ok, files = pcall(fs.glob, "TrainingComboTrials_data\\\\command_display\\\\.*json")
-    if not ok or type(files) ~= "table" then
-        return nil, "could not list " .. CATALOG_DIR
-    end
-
-    for _, path in ipairs(files) do
-        local decoded = JsonIO.load(path)
-        local meta = type(decoded) == "table" and decoded._meta
-        if type(meta) == "table" and tonumber(meta.fighter_id) == id then
-            return path, decoded
-        end
-    end
-
-    return nil, ("no shipped catalog claims fighter_id %d (P1 reports as %q)"):format(id, name)
+    return CatalogLocator.resolve(info)
 end
 
 local function load_catalog()

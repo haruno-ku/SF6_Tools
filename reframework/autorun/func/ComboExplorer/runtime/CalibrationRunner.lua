@@ -43,6 +43,7 @@ local Fsm         = require("func/ComboExplorer/core/CalibrationFsm")
 
 local GameAdapter = require("func/ComboExplorer/runtime/GameAdapter")
 local JsonIO      = require("func/ComboExplorer/runtime/JsonIO")
+local CatalogLocator = require("func/ComboExplorer/runtime/CatalogLocator")
 
 local M = { name = "ComboExplorer.CalibrationRunner" }
 
@@ -170,30 +171,15 @@ end
 
 function M.running() return run ~= nil end
 
--- Resolved the same way Probe D does it, and for the same reason: on this build
--- the character enum's ToString() returns the internal key, so the display name
--- is not a filename. See ComboExplorer.lua's resolve_catalog.
+-- Resolved by runtime/CatalogLocator, which is also what Probe D uses. This was
+-- a second copy of the same twenty lines, and it had already drifted: it
+-- reported "there is no way to find its catalog" for both "no numeric id" and
+-- "fs.glob is unavailable", which are different problems with different fixes -
+-- and it did so on the "ESF_006" path, the one the locator's header is about.
 function M.load_catalog(info)
-    local DIR = "TrainingComboTrials_data/command_display/"
-    local name = info.name and tostring(info.name) or ""
-    local key = (name:gsub("[^%w_]", ""))
-    if key ~= "" and key ~= "Unknown" and not key:match("^ESF_%d+$") then
-        local decoded = JsonIO.load(DIR .. key .. ".json")
-        if type(decoded) == "table" then return decoded end
-    end
-
-    local id = tonumber(info.id)
-    if not id or not (fs and fs.glob) then
-        return nil, ("P1 reports as %q and there is no way to find its catalog"):format(name)
-    end
-    local ok, files = pcall(fs.glob, "TrainingComboTrials_data\\\\command_display\\\\.*json")
-    if not ok or type(files) ~= "table" then return nil, "could not list " .. DIR end
-    for _, path in ipairs(files) do
-        local decoded = JsonIO.load(path)
-        local meta = type(decoded) == "table" and decoded._meta
-        if type(meta) == "table" and tonumber(meta.fighter_id) == id then return decoded end
-    end
-    return nil, ("no shipped catalog claims fighter_id %d"):format(id)
+    local _, decoded = CatalogLocator.resolve(info)
+    if type(decoded) ~= "table" then return nil, decoded end
+    return decoded
 end
 
 -- One battle frame. Driven from Clock.on_frame, which is the anchor Probe B

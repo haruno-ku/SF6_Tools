@@ -59,6 +59,11 @@ local SUITES = {
     "tests.lua.test_catalogaudit",
     "tests.lua.test_calibration",
     "tests.lua.test_calibrationfsm",
+    -- runtime/, and the first of them. The header above says the pure modules
+    -- are what is testable here; CatalogLocator sits in runtime/ because it
+    -- needs a file reader and a directory listing, and it takes both as an
+    -- argument. Every decision in it is still a decision.
+    "tests.lua.test_cataloglocator",
 }
 
 local total_passed, total_failed = 0, 0
