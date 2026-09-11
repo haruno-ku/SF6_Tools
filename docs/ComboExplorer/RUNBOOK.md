@@ -187,8 +187,21 @@ git push
 
 ## Step 7-10 — キャリブレーション
 
-ここから `Calibration.lua` が要る（**未実装**。Step 2-6 の結果を見てから書く。
-時計の挙動次第で掃引の刻みが変わるため、先に書くと作り直しになる）。
+**道具は揃っている。** `core/Calibration.lua` / `core/CalibrationFsm.lua` /
+`runtime/CalibrationRunner.lua` が実装済みで、207エージェントの敵対的レビューで
+**スイープが嘘をつく4件**を潰してある。Step 4（時計）が結論に達したので、
+掃引の刻みも engine frame と 1:1 で決まっている。
+
+> 🔴 **ここから先はボタンが押される。** Step 2-6 のプローブは1つも注入しないが、
+> キャリブレーションのスイープは P1 の `pl_input_new` に書く。
+>
+> - **パッドから手を離す**（書き手は同フレームの他の入力に OR する）
+> - **Distance Viewer の Auto-Activate を切る**
+>
+> `Provenance` のゲートは生きたまま。スイープが通れるのは、暫定のボタンマップを
+> **使って**いるのではなく**試して**いるから — ビットを押して技が出ないこと自体が
+> そのビットについての測定結果で、ゲートが防いでいる失敗（存在しないボタンを押して
+> 「繋がらない」と記録する）はここでは起きない。
 
 ### Step 7 — Modern ボタンビットの同定
 
@@ -305,16 +318,30 @@ lua tools/lua/explore.lua
 **この1037は「繋がるコンボ」ではない。** 全件 `status: theoretical` /
 `runtime_verified: false`。全文は `zangief-offline-report.md`。
 
-テスト: **2398 アサーション**（Lua 5.4、SF6 不要）。
+テスト: **2656 アサーション**（Lua 5.4、SF6 不要）。
 
 ### 未実装（実機の結果を見てから書くもの）
 
 | | 何が決まってから書けるか |
 |---|---|
-| `Calibration.lua` | Step 4（時計）の結果 |
 | `runtime/Injector.lua` | Step 7-10 が `verified` になってから |
-| `runtime/StageControl.lua` | Step 5（リセットコスト）+ `StageControlFsm` は実装済み |
-| Runner の実機結線 | `RunnerFsm` は実装済み、`GameAdapter` との配線が残り |
+| `runtime/StageControl.lua` | `StageControlFsm` は実装済み、`GameAdapter` との配線が残り |
+| Runner の実機結線 | `RunnerFsm` は実装済み、同上 |
+
+`Calibration.lua` は**実装済み**（Step 4 の結果が出たので書けた）。
+
+### 開発機で回せる道具
+
+ゲーム不要、Lua 5.4 だけ。
+
+```
+lua tools/lua/audit.lua      # 31キャラ: 分類器は通用するか（数秒）
+lua tools/lua/survey.lua     # 31キャラ: frame-data join は通用するか（4秒）
+lua tools/lua/explore.lua    # 1キャラの候補を全部出す
+```
+
+キャラ名は `data/characters.json` が正。`Zangief` / `zangief` / `6` のどれでも通る。
+知らない名前は**推測せず拒否する**（3キャラは単純な小文字化では届かない）。
 
 ---
 

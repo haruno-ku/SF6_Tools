@@ -19,12 +19,33 @@ said so.
 > with what each step blocks and how to tell whether it passed. The same steps
 > exist as GitHub issues; either is fine.
 
-## Current build: `0.3.0-diagnostics` — READ ONLY
+## Current build: probes concluded, calibration ready to run
 
-This build **never injects input**. It watches and measures.
+**This build presses buttons — but only in one place, and only after you start
+it.** That is a change from `0.3.0-diagnostics`, which never injected at all.
 
-That is not caution for its own sake. Three things decide how everything after
-them is built, and none of them can be settled by reading source:
+| | injects? | when |
+|---|---|---|
+| Probes A–D | **no** | they watch and measure, nothing else |
+| LIVE READOUT | **no** | reads fields |
+| **Calibration sweep** | **yes** | only while you have the panel open and have started it |
+
+`runtime/CalibrationRunner.lua` writes to P1's `pl_input_new`. So before you run
+the sweep: **let go of the pad** (the writer ORs into whatever else is running
+that frame) and **turn Distance Viewer's Auto-Activate off**.
+
+What has NOT changed is the gate. `core/Provenance.lua` still refuses every
+other injection path until the button map is measured, and
+`runtime/Injector.lua` — the one that runs trials — does not exist yet. The
+calibration sweep is allowed through because it is *testing* the provisional
+button map rather than *using* it: a bit that produces no move is a measurement
+about that bit, which is exactly what the gate elsewhere exists to prevent
+being mistaken for "these moves do not link".
+
+### The four probes, and why they came first
+
+Three things decide how everything after them is built, and none of them can be
+settled by reading source:
 
 | Probe | Question | Why it blocks everything |
 |---|---|---|
@@ -33,9 +54,16 @@ them is built, and none of them can be settled by reading source:
 | **C** | What does one attempt cost in real time? | That single number decides how large the brute-force matrix can be. There is no way to run the game faster. |
 | **D** | Does the shipped move catalog describe *this* build? | Everything downstream is keyed on its action ids. If they have moved, every recorded edge is about a move nobody meant — and the failure is silent. |
 
-All four are in this build, and none of them presses a button. C turned out
-to be measurable by watching the operator reset the stage, rather than needing
-injection first.
+None of the four presses a button. C turned out to be measurable by watching the
+operator reset the stage, rather than needing injection first.
+
+**All four have now been run and all four concluded** (2026-09-10, SF6 build
+24176760). Damage is readable; one input tick is one engine frame, in hitstop
+too; a stage reset costs 7–9 ticks; and the shipped catalog does describe this
+build. The reports are in `reframework/data/ComboExplorer_data/diagnostics/`
+with a README saying who pressed the buttons. Two of the ten provisional values
+in `core/Provenance.lua` turned out to be **wrong** and were corrected by the
+measurement, which is the whole reason the register exists.
 
 ---
 
@@ -214,11 +242,35 @@ modes set their own guard type. Switching back to DISABLED restores it.
 
 ---
 
-## The offline explorer (no game needed)
+## The offline tools (no game needed)
 
-Candidate generation runs end to end on a machine with no SF6 on it. Everything
-it produces is a **theoretical candidate** — a reason to spend a trial on the
-real game, never evidence that a link works.
+All three run on a machine with no SF6 on it and need nothing but Lua 5.4 — no
+network, no game. Everything they produce is a **theoretical candidate** — a
+reason to spend a trial on the real game, never evidence that a link works.
+
+```bash
+lua tools/lua/audit.lua      # 31 characters: does the CLASSIFIER hold up?   (seconds)
+lua tools/lua/survey.lua     # 31 characters: does the frame-data JOIN hold? (4 s)
+lua tools/lua/explore.lua    # one character, everything: every candidate it can find
+```
+
+They answer different questions and are meant to be read in that order.
+
+**`audit.lua`** runs `Catalog.build` over every shipped `command_display` file
+and counts what the classifier could not place. It found that the classifier
+only understood the notation Zangief happens to use: 187 rows across 31
+characters were being dropped, 53 of them Guile's, who lost his specials and
+supers entirely. Now 52. Output:
+[`catalog-audit.md`](catalog-audit.md).
+
+**`survey.lua`** goes a step further and runs the whole pipeline, reporting how
+much of each character joined to frame data. A failing join does not look like a
+failing classifier — the rows do not vanish, they arrive with no numbers and
+everything comes out low confidence, which is indistinguishable from a character
+whose moves are poorly documented unless somebody counts. Output:
+[`character-survey.md`](character-survey.md).
+
+**`explore.lua`** is the full run for one character.
 
 ```bash
 lua tools/lua/explore.lua
@@ -323,14 +375,26 @@ reframework/data/ComboExplorer_data/
   Config.json                        preferences
   calibration/latest.json            measured values, once they exist
   diagnostics/                       probe reports (committed back)
+data/characters.json                the bridge between a character's three names
 data/frame-data/<char>.lua           external frame data, CC-BY-SA-4.0 (see NOTICE)
 candidates/<char>/<scheme>/          offline output - gitignored, regenerable
 scripts/install-dev.ps1              repo -> game folder sync
 tools/                               dev-machine generators and runners
-tools/lua/                           the offline CLI and its JSON codec - never shipped
-tests/lua/                           unit tests (1768 assertions)
-docs/ComboExplorer/                  the plan, the work split and the offline report
+tools/lua/                           the offline CLIs and their JSON codec - never shipped
+  audit.lua                          31 characters: the classifier
+  survey.lua                         31 characters: the frame-data join
+  explore.lua                        one character, every candidate
+  characters.lua                     reads data/characters.json
+tests/lua/                           unit tests (2656 assertions)
+docs/ComboExplorer/                  the plan, the work split and the reports
 ```
+
+`data/characters.json` is worth knowing about before you touch any tool that
+takes a character name. Each character has three: `ChunLi` in command_display,
+`chunli` in the frame source, and fighter id 4. sf6-sensei writes DeeJay as
+`dee_jay` and ChunLi as `chunli`, from the same source, so **no transform
+derives one from another** — a plain lowercase is wrong for three of the
+thirty-one, and wrong silently.
 
 `core/Provenance.lua` is the one to read first. It lists everything nobody has
 measured yet, why each guess is only a guess, and what breaks if it is wrong.
