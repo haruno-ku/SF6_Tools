@@ -64,6 +64,7 @@ local SUITES = {
     -- needs a file reader and a directory listing, and it takes both as an
     -- argument. Every decision in it is still a decision.
     "tests.lua.test_cataloglocator",
+    "tests.lua.test_config",
 }
 
 local total_passed, total_failed = 0, 0

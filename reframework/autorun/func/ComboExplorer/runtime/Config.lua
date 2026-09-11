@@ -19,6 +19,12 @@ local JsonIO = require("func/ComboExplorer/runtime/JsonIO")
 
 local M = { name = "ComboExplorer.Config" }
 
+-- The only two things in this file that need a game under them. Swapped by the
+-- tests, which is the whole reason they are named rather than called directly:
+-- nothing else here touches sdk, re, imgui, json or fs, so everything else is
+-- checkable on a machine with no Street Fighter on it.
+M.io = JsonIO
+
 M.DIR      = "ComboExplorer_data"
 M.FILE     = "ComboExplorer_data/Config.json"
 M.DIAG_DIR = "ComboExplorer_data/diagnostics"
@@ -53,8 +59,11 @@ for k in pairs(DEFAULTS) do M.source[k] = "default" end
 local dirty = false
 local save_timer = 0
 
-function M.load()
-    local loaded = JsonIO.load(M.FILE)
+-- `loaded` : the already-decoded contents, for a caller that has them. Omitted,
+-- the file is read. The merge below is the part worth checking and it does not
+-- care where the table came from.
+function M.load(loaded)
+    if loaded == nil then loaded = M.io.load(M.FILE) end
     if type(loaded) ~= "table" then return M.data end
 
     for k, default in pairs(DEFAULTS) do
@@ -73,7 +82,7 @@ function M.load()
 end
 
 function M.save()
-    JsonIO.dump(M.FILE, M.data, { M.DIR })
+    M.io.dump(M.FILE, M.data, { M.DIR })
     dirty = false
 end
 
@@ -145,8 +154,8 @@ function M.write_diag(name, payload, ctx)
     local stamped = ("%s/%s-%s.json"):format(M.DIAG_DIR, tostring(name), stamp())
     local latest  = ("%s/%s-latest.json"):format(M.DIAG_DIR, tostring(name))
 
-    local ok_stamped, err_stamped = JsonIO.dump(stamped, doc, dirs)
-    local ok_latest = JsonIO.dump(latest, doc, dirs)
+    local ok_stamped, err_stamped = M.io.dump(stamped, doc, dirs)
+    local ok_latest = M.io.dump(latest, doc, dirs)
 
     -- Reporting a path when nothing was written is worse than reporting the
     -- failure: the operator would go looking for a file that is not there.
