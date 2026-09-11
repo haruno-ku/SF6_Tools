@@ -58,6 +58,7 @@
 -- counts.
 
 local LinkVerdict = require("func/ComboExplorer/core/LinkVerdict")
+local SequenceCompiler = require("func/ComboExplorer/core/SequenceCompiler")
 
 local M = { name = "ComboExplorer.RunnerFsm" }
 
@@ -209,7 +210,10 @@ function Runner:begin(spec)
     -- unknown is not known-bad - and the structural gate against injecting at
     -- all is Provenance's injection capability, which lives at the runtime
     -- layer where the buttons are actually written.
-    if program.profile_status ~= nil and program.profile_status ~= "verified" then
+    -- `measured`, not `status`. An unknown status still passes, for the reason
+    -- the comment above gives - unknown is not known-bad - but a measurement
+    -- that corrected a guess is not a reason to refuse a trial.
+    if SequenceCompiler.program_is_measured(program) == false then
         return nil, ("the program was compiled with a %s input profile, so "
             .. "anything it produces is a statement about a guess")
             :format(tostring(program.profile_status))

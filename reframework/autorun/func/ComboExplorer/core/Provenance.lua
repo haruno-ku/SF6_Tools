@@ -417,6 +417,10 @@ function M.apply_calibration(reg, profile)
             -- it is missing rather than finding a guess sitting there.
             e.value = deep_copy(incoming.value)
             e.status = incoming.status
+            -- Carried through rather than left in the document. A consumer that
+            -- needs one of these has to learn it is missing from the register it
+            -- is already holding, not by going back to find the profile.
+            e.unwitnessed = incoming.unwitnessed and deep_copy(incoming.unwitnessed) or nil
             e.verified_by = profile.calibration_id
             e.verified_at_patch = profile.game_patch
             e.measurement_note = incoming.note
@@ -456,6 +460,7 @@ function M.snapshot(reg)
         out.entries[key] = {
             status = e.status,
             value = deep_copy(e.value),
+            unwitnessed = deep_copy(e.unwitnessed),
             gates = deep_copy(e.gates),
             measured_by = e.measured_by,
             verified_by = e.verified_by,

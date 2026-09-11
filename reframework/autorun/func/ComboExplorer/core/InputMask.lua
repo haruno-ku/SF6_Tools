@@ -68,6 +68,11 @@ local function is_single_bit(n)
     return type(n) == "number" and n > 0 and math.floor(n) == n and (n & (n - 1)) == 0
 end
 
+local function measured_from(opts)
+    if opts.measured ~= nil then return opts.measured end
+    return opts.status == "verified"
+end
+
 function M.profile(opts)
     opts = opts or {}
     local dir = opts.dir
@@ -109,6 +114,17 @@ function M.profile(opts)
         numpad = build_numpad(dir),
         mirror_when = mirror_when,
         status = opts.status or "unverified",
+        buttons_underivable = opts.buttons_underivable,
+        -- Whether anybody has LOOKED at the three values behind this profile,
+        -- as opposed to whether their guesses survived. The gates want this
+        -- one. A profile built by hand says so explicitly; one built from a
+        -- register has it computed in profile_from_provenance.
+        --
+        -- Written as a branch, not `(opts.measured ~= nil) and opts.measured or
+        -- ...`: an explicit `false` would fall straight through that `or` to the
+        -- status test, so a caller saying "this was not measured" would be
+        -- overruled by a status that happened to read "verified".
+        measured = measured_from(opts),
         scheme = opts.scheme or "modern",
         source = opts.source,
     }
@@ -118,15 +134,39 @@ end
 -- when they are not verified yet, and carries the WORST status through, so a
 -- caller cannot end up with a profile that looks trustworthy because two of its
 -- three inputs happened to be measured.
+--
+-- "Worst" used to be whichever non-verified status came LAST in the loop. There
+-- was no rank and no comparison, so the answer depended on argument position:
+--
+--     refuted, unverified, verified  ->  unverified   (a measurement lost to a guess)
+--     unverified, refuted, verified  ->  refuted      (same pair, opposite answer)
+--
+-- It is a comparison now, over Provenance.STATUS_RANK.
+--
+-- The profile also carries `measured`, which is the question every gate
+-- downstream is actually asking. "Did the guess survive" and "has anyone
+-- looked" are different, and three gates were asking the first while meaning
+-- the second - so a fully measured register whose guess had been corrected
+-- opened the injection capability and then refused to compile a single input.
 function M.profile_from_provenance(P, reg, scheme)
     scheme = scheme or "modern"
     local buttons, bstatus = P.provisional(reg, "modern_button_bits")
     local dir, dstatus     = P.provisional(reg, "direction_bits")
     local pol, pstatus     = P.provisional(reg, "rl_dir_polarity")
 
-    local status = "verified"
-    for _, s in ipairs({ bstatus, dstatus, pstatus }) do
-        if s ~= "verified" then status = s end
+    local bits_entry = P.get(reg, "modern_button_bits")
+    local underivable = bits_entry and bits_entry.unwitnessed or nil
+
+    local status, worst = nil, math.huge
+    local measured = true
+    for _, st in ipairs({ bstatus, dstatus, pstatus }) do
+        local rank = P.rank(st)
+        -- A status the register does not know is the least settled thing there
+        -- is. Ranking it below unverified rather than ignoring it keeps an
+        -- unrecognised string from being quietly treated as good news.
+        if rank == nil then rank = -1 end
+        if rank < worst then worst, status = rank, st end
+        if rank < P.rank(P.STATUS.REFUTED) then measured = false end
     end
 
     -- Named explicitly rather than defaulted. A polarity string nobody
@@ -146,6 +186,11 @@ function M.profile_from_provenance(P, reg, scheme)
         dir = dir,
         mirror_when = mirror_when,
         status = status,
+        measured = measured,
+        -- Buttons the sweep could not witness, so the map genuinely has no bit
+        -- for them. button_mask already refuses an unknown name; this is what
+        -- lets the refusal say WHY instead of just that the name is unknown.
+        buttons_underivable = underivable,
         scheme = scheme,
         source = "provenance:" .. tostring(reg.calibration_id or "none"),
     })
@@ -266,6 +311,15 @@ function M.button_mask(names, profile)
     for _, n in ipairs(names or {}) do
         local bit = profile.buttons[n]
         if bit == nil then
+            for _, u in ipairs(profile.buttons_underivable or {}) do
+                if u == n then
+                    return nil, ("button %q has no bit in this profile: the sweep could "
+                        .. "not witness one, because no notation in this catalog names it "
+                        .. "on its own"):format(tostring(n))
+                end
+            end
+        end
+        if bit == nil then
             return nil, ("button %q is not in the %s profile"):format(tostring(n), profile.scheme)
         end
         mask = mask | bit
@@ -345,7 +399,17 @@ function M.compile(parsed, opts)
 
     local profile = opts.profile
     if type(profile) ~= "table" then return nil, "compile needs opts.profile" end
-    if profile.status ~= "verified" and not opts.allow_unverified then
+    -- "Has anyone looked", not "did the guess survive". Those are different
+    -- questions and this gate was asking the wrong one: a register whose sweep
+    -- corrected a bad guess opened the injection capability and then refused to
+    -- compile anything, telling the operator to run the calibration that had
+    -- just succeeded.
+    --
+    -- A profile with a partial button map still compiles. The buttons it does
+    -- have were measured, and one it does not will fail loudly at button_mask
+    -- rather than silently pressing nothing - which is the behaviour that gate
+    -- exists to prevent, and it is already there.
+    if not profile.measured and not opts.allow_unverified then
         return nil, ("refusing to compile with an %s input profile - "
             .. "run calibration first, or pass allow_unverified for a read-only preview")
             :format(tostring(profile.status))

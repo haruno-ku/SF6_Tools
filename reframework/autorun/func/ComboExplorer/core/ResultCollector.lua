@@ -86,6 +86,7 @@
 
 local Schema = require("func/ComboExplorer/core/Schema")
 local LinkVerdict = require("func/ComboExplorer/core/LinkVerdict")
+local SequenceCompiler = require("func/ComboExplorer/core/SequenceCompiler")
 
 local M = { name = "ComboExplorer.ResultCollector" }
 
@@ -331,7 +332,7 @@ function M.trial(spec)
     -- refusing on missing information is the mistake this project exists to
     -- avoid - so only a status that says otherwise is turned away.
     local pstatus = type(spec.program) == "table" and spec.program.profile_status or nil
-    if pstatus ~= nil and pstatus ~= "verified" then
+    if SequenceCompiler.program_is_measured(spec.program) == false then
         problem(problems, "program.profile_status",
             ("the program was built with a %s profile, and a result injected "
              .. "through an unmeasured button map is not a result")

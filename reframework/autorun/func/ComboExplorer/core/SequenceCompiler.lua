@@ -189,6 +189,13 @@ function M.compile(route, opts)
         tick = tick + dur
     end
 
+    -- Read into a local with a branch rather than inline. `opts.profile and
+    -- opts.profile.measured or nil` turns an explicit `false` into nil, and nil
+    -- means "nobody said" - the one reading that lets a program past every gate
+    -- downstream.
+    local profile_measured = nil
+    if opts.profile ~= nil then profile_measured = opts.profile.measured end
+
     local observe_from = tick
     if cfg.tail_ticks > 0 then
         seq[#seq + 1] = { frames = cfg.tail_ticks, mask = 0 }
@@ -214,9 +221,36 @@ function M.compile(route, opts)
         -- Carried so a program can never be replayed under a different profile
         -- than the one it was built for without that being visible.
         profile_status = opts.profile and opts.profile.status or nil,
+        -- The question the runner and the collector both want answered. Kept
+        -- beside the status rather than replacing it, so a report can still say
+        -- which kind of measurement it was.
+        profile_measured = profile_measured,
+        profile_buttons_underivable = opts.profile and opts.profile.buttons_underivable or nil,
         profile_source = opts.profile and opts.profile.source or nil,
         tick_basis = "explorer_tick",
     }
+end
+
+-- Was the button map behind this program measured at all?
+--
+-- One owner for the question, because two gates ask it - the runner before it
+-- starts a trial, the collector before it records one - and they were asking it
+-- differently. Both used to test `profile_status ~= "verified"`, which refuses a
+-- measurement that corrected a guess: exactly the case a successful calibration
+-- sweep produces.
+--
+-- Returns nil when the program says nothing. nil is not false: a program with no
+-- profile information has not claimed to be unmeasured, and refusing it would be
+-- treating silence as bad news. A program that carries only the older
+-- profile_status is read through it, since "unverified" is that field saying the
+-- same thing.
+function M.program_is_measured(program)
+    if type(program) ~= "table" then return nil end
+    if program.profile_measured ~= nil then return program.profile_measured end
+    if program.profile_status ~= nil then
+        return program.profile_status ~= "unverified"
+    end
+    return nil
 end
 
 -- --- sweeping ----------------------------------------------------------------

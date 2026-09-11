@@ -326,4 +326,118 @@ local CLASSIC = IM.profile({
 })
 t.eq(IM.describe(2 | 128, CLASSIC), "2+LK", "the same mask reads as LK under a classic profile")
 
+-- --- a measurement is not a reason to refuse ---------------------------------
+
+t.group("the gate asks whether anybody looked, not whether the guess held")
+
+-- The failure this replaces: a successful calibration sweep settles
+-- modern_button_bits as `refuted` or `partial` - refuted when it corrected a
+-- guess, partial because AUTO and PARRY can never be witnessed - and
+-- Provenance opens the injection capability on either. The compile gate tested
+-- the STATUS STRING for "verified", so the panel reported injection available
+-- and every trial was refused with "run calibration first". The operator would
+-- have been told to run the calibration that had just succeeded.
+
+local function register_with(statuses)
+    local reg = P.new()
+    for key, st in pairs(statuses) do
+        if st ~= "unverified" then reg.entries[key].status = st end
+    end
+    return reg
+end
+
+local ALL = { "modern_button_bits", "direction_bits", "rl_dir_polarity" }
+
+do
+    local measured = {}
+    for _, k in ipairs(ALL) do measured[k] = "refuted" end
+    local prof = IM.profile_from_provenance(P, register_with(measured))
+    t.ok(prof ~= nil, "a fully refuted register still makes a profile")
+    t.eq(prof.status, "refuted", "carrying the refuted status")
+    t.eq(prof.measured, true, "and saying it was measured, because it was")
+
+    local seq = IM.compile(IM.parse("2 + \228\184\173"), { profile = prof })
+    t.ok(seq ~= nil, "and it COMPILES - a corrected guess is knowledge, not a blocker")
+end
+
+do
+    local mixed = { modern_button_bits = "partial", direction_bits = "verified",
+                    rl_dir_polarity = "verified" }
+    local prof = IM.profile_from_provenance(P, register_with(mixed))
+    t.eq(prof.status, "partial", "a partial button map carries through")
+    t.eq(prof.measured, true, "and still counts as measured")
+    t.ok(IM.compile(IM.parse("2 + \228\184\173"), { profile = prof }) ~= nil,
+         "so a move using the buttons it DOES have compiles")
+end
+
+do
+    local prof = IM.profile_from_provenance(P, P.new())
+    t.eq(prof.measured, false, "an untouched register is not measured")
+    local nope, why = IM.compile(IM.parse("2 + \228\184\173"), { profile = prof })
+    t.is_nil(nope, "and is still refused, which is the part that must not change")
+    t.ok(why:find("unverified") ~= nil, "naming the status: " .. tostring(why))
+end
+
+-- --- the worst status is a comparison, not an argument position --------------
+
+t.group("the worst of three statuses does not depend on their order")
+
+-- It used to. There was no rank and no comparison - the loop kept whichever
+-- non-verified status came last - so the same multiset gave opposite answers:
+--     refuted, unverified, verified -> unverified   (a measurement lost to a guess)
+--     unverified, refuted, verified -> refuted
+do
+    local a = IM.profile_from_provenance(P, register_with({
+        modern_button_bits = "refuted", direction_bits = "unverified",
+        rl_dir_polarity = "verified" }))
+    local b = IM.profile_from_provenance(P, register_with({
+        modern_button_bits = "unverified", direction_bits = "refuted",
+        rl_dir_polarity = "verified" }))
+    t.eq(a.status, b.status,
+         "the same three statuses in a different order give the same answer")
+    t.eq(a.status, "unverified", "and it is the least settled of them")
+    t.eq(a.measured, false, "so the profile is not measured")
+
+    local c = IM.profile_from_provenance(P, register_with({
+        modern_button_bits = "refuted", direction_bits = "partial",
+        rl_dir_polarity = "verified" }))
+    t.eq(c.status, "refuted",
+         "refuted ranks below partial: both were measured, but a refuted entry "
+         .. "replaced a guess that was wrong")
+    t.eq(c.measured, true, "and both are measurements, so the profile is measured")
+end
+
+-- --- a button nobody could witness ------------------------------------------
+
+t.group("a button with no bit says why")
+
+do
+    local partial = IM.profile({
+        buttons = { L = 0x10, M = 0x80, H = 0x100 },
+        dir = { UP = 1, DOWN = 2, LEFT = 4, RIGHT = 8 },
+        mirror_when = "falsy",
+        status = "partial",
+        measured = true,
+        buttons_underivable = { "AUTO", "PARRY" },
+    })
+    t.eq(partial.measured, true, "an explicit measured = true survives")
+
+    local nope, why = IM.button_mask({ "AUTO" }, partial)
+    t.is_nil(nope, "pressing a button the sweep could not witness fails")
+    t.ok(why:find("could not witness") ~= nil,
+         "and says why rather than only that the name is unknown: " .. tostring(why))
+
+    local ok = IM.button_mask({ "M" }, partial)
+    t.eq(ok, 0x80, "while the buttons it does have still work")
+
+    -- The trap this is written against: `(opts.measured ~= nil) and opts.measured
+    -- or (opts.status == "verified")` sends an explicit false through the `or`.
+    local denied = IM.profile({
+        buttons = { L = 0x10 }, dir = { UP = 1, DOWN = 2, LEFT = 4, RIGHT = 8 },
+        status = "verified", measured = false,
+    })
+    t.eq(denied.measured, false,
+         "an explicit measured = false is not overruled by a verified status")
+end
+
 return t.finish()
