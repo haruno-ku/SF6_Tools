@@ -26,8 +26,12 @@
 | A6 `Scoring` | **完了** — オフラインは予測値のみ。`damage` / `execution_leniency_frames` / `difficulty` は**フィールドごと存在しない** |
 | A5 `SequenceCompiler` | **完了** — delay を**発明しない**（未指定はエラー）。未検証プロファイルは拒否 |
 | A6 `Exporter` + オフライン CLI | **完了** — `lua tools/lua/explore.lua` でゲーム無しに端から端まで通る |
-| A5 `StageControlFsm` / `RunnerFsm` | 進行中 |
-| A6 `ResultCollector` / KDB adapter | 進行中 |
+| A5 `StageControlFsm` / `RunnerFsm` | **完了** — 純関数の状態機械。未計測の tick 数が未設定なら起動を拒否する |
+| A6 `ResultCollector` / KDB adapter | **完了** — JSONL 追記と再開、切れた最終行は「実行したが結果を失った」として再実行。KDB は実測 damage が無ければ通さない |
+| A7 プローブ A-D 実機実行 | **完了**（2026-09-10、SF6 build 24176760）— 4件すべて結論に到達 |
+| `Calibration` / `CalibrationFsm` / `CalibrationRunner` | **完了** — 実機投入待ち |
+| 全31キャラのカタログ監査 / 分類器の汎用化 | **完了** — `tools/lua/audit.lua` |
+| 全31キャラのフレームデータと join 計測 | **完了** — `tools/lua/survey.lua` |
 
 テスト: **1768 アサーション**（Lua 5.4.6、SF6 不要）。
 `node tools/lua-runner.mjs syntax` は構文＋**require 解決**もチェックする
@@ -60,10 +64,44 @@ lua tools/lua/explore.lua
 | 始動技 | 14（Modern 地上通常技 / manual） |
 | 対象技 | 33（通常・必殺・SA / manual + simple） |
 | 検討したペア | 518 |
-| 理論エッジ | **387**（high 128 / medium 148 / low 111） |
+| 理論エッジ | **387**（high 88 / medium 133 / low 166） |
 | 除外 | 131 — うち 122 は**既知の**負マージン（数値付き）、9 は連打不可の自己ペア |
 | 情報不足による除外 | **0 件** |
 | ルート候補 | **1037**（3 手まで。同一入力で action_id だけ違う 2333 件を畳んだ後） |
+
+> high が 128 から 88 に下がっているのは品質劣化ではない。曖昧な frame-data join
+> （`63214+KK` が距離バリアント3つのどれか決まらない等）に乗っていた40件が、
+> 根拠を失って low に落ちた結果。**測っていなかったものを測った。**
+
+### 全31キャラの状態（2026-09-11）
+
+`lua tools/lua/audit.lua` と `lua tools/lua/survey.lua` で測る。ゲーム不要。
+
+| | |
+|---|---|
+| カタログ行 | 3592 |
+| 理論エッジ | **26251**（high 7171 / medium 5310 / low 13770） |
+| ルート候補 | 5488（2手まで、survey のスコープ） |
+| **情報不足による除外** | **0 件**（31キャラ全部で） |
+| 分類器が置けなかった行 | 52（監査開始時 187 → #21 で 76 → 派生の修正で 52） |
+| 曖昧な frame-data join | 300 |
+
+**join が弱いキャラ**（ここが今の最大の穴）:
+
+| キャラ | 対象技の結合率 | 例 |
+|---|---|---|
+| JP | **55%** | `214+LP` `214+MP` `214+HP` |
+| Dhalsim | 69% | `6+PPP` `4+PPP` `2+KK` |
+| CViper | 72% | `6+PP` |
+| Jamie | 72% | `6+P` |
+| Elena | 78% | `6+LK` `6+HK` |
+| Guile | 83%（始動技は71%） | `4+MK` `6+MK` `56+LP` |
+
+形が繰り返している: **方向 + 強さを名乗らないボタン**（`6+P` / `6+PP` / `6+PPP`）と、
+最も簡単に一致するはずの**四分円コマンド**。
+
+**派生技は30/31キャラで結合率0%。** ソースは派生を直前の技からの連鎖
+（`5MP~MP`）で綴るが、`>MP` は何の派生かを言わない。単純な変換では解けない。
 
 **この 1037 は「繋がるコンボ」ではない。** 全レコードが `status: theoretical` /
 `runtime_verified: false` で、1 件残らず SF6 本体の判定待ちである。
