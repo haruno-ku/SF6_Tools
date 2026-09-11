@@ -102,7 +102,8 @@ r = Audit.audit(cat, observe(catalog_ids(40), 3))
 t.ok(#r.ambiguous_groups > 0, "ambiguous groups are reported")
 
 for _, g in ipairs(r.ambiguous_groups) do
-    t.eq(g.canonical_status, "unverified", "and remain unverified - free play is not a controlled input")
+    t.eq(g.canonical_status, "unresolved",
+         "and remain unresolved - free play is not a controlled input")
 end
 
 -- One member seen and the rest never is a hint worth surfacing.

@@ -7,6 +7,7 @@
 
 local t = require("tests.lua.harness")
 local Catalog = require("func/ComboExplorer/core/Catalog")
+local Schema = require("func/ComboExplorer/core/Schema")
 
 local RAW = dofile("tests/lua/fixtures/zangief_catalog.lua")
 local cat, problems = Catalog.build(RAW)
@@ -243,9 +244,36 @@ local groups = Catalog.ambiguous_groups(cat)
 t.ok(#groups > 0, "there are notation collisions (" .. #groups .. " groups)")
 
 for _, g in ipairs(groups) do
-    t.eq(g.canonical_status, "unverified",
-         "group " .. g.display_group .. " is unverified until something is observed")
+    t.eq(g.canonical_status, Schema.CANONICAL.UNRESOLVED,
+         "group " .. g.display_group .. " is unresolved until something is observed")
     t.is_nil(g.canonical_action_id, "and names no canonical id")
+end
+
+-- The word, and the reason it is that word. This file used to write
+-- "unverified", which Schema's validator rejected - so a move record built from
+-- a row here could not be validated at all, and nothing had noticed because
+-- nothing had taken that path. It is also the wrong word: "unverified" is
+-- Provenance's, and it means nobody measured a value. What is unresolved here
+-- is which of several ids one notation produces.
+t.eq(Schema.CANONICAL.UNRESOLVED, "unresolved", "the starting value is the schema's word")
+t.eq(Schema.is_canonical_status("unverified"), false,
+     "and \"unverified\" is not in this vocabulary - it belongs to Provenance")
+
+do
+    -- End to end: a row straight out of the catalog validates as a move.
+    local row = cat.rows[1]
+    local ok, problems = Schema.validate(Schema.KIND.MOVE, {
+        schema = Schema.KIND.MOVE,
+        action_id = row.action_id, input_method = row.input_method,
+        notation = row.notation, standalone = row.standalone,
+        exclusion = row.exclusion, canonical_status = row.canonical_status,
+        status = Schema.STATUS.THEORETICAL,
+    })
+    local why = {}
+    for _, pr in ipairs(problems or {}) do
+        why[#why + 1] = tostring(pr.field) .. ": " .. tostring(pr.problem)
+    end
+    t.eq(ok, true, "a catalog row validates as a move record: " .. table.concat(why, "; "))
 end
 
 -- 617/618/619 all display as crouching light: nothing in the data says which

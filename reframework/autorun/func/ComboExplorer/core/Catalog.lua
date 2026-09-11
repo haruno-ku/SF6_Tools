@@ -31,6 +31,12 @@
 -- different moves, and both failures are silent.
 
 local InputMask = require("func/ComboExplorer/core/InputMask")
+-- For the canonical_status vocabulary and nothing else. This file used to spell
+-- the starting value "unverified" while Schema's validator accepted only
+-- unresolved / verified / conflicting, so every move record built from a row
+-- here was rejected on the way out. Reading the word from the one place that
+-- defines it is what stops that happening again.
+local Schema = require("func/ComboExplorer/core/Schema")
 
 local M = { name = "ComboExplorer.Catalog" }
 
@@ -384,7 +390,7 @@ function M.build(decoded, opts)
                 -- apart from the data. Grouped on the notation AND the method,
                 -- because the same notation under two methods is two inputs.
                 row.display_group = cand.method .. "|" .. cand.notation
-                row.canonical_status = "unverified"
+                row.canonical_status = Schema.CANONICAL.UNRESOLVED
 
                 catalog.rows[#catalog.rows + 1] = row
             end
@@ -407,7 +413,7 @@ function M.build(decoded, opts)
         if not g then
             g = { display_group = row.display_group, notation = row.notation,
                   input_method = row.input_method, action_ids = {},
-                  canonical_status = "unverified", canonical_action_id = nil }
+                  canonical_status = Schema.CANONICAL.UNRESOLVED, canonical_action_id = nil }
             catalog.groups[row.display_group] = g
         end
         g.action_ids[#g.action_ids + 1] = row.action_id
@@ -547,10 +553,10 @@ function M.apply_observations(catalog, observations)
                     reason = "the same input produced two different action ids",
                     observation = obs, previously = g.canonical_action_id,
                 }
-                g.canonical_status = "conflicting"
+                g.canonical_status = Schema.CANONICAL.CONFLICTING
                 g.conflicting_action_ids = g.conflicting_action_ids or { g.canonical_action_id }
                 g.conflicting_action_ids[#g.conflicting_action_ids + 1] = obs.action_id
-            elseif g.canonical_status == "conflicting" then
+            elseif g.canonical_status == Schema.CANONICAL.CONFLICTING then
                 -- A disagreement is not undone by the next observation that
                 -- happens to agree with the first. If one input has been seen
                 -- to produce two action ids, that is what it does, and a run of
@@ -565,7 +571,7 @@ function M.apply_observations(catalog, observations)
                 }
             else
                 g.canonical_action_id = obs.action_id
-                g.canonical_status = "verified"
+                g.canonical_status = Schema.CANONICAL.VERIFIED
                 applied[#applied + 1] = key
             end
         end

@@ -82,6 +82,34 @@ function M.confidence_by_rank(n)
     return CONFIDENCE_BY_RANK[n]
 end
 
+-- Which action id a notation actually produces, when several share it.
+--
+-- The third vocabulary in this file, and it was the one that was not closed.
+-- Catalog.build wrote "unverified" as the starting value while this validator
+-- accepted only unresolved / verified / conflicting, so EVERY move record built
+-- from a catalog row failed validation on the way out. Nothing had noticed
+-- because nothing had taken that path yet: the runtime half of the pipeline is
+-- not wired up, and the offline tools do not validate rows.
+--
+-- "unresolved" rather than "unverified" is the word, and not only because the
+-- validator got there first. `unverified` is already
+-- Provenance.STATUS.UNVERIFIED, which means "nobody has measured this value" -
+-- a different claim about a different kind of thing. What is unresolved here is
+-- WHICH of several ids a notation produces; the catalog has not failed to
+-- verify anything, it has several candidates and no way to choose.
+M.CANONICAL = {
+    UNRESOLVED  = "unresolved",
+    VERIFIED    = "verified",
+    CONFLICTING = "conflicting",
+}
+
+local CANONICAL_SET = {}
+for _, v in pairs(M.CANONICAL) do CANONICAL_SET[v] = true end
+
+function M.is_canonical_status(c)
+    return CANONICAL_SET[c] == true
+end
+
 -- Statuses that are claims about the real game, and therefore need evidence.
 local RUNTIME_STATUS = {
     [M.STATUS.VERIFIED] = true,
@@ -248,8 +276,7 @@ VALIDATORS[M.KIND.MOVE] = function(o, p)
     if o.input_method and not ({ manual = true, simple = true, assist = true })[o.input_method] then
         err(p, "input_method", "must be manual, simple or assist")
     end
-    if o.canonical_status
-        and not ({ unresolved = true, verified = true, conflicting = true })[o.canonical_status] then
+    if o.canonical_status and not M.is_canonical_status(o.canonical_status) then
         err(p, "canonical_status", "must be unresolved, verified or conflicting")
     end
     if o.standalone == false and o.exclusion == nil then
