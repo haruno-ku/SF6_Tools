@@ -1,0 +1,3470 @@
+{
+  "ac_sha256": "753d02204cec89c5a885d5748cda2d51bde0769144a15be93f1e717f219006b2",
+  "bcm_sha256": "09e9334a458b4e7073d13c5a0e25255d2b35b0cb71ccdccbd67c8774b62d4053",
+  "character": "Zangief",
+  "control_scheme": "modern",
+  "count": 378,
+  "game_patch": "command_display@2026-08-03T00:00:00.000Z",
+  "generated_at": "2026-09-11T05:22:02Z",
+  "pairs": [
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 678,
+      "b_method": "manual",
+      "b_notation": "22 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 930,
+      "b_method": "manual",
+      "b_notation": "360 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 935,
+      "b_method": "manual",
+      "b_notation": "360 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 940,
+      "b_method": "manual",
+      "b_notation": "360 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 940,
+      "b_method": "simple",
+      "b_notation": "SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 945,
+      "b_method": "simple",
+      "b_notation": "AUTO + SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1010,
+      "b_method": "manual",
+      "b_notation": "63214 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1195,
+      "b_method": "simple",
+      "b_notation": "SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1200,
+      "b_method": "manual",
+      "b_notation": "236236 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1206,
+      "b_method": "simple",
+      "b_notation": "4 + SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 678,
+      "b_method": "manual",
+      "b_notation": "22 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 930,
+      "b_method": "manual",
+      "b_notation": "360 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 935,
+      "b_method": "manual",
+      "b_notation": "360 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 940,
+      "b_method": "manual",
+      "b_notation": "360 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 940,
+      "b_method": "simple",
+      "b_notation": "SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 945,
+      "b_method": "simple",
+      "b_notation": "AUTO + SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1010,
+      "b_method": "manual",
+      "b_notation": "63214 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1195,
+      "b_method": "simple",
+      "b_notation": "SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1200,
+      "b_method": "manual",
+      "b_notation": "236236 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1206,
+      "b_method": "simple",
+      "b_notation": "4 + SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 678,
+      "b_method": "manual",
+      "b_notation": "22 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 930,
+      "b_method": "manual",
+      "b_notation": "360 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 935,
+      "b_method": "manual",
+      "b_notation": "360 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 940,
+      "b_method": "simple",
+      "b_notation": "SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 940,
+      "b_method": "manual",
+      "b_notation": "360 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 945,
+      "b_method": "simple",
+      "b_notation": "AUTO + SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1010,
+      "b_method": "manual",
+      "b_notation": "63214 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1195,
+      "b_method": "simple",
+      "b_notation": "SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1200,
+      "b_method": "manual",
+      "b_notation": "236236 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1206,
+      "b_method": "simple",
+      "b_notation": "4 + SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 678,
+      "b_method": "manual",
+      "b_notation": "22 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 930,
+      "b_method": "manual",
+      "b_notation": "360 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 935,
+      "b_method": "manual",
+      "b_notation": "360 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 940,
+      "b_method": "simple",
+      "b_notation": "SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 940,
+      "b_method": "manual",
+      "b_notation": "360 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 945,
+      "b_method": "simple",
+      "b_notation": "AUTO + SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1010,
+      "b_method": "manual",
+      "b_notation": "63214 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1195,
+      "b_method": "simple",
+      "b_notation": "SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1200,
+      "b_method": "manual",
+      "b_notation": "236236 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1206,
+      "b_method": "simple",
+      "b_notation": "4 + SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 678,
+      "b_method": "manual",
+      "b_notation": "22 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 930,
+      "b_method": "manual",
+      "b_notation": "360 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 935,
+      "b_method": "manual",
+      "b_notation": "360 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 940,
+      "b_method": "manual",
+      "b_notation": "360 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 940,
+      "b_method": "simple",
+      "b_notation": "SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 945,
+      "b_method": "simple",
+      "b_notation": "AUTO + SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1010,
+      "b_method": "manual",
+      "b_notation": "63214 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1195,
+      "b_method": "simple",
+      "b_notation": "SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1200,
+      "b_method": "manual",
+      "b_notation": "236236 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1206,
+      "b_method": "simple",
+      "b_notation": "4 + SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 678,
+      "b_method": "manual",
+      "b_notation": "22 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 930,
+      "b_method": "manual",
+      "b_notation": "360 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 935,
+      "b_method": "manual",
+      "b_notation": "360 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 940,
+      "b_method": "simple",
+      "b_notation": "SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 940,
+      "b_method": "manual",
+      "b_notation": "360 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 945,
+      "b_method": "simple",
+      "b_notation": "AUTO + SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1010,
+      "b_method": "manual",
+      "b_notation": "63214 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1195,
+      "b_method": "simple",
+      "b_notation": "SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1200,
+      "b_method": "manual",
+      "b_notation": "236236 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1206,
+      "b_method": "simple",
+      "b_notation": "4 + SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 678,
+      "b_method": "manual",
+      "b_notation": "22 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 930,
+      "b_method": "manual",
+      "b_notation": "360 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 935,
+      "b_method": "manual",
+      "b_notation": "360 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 940,
+      "b_method": "simple",
+      "b_notation": "SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 940,
+      "b_method": "manual",
+      "b_notation": "360 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 945,
+      "b_method": "simple",
+      "b_notation": "AUTO + SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 1010,
+      "b_method": "manual",
+      "b_notation": "63214 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 1195,
+      "b_method": "simple",
+      "b_notation": "SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 1200,
+      "b_method": "manual",
+      "b_notation": "236236 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 1206,
+      "b_method": "simple",
+      "b_notation": "4 + SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 678,
+      "b_method": "manual",
+      "b_notation": "22 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 930,
+      "b_method": "manual",
+      "b_notation": "360 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 935,
+      "b_method": "manual",
+      "b_notation": "360 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 940,
+      "b_method": "manual",
+      "b_notation": "360 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 940,
+      "b_method": "simple",
+      "b_notation": "SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 945,
+      "b_method": "simple",
+      "b_notation": "AUTO + SP",
+      "confidence": "high"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 1010,
+      "b_method": "manual",
+      "b_notation": "63214 + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 1195,
+      "b_method": "simple",
+      "b_notation": "SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 1200,
+      "b_method": "manual",
+      "b_notation": "236236 + 弱",
+      "confidence": "high"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "confidence": "high"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 1206,
+      "b_method": "simple",
+      "b_notation": "4 + SP + 强",
+      "confidence": "high"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 601,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 602,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 604,
+      "b_method": "manual",
+      "b_notation": "中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 611,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 617,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 618,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 619,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 621,
+      "b_method": "manual",
+      "b_notation": "2 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 623,
+      "b_method": "manual",
+      "b_notation": "2 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 633,
+      "b_method": "manual",
+      "b_notation": "3 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 655,
+      "b_method": "manual",
+      "b_notation": "3 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 662,
+      "b_method": "manual",
+      "b_notation": "6 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 682,
+      "b_method": "manual",
+      "b_notation": "6 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 601,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 602,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 604,
+      "b_method": "manual",
+      "b_notation": "中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 611,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 617,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 618,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 619,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 621,
+      "b_method": "manual",
+      "b_notation": "2 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 623,
+      "b_method": "manual",
+      "b_notation": "2 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 633,
+      "b_method": "manual",
+      "b_notation": "3 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 655,
+      "b_method": "manual",
+      "b_notation": "3 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 662,
+      "b_method": "manual",
+      "b_notation": "6 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 682,
+      "b_method": "manual",
+      "b_notation": "6 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 604,
+      "a_method": "manual",
+      "a_notation": "中",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "medium",
+      "context_dependent": true
+    },
+    {
+      "a_id": 604,
+      "a_method": "manual",
+      "a_notation": "中",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "medium",
+      "context_dependent": true
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 601,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 602,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 604,
+      "b_method": "manual",
+      "b_notation": "中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 611,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 617,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 618,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 619,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 621,
+      "b_method": "manual",
+      "b_notation": "2 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 623,
+      "b_method": "manual",
+      "b_notation": "2 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 633,
+      "b_method": "manual",
+      "b_notation": "3 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 655,
+      "b_method": "manual",
+      "b_notation": "3 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 662,
+      "b_method": "manual",
+      "b_notation": "6 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 682,
+      "b_method": "manual",
+      "b_notation": "6 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 601,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 602,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 604,
+      "b_method": "manual",
+      "b_notation": "中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 611,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 617,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 618,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 619,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 621,
+      "b_method": "manual",
+      "b_notation": "2 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 623,
+      "b_method": "manual",
+      "b_notation": "2 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 633,
+      "b_method": "manual",
+      "b_notation": "3 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 655,
+      "b_method": "manual",
+      "b_notation": "3 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 662,
+      "b_method": "manual",
+      "b_notation": "6 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 682,
+      "b_method": "manual",
+      "b_notation": "6 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 601,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 602,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 604,
+      "b_method": "manual",
+      "b_notation": "中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 611,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 617,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 618,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 619,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 621,
+      "b_method": "manual",
+      "b_notation": "2 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 623,
+      "b_method": "manual",
+      "b_notation": "2 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 633,
+      "b_method": "manual",
+      "b_notation": "3 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 655,
+      "b_method": "manual",
+      "b_notation": "3 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 662,
+      "b_method": "manual",
+      "b_notation": "6 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 682,
+      "b_method": "manual",
+      "b_notation": "6 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 601,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 602,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 604,
+      "b_method": "manual",
+      "b_notation": "中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 611,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 617,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 618,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 619,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 621,
+      "b_method": "manual",
+      "b_notation": "2 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 633,
+      "b_method": "manual",
+      "b_notation": "3 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 655,
+      "b_method": "manual",
+      "b_notation": "3 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 678,
+      "b_method": "manual",
+      "b_notation": "22 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 682,
+      "b_method": "manual",
+      "b_notation": "6 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 930,
+      "b_method": "manual",
+      "b_notation": "360 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 935,
+      "b_method": "manual",
+      "b_notation": "360 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 940,
+      "b_method": "simple",
+      "b_notation": "SP",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 940,
+      "b_method": "manual",
+      "b_notation": "360 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 945,
+      "b_method": "simple",
+      "b_notation": "AUTO + SP",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 1010,
+      "b_method": "manual",
+      "b_notation": "63214 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 1195,
+      "b_method": "simple",
+      "b_notation": "SP + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 1200,
+      "b_method": "manual",
+      "b_notation": "236236 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 1206,
+      "b_method": "simple",
+      "b_notation": "4 + SP + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 601,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 602,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 604,
+      "b_method": "manual",
+      "b_notation": "中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 611,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 617,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 618,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 619,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 621,
+      "b_method": "manual",
+      "b_notation": "2 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 623,
+      "b_method": "manual",
+      "b_notation": "2 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 655,
+      "b_method": "manual",
+      "b_notation": "3 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 662,
+      "b_method": "manual",
+      "b_notation": "6 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 678,
+      "b_method": "manual",
+      "b_notation": "22 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 682,
+      "b_method": "manual",
+      "b_notation": "6 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 930,
+      "b_method": "manual",
+      "b_notation": "360 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 935,
+      "b_method": "manual",
+      "b_notation": "360 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 940,
+      "b_method": "simple",
+      "b_notation": "SP",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 940,
+      "b_method": "manual",
+      "b_notation": "360 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 945,
+      "b_method": "simple",
+      "b_notation": "AUTO + SP",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 1010,
+      "b_method": "manual",
+      "b_notation": "63214 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 1195,
+      "b_method": "simple",
+      "b_notation": "SP + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 1200,
+      "b_method": "manual",
+      "b_notation": "236236 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 1206,
+      "b_method": "simple",
+      "b_notation": "4 + SP + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 601,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 602,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 604,
+      "b_method": "manual",
+      "b_notation": "中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 611,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 617,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 618,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 619,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 621,
+      "b_method": "manual",
+      "b_notation": "2 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 623,
+      "b_method": "manual",
+      "b_notation": "2 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 633,
+      "b_method": "manual",
+      "b_notation": "3 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 655,
+      "b_method": "manual",
+      "b_notation": "3 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 678,
+      "b_method": "manual",
+      "b_notation": "22 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 682,
+      "b_method": "manual",
+      "b_notation": "6 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 930,
+      "b_method": "manual",
+      "b_notation": "360 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 935,
+      "b_method": "manual",
+      "b_notation": "360 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 940,
+      "b_method": "simple",
+      "b_notation": "SP",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 940,
+      "b_method": "manual",
+      "b_notation": "360 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 945,
+      "b_method": "simple",
+      "b_notation": "AUTO + SP",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 1010,
+      "b_method": "manual",
+      "b_notation": "63214 + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 1195,
+      "b_method": "simple",
+      "b_notation": "SP + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 1200,
+      "b_method": "manual",
+      "b_notation": "236236 + 弱",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 1206,
+      "b_method": "simple",
+      "b_notation": "4 + SP + 强",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "confidence": "medium"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "confidence": "low"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1218,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1218,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1222,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1222,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "confidence": "low"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1218,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1218,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1222,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 602,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1222,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 604,
+      "a_method": "manual",
+      "a_notation": "中",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 604,
+      "a_method": "manual",
+      "a_notation": "中",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 604,
+      "a_method": "manual",
+      "a_notation": "中",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "confidence": "low"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1218,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1218,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1222,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 611,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "b_id": 1222,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "confidence": "low"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1218,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1218,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1222,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1222,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "confidence": "low"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1218,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1218,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1222,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 618,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1222,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "confidence": "low"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1218,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1218,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1222,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 619,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "b_id": 1222,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "confidence": "low"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 1218,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 1218,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 1222,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "b_id": 1222,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "confidence": "low"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 1218,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 1218,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 1222,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "b_id": 1222,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "confidence": "low"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 1218,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 1218,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 1222,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "b_id": 1222,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 637,
+      "a_method": "manual",
+      "a_notation": "强",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 637,
+      "a_method": "manual",
+      "a_notation": "强",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 637,
+      "a_method": "manual",
+      "a_notation": "强",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 637,
+      "a_method": "manual",
+      "a_notation": "强",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "confidence": "low"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 1218,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 1218,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 1222,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "b_id": 1222,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "confidence": "low"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "confidence": "low"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 1218,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 1218,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 1222,
+      "b_method": "manual",
+      "b_notation": "720 + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "b_id": 1222,
+      "b_method": "simple",
+      "b_notation": "2 + SP + 强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 682,
+      "a_method": "manual",
+      "a_notation": "6 + 中",
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 682,
+      "a_method": "manual",
+      "a_notation": "6 + 中",
+      "b_id": 606,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 682,
+      "a_method": "manual",
+      "a_notation": "6 + 中",
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low"
+    },
+    {
+      "a_id": 682,
+      "a_method": "manual",
+      "a_notation": "6 + 中",
+      "b_id": 679,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    },
+    {
+      "a_id": 682,
+      "a_method": "manual",
+      "a_notation": "6 + 中",
+      "b_id": 680,
+      "b_method": "manual",
+      "b_notation": "> 中",
+      "confidence": "low",
+      "context_dependent": true
+    }
+  ],
+  "schema": "ce.worklist.v1"
+}

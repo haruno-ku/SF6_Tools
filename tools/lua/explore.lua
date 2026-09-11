@@ -70,6 +70,9 @@ while i <= #arg do
     if key == "no_collapse" then
         opt.collapse = false
         i = i + 1
+    elseif key == "worklist" then
+        opt.worklist = true
+        i = i + 1
     else
         local v = arg[i + 1]
         if v == nil then
@@ -241,6 +244,68 @@ for name, doc in pairs(docs) do
     if not n then die(("could not write %s: %s"):format(path, tostring(werr))) end
     written[#written + 1] = { path = path, bytes = n }
 end
+-- --- the sweep worklist --------------------------------------------------------
+--
+-- The candidate documents above are for reading. This is for the game machine,
+-- and it is a different shape for one reason: install-dev.ps1 syncs only what
+-- is under reframework/, so anything the sweep needs has to live there, and
+-- candidate-edges.json is 497KB for Zangief alone - about 1.3KB an edge, because
+-- every edge carries its reasons, its basis and its unknowns.
+--
+-- None of that is needed to PRESS a pair. What is needed is which two moves,
+-- how to write them, and which order to try them in. That is about a hundred
+-- bytes an edge: 38KB for Zangief, which ships without anyone noticing.
+--
+-- Ordered by confidence, and the order is the whole point of shipping the
+-- offline reasoning rather than pairing moves in the game: a sweep that is cut
+-- short has spent its time on the pairs the frame data had something to say
+-- about. The confidence is carried so the runtime can say what it deprioritised
+-- if it stops early, rather than the list arriving pre-sorted and silent.
+if opt.worklist then
+    local RANK = { high = 3, medium = 2, low = 1 }
+    local items = {}
+    for _, e in ipairs(gen.candidates) do
+        items[#items + 1] = {
+            a_id = e.from.action_id, a_method = e.from.input_method,
+            a_notation = e.from.notation,
+            b_id = e.to.action_id, b_method = e.to.input_method,
+            b_notation = e.to.notation,
+            confidence = e.confidence,
+            -- Carried because the runtime refuses a derivation as move A, and
+            -- finding that out per pair at run time would be a refusal per pair
+            -- rather than a filter.
+            context_dependent = e.context_dependent or nil,
+        }
+    end
+    table.sort(items, function(x, y)
+        local rx, ry = RANK[x.confidence] or 0, RANK[y.confidence] or 0
+        if rx ~= ry then return rx > ry end
+        if x.a_id ~= y.a_id then return x.a_id < y.a_id end
+        return x.b_id < y.b_id
+    end)
+
+    local wl_dir = "reframework/data/ComboExplorer_data/worklist"
+    mkdir(wl_dir)
+    local wl_path = ("%s/%s-%s.json"):format(wl_dir, char_lc, opt.scheme)
+    local wl_doc = {
+        schema = "ce.worklist.v1",
+        character = opt.character,
+        control_scheme = opt.scheme,
+        -- The same identity the candidates carry. A worklist run against a
+        -- different catalog is about different moves, and the action ids in it
+        -- would be someone else's.
+        ac_sha256 = meta.ac_sha256,
+        bcm_sha256 = meta.bcm_sha256,
+        generated_at = provenance.generated_at,
+        game_patch = provenance.game_patch,
+        count = #items,
+        pairs = items,
+    }
+    local n, werr = json.save_file(wl_path, wl_doc)
+    if not n then die(("could not write %s: %s"):format(wl_path, tostring(werr))) end
+    written[#written + 1] = { path = wl_path, bytes = n }
+end
+
 table.sort(written, function(a, b) return a.path < b.path end)
 
 -- --- the report --------------------------------------------------------------
