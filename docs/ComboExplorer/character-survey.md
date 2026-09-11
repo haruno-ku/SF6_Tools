@@ -49,7 +49,12 @@ Yasmine      138     14     56    38    93    98     0    8   1215    32    61  
 
 ## Was anything dropped for missing data?
 
-**0** rows, across all 31 characters.
+**0** of 12448 exclusions, across all 31 characters.
+
+Measured by asking each excluded pair whether it carries the thing that
+decided it - the margin, or the source's own statement that the move does
+not chain. An exclusion with neither was decided by something nobody wrote
+down, and missing information is the only candidate for that.
 
 Which is the answer it has to be. A gap in the frame source is recorded as
 an unknown and the pair stays a candidate; only a KNOWN negative margin

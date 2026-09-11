@@ -132,11 +132,45 @@ local function measure(entry)
     m.excluded = #gen.excluded
     m.by_confidence = gen.stats.by_confidence
     m.by_reason = gen.stats.by_reason
+    -- The rule the whole project runs on, measured rather than asserted.
+    --
+    -- This used to compare each exclusion reason against "frame_data_incomplete"
+    -- and count the matches. That string is a REASON - why a pair IS a candidate
+    -- - and can never appear in by_exclusion, whose whole vocabulary is
+    -- frame_margin_negative / no_mechanism_found / self_pair_without_chain. So
+    -- the count was zero by construction and would have stayed zero however
+    -- badly the rule was broken. A metric that cannot fail reports success, which
+    -- is worse than no metric.
+    --
+    -- What actually distinguishes a legitimate exclusion from one made on
+    -- absence is whether it CARRIES THE THING THAT DECIDED IT: a negative margin
+    -- has the number, a non-chaining self-pair has the source's own statement.
+    -- An exclusion with neither was decided by something nobody wrote down, and
+    -- the only candidate for that is missing information.
     m.excluded_missing_data = 0
-    for reason, n in pairs(gen.stats.by_exclusion) do
-        -- The rule the whole project runs on. If this is ever non-zero, a gap in
-        -- the source has become a negative answer somewhere.
-        if reason == "frame_data_incomplete" then m.excluded_missing_data = n end
+    m.excluded_without_evidence = {}
+    for _, x in ipairs(gen.excluded) do
+        local justified
+        if x.reason == "frame_margin_negative" then
+            justified = type(x.margin_frames) == "number"
+        elseif x.reason == "self_pair_without_chain" then
+            -- The value, not the sentence. The record carries an `evidence`
+            -- string whether or not the source actually said anything, so
+            -- testing for its presence passed even with the bug re-introduced
+            -- that excludes a self-pair on an UNKNOWN chain property. `false`
+            -- means stated; nil means nobody knew.
+            justified = (x.chain_property == false)
+        else
+            justified = false      -- no_mechanism_found carries no evidence by design
+        end
+        if not justified then
+            m.excluded_missing_data = m.excluded_missing_data + 1
+            if #m.excluded_without_evidence < 5 then
+                m.excluded_without_evidence[#m.excluded_without_evidence + 1] = {
+                    from = x.from, to = x.to, reason = x.reason,
+                }
+            end
+        end
     end
 
     local g = GraphStore.build(gen.candidates, {
@@ -205,9 +239,18 @@ local total_missing_data_exclusions = 0
 for _, m in ipairs(rows) do
     total_missing_data_exclusions = total_missing_data_exclusions + (m.excluded_missing_data or 0)
 end
+local total_excluded = 0
+for _, m in ipairs(rows) do total_excluded = total_excluded + (m.excluded or 0) end
+
 say("## Was anything dropped for missing data?")
 say("")
-say("**%d** rows, across all %d characters.", total_missing_data_exclusions, #rows)
+say("**%d** of %d exclusions, across all %d characters.",
+    total_missing_data_exclusions, total_excluded, #rows)
+say("")
+say("Measured by asking each excluded pair whether it carries the thing that")
+say("decided it - the margin, or the source's own statement that the move does")
+say("not chain. An exclusion with neither was decided by something nobody wrote")
+say("down, and missing information is the only candidate for that.")
 say("")
 if total_missing_data_exclusions == 0 then
     say("Which is the answer it has to be. A gap in the frame source is recorded as")
@@ -217,6 +260,13 @@ else
     say("Which is wrong. Information the source does not carry has become a")
     say("negative answer somewhere, and that is the one failure this project is")
     say("built to prevent.")
+    say("")
+    for _, m in ipairs(rows) do
+        for _, x in ipairs(m.excluded_without_evidence or {}) do
+            say("  %-10s %s -> %s  (%s)", m.character, tostring(x.from), tostring(x.to),
+                tostring(x.reason))
+        end
+    end
 end
 say("")
 

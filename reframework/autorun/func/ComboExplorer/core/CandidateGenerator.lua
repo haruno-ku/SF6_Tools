@@ -308,6 +308,13 @@ function M.generate(catalog, frame_idx, opts)
                     from_notation = a_row.notation, to_notation = b_row.notation,
                     reason = M.EXCLUDED.SELF_NOT_CHAINABLE,
                     basis = a.basis,
+                    -- The VALUE that decided it, not a sentence about it. A
+                    -- sentence is written whether or not it is true, so a reader
+                    -- checking that an exclusion was justified learns nothing
+                    -- from one; `false` here means the source stated the move
+                    -- does not chain, and nil would mean nobody knew - which is
+                    -- not grounds to exclude anything.
+                    chain_property = chains,
                     evidence = "the frame source lists this move's cancels and chain is not "
                         .. "among them",
                 }

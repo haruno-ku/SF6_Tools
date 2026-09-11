@@ -173,6 +173,49 @@ local generous = CG.generate(cat, idx,
 t.ok(#generous.candidates > #result.candidates,
      "a more generous cutoff admits more pairs (" .. #generous.candidates .. ")")
 
+-- --- an exclusion carries the value that decided it -------------------------
+
+t.group("every exclusion shows its working")
+
+-- The rule is "missing data never excludes". Checking it needs each excluded
+-- pair to carry the THING that decided it, not a sentence about it.
+--
+-- A sentence gets written whether or not it is true. tools/lua/survey.lua first
+-- checked that a self-pair exclusion had an `evidence` string, and that check
+-- passed even with the bug re-introduced that excludes on an UNKNOWN chain
+-- property - because the string is written in both branches. The value cannot
+-- lie the same way: `false` means the source stated it, nil means nobody knew,
+-- and nil is not grounds to exclude anything.
+local undecided = 0
+for _, x in ipairs(result.excluded) do
+    local justified
+    if x.reason == "frame_margin_negative" then
+        justified = type(x.margin_frames) == "number"
+    elseif x.reason == "self_pair_without_chain" then
+        justified = (x.chain_property == false)
+    else
+        justified = false
+    end
+    if not justified then undecided = undecided + 1 end
+end
+t.eq(undecided, 0, "no pair is excluded without the value that decided it")
+
+local self_pair
+for _, x in ipairs(result.excluded) do
+    if x.reason == "self_pair_without_chain" then self_pair = x break end
+end
+t.ok(self_pair ~= nil, "a self-pair exclusion exists to inspect")
+t.eq(self_pair.chain_property, false,
+     "and it records that the source STATED the move does not chain")
+t.ok(self_pair.chain_property ~= nil,
+     "which is a different fact from nobody having said - the distinction the "
+     .. "whole rule rests on")
+
+-- With no frame data nothing is known, so nothing may be excluded at all.
+local blind_excl = CG.generate(cat, nil, { from = GROUND, include_followups = false })
+t.eq(#blind_excl.excluded, 0,
+     "with no frame data there is nothing to decide on, so nothing is excluded")
+
 -- --- every candidate names what only the game can settle ---------------------
 
 t.group("requires_runtime_validation")
