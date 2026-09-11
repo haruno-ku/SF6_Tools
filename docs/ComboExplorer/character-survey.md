@@ -47,9 +47,9 @@ Yasmine      138     14     56    38    93   100    89    8   1215    32    61  
 - `amb`  joins that matched only by guessing between several source
   spellings. Counted apart from a clean match because they are not one
 
-## Was anything dropped for missing data?
+## Was any PAIR dropped for missing data?
 
-**0** of 12543 exclusions, across all 31 characters.
+**0** of 12543 pair exclusions, across all 31 characters.
 
 Measured by asking each excluded pair whether it carries the thing that
 decided it - the margin, or the source's own statement that the move does
@@ -59,6 +59,22 @@ down, and missing information is the only candidate for that.
 Which is the answer it has to be. A gap in the frame source is recorded as
 an unknown and the pair stays a candidate; only a KNOWN negative margin
 excludes, and it excludes with the number attached.
+
+### What the number above does not cover
+
+Pairs, and only pairs. A row that never became half of one is not in the
+12543, and two of the reasons a row is dropped are about this project's
+vocabulary rather than about the move:
+
+```
+unclassified     52 rows   the classifier has no word for the notation
+any_button      264 rows   the notation names no strength
+```
+
+Neither is a statement that the move does not work, and both are listed
+per character in catalog-audit.md. They are named here because the
+heading above reads wider than the thing it measures, and a reader with
+only that number would conclude nothing was lost anywhere.
 
 ## Where the join is worst
 

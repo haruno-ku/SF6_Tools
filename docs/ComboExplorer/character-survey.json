@@ -200,6 +200,10 @@
       "nodes": 55,
       "routes": 198,
       "rows": 102,
+      "rows_lost": {
+        "any_button": 12,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 14,
       "targets": 52,
@@ -332,6 +336,10 @@
       "nodes": 53,
       "routes": 253,
       "rows": 93,
+      "rows_lost": {
+        "any_button": 7,
+        "unclassified": 4
+      },
       "search_complete": true,
       "starters": 11,
       "targets": 37,
@@ -504,6 +512,10 @@
       "nodes": 58,
       "routes": 169,
       "rows": 123,
+      "rows_lost": {
+        "any_button": 14,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 14,
       "targets": 47,
@@ -626,6 +638,10 @@
       "nodes": 52,
       "routes": 209,
       "rows": 109,
+      "rows_lost": {
+        "any_button": 17,
+        "unclassified": 2
+      },
       "search_complete": false,
       "starters": 19,
       "targets": 49,
@@ -741,6 +757,10 @@
       "nodes": 86,
       "routes": 87,
       "rows": 139,
+      "rows_lost": {
+        "any_button": 7,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 13,
       "targets": 80,
@@ -857,6 +877,10 @@
       "nodes": 37,
       "routes": 179,
       "rows": 88,
+      "rows_lost": {
+        "any_button": 5,
+        "unclassified": 8
+      },
       "search_complete": true,
       "starters": 14,
       "targets": 33,
@@ -1011,6 +1035,10 @@
       "nodes": 64,
       "routes": 190,
       "rows": 93,
+      "rows_lost": {
+        "any_button": 1,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 14,
       "targets": 53,
@@ -1191,6 +1219,10 @@
       "nodes": 58,
       "routes": 234,
       "rows": 108,
+      "rows_lost": {
+        "any_button": 2,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 18,
       "targets": 54,
@@ -1287,6 +1319,10 @@
       "nodes": 45,
       "routes": 233,
       "rows": 93,
+      "rows_lost": {
+        "any_button": 6,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 14,
       "targets": 44,
@@ -1516,6 +1552,10 @@
       "nodes": 75,
       "routes": 200,
       "rows": 110,
+      "rows_lost": {
+        "any_button": 4,
+        "unclassified": 2
+      },
       "search_complete": false,
       "starters": 11,
       "targets": 39,
@@ -2042,6 +2082,10 @@
       "nodes": 88,
       "routes": 177,
       "rows": 125,
+      "rows_lost": {
+        "any_button": 5,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 44,
       "targets": 77,
@@ -2165,6 +2209,10 @@
       "nodes": 63,
       "routes": 148,
       "rows": 126,
+      "rows_lost": {
+        "any_button": 9,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 13,
       "targets": 60,
@@ -2266,6 +2314,10 @@
       "nodes": 41,
       "routes": 135,
       "rows": 77,
+      "rows_lost": {
+        "any_button": 7,
+        "unclassified": 1
+      },
       "search_complete": true,
       "starters": 15,
       "targets": 41,
@@ -2402,6 +2454,10 @@
       "nodes": 64,
       "routes": 137,
       "rows": 135,
+      "rows_lost": {
+        "any_button": 4,
+        "unclassified": 2
+      },
       "search_complete": false,
       "starters": 14,
       "targets": 54,
@@ -2589,6 +2645,10 @@
       "nodes": 46,
       "routes": 265,
       "rows": 112,
+      "rows_lost": {
+        "any_button": 15,
+        "unclassified": 6
+      },
       "search_complete": false,
       "starters": 17,
       "targets": 44,
@@ -3108,6 +3168,10 @@
       "nodes": 120,
       "routes": 84,
       "rows": 182,
+      "rows_lost": {
+        "any_button": 4,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 40,
       "targets": 108,
@@ -3219,6 +3283,10 @@
       "nodes": 56,
       "routes": 248,
       "rows": 89,
+      "rows_lost": {
+        "any_button": 3,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 12,
       "targets": 40,
@@ -3744,6 +3812,10 @@
       "nodes": 97,
       "routes": 139,
       "rows": 144,
+      "rows_lost": {
+        "any_button": 7,
+        "unclassified": 2
+      },
       "search_complete": false,
       "starters": 41,
       "targets": 94,
@@ -3937,6 +4009,10 @@
       "nodes": 46,
       "routes": 239,
       "rows": 82,
+      "rows_lost": {
+        "any_button": 8,
+        "unclassified": 2
+      },
       "search_complete": true,
       "starters": 13,
       "targets": 41,
@@ -4050,6 +4126,10 @@
       "nodes": 76,
       "routes": 152,
       "rows": 122,
+      "rows_lost": {
+        "any_button": 9,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 13,
       "targets": 54,
@@ -4448,6 +4528,10 @@
       "nodes": 92,
       "routes": 200,
       "rows": 171,
+      "rows_lost": {
+        "any_button": 34,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 16,
       "targets": 76,
@@ -4607,6 +4691,10 @@
       "nodes": 60,
       "routes": 233,
       "rows": 116,
+      "rows_lost": {
+        "any_button": 9,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 18,
       "targets": 56,
@@ -4747,6 +4835,10 @@
       "nodes": 63,
       "routes": 179,
       "rows": 100,
+      "rows_lost": {
+        "any_button": 3,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 15,
       "targets": 47,
@@ -5000,6 +5092,10 @@
       "nodes": 60,
       "routes": 175,
       "rows": 94,
+      "rows_lost": {
+        "any_button": 5,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 15,
       "targets": 49,
@@ -5123,6 +5219,10 @@
       "nodes": 51,
       "routes": 183,
       "rows": 87,
+      "rows_lost": {
+        "any_button": 7,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 12,
       "targets": 44,
@@ -5519,6 +5619,10 @@
       "nodes": 70,
       "routes": 102,
       "rows": 137,
+      "rows_lost": {
+        "any_button": 14,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 14,
       "targets": 70,
@@ -5748,6 +5852,10 @@
       "nodes": 78,
       "routes": 167,
       "rows": 126,
+      "rows_lost": {
+        "any_button": 5,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 23,
       "targets": 74,
@@ -5860,6 +5968,10 @@
       "nodes": 43,
       "routes": 137,
       "rows": 117,
+      "rows_lost": {
+        "any_button": 11,
+        "unclassified": 1
+      },
       "search_complete": true,
       "starters": 12,
       "targets": 43,
@@ -6096,6 +6208,10 @@
       "nodes": 56,
       "routes": 159,
       "rows": 96,
+      "rows_lost": {
+        "any_button": 5,
+        "unclassified": 2
+      },
       "search_complete": false,
       "starters": 22,
       "targets": 48,
@@ -6291,6 +6407,10 @@
       "nodes": 58,
       "routes": 276,
       "rows": 158,
+      "rows_lost": {
+        "any_button": 20,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 18,
       "targets": 55,
@@ -6655,6 +6775,10 @@
       "nodes": 94,
       "routes": 162,
       "rows": 138,
+      "rows_lost": {
+        "any_button": 5,
+        "unclassified": 1
+      },
       "search_complete": false,
       "starters": 14,
       "targets": 56,

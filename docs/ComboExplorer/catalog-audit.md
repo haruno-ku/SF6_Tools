@@ -128,6 +128,62 @@ throws -> air_normal                          2           0
 supers -> throw                               1           0
 ```
 
+## Notations that name no strength
+
+A row excluded as `any_button` names no strength: the catalog writes
+it with the token that means "any button" (任意键) where a
+probeable row would write "6+HP". There is no such thing as pressing
+"any", so the row cannot be probed as written, and `InputMask.compile`
+refuses it rather than emitting a direction that silently whiffs.
+
+**264 rows**, five times the `unclassified` count below, and this report
+did not mention them until now.
+
+`sibling` counts the rows whose motion digits also appear on a row that IS
+standalone: the concrete version of the move is already a candidate, so the
+any-button row is a duplicate display entry rather than a lost move.
+
+**This is a proxy, not a proof.** It compares motion digits only - it can
+say "6 + any" has a "6+HP" beside it and cannot say whether "any"
+includes P. The `alone` column is the stronger signal: no row with that
+motion is probeable at all, so nothing stands in for it.
+
+```
+char           rows  sibling  alone
+Jamie            34       31      3
+Ingrid           20       17      3
+ChunLi           17        6     11
+Blanka           15       13      2
+Kimberly         14       14      0
+Mai              14       14      0
+Ryu              12       11      1
+CViper           11       11      0
+Akuma             9        9      0
+EHonda            9        6      3
+Lily              9        9      0
+Ed                8        8      0
+AKI               7        7      0
+Guile             7        7      0
+Luke              7        7      0
+Manon             7        7      0
+Terry             7        7      0
+Cammy             6        6      0
+Alex              5        5      0
+DeeJay            5        5      0
+Elena             5        5      0
+MBison            5        4      1
+Yasmine           5        5      0
+Zangief           5        5      0
+Juri              4        4      0
+Ken               4        4      0
+Rashid            4        4      0
+Marisa            3        3      0
+Sagat             3        3      0
+Dhalsim           2        2      0
+JP                1        1      0
+TOTAL           264      240     24
+```
+
 ## Notations the classifier could not place
 
 Sorted by how many characters each one costs. A row here was excluded

@@ -146,6 +146,10 @@ local function measure(name)
         unplaceable = 0,          -- category could not be decided
         unplaceable_lost = 0,     -- ... and that is the only reason it was dropped
         unplaceable_rows = {},
+        -- The other exclusion that is about our vocabulary rather than the move.
+        any_button = 0,
+        any_button_with_sibling = 0,   -- a row with the same motion IS probeable
+        any_button_alone = {},         -- ... and these have no such row
         -- Split deliberately. Every disagreement is worth listing, but only the
         -- ones still IN the search space can corrupt a result: an excluded row
         -- classified against its band is a curiosity, while a standalone one is
@@ -208,6 +212,43 @@ local function measure(name)
             end
         end
     end
+
+    -- The other exclusion that is about our vocabulary rather than about the
+    -- move: `any_button` is a notation that names no strength ("6 + 88787Zc8|",
+    -- any button). 264 rows across the shipped characters, which is five times
+    -- the `unclassified` count and was nowhere in this report.
+    --
+    -- Mostly benign, and the point of counting is to say HOW mostly. If a row
+    -- with the same motion is standalone elsewhere in the catalog, the concrete
+    -- version of the move is already a candidate and the any-button row is a
+    -- duplicate display entry rather than a lost move.
+    --
+    -- The comparison is on the motion DIGITS only. It does not check that the
+    -- sibling uses the same button family, so it can say "6 + any" has a "6+HP"
+    -- beside it and cannot say whether "any" includes P. A row with no sibling
+    -- at all is the stronger signal and is what the last column is for.
+    local standalone_motions = {}
+    for _, row in ipairs(cat.rows) do
+        if row.standalone and row.notation then
+            local d = tostring(row.notation):gsub("[^%d]", "")
+            standalone_motions[d] = true
+        end
+    end
+    for _, row in ipairs(cat.rows) do
+        if row.exclusion == "any_button" then
+            m.any_button = m.any_button + 1
+            local d = tostring(row.notation or ""):gsub("[^%d]", "")
+            if standalone_motions[d] then
+                m.any_button_with_sibling = m.any_button_with_sibling + 1
+            else
+                m.any_button_alone[#m.any_button_alone + 1] = {
+                    action_id = row.action_id, classic = row.classic,
+                    notation = row.notation,
+                }
+            end
+        end
+    end
+    table.sort(m.any_button_alone, function(a, b) return a.action_id < b.action_id end)
 
     table.sort(m.unplaceable_rows, function(a, b) return a.action_id < b.action_id end)
     table.sort(m.band_mismatch_rows, function(a, b) return a.action_id < b.action_id end)
@@ -378,6 +419,56 @@ do
         say("%-40s %6d %11d", pair, totals[pair], standalone_totals[pair] or 0)
     end
     say("```")
+end
+say("")
+say("## Notations that name no strength")
+say("")
+do
+    local total, with_sibling = 0, 0
+    local worst = {}
+    for _, m in ipairs(rows) do
+        total = total + (m.any_button or 0)
+        with_sibling = with_sibling + (m.any_button_with_sibling or 0)
+        if (m.any_button or 0) > 0 then worst[#worst + 1] = m end
+    end
+
+    if total == 0 then
+        say("None.")
+    else
+        say("A row excluded as `any_button` names no strength: the catalog writes")
+        say("it with the token that means \"any button\" (\228\187\187\230\132\143\233\148\174) where a")
+        say("probeable row would write \"6+HP\". There is no such thing as pressing")
+        say("\"any\", so the row cannot be probed as written, and `InputMask.compile`")
+        say("refuses it rather than emitting a direction that silently whiffs.")
+        say("")
+        say("**%d rows**, five times the `unclassified` count below, and this report", total)
+        say("did not mention them until now.")
+        say("")
+        say("`sibling` counts the rows whose motion digits also appear on a row that IS")
+        say("standalone: the concrete version of the move is already a candidate, so the")
+        say("any-button row is a duplicate display entry rather than a lost move.")
+        say("")
+        say("**This is a proxy, not a proof.** It compares motion digits only - it can")
+        say("say \"6 + any\" has a \"6+HP\" beside it and cannot say whether \"any\"")
+        say("includes P. The `alone` column is the stronger signal: no row with that")
+        say("motion is probeable at all, so nothing stands in for it.")
+        say("")
+        table.sort(worst, function(a, b)
+            if (a.any_button or 0) ~= (b.any_button or 0) then
+                return (a.any_button or 0) > (b.any_button or 0)
+            end
+            return a.character < b.character
+        end)
+        say("```")
+        say("%-12s %6s %8s %6s", "char", "rows", "sibling", "alone")
+        for _, m in ipairs(worst) do
+            say("%-12s %6d %8d %6d", m.character, m.any_button,
+                m.any_button_with_sibling, #m.any_button_alone)
+        end
+        say("%-12s %6d %8d %6d", "TOTAL", total, with_sibling, total - with_sibling)
+        say("```")
+
+    end
 end
 say("")
 say("## Notations the classifier could not place")

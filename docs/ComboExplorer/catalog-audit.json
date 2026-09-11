@@ -2,6 +2,9 @@
   "characters": [
     {
       "ac_sha256": "29fcef9b54e71cc0dfdea28336ca32cbaba49c1bcd65dd0b438c307d9bfcf7e4",
+      "any_button": 7,
+      "any_button_alone": [],
+      "any_button_with_sibling": 7,
       "band_mismatch": 3,
       "band_mismatch_all": 15,
       "band_mismatch_pairs": {
@@ -204,6 +207,9 @@
     },
     {
       "ac_sha256": "48ca8bf84eb7ef41f87bb1b769a4b6f312b9023d137fbebb0bab981fc2b136e2",
+      "any_button": 9,
+      "any_button_alone": [],
+      "any_button_with_sibling": 9,
       "band_mismatch": 5,
       "band_mismatch_all": 21,
       "band_mismatch_pairs": {
@@ -465,6 +471,9 @@
     },
     {
       "ac_sha256": "3f208fbb93b989829c8a5435a8b83ced717c87ebe16020058efba0dcac3d6dda",
+      "any_button": 5,
+      "any_button_alone": [],
+      "any_button_with_sibling": 5,
       "band_mismatch": 7,
       "band_mismatch_all": 26,
       "band_mismatch_pairs": {
@@ -776,6 +785,20 @@
     },
     {
       "ac_sha256": "eea1ed2c62f8c33aeeccc63a8eddd2a4133fa77a648cb0e89427953655b8db02",
+      "any_button": 15,
+      "any_button_alone": [
+        {
+          "action_id": 926,
+          "classic": "214+LP+LK+MK",
+          "notation": "214 + 任意键"
+        },
+        {
+          "action_id": 931,
+          "classic": "214+LP+LK+MK",
+          "notation": "214 + 任意键 + 任意键"
+        }
+      ],
+      "any_button_with_sibling": 13,
       "band_mismatch": 6,
       "band_mismatch_all": 40,
       "band_mismatch_pairs": {
@@ -1232,6 +1255,9 @@
     },
     {
       "ac_sha256": "a9e27462064db02e61c86e7ca3087956b778a2311566e73f6937224181d161ea",
+      "any_button": 11,
+      "any_button_alone": [],
+      "any_button_with_sibling": 11,
       "band_mismatch": 8,
       "band_mismatch_all": 35,
       "band_mismatch_pairs": {
@@ -1614,6 +1640,9 @@
     },
     {
       "ac_sha256": "41ddf70bd1d5575d721ea88168ef4239bc3fb16c4f082d5a9dbc7dbb9ac89868",
+      "any_button": 6,
+      "any_button_alone": [],
+      "any_button_with_sibling": 6,
       "band_mismatch": 0,
       "band_mismatch_all": 11,
       "band_mismatch_pairs": {
@@ -1780,6 +1809,65 @@
     },
     {
       "ac_sha256": "8dcd21cab1ae11982c8fb011d4ad04beece543d366205552dabedc861c5e24a2",
+      "any_button": 17,
+      "any_button_alone": [
+        {
+          "action_id": 658,
+          "classic": "214+P",
+          "notation": "214 + 任意键"
+        },
+        {
+          "action_id": 659,
+          "classic": "214+P",
+          "notation": "214 + 任意键"
+        },
+        {
+          "action_id": 661,
+          "classic": "214+P",
+          "notation": "214 + 任意键"
+        },
+        {
+          "action_id": 680,
+          "classic": "214+P",
+          "notation": "214 + 任意键"
+        },
+        {
+          "action_id": 681,
+          "classic": "214+P",
+          "notation": "214 + 任意键"
+        },
+        {
+          "action_id": 682,
+          "classic": "214+P",
+          "notation": "214 + 任意键"
+        },
+        {
+          "action_id": 683,
+          "classic": "214+P",
+          "notation": "214 + 任意键"
+        },
+        {
+          "action_id": 684,
+          "classic": "214+P",
+          "notation": "214 + 任意键"
+        },
+        {
+          "action_id": 685,
+          "classic": "214+P",
+          "notation": "214 + 任意键"
+        },
+        {
+          "action_id": 686,
+          "classic": "214+P",
+          "notation": "214 + 任意键"
+        },
+        {
+          "action_id": 687,
+          "classic": "214+P",
+          "notation": "214 + 任意键"
+        }
+      ],
+      "any_button_with_sibling": 6,
       "band_mismatch": 0,
       "band_mismatch_all": 24,
       "band_mismatch_pairs": {
@@ -2071,6 +2159,9 @@
     },
     {
       "ac_sha256": "5e13ad6972e82410a8222c42cf0adc0b8ae7ca22872457334c48cbf32cfacdf2",
+      "any_button": 5,
+      "any_button_alone": [],
+      "any_button_with_sibling": 5,
       "band_mismatch": 35,
       "band_mismatch_all": 48,
       "band_mismatch_pairs": {
@@ -2574,6 +2665,9 @@
     },
     {
       "ac_sha256": "4d4e618babf28e6b4bc34dc04111f7ce3a3eab41311609554091d056109144e0",
+      "any_button": 2,
+      "any_button_alone": [],
+      "any_button_with_sibling": 2,
       "band_mismatch": 4,
       "band_mismatch_all": 23,
       "band_mismatch_pairs": {
@@ -2850,6 +2944,25 @@
     },
     {
       "ac_sha256": "4b056355a52e8015732109cf9ff3cbd37154002c70d0a862d1b042aa2c7c9192",
+      "any_button": 9,
+      "any_button_alone": [
+        {
+          "action_id": 959,
+          "classic": "236+K",
+          "notation": "236 + 任意键"
+        },
+        {
+          "action_id": 960,
+          "classic": "236+KK",
+          "notation": "236 + 任意键 + 任意键"
+        },
+        {
+          "action_id": 961,
+          "classic": "236+KK",
+          "notation": "236 + 任意键 + 任意键"
+        }
+      ],
+      "any_button_with_sibling": 6,
       "band_mismatch": 0,
       "band_mismatch_all": 17,
       "band_mismatch_pairs": {
@@ -3070,6 +3183,9 @@
     },
     {
       "ac_sha256": "d14a103a006e85bdd8cf04f5f51e0ec1931381127cfe86c3b0b75bbb355a6917",
+      "any_button": 8,
+      "any_button_alone": [],
+      "any_button_with_sibling": 8,
       "band_mismatch": 2,
       "band_mismatch_all": 14,
       "band_mismatch_pairs": {
@@ -3268,6 +3384,9 @@
     },
     {
       "ac_sha256": "5ea2b2aa212ea33b373336853ddb0efd1fe3774ac55b7b2cc77d3e8861508033",
+      "any_button": 5,
+      "any_button_alone": [],
+      "any_button_with_sibling": 5,
       "band_mismatch": 32,
       "band_mismatch_all": 43,
       "band_mismatch_pairs": {
@@ -3722,6 +3841,9 @@
     },
     {
       "ac_sha256": "1ca99c13d2d24bff931ea6bb3c8cec6d6b50ad589a806b1f4588d0ac780f62d6",
+      "any_button": 7,
+      "any_button_alone": [],
+      "any_button_with_sibling": 7,
       "band_mismatch": 35,
       "band_mismatch_all": 45,
       "band_mismatch_pairs": {
@@ -4202,6 +4324,25 @@
     },
     {
       "ac_sha256": "0568c81221ccd0d676d8cac818e5af29d876063f176d3f8cec066c85ee31ccf3",
+      "any_button": 20,
+      "any_button_alone": [
+        {
+          "action_id": 1101,
+          "classic": "22+K",
+          "notation": "22 + 任意键"
+        },
+        {
+          "action_id": 1102,
+          "classic": "22+KK",
+          "notation": "22 + 任意键 + 任意键"
+        },
+        {
+          "action_id": 1310,
+          "classic": "360+KK",
+          "notation": "360 + 任意键 + 任意键"
+        }
+      ],
+      "any_button_with_sibling": 17,
       "band_mismatch": 5,
       "band_mismatch_all": 25,
       "band_mismatch_pairs": {
@@ -4500,6 +4641,9 @@
     },
     {
       "ac_sha256": "945eda4c32195abe427a22fef1c4f9ab79414bf68cb203b9dc26a05b7a6a6701",
+      "any_button": 1,
+      "any_button_alone": [],
+      "any_button_with_sibling": 1,
       "band_mismatch": 0,
       "band_mismatch_all": 9,
       "band_mismatch_pairs": {
@@ -4644,6 +4788,25 @@
     },
     {
       "ac_sha256": "abf8fbad51d9f39507e644780ed58c00abc1e4ec4299e8b9449daca84df7c04a",
+      "any_button": 34,
+      "any_button_alone": [
+        {
+          "action_id": 1010,
+          "classic": "22+P",
+          "notation": "22 + 任意键"
+        },
+        {
+          "action_id": 1014,
+          "classic": "22+P",
+          "notation": "22 + 任意键"
+        },
+        {
+          "action_id": 1018,
+          "classic": "22+P",
+          "notation": "22 + 任意键"
+        }
+      ],
+      "any_button_with_sibling": 31,
       "band_mismatch": 22,
       "band_mismatch_all": 59,
       "band_mismatch_pairs": {
@@ -5242,6 +5405,9 @@
     },
     {
       "ac_sha256": "58905c345ed46631cb36794997051ebbf8a1f7cb190046f55090b7367447512b",
+      "any_button": 4,
+      "any_button_alone": [],
+      "any_button_with_sibling": 4,
       "band_mismatch": 51,
       "band_mismatch_all": 65,
       "band_mismatch_pairs": {
@@ -5895,6 +6061,9 @@
     },
     {
       "ac_sha256": "3f8582aecd0f559a3c04f82e837832ccc6ce80a52ceec1edaf6c78fabd41dd57",
+      "any_button": 4,
+      "any_button_alone": [],
+      "any_button_with_sibling": 4,
       "band_mismatch": 0,
       "band_mismatch_all": 33,
       "band_mismatch_pairs": {
@@ -6265,6 +6434,9 @@
     },
     {
       "ac_sha256": "5cfe7670ec050610df704a90324d7288f46289f71873ea2de6025ca39edde7c6",
+      "any_button": 14,
+      "any_button_alone": [],
+      "any_button_with_sibling": 14,
       "band_mismatch": 5,
       "band_mismatch_all": 35,
       "band_mismatch_pairs": {
@@ -6649,6 +6821,9 @@
     },
     {
       "ac_sha256": "36d9b3d87d425b093aeee36ae7acc355efb5609db17438a5f2e90a13abdb0c6c",
+      "any_button": 9,
+      "any_button_alone": [],
+      "any_button_with_sibling": 9,
       "band_mismatch": 0,
       "band_mismatch_all": 30,
       "band_mismatch_pairs": {
@@ -6984,6 +7159,9 @@
     },
     {
       "ac_sha256": "24c3454b415d170f911ba87056d50ceb194c350d6ec3e3db985d578bd6a2426d",
+      "any_button": 7,
+      "any_button_alone": [],
+      "any_button_with_sibling": 7,
       "band_mismatch": 0,
       "band_mismatch_all": 11,
       "band_mismatch_pairs": {
@@ -7168,6 +7346,15 @@
     },
     {
       "ac_sha256": "9436ca0bf5ace2722e4e9ac35c3d5b79cf26f2f2a139a8e0543f37e6701e7785",
+      "any_button": 5,
+      "any_button_alone": [
+        {
+          "action_id": 1085,
+          "classic": "623+PP",
+          "notation": "623 + 任意键 + 任意键"
+        }
+      ],
+      "any_button_with_sibling": 4,
       "band_mismatch": 2,
       "band_mismatch_all": 19,
       "band_mismatch_pairs": {
@@ -7404,6 +7591,9 @@
     },
     {
       "ac_sha256": "3157a731c060c85a10397a96d99f82d39ef7d3f973e72fac3223e968dc2a3027",
+      "any_button": 14,
+      "any_button_alone": [],
+      "any_button_with_sibling": 14,
       "band_mismatch": 0,
       "band_mismatch_all": 13,
       "band_mismatch_pairs": {
@@ -7587,6 +7777,9 @@
     },
     {
       "ac_sha256": "a7e6faf72135894edea1c8055f0d9fc2b031d761c7a766d90fa282421e29aff8",
+      "any_button": 7,
+      "any_button_alone": [],
+      "any_button_with_sibling": 7,
       "band_mismatch": 0,
       "band_mismatch_all": 9,
       "band_mismatch_pairs": {
@@ -7734,6 +7927,9 @@
     },
     {
       "ac_sha256": "bf938898975f2df9c4c6180eb348b2a92762f239dbb47908513e7536adc6827f",
+      "any_button": 3,
+      "any_button_alone": [],
+      "any_button_with_sibling": 3,
       "band_mismatch": 0,
       "band_mismatch_all": 18,
       "band_mismatch_pairs": {
@@ -7963,6 +8159,9 @@
     },
     {
       "ac_sha256": "9faa158243bc4e58b99c17eecb2f1f2eee60f6b56c6ac1fe4cd7f250116a854a",
+      "any_button": 4,
+      "any_button_alone": [],
+      "any_button_with_sibling": 4,
       "band_mismatch": 1,
       "band_mismatch_all": 19,
       "band_mismatch_pairs": {
@@ -8209,6 +8408,15 @@
     },
     {
       "ac_sha256": "afedc65f24d5968174fdcdd8e42720199564623ba993c35870f4d6084d94c195",
+      "any_button": 12,
+      "any_button_alone": [
+        {
+          "action_id": 1051,
+          "classic": "22+P",
+          "notation": "22 + 任意键"
+        }
+      ],
+      "any_button_with_sibling": 11,
       "band_mismatch": 0,
       "band_mismatch_all": 11,
       "band_mismatch_pairs": {
@@ -8375,6 +8583,9 @@
     },
     {
       "ac_sha256": "424195e69fc11d9f0738c712bb85f24cbcb90a653c1e8ada0a7f87dda0bc89e2",
+      "any_button": 3,
+      "any_button_alone": [],
+      "any_button_with_sibling": 3,
       "band_mismatch": 0,
       "band_mismatch_all": 25,
       "band_mismatch_pairs": {
@@ -8670,6 +8881,9 @@
     },
     {
       "ac_sha256": "604c0f7279f24805c20f70e1f4f780f9d5804cb7ee9f0744ebaaf3ea9c5d71ca",
+      "any_button": 7,
+      "any_button_alone": [],
+      "any_button_with_sibling": 7,
       "band_mismatch": 0,
       "band_mismatch_all": 9,
       "band_mismatch_pairs": {
@@ -8814,6 +9028,9 @@
     },
     {
       "ac_sha256": "e895dc76d9702cbec027de99375383925b339352f5192420b5a78b6270eb8723",
+      "any_button": 5,
+      "any_button_alone": [],
+      "any_button_with_sibling": 5,
       "band_mismatch": 2,
       "band_mismatch_all": 45,
       "band_mismatch_pairs": {
@@ -9287,6 +9504,9 @@
     },
     {
       "ac_sha256": "753d02204cec89c5a885d5748cda2d51bde0769144a15be93f1e717f219006b2",
+      "any_button": 5,
+      "any_button_alone": [],
+      "any_button_with_sibling": 5,
       "band_mismatch": 2,
       "band_mismatch_all": 14,
       "band_mismatch_pairs": {
@@ -9523,7 +9743,7 @@
     }
   ],
   "failures": [],
-  "generated_at": "2026-09-11T00:57:14Z",
+  "generated_at": "2026-09-11T03:45:00Z",
   "schema": "ce.catalog_audit.v1",
   "source_dir": "reframework/data/TrainingComboTrials_data/command_display",
   "unplaced_notations": [

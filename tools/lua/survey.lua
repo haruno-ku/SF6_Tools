@@ -105,6 +105,22 @@ local function measure(entry)
     end
     m.starters, m.targets, m.followups = #starters, #tgts, #fups
 
+    -- Rows that never reach the pairing stage, counted by reason. The headline
+    -- below answers a question about PAIRS, and a reader who only has that
+    -- number cannot tell whether anything was lost before pairs existed.
+    --
+    -- Two of the reasons are about this project's own vocabulary rather than
+    -- about the move: `unclassified` is the classifier having no word for the
+    -- notation, and `any_button` is the notation naming no strength. Both are
+    -- counted apart from the reasons that describe the move itself - a throw is
+    -- a throw whatever we know.
+    m.rows_lost = { unclassified = 0, any_button = 0 }
+    for _, row in ipairs(cat.rows) do
+        if m.rows_lost[row.exclusion] ~= nil then
+            m.rows_lost[row.exclusion] = m.rows_lost[row.exclusion] + 1
+        end
+    end
+
     -- Coverage, per set. One number over a mixed set hides the case worth
     -- seeing: starters joining and targets not.
     if idx then
@@ -264,9 +280,15 @@ end
 local total_excluded = 0
 for _, m in ipairs(rows) do total_excluded = total_excluded + (m.excluded or 0) end
 
-say("## Was anything dropped for missing data?")
+local lost_unclassified, lost_any_button = 0, 0
+for _, m in ipairs(rows) do
+    lost_unclassified = lost_unclassified + ((m.rows_lost or {}).unclassified or 0)
+    lost_any_button = lost_any_button + ((m.rows_lost or {}).any_button or 0)
+end
+
+say("## Was any PAIR dropped for missing data?")
 say("")
-say("**%d** of %d exclusions, across all %d characters.",
+say("**%d** of %d pair exclusions, across all %d characters.",
     total_missing_data_exclusions, total_excluded, #rows)
 say("")
 say("Measured by asking each excluded pair whether it carries the thing that")
@@ -290,6 +312,23 @@ else
         end
     end
 end
+say("")
+
+say("### What the number above does not cover")
+say("")
+say("Pairs, and only pairs. A row that never became half of one is not in the")
+say("%d, and two of the reasons a row is dropped are about this project's", total_excluded)
+say("vocabulary rather than about the move:")
+say("")
+say("```")
+say("unclassified   %4d rows   the classifier has no word for the notation", lost_unclassified)
+say("any_button     %4d rows   the notation names no strength", lost_any_button)
+say("```")
+say("")
+say("Neither is a statement that the move does not work, and both are listed")
+say("per character in catalog-audit.md. They are named here because the")
+say("heading above reads wider than the thing it measures, and a reader with")
+say("only that number would conclude nothing was lost anywhere.")
 say("")
 
 say("## Where the join is worst")
