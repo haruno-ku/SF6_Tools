@@ -174,7 +174,17 @@ end
 -- unsorted listing makes a report differ between runs for no reason.
 function M.list_dir(path)
     local out = {}
-    local p = io.popen(('ls -1 "%s" 2>/dev/null'):format(path))
+    -- Branches on the platform for the same reason M.mkdir does, and it is not
+    -- optional: `ls` is not a command on Windows. It appeared to work only when
+    -- lua was launched from a shell that had MSYS on PATH, and failed when the
+    -- test runner spawned it from node - so the listing succeeded or returned
+    -- nothing depending on who started the interpreter, which is the worst
+    -- shape a bug can have.
+    local win = package.config:sub(1, 1) == "\\"
+    local cmd = win
+        and ('cmd /c dir /b "%s" 2>nul'):format((path:gsub("/", "\\")))
+        or ('ls -1 "%s" 2>/dev/null'):format(path)
+    local p = io.popen(cmd)
     if not p then return out end
     for name in p:lines() do
         if name ~= "" then out[#out + 1] = name end
