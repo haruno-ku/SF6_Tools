@@ -38,6 +38,17 @@
 -- stage somewhere other than where the caller believes, the trial runs anyway,
 -- and the pair is recorded as not linking - a confident negative with no error
 -- anywhere. `write_errors` in the result is that list.
+--
+-- WHAT A WRITE NOW OBSERVES  (issue #40, build 24176760)
+--
+-- request_refresh reads the flag back inside the same call as the write, and
+-- that readback - not the next tick's poll - is the rising edge of OUR request.
+-- The engine's training update runs between two of our on_frame ticks, so by
+-- the time the machine polls, a request this suite raised has already been
+-- consumed: measured as refresh_observed false and refresh_wait_ticks 601 on
+-- every run, on a stage that had demonstrably been reset. This file carries the
+-- readback from the tick it was taken on to the tick the machine reads it, and
+-- the machine decides what it means.
 
 local Fsm = require("func/ComboExplorer/core/StageControlFsm")
 
@@ -132,14 +143,30 @@ end
 
 -- Separated from the tick so a test can drive it with a table adapter and
 -- assert exactly which writes a given command produces. Returns the list of
--- writes attempted and the list that failed.
+-- writes attempted, the list that failed, and what the writes OBSERVED.
 --
 -- `cmd` is whatever StageControlFsm returned this tick. A field that is absent
 -- is not a write of nil - it is this tick not asking for that write.
+--
+-- WHY A WRITE NOW RETURNS AN OBSERVATION  (issue #40)
+--
+-- request_refresh reads _IsReqRefresh back inside the same call as the write.
+-- That readback is the rising edge of our own request, and on build 24176760 it
+-- is the only place that edge exists: the engine's training update runs between
+-- two of our on_frame ticks, so by the next poll the request has already been
+-- consumed. Measured: refresh_observed false and refresh_wait_ticks 601 on
+-- every run, on a stage that demonstrably had been reset.
+--
+-- The third return is that readback, so the caller can hand it to the machine
+-- on the following tick. GameAdapter also latches it into its own
+-- tick_snapshot, which is what makes this work for the Injector - it performs
+-- the stage's writes through this function and never sees the return value.
+-- This third return is for the callers that drive their own snapshot instead.
 function M.perform(cmd, adapter, attacker_index)
     adapter = adapter or default_adapter()
     attacker_index = attacker_index or 0
     local did, failed = {}, {}
+    local observed = {}
 
     local function note(name, ok, reason)
         did[#did + 1] = name
@@ -148,7 +175,7 @@ function M.perform(cmd, adapter, attacker_index)
         end
     end
 
-    if type(cmd) ~= "table" then return did, failed end
+    if type(cmd) ~= "table" then return did, failed, observed end
 
     -- Order matters and it is the order the machine implies: the setup has to
     -- be in place before the refresh that pushes it, and both before anything
@@ -159,8 +186,12 @@ function M.perform(cmd, adapter, attacker_index)
     end
 
     if cmd.request_refresh == true then
-        local ok, reason = adapter.request_refresh()
+        local ok, reason, ack = adapter.request_refresh()
         note("request_refresh", ok, reason)
+        -- Kept whether the write reported ok or not: a failed write that still
+        -- read the flag back high is a different fact from one that did not,
+        -- and the machine is the thing entitled to decide which.
+        if type(ack) == "table" then observed.refresh_ack = ack end
     end
 
     if type(cmd.correct_position) == "table" then
@@ -181,7 +212,7 @@ function M.perform(cmd, adapter, attacker_index)
         note("pin_resources", ok, reason)
     end
 
-    return did, failed
+    return did, failed, observed
 end
 
 -- --- the run -------------------------------------------------------------------
@@ -210,6 +241,11 @@ function M.start(opts)
         last_state = nil,
         last_command = nil,
         outcome = nil,
+        -- The write-time readback from the last request_refresh, waiting to be
+        -- handed to the machine on the next tick. Cleared here so a previous
+        -- episode's evidence can never be read as this one's.
+        pending_ack = nil,
+        refresh_ack = nil,
     }
     fsm:start()
     return true
@@ -234,12 +270,33 @@ function M.tick()
         return nil
     end
 
+    -- The readback from OUR OWN request write, taken last tick, handed to the
+    -- machine now. With the real adapter it is also on the snapshot already -
+    -- GameAdapter latches it into tick_snapshot, which is what makes this work
+    -- for the Injector, a caller that performs the stage's writes through
+    -- perform() and never looks at the return value.
+    --
+    -- What perform() returned wins where both exist, and they are the same
+    -- table in every ordinary case. The latch is adapter-wide state: if a
+    -- second machine were ever requesting a refresh on the same frames, the
+    -- snapshot could carry ITS readback, while this one provably came from this
+    -- run's own write. Attributing a refresh to the request that caused it is
+    -- the whole of #40, so it is not given up here either.
+    --
+    -- Once. A readback is evidence about the frame the request was written on,
+    -- and a second delivery would be telling the machine the request had just
+    -- been raised again.
+    if run.pending_ack ~= nil then snap.refresh_ack = run.pending_ack end
+    run.pending_ack = nil
+    if snap.refresh_ack ~= nil then run.refresh_ack = snap.refresh_ack end
+
     run.ticks = run.ticks + 1
     local cmd = run.fsm:tick(snap)
     run.last_command = cmd
     run.last_state = cmd.state
 
-    local did, failed = M.perform(cmd, run.adapter, run.attacker_index)
+    local did, failed, observed = M.perform(cmd, run.adapter, run.attacker_index)
+    run.pending_ack = observed.refresh_ack
     for _, w in ipairs(did) do run.writes[w] = (run.writes[w] or 0) + 1 end
     for _, f in ipairs(failed) do
         f.tick = run.ticks
@@ -265,6 +322,13 @@ function M.progress()
         inject_allowed = cmd.inject_allowed,
         write_errors = #run.write_errors,
         unreadable = run.unreadable or 0,
+        -- Shown while it runs because it is the one fact that says whether the
+        -- request was ever raised at all. Handed over as the table, not as
+        -- `ack and ack.after`, which would collapse a measured false into the
+        -- nil that means nobody looked - a reset that never started reading as
+        -- a reset nobody has evidence about (#40).
+        refresh_ack = run.refresh_ack,
+        caveats = cmd.caveats,
     }
 end
 
@@ -290,6 +354,11 @@ function M.result()
         writes = run.writes,
         write_errors = run.write_errors,
         settings = settings,
+        -- What the request write actually saw, as the adapter reported it. The
+        -- machine's own copy is in `stage`; this one is here so a run that
+        -- ended before the machine ever consumed it - stopped by the operator,
+        -- or ended by a failed write - still carries the evidence.
+        refresh_ack = run.refresh_ack,
     }
 end
 

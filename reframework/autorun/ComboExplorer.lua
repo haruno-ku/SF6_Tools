@@ -860,7 +860,24 @@ local function draw_stage_reset()
         kv("tick", ("%d  [%s]"):format(p.ticks, tostring(p.state)),
            p.outcome and UIKit.COLORS.Green or UIKit.COLORS.Cyan)
         if p.polling then imgui.text_colored("  waiting on " .. p.polling, UIKit.COLORS.Yellow) end
+        -- The one line that says whether the request was ever raised. #40:
+        -- polling can never see the rising edge of a request this suite raises
+        -- (the engine consumes it between two of our ticks), so this readback -
+        -- taken in the same call as the write - is the evidence. true means the
+        -- request landed; false means it did not and the stage was NOT reset;
+        -- absent means nobody looked.
+        if p.refresh_ack ~= nil then
+            kv("request read back", tostring(p.refresh_ack.after),
+               p.refresh_ack.after == true and UIKit.COLORS.Green or UIKit.COLORS.Red)
+            if p.refresh_ack.before == true then
+                imgui.text_colored("  a refresh was already in flight when we asked",
+                                   UIKit.COLORS.Orange)
+            end
+        end
         if p.reason then imgui.text_colored("  " .. p.reason, UIKit.COLORS.Yellow) end
+        for _, c in ipairs(p.caveats or {}) do
+            imgui.text_colored("  not observed: " .. tostring(c), UIKit.COLORS.Orange)
+        end
         if p.attempt then kv("position attempt", tostring(p.attempt)) end
         if p.position_error then kv("position error", ("%.3f"):format(p.position_error)) end
         kv("inject allowed", tostring(p.inject_allowed))
@@ -881,6 +898,16 @@ local function draw_stage_reset()
         kv("outcome", tostring(res.outcome),
            res.outcome == "ready" and UIKit.COLORS.Green or UIKit.COLORS.Red)
         kv("ticks to ready", tostring(res.stage and res.stage.ticks_to_ready))
+        -- Which evidence the verdict actually rested on. "write_readback" is
+        -- our own request, observed; "poll" is a refresh somebody raised that
+        -- cannot be attributed to us (#40). They are not the same claim and a
+        -- reader of this panel must not have to guess which one a run got.
+        kv("refresh seen high by", tostring(res.stage and res.stage.refresh_high_source),
+           (res.stage and res.stage.refresh_high_source == "write_readback")
+               and UIKit.COLORS.Green or UIKit.COLORS.Orange)
+        for _, c in ipairs((res.stage and res.stage.caveats) or {}) do
+            imgui.text_colored("  not observed: " .. tostring(c), UIKit.COLORS.Orange)
+        end
         for _, w in ipairs(res.write_errors or {}) do
             imgui.text_colored(("  tick %s: %s failed - %s"):format(
                 tostring(w.tick), tostring(w.write), tostring(w.reason)), UIKit.COLORS.Red)

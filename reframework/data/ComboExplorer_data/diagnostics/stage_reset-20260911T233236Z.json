@@ -1,0 +1,272 @@
+{
+    "body": {
+        "outcome": "ready",
+        "refresh_ack": {
+            "after": true,
+            "before": false,
+            "wrote": true
+        },
+        "settings": {
+            "correction_retries": {
+                "provenance": "unused while target_positions is false",
+                "value": 10
+            },
+            "grace_ticks": {
+                "provenance": "guessed: upstream _reset_grace, not measured on this build",
+                "value": 15
+            },
+            "pin": {
+                "provenance": "off for this run",
+                "value": false
+            },
+            "position_tolerance": {
+                "provenance": "unused while target_positions is false",
+                "value": 0.5
+            },
+            "refresh_timeout_ticks": {
+                "provenance": "guessed: a generous budget, fails loudly if short",
+                "value": 600
+            },
+            "settle_ticks": {
+                "provenance": "measured: probe C, 7-9 ticks (median 7) on build 24176760",
+                "value": 9
+            },
+            "settle_timeout_ticks": {
+                "provenance": "guessed: a generous budget, fails loudly if short",
+                "value": 600
+            },
+            "target_positions": {
+                "provenance": "off for this run",
+                "value": false
+            }
+        },
+        "stage": {
+            "corrected": false,
+            "correction_attempts": 0,
+            "grace_ticks": 15,
+            "outcome": "ready",
+            "pinned": false,
+            "refresh_ack": {
+                "after": true,
+                "before": false,
+                "wrote": true
+            },
+            "refresh_high_source": "write_readback",
+            "refresh_observed": true,
+            "refresh_ticks": 1,
+            "refresh_wait_ticks": 0,
+            "settle_run": 9,
+            "settle_ticks_required": 9,
+            "settle_ticks_taken": 22,
+            "state": "ready",
+            "ticks_to_ready": 26,
+            "ticks_total": 26,
+            "unresolved_ticks": 0
+        },
+        "ticks": 26,
+        "unreadable_ticks": 0,
+        "write_errors": null,
+        "writes": {
+            "request_refresh": 1
+        }
+    },
+    "header": {
+        "anchor_hooked": true,
+        "calibration_id": "ESF_006-20260911T180157Z",
+        "config": {
+            "probe_a_idle_ticks": 20,
+            "probe_a_min_samples": 3,
+            "probe_b_min_frames": 300,
+            "sources": {
+                "allow_injection": "default",
+                "enabled": "default",
+                "probe_a_idle_ticks": "default",
+                "probe_a_min_samples": "default",
+                "probe_b_min_frames": "default",
+                "write_diag_files": "default"
+            }
+        },
+        "frame": 11685,
+        "game_patch": "24176760",
+        "mod_version": "0.3.0-diagnostics",
+        "p1": {
+            "id": 6,
+            "key": "ESF_006",
+            "name": "ESF_006"
+        },
+        "p1_control_scheme": "modern",
+        "p2": {
+            "id": 2,
+            "key": "ESF_002",
+            "name": "ESF_002"
+        },
+        "provenance": {
+            "calibration_id": "ESF_006-20260911T180157Z",
+            "capabilities": {
+                "catalog": {
+                    "available": true,
+                    "blocked_by": null
+                },
+                "damage": {
+                    "available": true,
+                    "blocked_by": null
+                },
+                "frame_data": {
+                    "available": false,
+                    "blocked_by": [
+                        "frame_meter_semantics"
+                    ]
+                },
+                "injection": {
+                    "available": true,
+                    "blocked_by": null
+                },
+                "probing": {
+                    "available": true,
+                    "blocked_by": null
+                },
+                "stage_reset": {
+                    "available": true,
+                    "blocked_by": null
+                },
+                "timing": {
+                    "available": true,
+                    "blocked_by": null
+                }
+            },
+            "entries": {
+                "action_id_canonical": {
+                    "gates": [
+                        "catalog"
+                    ],
+                    "measured_by": "calibration_action_sweep",
+                    "status": "verified",
+                    "value": {
+                        "assist|AUTO + 弱": 627,
+                        "manual|2 + 弱": 617,
+                        "manual|DI": 855,
+                        "manual|中 + 强": 900,
+                        "manual|弱": 611,
+                        "manual|弱 + 中 + 强": 901,
+                        "simple|2 + SP": 900,
+                        "simple|2 + SP + 强": 1218
+                    },
+                    "verified_by": "ESF_006-20260911T180157Z"
+                },
+                "combo_damage_readable": {
+                    "gates": [
+                        "damage"
+                    ],
+                    "measured_by": "probe_a_damage",
+                    "status": "verified",
+                    "value": {
+                        "agreed": 15,
+                        "comparable": 18,
+                        "readable": true,
+                        "recommended_source": "both",
+                        "side": "attacker"
+                    },
+                    "verified_by": "ESF_006-20260911T180157Z"
+                },
+                "direction_bits": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "verified",
+                    "value": {
+                        "DOWN": 2,
+                        "LEFT": 4,
+                        "RIGHT": 8,
+                        "UP": 1
+                    },
+                    "verified_by": "ESF_006-20260911T180157Z"
+                },
+                "frame_meter_semantics": {
+                    "gates": [
+                        "frame_data"
+                    ],
+                    "measured_by": "calibration_frame_meter",
+                    "status": "unverified",
+                    "value": {
+                        "BLOCKSTUN": 10,
+                        "HITSTUN": 9,
+                        "RECOVERY": 8,
+                        "STARTUP": 7
+                    }
+                },
+                "hitstop_advances_tick": {
+                    "gates": [
+                        "timing"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "refuted",
+                    "value": true,
+                    "verified_by": "ESF_006-20260911T180157Z"
+                },
+                "input_hook_calls_per_frame": {
+                    "gates": [
+                        "timing"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "verified",
+                    "value": 1,
+                    "verified_by": "ESF_006-20260911T180157Z"
+                },
+                "modern_button_bits": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "partial",
+                    "unwitnessed": [
+                        "AUTO",
+                        "PARRY"
+                    ],
+                    "value": {
+                        "DI": 4096,
+                        "H": 256,
+                        "L": 16,
+                        "M": 128,
+                        "SP": 32,
+                        "THROW": 8192
+                    },
+                    "verified_by": "ESF_006-20260911T180157Z"
+                },
+                "reset_settle_ticks": {
+                    "gates": [
+                        "stage_reset"
+                    ],
+                    "measured_by": "calibration_reset_cost",
+                    "status": "refuted",
+                    "value": 9,
+                    "verified_by": "ESF_006-20260911T180157Z"
+                },
+                "rl_dir_polarity": {
+                    "gates": [
+                        "injection"
+                    ],
+                    "measured_by": "calibration_button_bits",
+                    "status": "verified",
+                    "value": "mirror_when_falsy",
+                    "verified_by": "ESF_006-20260911T180157Z"
+                },
+                "tick_equals_frame": {
+                    "gates": [
+                        "timing",
+                        "frame_data"
+                    ],
+                    "measured_by": "probe_b_clock",
+                    "status": "verified",
+                    "value": {
+                        "frames": 76565,
+                        "ticks_per_frame": 1
+                    },
+                    "verified_by": "ESF_006-20260911T180157Z"
+                }
+            },
+            "game_patch": "24176760"
+        },
+        "written_at": "20260911T233236Z"
+    }
+}

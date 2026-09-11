@@ -276,11 +276,21 @@ function M.hp_arm_usable(victim_index)
     return true, nil
 end
 
+-- true, false, or nil for "could not be read".
+--
+-- This used to return false in all three cases, which quietly turned "nobody
+-- could say" into "the stage is not refreshing" - the one substitution
+-- StageControlFsm is written from top to bottom to refuse. Every nil path in
+-- that machine (unresolved_ticks, "a flag that cannot be read is not a flag
+-- that says no") was therefore dead in production: the only tri-state feeding
+-- it was a two-state.
 function M.is_refreshing()
-    local v = false
+    local v = nil
     pcall(function()
         local tm = sdk.get_managed_singleton("app.training.TrainingManager")
-        if tm and tm:get_field("_IsReqRefresh") == true then v = true end
+        if not tm then return end
+        local f = tm:get_field("_IsReqRefresh")
+        if f == true then v = true elseif f == false then v = false end
     end)
     return v
 end
@@ -323,17 +333,73 @@ end
 -- Raise the training manager's refresh request. It is a REQUEST - the engine
 -- notices it some frames later and clears it when it is done - so this returns
 -- as soon as the flag is set, and the state machine polls for the clear.
+--
+-- THE READBACK, AND WHY IT IS TAKEN HERE  (issue #40, build 24176760)
+--
+-- Polling could never see the rising edge of a request THIS SUITE raises. The
+-- engine's training update runs between two of our on_frame ticks, so by the
+-- time the state machine next looks the flag is already consumed and cleared -
+-- measured as refresh_observed: false and refresh_wait_ticks: 601 on every
+-- single run, while the stage demonstrably did reset. Probe C caught the flag
+-- high on all 11 OPERATOR-raised resets, so the read path was never at fault.
+--
+-- The two statements below are in the same Lua call. No engine code runs
+-- between them. That makes this the one moment at which our own request is
+-- observable, and the readback it produces is the rising edge StageControlFsm
+-- insists on seeing before it will believe the flag going low.
+--
+-- `before` is kept as well as `after`: if the flag was ALREADY high, our write
+-- was a no-op coalesced into somebody else's refresh, and the reading back high
+-- proves nothing about our write. The FSM turns that into a caveat rather than
+-- into a clean ok.
+--
+-- Returns ok, reason, ack - ack being { before, after, wrote, error }, each of
+-- before/after being true, false, or nil for "could not be read". Absent is not
+-- false anywhere in this suite and it is not false here.
+local _refresh_ack = nil
+
 function M.request_refresh()
-    local wrote = false
+    local before, after, wrote = nil, nil, false
     local ok, err = pcall(function()
         local tm = sdk.get_managed_singleton("app.training.TrainingManager")
         if not tm then return end
+        local b = tm:get_field("_IsReqRefresh")
+        if b == true then before = true elseif b == false then before = false end
         tm._IsReqRefresh = true
         wrote = true
+        local a = tm:get_field("_IsReqRefresh")
+        if a == true then after = true elseif a == false then after = false end
     end)
-    if not ok then return false, tostring(err) end
-    if not wrote then return false, "the training manager did not resolve" end
-    return true
+
+    -- #40 recorded the refuted hypothesis for the write itself: going through
+    -- tm:call("set_IsReqRefresh", true) instead of the field was tried on
+    -- hardware and the reset behaved identically, so the field write stays -
+    -- it is also what the other four writers in this suite use.
+    local ack = {
+        before = before,
+        after = after,
+        wrote = wrote,
+        error = (not ok) and tostring(err) or nil,
+    }
+    _refresh_ack = ack
+
+    if not ok then return false, tostring(err), ack end
+    if not wrote then return false, "the training manager did not resolve", ack end
+    return true, nil, ack
+end
+
+-- Hand the last readback over, ONCE.
+--
+-- It is evidence about one frame - the frame the request was written on - so a
+-- second reader would be reading a different frame's evidence, and a run that
+-- took no snapshot in between must not find a stale one waiting. Consuming it
+-- here is what lets every caller of tick_snapshot (StageControl AND the
+-- Injector, which performs the stage's writes itself) receive it without either
+-- of them knowing this exists.
+function M.take_refresh_ack()
+    local ack = _refresh_ack
+    _refresh_ack = nil
+    return ack
 end
 
 -- x is in the units the training menu and the teleporter use: raw sfix / 65536,
@@ -548,6 +614,11 @@ function M.tick_snapshot(attacker_index)
     local snap = M.snapshot(attacker_index)
     if not snap then return nil end
     snap.refreshing = M.is_refreshing()
+    -- The rising edge of OUR request, taken at write time on the previous tick,
+    -- because it is not observable anywhere else on this build (#40). nil on
+    -- every tick that did not follow a request, which is what the FSM expects:
+    -- it consumes it once, on the first tick of WAIT_REFRESH.
+    snap.refresh_ack = M.take_refresh_ack()
     -- nil when RuntimeSafety cannot be asked, and left as nil on purpose:
     -- RunnerFsm abandons on a KNOWN-shut gate and passes on an unknown one, so
     -- coercing to false here would turn "nobody could say" into "the gate is

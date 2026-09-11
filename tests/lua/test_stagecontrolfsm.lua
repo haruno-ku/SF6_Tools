@@ -269,6 +269,174 @@ local bres = blind:result()
 t.eq(bres.outcome, "failed", "the reset fails instead")
 t.ok(bres.unresolved_ticks > 0, "and says how many ticks could not be read")
 
+-- --- the write-time readback (issue #40) --------------------------------------
+
+t.group("the rising edge of OUR OWN request is only visible at write time")
+
+-- What build 24176760 actually does. The engine's training update runs between
+-- two of our on_frame ticks, so a request raised at the end of tick N is
+-- already consumed by the time tick N+1 polls: `refreshing` reads false on
+-- EVERY tick of this script, exactly as the hardware reported
+-- (refresh_observed false, refresh_wait_ticks 601, on a stage that had
+-- demonstrably been reset). The readback the runtime took inside the same call
+-- as the write arrives on tick 2 and is the rising edge.
+local function acked(n, ack, over)
+    return script(n or 40, function(i)
+        local s = {}
+        for k, v in pairs(over and over(i) or {}) do s[k] = v end
+        if i == 2 then s.refresh_ack = ack end
+        return s
+    end)
+end
+
+local seen = SF.new(cfg())
+seen:start()
+local seen_cmds = drive(seen, acked(40, { before = false, after = true }))
+local seen_res = seen:result()
+
+t.eq(seen_res.outcome, "ready",
+     "a request that read back high is a reset that started, even though the "
+     .. "flag never once polled high: " .. tostring(seen_res.reason))
+t.eq(seen_res.refresh_observed, true, "the rising edge counts as observed")
+t.eq(seen_res.refresh_high_source, "write_readback",
+     "and the result says WHERE it was observed, because a readback and a poll "
+     .. "are not the same claim")
+t.is_nil(seen_res.caveats,
+     "with nothing unobserved: the write's own readback attributes the refresh "
+     .. "to this request")
+-- The arithmetic, spelled out: tick 1 requests, tick 2 reads the ack back high
+-- AND reads the flag already low (the falling edge, same tick), 3 corrects,
+-- 4 pins, 5 is inside the grace, then four consecutive good ticks.
+t.eq(first_state(seen_cmds, S.READY), 9,
+     "READY lands on tick 9 - three ticks sooner than the polled path, which is "
+     .. "exactly the flag-high phase that is not observable for our requests")
+t.eq(seen_cmds[2].refresh_cleared, true,
+     "the falling edge is the very next thing after the readback, because the "
+     .. "engine consumed the request between the two ticks")
+
+-- The negative that matters most: the write did not land. Nothing of the engine
+-- runs between the write and the readback, so a flag that is low there was
+-- never raised - and that must NOT be rescued by the stage happening to look
+-- perfect, which it does on every tick of this script.
+local nowrite = SF.new(cfg())
+nowrite:start()
+local nw_cmds = drive(nowrite, acked(40, { before = false, after = false }))
+local nw_res = nowrite:result()
+
+t.eq(nw_res.outcome, "failed",
+     "a request that read back false is a reset that never started")
+t.eq(nw_res.refresh_observed, false, "with no rising edge anywhere")
+t.ok(nw_res.reason:find("never landed") ~= nil,
+     "and the reason says the request never landed rather than blaming a "
+     .. "timeout: " .. tostring(nw_res.reason))
+t.eq(nw_cmds[2].state, S.FAILED,
+     "reported on tick 2, not after the 20-tick budget: waiting proves nothing "
+     .. "once the write is known not to have landed")
+t.eq(count_state(nw_cmds, S.READY), 0, "and the stage never becomes ready")
+
+-- The same script, and the stage is sitting EXACTLY at its default positions,
+-- idle, with no combo running, from the first tick to the last. Judging the
+-- reset by its effect would call this a completed reset. It is a reset that
+-- never happened.
+local default_error = 0
+for _, c in ipairs(nw_cmds) do
+    if c.outcome == "ready" then default_error = default_error + 1 end
+end
+t.eq(default_error, 0,
+     "a stage already at its defaults is never mistaken for a stage that was "
+     .. "just reset to them")
+
+-- A readback that could not be READ is not a readback that said no. It falls
+-- back to the poll, and if that finds nothing either the reset fails saying
+-- which evidence was missing - "nobody found out" stays distinct from "it did
+-- not happen".
+local blind_ack = SF.new(cfg())
+blind_ack:start()
+drive(blind_ack, acked(40, { before = nil, after = nil, error = "no training manager" }))
+local ba_res = blind_ack:result()
+t.eq(ba_res.outcome, "failed", "an unreadable readback with no polled rise fails")
+t.ok(ba_res.reason:find("could not be read") ~= nil,
+     "naming the readback as the evidence that was missing: " .. tostring(ba_res.reason))
+t.ok(ba_res.reason:find("unknown") ~= nil,
+     "and saying the answer is unknown rather than no")
+t.eq(ba_res.refresh_ack.error, "no training manager",
+     "with the adapter's own reason carried into the result")
+
+-- The runtime never got as far as writing - no training manager, or the write
+-- threw. Waiting out the budget would bury the adapter's own reason under a
+-- timeout that says nothing.
+local unwritten = SF.new(cfg())
+unwritten:start()
+local uw_cmds = drive(unwritten, acked(40, {
+    wrote = false, before = nil, after = nil,
+    error = "the training manager did not resolve",
+}))
+local uw_res = unwritten:result()
+t.eq(uw_res.outcome, "failed", "a request that was never written fails at once")
+t.eq(uw_cmds[2].state, S.FAILED, "on tick 2")
+t.ok(uw_res.reason:find("never written") ~= nil,
+     "saying so rather than timing out: " .. tostring(uw_res.reason))
+t.ok(uw_res.reason:find("training manager") ~= nil,
+     "and carrying the runtime's own reason, so the fix is visible")
+
+-- Nobody wired a readback up at all. This is the pre-#40 behaviour, kept
+-- deliberately so an adapter that does not report one is no worse than before -
+-- but the failure now says that is what happened, instead of leaving the reader
+-- to conclude the game ignored the request.
+local no_ack = SF.new(cfg())
+no_ack:start()
+drive(no_ack, script(40))
+local na_res = no_ack:result()
+t.eq(na_res.outcome, "failed", "no readback and no polled rise is still a failure")
+t.is_nil(na_res.refresh_ack, "with no readback recorded")
+t.ok(na_res.reason:find("no write%-time readback") ~= nil,
+     "and the reason names the missing wiring: " .. tostring(na_res.reason))
+
+t.group("a refresh that cannot be attributed to us is reported, not assumed")
+
+-- The flag polls high, but we have no readback of our own write. That rise may
+-- be the operator's RESET ONCE - Probe C caught eleven of those - and there is
+-- nothing here tying it to this request. The reset finishes; the result says
+-- what was not observed.
+local polled = SF.new(cfg())
+polled:start()
+drive(polled, ordinary())
+local pol_res = polled:result()
+t.eq(pol_res.outcome, "ready", "a polled refresh still completes the reset")
+t.eq(pol_res.refresh_high_source, "poll", "by the polled route")
+t.ok(pol_res.caveats ~= nil and pol_res.caveats[1]:find("attributed") ~= nil,
+     "carrying a caveat that it cannot be attributed to this request: "
+     .. tostring(pol_res.caveats and pol_res.caveats[1]))
+
+-- The flag was ALREADY high when we asked. Raising a raised flag is a no-op, so
+-- our request was coalesced into somebody else's refresh - which may have read
+-- the training menu before write_setup touched it. The stage is still being
+-- refreshed, so this is not a failure; it is a ready with something missing.
+local overlapped = SF.new(cfg())
+overlapped:start()
+drive(overlapped, acked(40, { before = true, after = true }))
+local ov_res = overlapped:result()
+t.eq(ov_res.outcome, "ready", "a coalesced request still ends in a reset stage")
+t.eq(ov_res.refresh_overlapped, true, "and records that it was coalesced")
+t.ok(ov_res.caveats ~= nil and ov_res.caveats[1]:find("already high") ~= nil,
+     "with the caveat naming what that costs: " .. tostring(ov_res.caveats and ov_res.caveats[1]))
+
+t.group("the readback belongs to one frame")
+
+-- It is evidence about the tick the request was written on. An ack arriving
+-- three ticks later is a different frame's evidence and must not be believed,
+-- or a stale latch becomes a reset nobody performed.
+local stale = SF.new(cfg())
+stale:start()
+drive(stale, script(40, function(i)
+    if i == 6 then return { refresh_ack = { before = false, after = true } } end
+    return nil
+end))
+local st_res = stale:result()
+t.eq(st_res.outcome, "failed",
+     "a readback that arrives on a later tick is not this request's readback")
+t.eq(st_res.refresh_observed, false, "so no rising edge was ever observed")
+
 -- --- correction --------------------------------------------------------------
 
 t.group("position correction retries, and reports not converging")

@@ -46,6 +46,72 @@
 -- means the flag could not be read, which is a different fact, and `not
 -- refreshing` would quietly turn one into the other.
 --
+-- WHERE "SEEN HIGH" HAS TO BE TAKEN ON BUILD 24176760  (issue #40)
+--
+-- All of the above still holds. What was wrong was WHERE the rising edge was
+-- looked for. Measured on hardware, build 24176760, 2026-09-11:
+--
+--   * Every reset this machine asked for reported refresh_observed: false and
+--     refresh_wait_ticks: 601 - the timeout, every single time.
+--   * The reset HAD happened. P1 walked from -150 to 0.150; one RESET ONCE put
+--     it back at -150. The writes work; the observation did not.
+--   * The read path is not the problem either. Probe C caught the flag high for
+--     all 11 OPERATOR-raised resets, each for exactly one tick
+--     (refresh_ticks: min 1, max 1).
+--
+-- So this was never "a one-tick flag is easy to miss". It is WHOSE request it
+-- is. The engine's training update runs between two of our on_frame ticks, so a
+-- request raised at the end of tick N has already been consumed and cleared by
+-- the time we poll at tick N+1. A request the operator raises is raised inside
+-- the engine's own frame and is still up when we next look. Polling can observe
+-- every refresh EXCEPT the ones this machine asks for.
+--
+-- The rising edge is therefore taken in the only place it exists for our own
+-- request: immediately after the write, in the same Lua call, before any engine
+-- code can run. GameAdapter.request_refresh reads the flag back and reports
+-- { before, after }; the runtime hands that to the next snapshot as
+-- `refresh_ack` and this module consumes it. after == true IS the rising edge,
+-- observed - not a weaker observation than the poll but a stronger one, because
+-- nothing else can have raised it in between. A later tick reading false is
+-- then the falling edge, and both edges belong to one request that is ours.
+--
+-- after == false is the case the old code could not tell apart from any of
+-- this: no engine code ran between the write and the read, so a flag that is
+-- low there was never raised. That is reported as a FAILED reset naming the
+-- write, not as a timeout - "it never started" stays distinguishable from "it
+-- completed", which is the whole point of the wait.
+--
+-- WHAT WAS CONSIDERED INSTEAD, AND WHY IT LOST
+--
+--   * "Judge by the effect - see the positions back at their spawn values."
+--     It cannot tell a completed reset from a stage that never moved: on a
+--     stage already at its defaults the test reads true before the request is
+--     even written, which is exactly the unfalsifiable completion test this is
+--     replacing. StageControl also ships target_positions = false, so there is
+--     no default to compare against at all. The effect check survives where it
+--     belongs - as a CORROBORATOR inside SETTLE, never as the completion test.
+--   * "Hook set_IsReqRefresh and catch the engine side."
+--     SF6_DistanceViewer.lua:3306 does exactly this and it does fire - for the
+--     SETTER. A field write (tm._IsReqRefresh = true, which is what this suite
+--     uses everywhere, and #40 measured that going through the setter changes
+--     nothing about whether the reset happens) never calls it, so the hook
+--     cannot see our request. Whether the engine CLEARS through the setter is
+--     unknown and cannot be found out from here. A hook that never fires is
+--     indistinguishable from a reset that never happened - the same false
+--     negative this issue is about - and it costs a permanent, un-removable
+--     second hook on a method a shipping module in this suite already owns.
+--
+-- WHEN THE EVIDENCE IS INCOMPLETE, THE RESULT SAYS SO
+--
+-- Two cases reach READY without the full chain of evidence, and both attach a
+-- caveat to the result rather than being quietly promoted to a clean ok:
+--
+--   * the flag was ALREADY high when the request was written (someone else's
+--     refresh was in flight and ours was coalesced into it - so the training
+--     menu write_setup made this tick may have been read before it was made);
+--   * the rising edge came from the poll and not from a readback, so it cannot
+--     be attributed to this request rather than to the operator's.
+--
 -- THE TICK COUNTS ARE NOT KNOWN, AND ARE NOT DEFAULTED
 --
 -- How long settling takes, how long the counter lies for, how close a position
@@ -215,6 +281,16 @@ function Fsm:reset()
     self.refresh_wait_ticks = 0
     self.refresh_ticks = 0
 
+    -- The write-time readback and what it decided. `refresh_ack_seen` exists so
+    -- the ack is consumed exactly once: it belongs to the tick the request was
+    -- written on, and a second look at a later tick would be looking at a
+    -- different frame's evidence.
+    self.refresh_ack = nil
+    self.refresh_ack_seen = false
+    self.refresh_high_source = nil
+    self.refresh_overlapped = nil
+    self.caveats = {}
+
     self.correction_attempts = 0
     self.position_error = nil
     self.corrected = nil
@@ -259,15 +335,29 @@ local function pin_command(self)
     return self.cfg.pin
 end
 
+-- Something that was NOT observed, recorded against an outcome that is
+-- otherwise fine. A caveat never changes the outcome - it is the difference
+-- between "ready" and "ready, and here is the part of the chain of evidence
+-- that is missing", which a reader of the artifact has to be able to see.
+local function add_caveat(self, text)
+    self.caveats[#self.caveats + 1] = text
+end
+
+local function caveat_list(self)
+    if #self.caveats == 0 then return nil end
+    return self.caveats
+end
+
 local function finish(self, outcome, reason, state)
     self.outcome = outcome
     self.reason = reason
     self.state = state
     if outcome == M.OUTCOME.READY then
         self.ticks_to_ready = self.ticks
-        return command(self, state, { pin_resources = pin_command(self) })
+        return command(self, state, { pin_resources = pin_command(self),
+                                      caveats = caveat_list(self) })
     end
-    return command(self, state)
+    return command(self, state, { caveats = caveat_list(self) })
 end
 
 local function enter(self, state)
@@ -335,9 +425,19 @@ end
 
 -- --- the machine -------------------------------------------------------------
 
--- snap is the GameAdapter snapshot for this tick plus `refreshing`, which
--- GameAdapter.snapshot() does not carry: it is a training-manager flag, read by
--- GameAdapter.is_refreshing(), and the runtime layer puts the two together.
+-- snap is the GameAdapter snapshot for this tick plus two fields
+-- GameAdapter.snapshot() does not carry, because neither is a player read and
+-- the runtime layer is what puts them together:
+--
+--   snap.refreshing   : the _IsReqRefresh flag as it reads NOW, tri-state.
+--   snap.refresh_ack  : the readback GameAdapter.request_refresh took in the
+--                       same Lua call as the write, { before, after, error },
+--                       delivered on the tick AFTER the request (the write
+--                       happens when the runtime performs the REQUEST command,
+--                       which is after that tick's snapshot was taken). nil
+--                       when the runtime reported none - an older or
+--                       hand-rolled adapter - in which case this falls back to
+--                       polling and says in its result that it did.
 function Fsm:tick(snap)
     if self.state == M.STATE.IDLE then
         return command(self, M.STATE.IDLE, { reason = "not started" })
@@ -374,7 +474,7 @@ function Fsm:tick(snap)
     if self.state == M.STATE.REQUEST then
         return self:_request()
     elseif self.state == M.STATE.WAIT_REFRESH then
-        return self:_wait_refresh(refreshing)
+        return self:_wait_refresh(refreshing, snap.refresh_ack)
     end
 
     self.since_cleared = self.since_cleared + 1
@@ -415,24 +515,120 @@ function Fsm:_request()
     })
 end
 
-function Fsm:_wait_refresh(refreshing)
+-- The write-time readback, consumed once, on the first WAIT_REFRESH tick after
+-- the request was written. Returns a finishing command when the readback
+-- settles the question by itself, and nil when the machine should go on.
+--
+-- See the header: on build 24176760 this is the only place our own request is
+-- ever observable, because the engine consumes it before the next poll.
+function Fsm:_consume_ack(ack)
+    self.refresh_ack_seen = true
+    if type(ack) ~= "table" then return nil end
+
+    self.refresh_ack = { before = ack.before, after = ack.after,
+                         wrote = ack.wrote, error = ack.error }
+
+    -- The runtime says it never got as far as writing - no training manager, or
+    -- the write threw. There is nothing to wait for, and a 600-tick budget
+    -- spent on it would bury the adapter's own reason under a timeout.
+    if ack.wrote == false then
+        return finish(self, M.OUTCOME.FAILED,
+            ("the refresh request was never written: %s - so the stage was not "
+             .. "reset and nothing was waited for")
+            :format(tostring(ack.error or "the runtime did not say why")),
+            M.STATE.FAILED)
+    end
+
+    if ack.before == true then
+        -- Raising a flag that is already raised is a no-op, so our request was
+        -- coalesced into somebody else's refresh. The stage is still being
+        -- refreshed - this is not a failure - but the training-menu writes
+        -- write_setup made on the REQUEST tick may have been read before they
+        -- were written, so the stage that comes back may not be the one asked
+        -- for. That is a thing NOT observed, and it travels with the result.
+        self.refresh_overlapped = true
+        add_caveat(self, "_IsReqRefresh was already high when this request was "
+            .. "written, so the refresh that was observed was raised by "
+            .. "something else and this request was coalesced into it - any "
+            .. "training-menu write made on the same tick may have been read "
+            .. "before it was made")
+    end
+
+    if ack.after == true then
+        -- The rising edge. Taken inside the same Lua call as the write, so no
+        -- engine code has run and nothing else can have raised it: this is a
+        -- stronger observation than the poll, not a weaker one.
+        self.refresh_seen_high = true
+        self.refresh_high_source = "write_readback"
+        self.refresh_ticks = 1
+        return nil
+    end
+
+    if ack.after == false then
+        -- Nothing ran between the write and this read, so the flag was never
+        -- raised at all. "It never started" and "it completed before we looked"
+        -- are the two answers the old timeout could not separate; this one is
+        -- the first, stated as such.
+        return finish(self, M.OUTCOME.FAILED,
+            ("_IsReqRefresh read back false in the same call as the write, "
+             .. "before any engine code could run - the request never landed "
+             .. "and the stage was not reset (the flag read %s before the "
+             .. "write%s)")
+            :format(tostring(ack.before),
+                    ack.error and (", write error: " .. tostring(ack.error)) or ""),
+            M.STATE.FAILED)
+    end
+
+    -- after == nil: the readback could not be read. That is not a no; it is
+    -- nobody having found out, so the poll below still gets its chance and the
+    -- timeout reason says which of the two evidences was missing.
+    return nil
+end
+
+function Fsm:_wait_refresh(refreshing, ack)
     -- Nothing is emitted here but the poll. An input written during a refresh
     -- is swallowed and the trial silently produces nothing.
+    if not self.refresh_seen_high and not self.refresh_ack_seen then
+        local finished = self:_consume_ack(ack)
+        if finished then return finished end
+    end
+
     if not self.refresh_seen_high then
         if refreshing == true then
             self.refresh_seen_high = true
+            self.refresh_high_source = "poll"
             self.refresh_ticks = 1
+            -- A polled rise is a rise SOMEBODY caused. Without a readback of
+            -- our own write there is nothing tying it to this request rather
+            -- than to the operator's - which is precisely the confusion #40
+            -- measured - so the reset may still finish, and it says so.
+            add_caveat(self, ("the refresh was observed by polling rather than "
+                .. "by reading back our own write (%s), so it cannot be "
+                .. "attributed to this request rather than to one the game or "
+                .. "the operator raised")
+                :format(self.refresh_ack == nil
+                    and "the runtime reported no write-time readback"
+                    or "the write-time readback could not be read"))
             return command(self, M.STATE.WAIT_REFRESH, { polling = "refresh_to_clear" })
         end
         self.refresh_wait_ticks = self.refresh_wait_ticks + 1
         if self.refresh_wait_ticks > self.cfg.refresh_timeout_ticks then
             -- Not "the refresh finished instantly": that is indistinguishable
             -- from "the request never took", and guessing which would start a
-            -- trial on a stage nobody reset.
+            -- trial on a stage nobody reset. Which evidence was missing is
+            -- named, because "no readback was offered" (a runtime that is not
+            -- wired up) and "the readback was unreadable" (a game that would
+            -- not answer) are different problems with the same symptom.
+            local missing = (self.refresh_ack == nil)
+                and "the runtime reported no write-time readback at all, and on "
+                 .. "build 24176760 a request this machine raises is consumed "
+                 .. "before the next poll can see it"
+                or ("the write-time readback could not be read (%s)")
+                    :format(tostring(self.refresh_ack.error or "no value"))
             return finish(self, M.OUTCOME.FAILED,
                 ("_IsReqRefresh was requested and never observed high within %d "
-                 .. "ticks, so whether the stage was reset at all is unknown")
-                :format(self.cfg.refresh_timeout_ticks),
+                 .. "ticks, so whether the stage was reset at all is unknown: %s")
+                :format(self.cfg.refresh_timeout_ticks, missing),
                 M.STATE.FAILED)
         end
         return command(self, M.STATE.WAIT_REFRESH, { polling = "refresh_to_rise" })
@@ -568,6 +764,15 @@ function Fsm:result()
         refresh_wait_ticks = self.refresh_wait_ticks,
         refresh_ticks = self.refresh_ticks,
         refresh_observed = self.refresh_seen_high,
+        -- "write_readback" | "poll" | nil. The two are not equivalent evidence
+        -- and a reader of the artifact has to be able to tell which one a run
+        -- rested on - see the header.
+        refresh_high_source = self.refresh_high_source,
+        refresh_ack = self.refresh_ack,
+        refresh_overlapped = self.refresh_overlapped,
+        -- What was NOT observed on an outcome that is otherwise fine. Never a
+        -- substitute for the outcome, always attached to it.
+        caveats = caveat_list(self),
         settle_ticks_taken = self.settle_ticks_taken,
         settle_run = self.settle_run,
         correction_attempts = self.correction_attempts,

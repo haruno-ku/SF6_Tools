@@ -31,7 +31,12 @@ local function adapter(opts)
     return {
         request_refresh = function()
             record("request_refresh")
-            return answer("request_refresh")
+            local ok, reason = answer("request_refresh")
+            -- The third return is the readback the real adapter takes inside
+            -- the same call as the write. `opts.ack` is what this fake claims
+            -- to have seen; absent means an adapter that reports none, which
+            -- is the pre-#40 behaviour and has to go on working.
+            return ok, reason, opts.ack
         end,
         set_position = function(index, x)
             record("set_position")
@@ -246,6 +251,167 @@ do
     t.ok(tostring(why):find("already running") ~= nil, "and says why: " .. tostring(why))
     SC.stop()
     t.eq(SC.running(), false, "stopping clears it")
+end
+
+-- --- the write-time readback reaches the machine (issue #40) -------------------
+
+t.group("the readback the request write took is carried to the next tick")
+
+-- The flag is false on every single tick, which is what build 24176760 does for
+-- a request this suite raises: the engine's training update runs between two of
+-- our on_frame ticks and has already consumed it by the time we poll. Measured
+-- on hardware as refresh_observed false and refresh_wait_ticks 601, on a stage
+-- that had demonstrably been reset (P1 walked from -150 to 0.150, one RESET
+-- ONCE put it back). Nothing here ever polls the flag high, and the reset still
+-- has to complete.
+local function never_high(n)
+    local out = {}
+    for i = 1, (n or 60) do out[i] = snap() end
+    return out
+end
+
+do
+    SC.stop()
+    local a, log = adapter({ snapshots = never_high(),
+                             ack = { before = false, after = true } })
+    SC.start({ adapter = a })
+
+    local cmd
+    for _ = 1, 60 do
+        cmd = SC.tick()
+        if cmd and cmd.outcome ~= nil then break end
+    end
+
+    t.eq(cmd.outcome, Fsm.OUTCOME.READY,
+         "a reset whose flag is never polled high still completes, because the "
+         .. "write read it back: " .. tostring(cmd and cmd.reason))
+    local res = SC.result()
+    t.eq(res.stage.refresh_high_source, "write_readback",
+         "and the result says the readback is what saw it")
+    t.eq(res.stage.refresh_ack.after, true, "carrying the readback itself")
+    t.is_nil(res.stage.caveats, "with nothing left unobserved")
+    t.eq(res.writes.request_refresh, 1,
+         "the refresh was still requested exactly once, not once per tick")
+    t.eq(log.calls.request_refresh, 1, "and the adapter was asked once")
+    SC.stop()
+end
+
+do
+    -- The write did not land. Every snapshot in this run is a perfectly settled
+    -- stage sitting at its defaults - judging the reset by its effect would
+    -- call it done - and the readback says the request was never raised.
+    SC.stop()
+    local a = adapter({ snapshots = never_high(),
+                        ack = { before = false, after = false } })
+    SC.start({ adapter = a })
+
+    local cmd
+    for _ = 1, 60 do
+        cmd = SC.tick()
+        if cmd and cmd.outcome ~= nil then break end
+    end
+
+    t.eq(cmd.outcome, Fsm.OUTCOME.FAILED,
+         "a request that read back false fails the reset")
+    local res = SC.result()
+    t.eq(res.ticks, 2, "on the tick after the write, not after the 600-tick budget")
+    t.ok(tostring(res.stage.reason):find("never landed") ~= nil,
+         "saying the request never landed: " .. tostring(res.stage.reason))
+    t.eq(res.refresh_ack.after, false,
+         "and the run keeps the readback the adapter reported")
+    SC.stop()
+end
+
+do
+    -- perform() hands the observation back so a caller that drives its own
+    -- snapshot can wire it up. The Injector is such a caller.
+    local a = adapter({ ack = { before = false, after = true } })
+    local did, failed, observed = SC.perform({ state = "request", request_refresh = true }, a, 0)
+    t.eq(#did, 1, "the write is still reported")
+    t.eq(#failed, 0, "and it landed")
+    t.eq(observed.refresh_ack.after, true, "with the readback returned alongside")
+
+    local a2 = adapter({})
+    local _, _, obs2 = SC.perform({ state = "request", request_refresh = true }, a2, 0)
+    t.is_nil(obs2.refresh_ack,
+             "an adapter that reports no readback produces no readback, rather "
+             .. "than a fabricated one")
+
+    local _, _, obs3 = SC.perform({ state = "settle" }, a2, 0)
+    t.is_nil(obs3.refresh_ack, "and a tick that requested nothing observes nothing")
+end
+
+do
+    -- One frame's evidence, delivered once. If the shim re-attached it the
+    -- machine would keep being told the request had just been raised.
+    SC.stop()
+    local seen = {}
+    local a = adapter({ snapshots = never_high(),
+                        ack = { before = false, after = true } })
+    local real_snapshot = a.tick_snapshot
+    a.tick_snapshot = function(index)
+        local s = real_snapshot(index)
+        if s then seen[#seen + 1] = s end
+        return s
+    end
+    SC.start({ adapter = a })
+    for _ = 1, 6 do SC.tick() end
+
+    t.is_nil(seen[1].refresh_ack,
+             "the tick that asks for the refresh has not written it yet")
+    t.eq(seen[2].refresh_ack.after, true, "the next tick carries the readback")
+    t.is_nil(seen[3].refresh_ack, "and no tick after that does")
+    t.is_nil(seen[4].refresh_ack, "none at all")
+    SC.stop()
+end
+
+do
+    -- GameAdapter latches the readback into its own tick_snapshot as well, so
+    -- with the real adapter both routes carry it and they are the same table.
+    -- Where they disagree, what THIS run's own write returned wins: the latch
+    -- is adapter-wide state that another machine requesting a refresh on the
+    -- same frames could have written. Attributing a refresh to the request that
+    -- caused it is the whole of #40.
+    --
+    -- The snapshot claims the write landed and this run's own write says it did
+    -- not, so which one was believed is visible in the outcome.
+    SC.stop()
+    local snaps = never_high()
+    snaps[2].refresh_ack = { before = false, after = true }
+    local a = adapter({ snapshots = snaps, ack = { before = false, after = false } })
+    SC.start({ adapter = a })
+
+    local cmd
+    for _ = 1, 60 do
+        cmd = SC.tick()
+        if cmd and cmd.outcome ~= nil then break end
+    end
+    t.eq(cmd.outcome, Fsm.OUTCOME.FAILED,
+         "this run's own write is believed over a readback somebody else latched")
+    t.eq(SC.result().stage.refresh_ack.after, false, "and it is the one recorded")
+    SC.stop()
+end
+
+do
+    -- ...and an adapter that reports no readback of its own does NOT fall back
+    -- to the latch being empty and inventing one. The snapshot's is used when
+    -- there is nothing else, which is the Injector's route.
+    SC.stop()
+    local snaps = never_high()
+    snaps[2].refresh_ack = { before = false, after = true }
+    local a = adapter({ snapshots = snaps })
+    SC.start({ adapter = a })
+
+    local cmd
+    for _ = 1, 60 do
+        cmd = SC.tick()
+        if cmd and cmd.outcome ~= nil then break end
+    end
+    t.eq(cmd.outcome, Fsm.OUTCOME.READY,
+         "a readback that arrives only on the snapshot still reaches the machine")
+    t.eq(SC.result().stage.refresh_high_source, "write_readback",
+         "and is what the rising edge was seen by")
+    SC.stop()
 end
 
 -- --- the settings are not invented --------------------------------------------
