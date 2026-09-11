@@ -394,7 +394,7 @@ tools/lua/                           the offline CLIs and their JSON codec - nev
   survey.lua                         31 characters: the frame-data join
   explore.lua                        one character, every candidate
   characters.lua                     reads data/characters.json
-tests/lua/                           unit tests (3245 assertions)
+tests/lua/                           unit tests (3332 assertions)
 docs/ComboExplorer/                  the plan, the work split and the reports
 ```
 
