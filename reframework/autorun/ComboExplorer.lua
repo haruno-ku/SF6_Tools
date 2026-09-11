@@ -278,6 +278,31 @@ local function load_catalog()
     probe_d.load_error = cat and nil or (problems and problems[1] and problems[1].reason)
 end
 
+-- The name the worklist and the trial log are FILED under.
+--
+-- NOT _shared_player_info.key. On this build that is the character enum's
+-- internal key - "ESF_006" - so the sweep built
+-- worklist/esf_006-modern.json, found nothing, and reported "no worklist for
+-- ESF_006": a sentence about a missing file for a name that was never a
+-- filename. Same fault CatalogLocator.lua was extracted to fix, on the other
+-- path built from the same field.
+--
+-- The catalog answers it, because the catalog is the one that was matched to
+-- THIS player by fighter_id, and its _meta.character is what the worklist
+-- generator named its output after. Sweep.start then checks the two agree by
+-- ac/bcm checksum, so a wrong name here cannot turn into a run against the
+-- wrong character's pairs - it turns into a refusal.
+--
+-- nil when no catalog is loaded, which is not a fallback to the key: the sweep
+-- needs the catalog anyway, and "load the catalog first" is the useful thing to
+-- say. Guessing a filename from ESF_006 is what produced the misleading message.
+local function character_file_key()
+    local cat = probe_d.catalog
+    local name = cat and cat.character
+    if type(name) ~= "string" or name == "" then return nil end
+    return (name:gsub("[^%w_]", ""))
+end
+
 -- Control scheme is polled on its own counter rather than on Clock.frame: the
 -- anchor can fail to install, in which case Clock.frame stays at zero forever
 -- and a value cached against it would never be re-read. Re-polled while nil for
@@ -999,7 +1024,12 @@ local function draw_trial()
             else
                 local route = {
                     id = ("t-%d-%d"):format(a.action_id, b.action_id),
-                    character = live.p1_char and tostring(live.p1_char.key) or "unknown",
+                    -- The catalog's name, not the enum key, so a single trial's
+                    -- row and a sweep's rows say the same word for the same
+                    -- fighter. Reachable only with a catalog loaded - a and b
+                    -- come out of it - so the fallback is for a shape nobody
+                    -- has produced rather than for the ESF_006 case.
+                    character = character_file_key() or "unknown",
                     control_scheme = live.p1_control or "modern",
                     steps = {
                         { index = 1, action_id = a.action_id,
@@ -1070,7 +1100,7 @@ end
 local function draw_sweep()
     imgui.text_colored(T("sweep_help"), UIKit.COLORS.Grey)
 
-    local char = live.p1_char and tostring(live.p1_char.key) or nil
+    local char = character_file_key()
     local scheme = live.p1_control or "modern"
     local wl_path = char
         and ("ComboExplorer_data/worklist/%s-%s.json"):format(char:lower(), scheme)
@@ -1092,9 +1122,20 @@ local function draw_sweep()
         if UIKit.styled_button(T("sweep_start") .. "##ce_sweep", THEME.go, UIKit.COLORS.White) then
             sweep.last_status = nil
             sweep.last_result = nil
-            local wl, werr = wl_path and Sweep.load_worklist(wl_path) or nil, nil
+            -- Written out rather than as `wl_path and load(...) or nil, nil`,
+            -- which parsed as one expression plus a literal nil: werr was
+            -- ALWAYS nil, so load_worklist's specific reason - wrong schema, no
+            -- pairs, or the path it actually looked at - was discarded and the
+            -- operator got the generic sentence for all of them.
+            local wl, werr
+            if not wl_path then
+                werr = "no catalog is loaded, so the worklist for this character "
+                    .. "cannot be named - load it in PROBE D first"
+            else
+                wl, werr = Sweep.load_worklist(wl_path)
+            end
             if not wl then
-                sweep.last_status = tostring(werr or ("no worklist for " .. tostring(char)))
+                sweep.last_status = tostring(werr or "the worklist could not be loaded")
             else
                 -- Resume reads the previous file as TEXT, because a truncated
                 -- last line is information the collector knows how to read.
