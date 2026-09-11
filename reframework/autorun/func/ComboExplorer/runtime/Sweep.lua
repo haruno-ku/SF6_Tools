@@ -126,7 +126,12 @@ end
 --                   a sweep that did not happen
 -- opts.provenance : the register, passed through to every trial
 -- opts.injector   : substituted by tests
--- opts.delay      : ticks between A and B. One value for this pass
+-- opts.delay      : ticks between A and B, one value for this pass
+-- opts.delays     : one per gap, for a route with more than one. Either form is
+--                   accepted and BOTH are used - this used to store `delays` and
+--                   then read only `delay`, so a caller that passed a list got a
+--                   sweep that ran at nil delay and skipped every pair while
+--                   reporting itself finished
 function M.start(opts)
     opts = opts or {}
     if run then return nil, "a sweep is already running" end
@@ -251,9 +256,13 @@ function M.tick()
     end
 
     local key = pair_key(p)
+    -- ResultCollector.delay_list accepts a number or a list, so whichever form
+    -- the caller gave is handed through unchanged. Reading `run.delay` alone
+    -- here was the bug: with a list supplied, this key was built from nil, the
+    -- claim was refused, and the pair counted as skipped.
     local spec_for_claim = {
         edge_id = key, attempt = (run.attempts[key] or 0) + 1,
-        delay = run.delay,
+        delay = run.delays or run.delay,
     }
     -- Skipping is the collector's decision, not this file's: it is the one that
     -- read the previous run's file and knows what is already answered.
@@ -273,6 +282,7 @@ function M.tick()
         allow_injection = run.allow_injection,
         route = route_for(p),
         delay = run.delay,
+        delays = run.delays,
         expected = { [1] = { p.a_id }, [2] = { p.b_id } },
         edge_id = key,
         attempt = run.attempts[key],

@@ -403,8 +403,15 @@ function M.record(collector)
     if not spec then return nil, "the trial produced no record, which is its answer" end
     if not collector then return spec end
 
+    -- write(), not trial(). M.trial takes ONE argument and only BUILDS a record;
+    -- this was calling it with two, so the collector was being validated as if
+    -- it were the spec and the record was never appended to anything.
+    --
+    -- It went unnoticed because the only caller is Sweep, which passes nil to
+    -- get the spec and does its own write. The moment anything recorded a trial
+    -- through this path it would have silently written nothing.
     local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
-    return ResultCollector.trial(collector, spec)
+    return ResultCollector.write(collector, spec)
 end
 
 function M.result()

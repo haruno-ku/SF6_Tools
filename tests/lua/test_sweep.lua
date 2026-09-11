@@ -16,7 +16,8 @@ local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
 -- outcomes : per start, what that trial will do. An entry is
 --   { outcome = "judged", retryable = false }  or  { refuse = "why" }
 local function injector(outcomes)
-    local state = { started = {}, ticks = 0, running = false, n = 0, recorded = 0 }
+    local state = { started = {}, delays = {}, delay = {},
+                    ticks = 0, running = false, n = 0, recorded = 0 }
     local cur = nil
     local api
     api = {
@@ -27,6 +28,8 @@ local function injector(outcomes)
             local plan = outcomes[state.n] or { outcome = "judged" }
             if plan.refuse then return nil, plan.refuse end
             state.started[#state.started + 1] = opts.edge_id
+            state.delays[#state.delays + 1] = opts.delays
+            state.delay[#state.delay + 1] = opts.delay
             cur = plan
             state.running = true
             return true
@@ -294,6 +297,28 @@ do
     t.ok(Sweep.start({ worklist = worklist(1), collector = c, injector = injector({}),
                        delays = { 4 }, allow_injection = true }) ~= nil,
          "while a delay list is accepted")
+    Sweep.stop()
+end
+
+do
+    Sweep.stop()
+    -- ACCEPTED IS NOT USED. The assertion above - that a delay list starts a
+    -- sweep - was the only one there was, and it passed while `delays` was
+    -- stored and then never read again: every trial ran on the nil scalar, so
+    -- the collector could not build a key, every claim was refused, every pair
+    -- counted as skipped, and the sweep reported itself finished having pressed
+    -- nothing. Accepted, recorded as accepted, and silently ignored.
+    local inj = injector({})
+    local c = collector()
+    t.ok(Sweep.start({ worklist = worklist(3), collector = c, injector = inj,
+                       delays = { 5 }, allow_injection = true }))
+    drive()
+
+    local r = Sweep.result()
+    t.eq(r.finished, 3, "with a delay LIST, the pairs actually run")
+    t.eq(r.skipped, 0, "none of them is skipped for want of a key")
+    t.eq(#inj.log.started, 3, "and the injector was started for each")
+    t.eq_list(inj.log.delays[1], { 5 }, "the list reached the injector unchanged")
     Sweep.stop()
 end
 

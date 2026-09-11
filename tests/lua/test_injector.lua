@@ -213,4 +213,104 @@ do
     _G._shared_input_post = saved
 end
 
+-- --- recording a finished trial -------------------------------------------------
+
+t.group("record() hands the trial to the collector, and the collector writes it")
+
+-- The bug this is written against: `ResultCollector.trial(collector, spec)`.
+-- M.trial takes ONE argument and only BUILDS a record, so the collector was
+-- being validated as if it were the spec and nothing was ever appended.
+--
+-- It survived because the only caller is Sweep, which passes nil to get the
+-- spec back and does its own write. Anything recording through this path would
+-- have written nothing, silently.
+
+local StageControlFsm = require("func/ComboExplorer/core/StageControlFsm")
+
+-- The snapshot shape both machines read, plus the two fields tick_snapshot adds.
+local function snap(over)
+    local s = {
+        refreshing = false,
+        attacker_pos = -150, victim_pos = 150,
+        attacker_act_st = 0, victim_act_st = 0,
+        combo_count = 0, guard_count = 0,
+        attacker_hp = 10000, victim_hp = 10000,
+        attacker_action_id = 1, attacker_hitstop = 0,
+        can_inject = true,
+    }
+    for k, v in pairs(over or {}) do s[k] = v end
+    return s
+end
+
+local function adapter()
+    local log = { ticks = 0 }
+    return {
+        tick_snapshot = function()
+            log.ticks = log.ticks + 1
+            -- One tick of REQUEST, three with the flag high, then clear.
+            if log.ticks >= 2 and log.ticks <= 4 then
+                return snap({ refreshing = true })
+            end
+            return snap()
+        end,
+        request_refresh = function() return true end,
+        set_position = function() return true end,
+        pin_resources = function() return true, nil, {} end,
+        write_setup = function() return true, nil, {} end,
+        player = function() return nil end,
+    }, log
+end
+
+do
+    local reg = measured_register()
+
+    -- sink = false: recording off, which is how a caller says so on purpose.
+    -- It is also the only way to start a trial on this machine, since the real
+    -- sink refuses when there is no encoder.
+    local ok, why = Injector.start({
+        provenance = reg, allow_injection = true, route = ROUTE, delay = 4,
+        expected = { [1] = { 601 }, [2] = { 621 } },
+        edge_id = "601:manual->621:manual", attempt = 1,
+        sink = false, adapter = adapter(),
+    })
+    t.ok(ok, "a trial starts with recording switched off: " .. tostring(why))
+
+    local cmd
+    for _ = 1, 3000 do
+        cmd = Injector.tick()
+        if cmd and cmd.outcome ~= nil then break end
+    end
+    t.ok(cmd ~= nil and cmd.outcome ~= nil,
+         "and reaches an outcome: " .. tostring(cmd and cmd.outcome))
+
+    -- With no collector it hands back the spec, which is what Sweep uses.
+    local spec = Injector.record(nil)
+    if spec then
+        t.eq(type(spec), "table", "record(nil) returns the spec itself")
+        t.eq(spec.edge_id, "601:manual->621:manual", "naming the pair it was about")
+    else
+        -- An outcome in M.NO_RECORD produces no record, and that IS its answer.
+        t.ok(true, "this outcome produces no record, which is its answer")
+    end
+
+    -- With a collector it must APPEND. A collector whose append counts calls is
+    -- the only way to tell writing from building.
+    local appended = {}
+    local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
+    local c = ResultCollector.new({
+        append = function(line) appended[#appended + 1] = line return true end,
+        encode = function(rec) return "{" .. tostring(rec.edge_id) .. "}" end,
+        identity = { calibration_id = "cal-test", game_patch = "p" },
+    })
+
+    if spec then
+        local rec, problems = Injector.record(c)
+        local why_not = problems and problems[1] and tostring(problems[1].problem) or ""
+        t.ok(rec ~= nil, "record(collector) produces a record: " .. why_not)
+        t.eq(#appended, 1, "AND the line reached the collector's append")
+    end
+
+    Injector.stop()
+end
+
 return t.finish()
