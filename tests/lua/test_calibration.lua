@@ -634,6 +634,87 @@ do
     end
 end
 
+t.group("a flawless sweep and a wrong one do not look the same")
+
+-- They used to. The derived map can never contain AUTO or PARRY - no shipped
+-- catalog has a single-button notation for either - so a subset was the NORMAL
+-- outcome, and verdict_status returned the bare constant REFUTED for it. A
+-- sweep where every witnessable button landed exactly where the guess said, and
+-- a sweep that got two buttons backwards, produced byte-identical verdicts.
+--
+-- A status that cannot tell success from failure is not a status.
+
+-- Drives the button phase so that each bit produces the action id of the button
+-- THE GUESS SAYS that bit is. `swap` crosses L and M, which is a real
+-- disagreement rather than a gap.
+local function run_bits_as_guessed(s, swap)
+    local steps = Calibration.plan(s)
+    local witnessable = derivable_buttons(s.catalog)
+    local provisional = Provenance.provisional(s.provenance, "modern_button_bits")
+    local name_of = {}
+    for name, bit in pairs(provisional) do name_of[bit] = name end
+
+    Calibration.observe(s, steps[1].id, { action_id = 1 })
+    for _, st in ipairs(steps) do
+        if st.phase == "button_bits" then
+            local name = name_of[st.bit]
+            if swap and (name == "L" or name == "M") then
+                name = (name == "L") and "M" or "L"
+            end
+            Calibration.observe(s, st.id, { action_id = (name and witnessable[name]) or 1 })
+        end
+    end
+    return Calibration.conclude(s)
+end
+
+do
+    local perfect = run_bits_as_guessed(new_session(), false).values.modern_button_bits
+    local swapped = run_bits_as_guessed(new_session(), true).values.modern_button_bits
+
+    t.ok(perfect ~= nil, "a flawless sweep settles the map")
+    t.ok(swapped ~= nil, "and so does one with two buttons crossed")
+
+    t.eq(perfect.status, "partial",
+         "the flawless one is PARTIAL - nothing disagreed, but AUTO and PARRY "
+         .. "were never witnessed")
+    t.eq(swapped.status, "refuted", "the crossed one is REFUTED - the guess was wrong")
+    t.ok(perfect.status ~= swapped.status,
+         "and the two are distinguishable, which is the whole point")
+
+    -- The reason is structured, not only in the prose. A consumer that needs
+    -- one of these buttons has to be able to find out it is missing without
+    -- parsing a sentence.
+    t.ok(perfect.unwitnessed ~= nil, "the flawless sweep says what it could not witness")
+    t.eq_list(perfect.unwitnessed, { "AUTO", "PARRY" }, "by name")
+    t.is_nil(perfect.value.AUTO, "and the map does not carry a guess for it")
+    t.is_nil(swapped.unwitnessed,
+             "a refuted verdict reports no unwitnessed list - the disagreement is "
+             .. "the finding, and stopping at it is deliberate")
+end
+
+-- partial is a MEASUREMENT: the register must accept it and the capability it
+-- gates must open. Refusing it would be the "blocked by being right" failure
+-- that Provenance already fixed once for refuted.
+do
+    local rep = run_bits_as_guessed(new_session(), false)
+    local doc, err = Calibration.document(IDENTITY, { rep.values })
+    t.ok(doc ~= nil, "a partial verdict still makes a document: " .. tostring(err))
+
+    local reg = Provenance.new()
+    local applied, rejected = reg:apply_calibration(doc)
+    local names = {}
+    for _, k in ipairs(applied) do names[k] = true end
+    t.ok(names.modern_button_bits,
+         "and the register accepts it (" .. #applied .. " applied, " ..
+         #rejected .. " rejected)")
+    t.eq(Provenance.get(reg, "modern_button_bits").status, "partial",
+         "keeping the distinction rather than flattening it to verified")
+    t.eq(Provenance.is_measured(reg, "modern_button_bits"), true,
+         "partial counts as measured - somebody looked")
+    t.eq(Provenance.is_verified(reg, "modern_button_bits"), false,
+         "but not as verified, because part of it was never seen")
+end
+
 t.group("the canonical entry settles on what the sweep could press")
 
 do

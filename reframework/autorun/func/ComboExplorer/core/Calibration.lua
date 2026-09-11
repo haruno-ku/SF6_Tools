@@ -84,17 +84,46 @@ end
 -- An entry whose provisional value was nil has nothing to be wrong about, so a
 -- measurement of it is verified rather than refuted - "refuted" is a statement
 -- about a guess, and there was none.
+-- Returns status, unwitnessed. `unwitnessed` lists the keys the guess has that
+-- the measurement never saw, and is nil when there are none.
+--
+-- The three outcomes are different facts and used to be two:
+--
+--   REFUTED   something the guess said turned out otherwise
+--   PARTIAL   nothing disagreed, but part of the guess was never witnessed
+--   VERIFIED  every key was witnessed and every key agreed
+--
+-- Collapsing the middle one into REFUTED made a flawless button sweep and a
+-- sweep that got two buttons backwards produce byte-identical verdicts, because
+-- the derived map can never contain AUTO or PARRY - no shipped catalog has a
+-- single-button notation for either - so a subset is the NORMAL outcome rather
+-- than a failure. A status that cannot tell success from failure is not a
+-- status.
+--
+-- A key the measurement has and the guess does not is still REFUTED: the guess
+-- said the value had a certain shape and it did not.
 local function verdict_status(provisional, measured)
     if provisional == nil then return Provenance.STATUS.VERIFIED end
     if type(provisional) ~= type(measured) then return Provenance.STATUS.REFUTED end
     if type(provisional) ~= "table" then
         return provisional == measured and Provenance.STATUS.VERIFIED or Provenance.STATUS.REFUTED
     end
+
+    local unwitnessed = {}
     for k, v in pairs(provisional) do
-        if measured[k] ~= v then return Provenance.STATUS.REFUTED end
+        if measured[k] == nil then
+            unwitnessed[#unwitnessed + 1] = tostring(k)
+        elseif measured[k] ~= v then
+            return Provenance.STATUS.REFUTED
+        end
     end
     for k, v in pairs(measured) do
         if provisional[k] ~= v then return Provenance.STATUS.REFUTED end
+    end
+
+    if #unwitnessed > 0 then
+        table.sort(unwitnessed)
+        return Provenance.STATUS.PARTIAL, unwitnessed
     end
     return Provenance.STATUS.VERIFIED
 end
@@ -123,10 +152,15 @@ function M.from_probes(reports, opts)
 
     local function settle(key, measured, note)
         local provisional = Provenance.provisional(reg, key)
+        local status, unwitnessed = verdict_status(provisional, measured)
         values[key] = {
-            status = verdict_status(provisional, measured),
+            status = status,
             value = copy(measured),
             note = note,
+            -- Structured, not only in the prose. A consumer that needs one of
+            -- these has to be able to find out it is missing without parsing a
+            -- sentence.
+            unwitnessed = unwitnessed,
         }
     end
 
@@ -627,10 +661,12 @@ function M.conclude(session)
 
     local function skip(key, why) notes[#notes + 1] = { key = key, reason = why } end
     local function settle(key, measured, note)
+        local status, unwitnessed = verdict_status(Provenance.provisional(reg, key), measured)
         values[key] = {
-            status = verdict_status(Provenance.provisional(reg, key), measured),
+            status = status,
             value = copy(measured),
             note = note,
+            unwitnessed = unwitnessed,
         }
     end
 

@@ -30,8 +30,20 @@ local M = { name = "ComboExplorer.Provenance" }
 
 M.STATUS = {
     UNVERIFIED = "unverified",  -- provisional value, never measured here
-    VERIFIED   = "verified",    -- measured on the real game
+    VERIFIED   = "verified",    -- measured on the real game, and the guess held
     REFUTED    = "refuted",     -- measured, and the guess was wrong; value replaced
+    -- Measured as far as it went. Part of the value was confirmed and part of
+    -- it was never witnessed, so neither of the two above is true of it.
+    --
+    -- Not a corner case. A button map derived from a catalog can never contain
+    -- AUTO or PARRY - no shipped character has a single-button notation for
+    -- either, so nothing can witness which bit they are - and the sweep
+    -- deliberately leaves them out rather than guessing. Under a two-value
+    -- vocabulary that came out REFUTED, which says the guess was wrong when it
+    -- was not, and made a flawless sweep indistinguishable from one that got
+    -- two buttons backwards. Calling it VERIFIED would have been the other lie:
+    -- that the missing bits were measured.
+    PARTIAL    = "partial",
 }
 
 -- VERIFIED and REFUTED are both measurements. The only difference between them
@@ -46,7 +58,27 @@ M.STATUS = {
 -- disagreed with a guess nobody had ever checked - the project blocked by being
 -- right.
 local function is_measured(status)
-    return status == M.STATUS.VERIFIED or status == M.STATUS.REFUTED
+    return status == M.STATUS.VERIFIED
+        or status == M.STATUS.REFUTED
+        or status == M.STATUS.PARTIAL
+end
+
+-- How much is known, as a number, so "the worst of these" is a comparison
+-- rather than whichever happened to be last in a loop.
+M.STATUS_RANK = {
+    [M.STATUS.UNVERIFIED] = 0,
+    [M.STATUS.REFUTED]    = 1,
+    [M.STATUS.PARTIAL]    = 2,
+    [M.STATUS.VERIFIED]   = 3,
+}
+
+-- Refuted ranks BELOW partial on purpose. Both are measurements, but a refuted
+-- entry means the value in hand replaced a guess that was wrong, so anything
+-- built on the old reasoning has to be re-examined; a partial one means what is
+-- there was confirmed. Neither is a reason to refuse to act - see is_measured -
+-- and the rank exists only to answer "which of these is least settled".
+function M.rank(status)
+    return M.STATUS_RANK[status]
 end
 
 -- Exposed because a caller asking "has anyone looked at this" is asking about
@@ -371,14 +403,18 @@ function M.apply_calibration(reg, profile)
             rejected[#rejected + 1] = { key = key, reason = "unknown key" }
         elseif type(incoming) ~= "table" then
             rejected[#rejected + 1] = { key = key, reason = "entry is not a table" }
-        elseif incoming.status ~= M.STATUS.VERIFIED and incoming.status ~= M.STATUS.REFUTED then
-            rejected[#rejected + 1] = { key = key, reason = "status must be verified or refuted" }
+        elseif not is_measured(incoming.status) then
+            rejected[#rejected + 1] = { key = key,
+                reason = "status must be a measurement: verified, refuted or partial" }
         elseif incoming.value == nil then
             rejected[#rejected + 1] = { key = key, reason = "no value" }
         else
-            -- A refuted entry still becomes usable: refuted means "we measured
-            -- it and the guess was wrong", which is knowledge. The distinction
-            -- from verified is kept so the report can say the guess was bad.
+            -- A refuted or partial entry still becomes usable. Refuted means
+            -- "we measured it and the guess was wrong", partial means "we
+            -- measured what could be witnessed"; both are knowledge. The three
+            -- are kept apart so a report can say which happened, and so that a
+            -- consumer needing the UNWITNESSED part of a partial value can tell
+            -- it is missing rather than finding a guess sitting there.
             e.value = deep_copy(incoming.value)
             e.status = incoming.status
             e.verified_by = profile.calibration_id
@@ -434,7 +470,7 @@ end
 
 -- Counts by status, for a one-line panel summary.
 function M.summary(reg)
-    local n = { unverified = 0, verified = 0, refuted = 0, total = 0 }
+    local n = { unverified = 0, verified = 0, refuted = 0, partial = 0, total = 0 }
     for _, e in pairs(reg.entries) do
         n.total = n.total + 1
         n[e.status] = (n[e.status] or 0) + 1

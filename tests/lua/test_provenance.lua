@@ -206,7 +206,7 @@ t.eq(#rej, 4, "every malformed entry is reported")
 local reasons = {}
 for _, r in ipairs(rej) do reasons[r.key] = r.reason end
 t.eq(reasons.not_a_real_key, "unknown key", "unknown key rejected")
-t.eq(reasons.modern_button_bits, "status must be verified or refuted", "bad status rejected")
+t.eq(reasons.modern_button_bits, "status must be a measurement: verified, refuted or partial", "bad status rejected")
 t.eq(reasons.direction_bits, "no value", "missing value rejected")
 t.eq(reasons.rl_dir_polarity, "entry is not a table", "non-table rejected")
 
