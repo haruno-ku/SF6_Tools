@@ -214,4 +214,128 @@ do
     end
 end
 
+-- --- one cohort at a time ---------------------------------------------------------------
+
+t.group("trials measured under different conditions do not fold together")
+
+-- #38 names this function by name: it grouped on edge_id alone and took the
+-- first record's provenance, so a log holding two experiments produced one
+-- number averaged over both with nothing to say it had happened.
+--
+-- It is not a hypothetical. Redoing the calibration mid-session changes
+-- calibration_id.
+
+local TestContext = require("func/ComboExplorer/core/TestContext")
+
+local LOOSE = TestContext.of({ stage = { target_positions = false, pin = false } })
+local PINNED = TestContext.of({ stage = { target_positions = false,
+                                          pin = { attacker_super = 3 } } })
+
+do
+    -- Same pair, same delay. One calibration says it links, the other says it
+    -- whiffs. Folded together that is "linked at some delays and not others";
+    -- folded apart it is two answers about two setups, which is the truth.
+    local recs = {
+        trial("link", 4, { provenance = { calibration_id = "cal-A", game_patch = "p" } }),
+        trial("link", 4, { provenance = { calibration_id = "cal-A", game_patch = "p" } }),
+        trial("whiff", 4, { provenance = { calibration_id = "cal-B", game_patch = "p" } }),
+        trial("whiff", 4, { provenance = { calibration_id = "cal-B", game_patch = "p" } }),
+    }
+    local edges, problems, counts, cohorts = CE.from_trials(recs)
+
+    t.eq(#edges, 2, "one pair measured under two calibrations produces TWO edges")
+    t.eq(counts.cohorts, 2, "and the count says how many experiments are in the log")
+    t.eq(#cohorts, 2, "with the cohorts themselves reported")
+    t.eq(#problems, 0, "and nothing was dropped to achieve it")
+
+    local by_status = {}
+    for _, e in ipairs(edges) do by_status[e.status] = (by_status[e.status] or 0) + 1 end
+    t.eq(by_status[Schema.STATUS.VERIFIED], 1, "one cohort says it links")
+    t.eq(by_status[Schema.STATUS.REJECTED], 1, "the other says it does not")
+
+    -- The ids have to differ or a later reader keeps one and loses the other.
+    t.ok(edges[1].id ~= edges[2].id, "and the two rows have different ids")
+    t.eq(edges[1].edge_id, edges[2].edge_id, "while naming the same pair")
+    t.ok(edges[1].cohort_key ~= edges[2].cohort_key, "under different cohorts")
+    t.ok(edges[1].cohort.calibration_id ~= edges[2].cohort.calibration_id,
+         "and each row says which calibration it rests on")
+end
+
+do
+    -- The conditions split a cohort too, which is the case that matters after
+    -- today: same calibration, gauges pinned for one pass and loose for the
+    -- other.
+    local recs = {
+        trial("link", 4, { conditions = LOOSE }),
+        trial("link", 4, { conditions = LOOSE }),
+        trial("whiff", 4, { conditions = PINNED }),
+    }
+    local edges, _, counts = CE.from_trials(recs)
+    t.eq(#edges, 2, "pinned and loose are two experiments")
+    t.eq(counts.cohorts, 2, "counted as two cohorts")
+end
+
+do
+    -- And two trials that ARE the same experiment still fold into one.
+    local recs = {
+        trial("link", 4, { conditions = LOOSE }),
+        trial("link", 4, { conditions = TestContext.of({
+            stage = { target_positions = false, pin = false } }) }),
+    }
+    local edges, _, counts = CE.from_trials(recs)
+    t.eq(#edges, 1, "the same conditions in a different table are the same cohort")
+    t.eq(counts.cohorts, 1, "so there is one experiment here")
+    t.eq(edges[1].stable, true, "and the two attempts reproduce each other")
+end
+
+do
+    -- fold() refuses a mixed handful outright, the same way it refuses two
+    -- different pairs. A function returning one answer must not be handed two
+    -- experiments.
+    local mixed, why = CE.fold({
+        trial("link", 4, { provenance = { calibration_id = "cal-A", game_patch = "p" } }),
+        trial("link", 4, { provenance = { calibration_id = "cal-B", game_patch = "p" } }),
+    })
+    t.is_nil(mixed, "fold will not average two cohorts into one edge")
+    t.ok(tostring(why):find("two different cohorts") ~= nil, tostring(why))
+end
+
+do
+    -- A patch boundary is a cohort boundary: a link measured on last month's
+    -- build is not evidence about this one.
+    local recs = {
+        trial("link", 4, { provenance = { calibration_id = "c", game_patch = "24176760" } }),
+        trial("link", 4, { provenance = { calibration_id = "c", game_patch = "24200000" } }),
+    }
+    local edges, _, counts = CE.from_trials(recs)
+    t.eq(counts.cohorts, 2, "two patches are two cohorts")
+    t.eq(#edges, 2, "and neither borrows the other's evidence")
+    for _, e in ipairs(edges) do
+        t.eq(e.stable, false, "so neither is stable on one attempt")
+    end
+end
+
+do
+    -- The character matters even though the pair is named by action ids: ids
+    -- are only meaningful against one catalog, and two characters can carry the
+    -- same number for entirely different moves.
+    local recs = {
+        trial("link", 4, { character = "Zangief", control_scheme = "modern" }),
+        trial("whiff", 4, { character = "Ryu", control_scheme = "modern" }),
+    }
+    local edges, _, counts = CE.from_trials(recs)
+    t.eq(counts.cohorts, 2, "two characters are two cohorts")
+    t.eq(#edges, 2, "so 601 on Zangief is not evidence about 601 on Ryu")
+
+    -- And so does the control scheme: the same action under Modern and Classic
+    -- is a different input with different scaling.
+    local schemes = {
+        trial("link", 4, { character = "Zangief", control_scheme = "modern" }),
+        trial("whiff", 4, { character = "Zangief", control_scheme = "classic" }),
+    }
+    local sedges, _, scounts = CE.from_trials(schemes)
+    t.eq(scounts.cohorts, 2, "Modern and Classic are two cohorts")
+    t.eq(#sedges, 2, "and neither answers for the other")
+end
+
 return t.finish()

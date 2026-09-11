@@ -104,7 +104,7 @@ end
 
 -- --- fold ---------------------------------------------------------------------
 
-local edges, problems, counts = ConfirmedEdge.from_trials(records, {
+local edges, problems, counts, cohorts = ConfirmedEdge.from_trials(records, {
     min_attempts = tonumber(opt.min_attempts),
     unstable_ok = opt.unstable_ok == true,
 })
@@ -131,6 +131,10 @@ local doc = {
     generated_at = os.date("!%Y-%m-%dT%H:%M:%SZ"),
     source_log = opt.trials,
     counts = counts,
+    -- Which experiments the log holds. A pair measured under two calibrations
+    -- or two setups produces two rows, and this is where a reader finds out
+    -- that happened rather than wondering why a pair appears twice.
+    cohorts = cohorts,
     edges = edges,
     problems = problems,
     refused_by_schema = refused,
@@ -163,7 +167,27 @@ say("")
 say("- source log      %s", opt.trials)
 say("- trials read     %d", counts.trials)
 say("- pairs answered  %d", counts.edges)
+say("- experiments     %d", counts.cohorts or 1)
 say("")
+
+if (counts.cohorts or 1) > 1 then
+    say("## This log holds more than one experiment")
+    say("")
+    say("Trials only fold together when they are about the SAME experiment: same")
+    say("build, same calibration, same character and scheme, same conditions. This")
+    say("log holds %d, so a pair measured under more than one appears more than", counts.cohorts)
+    say("once - which is two answers, not one averaged over both.")
+    say("")
+    say("Redoing the calibration part-way through a session is enough to cause it.")
+    say("")
+    say("```")
+    say("%-8s %-8s %s", "trials", "pairs", "experiment")
+    for _, c in ipairs(cohorts or {}) do
+        say("%-8d %-8d %s", c.trials, c.edges, c.key)
+    end
+    say("```")
+    say("")
+end
 
 say("## What the game said")
 say("")

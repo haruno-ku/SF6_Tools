@@ -35,6 +35,22 @@
 -- avoid, and it would be very easy here: `successes < attempts` looks like a
 -- reasonable test for "did not work" and is wrong.
 --
+-- ONE COHORT AT A TIME
+--
+-- Trials only fold together when they are evidence about the SAME experiment:
+-- same build, same calibration, same character and scheme, same conditions.
+-- This used to group on edge_id alone and take the first record's provenance,
+-- which #38 named as a risk against this function by name.
+--
+-- It is not theoretical. Redoing the calibration in the middle of a session
+-- changes calibration_id, so one evening's log can hold two cohorts without
+-- anybody doing anything unusual - and folding them together would average two
+-- experiments into one number with no sign that it happened.
+--
+-- Records from another cohort are not dropped. They are folded into their own
+-- edge, because throwing measurements away and inventing one are both worse
+-- than reporting two.
+--
 -- DELAY IS THE POINT, NOT A DETAIL
 --
 -- Trials at different delays are different experiments on the same pair. Which
@@ -129,6 +145,7 @@ function M.fold(trials, opts)
 
     local min_attempts = opts.min_attempts or M.DEFAULT_MIN_ATTEMPTS
     local edge_id = trials[1].edge_id
+    local cohort_key = ResultCollector.cohort_key(trials[1])
 
     local attempts, successes, negatives, unanswered = 0, 0, 0, 0
     local by_delay = {}
@@ -142,6 +159,14 @@ function M.fold(trials, opts)
         if rec.edge_id ~= edge_id then
             return nil, ("fold was given trials for two different pairs: %s and %s")
                 :format(tostring(edge_id), tostring(rec.edge_id))
+        end
+        -- Same refusal, one level up. Two trials of the same pair measured
+        -- under different conditions are two results, and a function that
+        -- returns one answer must not be handed both.
+        local this_cohort = ResultCollector.cohort_key(rec)
+        if this_cohort ~= cohort_key then
+            return nil, ("fold was given trials from two different cohorts: %s and %s")
+                :format(cohort_key, this_cohort)
         end
 
         attempts = attempts + 1
@@ -217,8 +242,15 @@ function M.fold(trials, opts)
 
     local edge = {
         schema = M.KIND,
-        id = ("confirmed %s"):format(tostring(edge_id)),
+        -- The cohort is part of the id because it is part of the claim. Two
+        -- rows for one pair under different conditions are two different
+        -- statements, and an id that could not tell them apart would let a
+        -- later reader - or a database key - keep only one of them.
+        id = ("confirmed %s @ %s"):format(tostring(edge_id),
+                                          ResultCollector.cohort_tag(trials[1])),
         edge_id = edge_id,
+        cohort_key = cohort_key,
+        cohort = ResultCollector.identity_of(trials[1]),
         status = status,
         attempts = attempts,
         successes = successes,
@@ -261,33 +293,66 @@ end
 
 -- records : decoded ce.trial.v1 records, in any order
 --
--- Returns edges (sorted by edge_id), problems, counts. Nothing is dropped
--- silently: a record this cannot read goes to `problems` with its reason.
+-- Returns edges (sorted by edge_id then cohort), problems, counts, cohorts.
+-- Nothing is dropped silently: a record this cannot read goes to `problems`
+-- with its reason, and a log holding more than one cohort produces more than
+-- one edge per pair rather than one averaged over both.
 function M.from_trials(records, opts)
     opts = opts or {}
     local groups, order = {}, {}
     local problems = {}
+    local cohorts, cohort_order = {}, {}
 
     for i, rec in ipairs(records or {}) do
         local m, why = meaning_of(rec)
         if not m then
             problems[#problems + 1] = { record = i, reason = why }
         else
-            local g = groups[rec.edge_id]
-            if not g then g = {} groups[rec.edge_id] = g order[#order + 1] = rec.edge_id end
+            -- The pair AND the experiment. Grouping on the pair alone is what
+            -- #38 warns about: it averages two experiments into one number with
+            -- nothing in the output to say it happened.
+            local cohort_key = ResultCollector.cohort_key(rec)
+            local key = rec.edge_id .. "\n" .. cohort_key
+            local g = groups[key]
+            if not g then
+                g = {}
+                groups[key] = g
+                order[#order + 1] = { key = key, edge_id = rec.edge_id, cohort = cohort_key }
+            end
             g[#g + 1] = rec
+
+            local c = cohorts[cohort_key]
+            if not c then
+                c = { key = cohort_key, identity = ResultCollector.identity_of(rec),
+                      trials = 0, edges = 0 }
+                cohorts[cohort_key] = c
+                cohort_order[#cohort_order + 1] = c
+            end
+            c.trials = c.trials + 1
         end
     end
 
-    table.sort(order)
+    -- Sorted on both halves, so two runs over the same log produce the same
+    -- file whichever order the lines were written in.
+    table.sort(order, function(a, b)
+        if a.edge_id ~= b.edge_id then return a.edge_id < b.edge_id end
+        return a.cohort < b.cohort
+    end)
+    table.sort(cohort_order, function(a, b) return a.key < b.key end)
+
     local edges = {}
-    for _, edge_id in ipairs(order) do
-        local edge, why = M.fold(groups[edge_id], opts)
-        if edge then edges[#edges + 1] = edge
-        else problems[#problems + 1] = { edge_id = edge_id, reason = why } end
+    for _, g in ipairs(order) do
+        local edge, why = M.fold(groups[g.key], opts)
+        if edge then
+            edges[#edges + 1] = edge
+            cohorts[g.cohort].edges = cohorts[g.cohort].edges + 1
+        else
+            problems[#problems + 1] = { edge_id = g.edge_id, cohort = g.cohort, reason = why }
+        end
     end
 
     local counts = { edges = #edges, trials = #(records or {}), problems = #problems,
+                     cohorts = #cohort_order,
                      verified = 0, rejected = 0, pending = 0, stable = 0 }
     for _, e in ipairs(edges) do
         if e.status == Schema.STATUS.VERIFIED then counts.verified = counts.verified + 1
@@ -296,7 +361,7 @@ function M.from_trials(records, opts)
         if e.stable then counts.stable = counts.stable + 1 end
     end
 
-    return edges, problems, counts
+    return edges, problems, counts, cohort_order
 end
 
 return M

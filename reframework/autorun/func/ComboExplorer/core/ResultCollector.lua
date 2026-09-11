@@ -290,6 +290,45 @@ function M.identity_matches(want, have)
     return #problems == 0, problems
 end
 
+-- --- the cohort ---------------------------------------------------------------
+
+-- Separators are escaped because the fields before the last one are free-form:
+-- a calibration id containing a `;` could otherwise produce the same key as a
+-- different patch, and the two would fold into one result.
+local function part(v)
+    if v == nil then return "?" end
+    return (tostring(v):gsub("[;=]", "_"))
+end
+
+-- The string two records have to share to be evidence about the SAME
+-- experiment: same build, same calibration, same character and scheme, same
+-- conditions.
+--
+-- This exists because folding a mixed log by subject alone silently averages
+-- two experiments into one number. #38 names that risk against
+-- ConfirmedEdge.from_trials specifically, and it is not theoretical: redoing
+-- the calibration in the middle of a session changes calibration_id, so one
+-- evening's log can hold two cohorts without anybody doing anything unusual.
+--
+-- Note what this does NOT do: records from different cohorts are kept and
+-- folded separately. Discarding them would be throwing away measurements, and
+-- merging them would be inventing one.
+function M.cohort_key(rec)
+    local id = M.identity_of(rec)
+    return ("patch=%s;cal=%s;char=%s;scheme=%s;%s"):format(
+        part(id.game_patch), part(id.calibration_id),
+        part(id.character), part(id.control_scheme),
+        TestContext.key(id.conditions))
+end
+
+-- A short, stable tag for a cohort, for the places that need one inside an id.
+-- The KEY is the identity; this is only a label - the same rule TestContext
+-- states about its own hash, for the same reason.
+function M.cohort_tag(rec)
+    local h = TestContext.hash(M.cohort_key(rec)) or "fnv1a64:0"
+    return h:sub(9, 16)
+end
+
 -- --- building a record -------------------------------------------------------
 
 local function problem(list, field, msg)
