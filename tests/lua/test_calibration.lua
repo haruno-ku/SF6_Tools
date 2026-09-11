@@ -221,6 +221,107 @@ do
 end
 
 -- =========================================================
+t.group("a silent action sweep observes nothing")
+
+-- CalibrationFsm substitutes the neutral action id when a step pressed
+-- something and nothing came out. That is deliberate: conclude_button_bits
+-- needs the shape to report "produced no action".
+--
+-- Submitted to Catalog.apply_observations it becomes a claim that the notation
+-- produces the idle action, which is not what happened - and the catalog then
+-- reports "observed action id is not in the group", one fabricated conflict per
+-- ambiguous group.
+--
+-- Which is worse than noise. A group seen to conflict never returns to
+-- verified, on purpose, so a fabricated conflict is PERMANENT: no later sweep,
+-- however clean, can undo it.
+do
+    local s = new_session()
+    local steps = Calibration.plan(s)
+    local NEUTRAL = 1
+    local swept = 0
+    for _, st in ipairs(steps) do
+        if st.phase == "neutral" then
+            Calibration.observe(s, st.id, { action_id = NEUTRAL })
+        elseif st.phase == "action_sweep" then
+            swept = swept + 1
+            -- Pressed, nothing came out: the FSM hands over the neutral id.
+            Calibration.observe(s, st.id, { action_id = NEUTRAL })
+        end
+    end
+    t.ok(swept > 0, "the plan pressed some ambiguous groups (" .. swept .. ")")
+
+    local rep = Calibration.conclude(s)
+    -- The real field. `rep.conflicts` does not exist, and asserting on it
+    -- counted a nil table - which is how a vacuous test looks from the inside.
+    t.eq(#rep.problems.action_sweep, 0, "a silent sweep manufactures no conflicts")
+    t.is_nil(rep.values.action_id_canonical,
+             "so the canonical entry is not settled by silence")
+
+    local why = ""
+    for _, n in ipairs(rep.notes or {}) do
+        if n.key == "action_id_canonical" then why = tostring(n.reason) end
+    end
+    t.ok(why:find("produced no action") ~= nil,
+         "and the skip reason says they were pressed and produced nothing: " .. why)
+
+    -- The groups must still be open, not poisoned.
+    local conflicting = 0
+    for _, g in ipairs(Catalog.ambiguous_groups(s.catalog)) do
+        if g.canonical_status == "conflicting" then conflicting = conflicting + 1 end
+    end
+    t.eq(conflicting, 0, "and no group was permanently marked conflicting")
+end
+
+-- A real observation still gets through, or the guard above would have bought
+-- safety by making the sweep useless.
+do
+    local s = new_session()
+    local steps = Calibration.plan(s)
+    local NEUTRAL = 1
+    -- A group is keyed on notation AND input method - the same display under two
+    -- methods is two inputs - so the step has to be matched on both.
+    local target
+    for _, st in ipairs(steps) do
+        if st.phase == "action_sweep" and not target then target = st end
+    end
+    t.ok(target ~= nil, "the plan has an action-sweep step to answer")
+    local real_id
+    for _, g in ipairs(Catalog.ambiguous_groups(s.catalog)) do
+        if g.notation == target.notation and g.input_method == target.input_method then
+            real_id = g.action_ids[1]
+        end
+    end
+    t.ok(real_id ~= nil, "and the group it addresses has an action id to produce")
+
+    for _, st in ipairs(steps) do
+        if st.phase == "neutral" then
+            Calibration.observe(s, st.id, { action_id = NEUTRAL })
+        elseif st.phase == "action_sweep" then
+            Calibration.observe(s, st.id,
+                { action_id = (st.id == target.id) and real_id or NEUTRAL })
+        end
+    end
+    local rep = Calibration.conclude(s)
+    t.eq(#rep.problems.action_sweep, 0, "no conflict from the silent steps alongside it")
+
+    -- Checked against the catalog rather than the report, because the report
+    -- does not expose the applied list - and because the catalog is where the
+    -- answer has to land for anything downstream to see it.
+    local resolved
+    for _, g in ipairs(Catalog.ambiguous_groups(s.catalog)) do
+        if g.notation == target.notation and g.input_method == target.input_method then
+            resolved = g
+        end
+    end
+    t.ok(resolved ~= nil, "the group that really produced something is still findable")
+    t.eq(resolved.canonical_status, "verified",
+         "and the observation resolved it - the guard buys safety without making "
+         .. "the sweep useless")
+    t.eq(resolved.canonical_action_id, real_id, "to the id that actually came out")
+end
+
+-- =========================================================
 t.group("button bits - what it refuses to conclude")
 
 -- Drives the button phase with a table of bit -> action id.

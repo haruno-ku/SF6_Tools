@@ -666,11 +666,34 @@ function M.conclude(session)
     -- a group seen to conflict never returns to verified lives in
     -- Catalog.apply_observations, and a second implementation of it here would
     -- be a second chance to get it wrong.
-    local observations = {}
+    -- A step that pressed something and saw nothing come out arrives here
+    -- carrying the NEUTRAL action id, because CalibrationFsm.finish_step
+    -- substitutes it (deliberately - conclude_button_bits needs that shape to
+    -- report "produced no action", and does the comparison at the top of this
+    -- file).
+    --
+    -- Submitted here it becomes an observation that this notation produces the
+    -- idle action, which is not what happened. Catalog.apply_observations then
+    -- reports "observed action id is not in the group for that notation", and a
+    -- silent sweep manufactures one such conflict per ambiguous group - eight of
+    -- them for Zangief.
+    --
+    -- That is worse than noise. A group seen to conflict never returns to
+    -- verified, on purpose, so a fabricated conflict is permanent: no later
+    -- sweep, however clean, can undo it.
+    local observations, produced_nothing = {}, {}
     for _, s in ipairs(steps) do
         if s.phase == M.PHASE.ACTION_SWEEP then
             local obs = session.observations[s.id]
-            if obs and obs.action_id then
+            local nothing = (obs == nil)
+                or (obs.action_id == nil)
+                or (session.neutral_action_id ~= nil
+                    and obs.action_id == session.neutral_action_id)
+            if nothing then
+                if obs ~= nil then
+                    produced_nothing[#produced_nothing + 1] = s.notation
+                end
+            else
                 observations[#observations + 1] = {
                     notation = s.notation,
                     input_method = s.input_method,
@@ -705,12 +728,19 @@ function M.conclude(session)
     local attempted = 0
     for _ in pairs(addressed) do attempted = attempted + 1 end
 
+    local nothing_note = ""
+    if #produced_nothing > 0 then
+        nothing_note = ("; %d group(s) were pressed and produced no action: %s")
+            :format(#produced_nothing, table.concat(produced_nothing, ", "))
+    end
+
     if attempted == 0 then
-        skip("action_id_canonical", "the plan could press none of the ambiguous groups")
+        skip("action_id_canonical",
+             "the plan could press none of the ambiguous groups" .. nothing_note)
     elseif #unresolved > 0 then
         skip("action_id_canonical",
-             ("%d of the %d group(s) the sweep pressed are still unresolved: %s")
-                 :format(#unresolved, attempted, table.concat(unresolved, ", ")))
+             ("%d of the %d group(s) the sweep pressed are still unresolved: %s%s")
+                 :format(#unresolved, attempted, table.concat(unresolved, ", "), nothing_note))
     else
         local canonical = {}
         for _, g in ipairs(Catalog.ambiguous_groups(session.catalog)) do
