@@ -525,4 +525,97 @@ do
               { "63214HK", "63214K (Close)" }, "a distance suffix survives the split")
 end
 
+-- --- when the two sources disagree about what the move is ---------------------
+
+t.group("a record that describes a different kind of move than the row's id implies")
+
+-- Guile's catalog has three rows displaying "6+MP". 665 is Full Bullet Magnum,
+-- a command normal. 941 and 949 sit in the Sonic Boom block, interleaved with
+-- the "56+MP" rows. The source has one "6MP" record - Full Bullet Magnum,
+-- startup 20, damage 800. All three rows took it. Sonic Boom is startup 10 and
+-- damage 550.
+--
+-- Nothing about that reads as missing data: a margin computes and the
+-- confidence comes out high. It is the failure this file's header calls worse
+-- than none, and it was silent.
+
+do
+    local rec, info = FD.lookup(GUILE, "6+MP", { band = "specials" })
+    t.ok(rec ~= nil, "the row still joins - the verdict is not being changed")
+    t.eq(rec.name_en, "Full Bullet Magnum", "to the same record it always did")
+    t.ok(info.band_conflict ~= nil, "but the disagreement is now on the info")
+    t.eq(info.band_conflict.category, "normal", "naming what the record says it is")
+    t.eq(info.band_conflict.band, "specials", "and where the catalog's own numbering puts it")
+    t.eq(FD.uncertain(info), true, "so it counts as uncertain downstream")
+
+    local why = FD.uncertainty_reason(info)
+    t.ok(why:find("normal") ~= nil and why:find("specials") ~= nil,
+         "and the reason names both sides: " .. tostring(why))
+    -- Its own sentence. The other two uncertainties are about the source
+    -- listing a key twice or spelling distance variants, and neither describes
+    -- this.
+    t.ok(why:find("distance variants") == nil, "not the distance-variant wording")
+    t.ok(why:find("lists") == nil, "nor the duplicate-key wording")
+end
+
+do
+    -- The same record read for the row it actually belongs to is not flagged.
+    -- A check that fired on every match would be noise, not a finding.
+    local _, info = FD.lookup(GUILE, "6+MP", { band = "normals" })
+    t.is_nil(info.band_conflict, "Guile's real 6+MP row is left alone")
+    t.eq(FD.uncertain(info), false, "and is not uncertain")
+end
+
+do
+    -- Silence is not a contradiction. This is the rule the whole project turns
+    -- on, applied to one more place.
+    local _, info = FD.lookup(GUILE, "6+MP")
+    t.is_nil(info.band_conflict, "a lookup that was given no band reports no conflict")
+
+    t.is_nil(FD.band_conflict(nil, "normal"), "no band, no conflict")
+    t.is_nil(FD.band_conflict("specials", nil), "no category, no conflict")
+    t.is_nil(FD.band_conflict("system_or_movement", "special"),
+             "a band that holds moves of every kind has nothing to say")
+    t.is_nil(FD.band_conflict("nonsense_band", "normal"), "and an unknown band says nothing")
+end
+
+do
+    -- The agreements, spelled out, because getting one of these wrong turns the
+    -- check into noise that gets switched off. "super_art" is the source's word
+    -- for a super; reading it as a mismatch flagged 298 correct joins.
+    t.is_nil(FD.band_conflict("normals", "normal"), "a normal in the normals band")
+    t.is_nil(FD.band_conflict("specials", "special"), "a special in the specials band")
+    t.is_nil(FD.band_conflict("supers", "super_art"), "a super, by the source's name for it")
+    t.is_nil(FD.band_conflict("throws", "throw"), "a throw")
+    t.is_nil(FD.band_conflict("specials", "drive"),
+             "and a drive move, which the catalog numbers with the specials")
+    t.is_nil(FD.band_conflict("normals", "taunt"),
+             "a taunt is never a combo move, so flagging it would be noise")
+
+    t.ok(FD.band_conflict("specials", "normal") ~= nil, "a normal's record on a special's row")
+    t.ok(FD.band_conflict("supers", "normal") ~= nil, "or on a super's row")
+    t.ok(FD.band_conflict("normals", "special") ~= nil, "and the other way round")
+end
+
+do
+    -- Counted over a real catalog, so a report can show the size of it rather
+    -- than one example - and so that coverage passing the row's band is pinned.
+    -- Zangief has exactly one: action 785, "22+HK", which his action ids put in
+    -- the throws band while the record it joins to is Tundra Storm, a special.
+    local rows = {}
+    for _, r in ipairs(cat.rows) do rows[#rows + 1] = r end
+    local cov = FD.coverage(idx, rows)
+    t.eq(cov.band_conflict, 1,
+         "coverage finds the one row in this catalog whose two sources disagree")
+
+    -- Written without the band, the same coverage finds nothing - which is what
+    -- it did before this existed, and the difference IS the wiring.
+    local blind = 0
+    for _, r in ipairs(rows) do
+        local rec, info = FD.lookup(idx, r.classic)
+        if rec and info.band_conflict then blind = blind + 1 end
+    end
+    t.eq(blind, 0, "and a lookup with no band passed in finds none of them")
+end
+
 return t.finish()

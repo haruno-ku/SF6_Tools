@@ -111,7 +111,7 @@ local function measure(entry)
         local function cov(list, parents)
             if #list == 0 then return { rows = 0, matched = 0, ratio = 1, ambiguous = 0,
                                         unmatched_detail = {} } end
-            return FrameData.coverage(idx, list, parents and { parents = parents } or nil)
+            return FrameData.coverage(idx, list, { parents = parents })
         end
         -- The parent set: every probeable move this character has, which is the
         -- same set the edge builder pairs them with.
@@ -137,6 +137,8 @@ local function measure(entry)
         -- the same set the edge builder would pair them with.
         m.cov_followups = cov(fups, could_precede)
         m.ambiguous_joins = (m.cov_starters.ambiguous or 0) + (m.cov_targets.ambiguous or 0)
+        m.band_conflicts = (m.cov_starters.band_conflict or 0)
+            + (m.cov_targets.band_conflict or 0)
         m.unmatched = {}
         for _, part in ipairs({ m.cov_starters, m.cov_targets }) do
             for _, u in ipairs(part.unmatched_detail or {}) do

@@ -2,6 +2,7 @@
   "characters": [
     {
       "ambiguous_joins": 23,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 170,
         "low": 299,
@@ -206,6 +207,7 @@
     },
     {
       "ambiguous_joins": 4,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 136,
         "low": 190,
@@ -337,6 +339,7 @@
     },
     {
       "ambiguous_joins": 4,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 243,
         "low": 217,
@@ -353,12 +356,29 @@
       "character": "Kimberly",
       "cov_followups": {
         "after_parent": 5,
-        "ambiguous": 0,
+        "ambiguous": 2,
+        "band_conflict": 2,
         "exact": 0,
         "fuzzy": 5,
         "matched": 5,
         "ratio": 0.45454545454545453,
         "rows": 11,
+        "uncertain_detail": [
+          {
+            "action_id": 643,
+            "after": "236+K",
+            "classic": ">HK",
+            "key": "236K~HK",
+            "why": "the join took \"236K~HK\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 649,
+            "after": "236+K",
+            "classic": ">HK",
+            "key": "236K~HK",
+            "why": "the join took \"236K~HK\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          }
+        ],
         "unmatched": 6,
         "unmatched_detail": [
           {
@@ -500,6 +520,7 @@
     },
     {
       "ambiguous_joins": 4,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 364,
         "low": 117,
@@ -612,6 +633,7 @@
     },
     {
       "ambiguous_joins": 8,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 417,
         "low": 138,
@@ -725,11 +747,12 @@
       "unmatched": []
     },
     {
-      "ambiguous_joins": 7,
+      "ambiguous_joins": 8,
+      "band_conflicts": 1,
       "by_confidence": {
-        "high": 96,
-        "low": 144,
-        "medium": 138
+        "high": 88,
+        "low": 155,
+        "medium": 135
       },
       "by_reason": {
         "chain_cancel": 90,
@@ -762,13 +785,20 @@
         "unmatched_detail": []
       },
       "cov_targets": {
-        "ambiguous": 7,
+        "ambiguous": 8,
+        "band_conflict": 1,
         "exact": 9,
         "fuzzy": 24,
         "matched": 33,
         "ratio": 1.0,
         "rows": 33,
         "uncertain_detail": [
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "key": "22HK",
+            "why": "the join took \"22HK\", whose frame record describes a special, but this row's action id puts it among the throws. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
           {
             "action_id": 918,
             "classic": "63214+LK+MK",
@@ -834,6 +864,7 @@
     },
     {
       "ambiguous_joins": 4,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 343,
         "low": 191,
@@ -987,6 +1018,7 @@
     },
     {
       "ambiguous_joins": 12,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 161,
         "low": 394,
@@ -1171,6 +1203,7 @@
     },
     {
       "ambiguous_joins": 4,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 187,
         "low": 53,
@@ -1261,6 +1294,7 @@
     },
     {
       "ambiguous_joins": 6,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 158,
         "low": 446,
@@ -1434,13 +1468,13 @@
             "action_id": 983,
             "classic": "623+K",
             "key": "623LK",
-            "why": "the frame source spells this move as several distance variants (623LK, 623MK, 623HK) and the join picked 623LK by sort order, not by knowing which one applies"
+            "why": "the catalog names no strength and the frame source splits this move into 623LK, 623MK, 623HK; the join took 623LK, and which one the notation means is not in either source"
           },
           {
             "action_id": 1003,
             "classic": "214+K",
             "key": "214LK",
-            "why": "the frame source spells this move as several distance variants (214LK, 214MK, 214HK) and the join picked 214LK by sort order, not by knowing which one applies"
+            "why": "the catalog names no strength and the frame source splits this move into 214LK, 214MK, 214HK; the join took 214LK, and which one the notation means is not in either source"
           },
           {
             "action_id": 1215,
@@ -1488,11 +1522,12 @@
       "unmatched": []
     },
     {
-      "ambiguous_joins": 8,
+      "ambiguous_joins": 70,
+      "band_conflicts": 66,
       "by_confidence": {
-        "high": 487,
-        "low": 723,
-        "medium": 817
+        "high": 142,
+        "low": 1702,
+        "medium": 183
       },
       "by_reason": {
         "chain_cancel": 550,
@@ -1505,12 +1540,22 @@
       "character": "DeeJay",
       "cov_followups": {
         "after_parent": 8,
-        "ambiguous": 0,
+        "ambiguous": 1,
+        "band_conflict": 1,
         "exact": 0,
         "fuzzy": 8,
         "matched": 8,
         "ratio": 0.72727272727272729,
         "rows": 11,
+        "uncertain_detail": [
+          {
+            "action_id": 678,
+            "after": "214+K",
+            "classic": ">HK",
+            "key": "214K~HK",
+            "why": "the join took \"214K~HK\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          }
+        ],
         "unmatched": 3,
         "unmatched_detail": [
           {
@@ -1540,17 +1585,207 @@
         ]
       },
       "cov_starters": {
-        "ambiguous": 0,
+        "ambiguous": 31,
+        "band_conflict": 31,
         "exact": 0,
         "fuzzy": 44,
         "matched": 44,
         "ratio": 1.0,
         "rows": 44,
+        "uncertain_detail": [
+          {
+            "action_id": 999,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1000,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1001,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1208,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1209,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1210,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1211,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1212,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1213,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1219,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1220,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1221,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1222,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1223,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1224,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1225,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1226,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1230,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1231,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1232,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1233,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1234,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1235,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1236,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1237,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1260,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1261,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1262,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1263,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1264,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1265,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          }
+        ],
         "unmatched": 0,
         "unmatched_detail": []
       },
       "cov_targets": {
-        "ambiguous": 8,
+        "ambiguous": 39,
+        "band_conflict": 35,
         "exact": 0,
         "fuzzy": 77,
         "matched": 77,
@@ -1561,25 +1796,211 @@
             "action_id": 685,
             "classic": "22+PP",
             "key": "22PP",
-            "why": "the frame source lists \"22PP\" 2 times - Speedy Maracas / Speedy Maracas (2+ Bars) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+            "why": "the join took \"22PP\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
           },
           {
             "action_id": 688,
             "classic": "22+PP",
             "key": "22PP",
-            "why": "the frame source lists \"22PP\" 2 times - Speedy Maracas / Speedy Maracas (2+ Bars) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+            "why": "the join took \"22PP\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
           },
           {
             "action_id": 697,
             "classic": "22+PP",
             "key": "22PP",
-            "why": "the frame source lists \"22PP\" 2 times - Speedy Maracas / Speedy Maracas (2+ Bars) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+            "why": "the join took \"22PP\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
           },
           {
             "action_id": 700,
             "classic": "22+PP",
             "key": "22PP",
-            "why": "the frame source lists \"22PP\" 2 times - Speedy Maracas / Speedy Maracas (2+ Bars) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+            "why": "the join took \"22PP\", whose frame record describes a special, but this row's action id puts it among the throws. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 999,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1000,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1001,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1208,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1209,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1210,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1211,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1212,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1213,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1219,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1220,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1221,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1222,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1223,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1224,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1225,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1226,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1230,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1231,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1232,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1233,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1234,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1235,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1236,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1237,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1260,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1261,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1262,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1263,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1264,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1265,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
           },
           {
             "action_id": 1268,
@@ -1619,7 +2040,7 @@
       "frame_data": "data/frame-data/deejay.lua",
       "moves": 81,
       "nodes": 88,
-      "routes": 78,
+      "routes": 177,
       "rows": 125,
       "search_complete": false,
       "starters": 44,
@@ -1628,6 +2049,7 @@
     },
     {
       "ambiguous_joins": 8,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 392,
         "low": 133,
@@ -1750,6 +2172,7 @@
     },
     {
       "ambiguous_joins": 6,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 128,
         "low": 104,
@@ -1849,11 +2272,12 @@
       "unmatched": []
     },
     {
-      "ambiguous_joins": 4,
+      "ambiguous_joins": 6,
+      "band_conflicts": 2,
       "by_confidence": {
         "high": 256,
-        "low": 229,
-        "medium": 150
+        "low": 235,
+        "medium": 144
       },
       "by_reason": {
         "chain_cancel": 126,
@@ -1905,23 +2329,39 @@
         ]
       },
       "cov_starters": {
-        "ambiguous": 0,
+        "ambiguous": 1,
+        "band_conflict": 1,
         "exact": 0,
         "fuzzy": 14,
         "matched": 14,
         "ratio": 1.0,
         "rows": 14,
+        "uncertain_detail": [
+          {
+            "action_id": 700,
+            "classic": "6+KK",
+            "key": "6KK",
+            "why": "the join took \"6KK\", whose frame record describes a special, but this row's action id puts it among the throws. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          }
+        ],
         "unmatched": 0,
         "unmatched_detail": []
       },
       "cov_targets": {
-        "ambiguous": 4,
+        "ambiguous": 5,
+        "band_conflict": 1,
         "exact": 0,
         "fuzzy": 54,
         "matched": 54,
         "ratio": 1.0,
         "rows": 54,
         "uncertain_detail": [
+          {
+            "action_id": 700,
+            "classic": "6+KK",
+            "key": "6KK",
+            "why": "the join took \"6KK\", whose frame record describes a special, but this row's action id puts it among the throws. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
           {
             "action_id": 1216,
             "classic": "236236+P",
@@ -1969,6 +2409,7 @@
     },
     {
       "ambiguous_joins": 16,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 60,
         "low": 413,
@@ -2159,11 +2600,12 @@
       ]
     },
     {
-      "ambiguous_joins": 6,
+      "ambiguous_joins": 60,
+      "band_conflicts": 54,
       "by_confidence": {
-        "high": 1242,
-        "low": 658,
-        "medium": 566
+        "high": 714,
+        "low": 1498,
+        "medium": 254
       },
       "by_reason": {
         "chain_cancel": 300,
@@ -2269,17 +2711,129 @@
         ]
       },
       "cov_starters": {
-        "ambiguous": 0,
+        "ambiguous": 18,
+        "band_conflict": 18,
         "exact": 0,
         "fuzzy": 40,
         "matched": 40,
         "ratio": 1.0,
         "rows": 40,
+        "uncertain_detail": [
+          {
+            "action_id": 923,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 924,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 925,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 927,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 928,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 929,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 934,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 935,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 936,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 938,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 939,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 940,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 944,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 945,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 946,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 956,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 957,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 958,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          }
+        ],
         "unmatched": 0,
         "unmatched_detail": []
       },
       "cov_targets": {
-        "ambiguous": 6,
+        "ambiguous": 42,
+        "band_conflict": 36,
         "exact": 0,
         "fuzzy": 108,
         "matched": 108,
@@ -2287,16 +2841,232 @@
         "rows": 108,
         "uncertain_detail": [
           {
+            "action_id": 923,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 923,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 924,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 924,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 925,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 925,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 927,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 927,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 928,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 928,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 929,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 929,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 934,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 934,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 935,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 935,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 936,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 936,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 938,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 938,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 939,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 939,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 940,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 940,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
             "action_id": 942,
             "classic": "236+HK",
             "key": "236HK",
             "why": "the frame source lists \"236HK\" 2 times - Go Ohsatsu / Go Ohsatsu (1 Stock) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
+            "action_id": 944,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 944,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 945,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 945,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 946,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 946,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
             "action_id": 955,
             "classic": "236+HK",
             "key": "236HK",
             "why": "the frame source lists \"236HK\" 2 times - Go Ohsatsu / Go Ohsatsu (1 Stock) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 956,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 956,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 957,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 957,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 958,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 958,
+            "classic": "HK",
+            "key": "5HK",
+            "why": "the join took \"5HK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
           },
           {
             "action_id": 1221,
@@ -2336,7 +3106,7 @@
       "frame_data": "data/frame-data/juri.lua",
       "moves": 85,
       "nodes": 120,
-      "routes": 60,
+      "routes": 84,
       "rows": 182,
       "search_complete": false,
       "starters": 40,
@@ -2345,6 +3115,7 @@
     },
     {
       "ambiguous_joins": 6,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 132,
         "low": 236,
@@ -2454,11 +3225,12 @@
       "unmatched": []
     },
     {
-      "ambiguous_joins": 8,
+      "ambiguous_joins": 40,
+      "band_conflicts": 32,
       "by_confidence": {
-        "high": 810,
-        "low": 1633,
-        "medium": 435
+        "high": 302,
+        "low": 2427,
+        "medium": 149
       },
       "by_reason": {
         "chain_cancel": 423,
@@ -2497,12 +3269,111 @@
         ]
       },
       "cov_starters": {
-        "ambiguous": 0,
+        "ambiguous": 16,
+        "band_conflict": 16,
         "exact": 0,
         "fuzzy": 31,
         "matched": 31,
         "ratio": 0.75609756097560976,
         "rows": 41,
+        "uncertain_detail": [
+          {
+            "action_id": 941,
+            "classic": "6+MP",
+            "key": "6MP",
+            "why": "the join took \"6MP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 943,
+            "classic": "6+HP",
+            "key": "6HP",
+            "why": "the join took \"6HP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 949,
+            "classic": "6+MP",
+            "key": "6MP",
+            "why": "the join took \"6MP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 951,
+            "classic": "6+HP",
+            "key": "6HP",
+            "why": "the join took \"6HP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1215,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1216,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1217,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1218,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1219,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1220,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1224,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1225,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1226,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1227,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1228,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1229,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          }
+        ],
         "unmatched": 10,
         "unmatched_detail": [
           {
@@ -2594,13 +3465,110 @@
         ]
       },
       "cov_targets": {
-        "ambiguous": 8,
+        "ambiguous": 24,
+        "band_conflict": 16,
         "exact": 0,
         "fuzzy": 81,
         "matched": 81,
         "ratio": 0.86170212765957444,
         "rows": 94,
         "uncertain_detail": [
+          {
+            "action_id": 941,
+            "classic": "6+MP",
+            "key": "6MP",
+            "why": "the join took \"6MP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 943,
+            "classic": "6+HP",
+            "key": "6HP",
+            "why": "the join took \"6HP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 949,
+            "classic": "6+MP",
+            "key": "6MP",
+            "why": "the join took \"6MP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 951,
+            "classic": "6+HP",
+            "key": "6HP",
+            "why": "the join took \"6HP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1215,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1216,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1217,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1218,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1219,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1220,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1224,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1225,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1226,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1227,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1228,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 1229,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the supers. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
           {
             "action_id": 1240,
             "classic": "[4]646+K",
@@ -2774,7 +3742,7 @@
       "frame_data": "data/frame-data/guile.lua",
       "moves": 66,
       "nodes": 97,
-      "routes": 73,
+      "routes": 139,
       "rows": 144,
       "search_complete": false,
       "starters": 41,
@@ -2876,6 +3844,7 @@
     },
     {
       "ambiguous_joins": 4,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 143,
         "low": 152,
@@ -2980,6 +3949,7 @@
     },
     {
       "ambiguous_joins": 4,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 267,
         "low": 324,
@@ -3087,6 +4057,7 @@
     },
     {
       "ambiguous_joins": 43,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 137,
         "low": 810,
@@ -3484,6 +4455,7 @@
     },
     {
       "ambiguous_joins": 8,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 270,
         "low": 435,
@@ -3659,6 +4631,7 @@
     },
     {
       "ambiguous_joins": 8,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 171,
         "low": 306,
@@ -3781,6 +4754,7 @@
     },
     {
       "ambiguous_joins": 18,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 149,
         "low": 475,
@@ -4033,6 +5007,7 @@
     },
     {
       "ambiguous_joins": 8,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 216,
         "low": 158,
@@ -4155,6 +5130,7 @@
     },
     {
       "ambiguous_joins": 56,
+      "band_conflicts": 0,
       "by_confidence": {
         "low": 452,
         "medium": 67
@@ -4549,11 +5525,12 @@
       "unmatched": []
     },
     {
-      "ambiguous_joins": 8,
+      "ambiguous_joins": 18,
+      "band_conflicts": 10,
       "by_confidence": {
         "high": 180,
-        "low": 863,
-        "medium": 133
+        "low": 891,
+        "medium": 105
       },
       "by_reason": {
         "chain_cancel": 123,
@@ -4576,12 +5553,33 @@
         "unmatched_detail": []
       },
       "cov_starters": {
-        "ambiguous": 0,
+        "ambiguous": 3,
+        "band_conflict": 3,
         "exact": 0,
         "fuzzy": 17,
         "matched": 17,
         "ratio": 0.73913043478260865,
         "rows": 23,
+        "uncertain_detail": [
+          {
+            "action_id": 968,
+            "classic": "6+MK",
+            "key": "6MK",
+            "why": "the join took \"6MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 973,
+            "classic": "6+MK",
+            "key": "6MK",
+            "why": "the join took \"6MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 979,
+            "classic": "6+MK",
+            "key": "6MK",
+            "why": "the join took \"6MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          }
+        ],
         "unmatched": 6,
         "unmatched_detail": [
           {
@@ -4636,13 +5634,56 @@
       },
       "cov_targets": {
         "after_parent": 16,
-        "ambiguous": 8,
+        "ambiguous": 15,
+        "band_conflict": 7,
         "exact": 0,
         "fuzzy": 74,
         "matched": 74,
         "ratio": 1.0,
         "rows": 74,
         "uncertain_detail": [
+          {
+            "action_id": 945,
+            "classic": "6+HP",
+            "key": "6HP",
+            "why": "the join took \"6HP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 949,
+            "classic": "6+HP",
+            "key": "6HP",
+            "why": "the join took \"6HP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 959,
+            "classic": "6+HP",
+            "key": "6HP",
+            "why": "the join took \"6HP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 963,
+            "classic": "6+HP",
+            "key": "6HP",
+            "why": "the join took \"6HP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 968,
+            "classic": "6+MK",
+            "key": "6MK",
+            "why": "the join took \"6MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 973,
+            "classic": "6+MK",
+            "key": "6MK",
+            "why": "the join took \"6MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 979,
+            "classic": "6+MK",
+            "key": "6MK",
+            "why": "the join took \"6MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
           {
             "action_id": 1210,
             "classic": "214214+K",
@@ -4705,7 +5746,7 @@
       "frame_data": "data/frame-data/elena.lua",
       "moves": 83,
       "nodes": 78,
-      "routes": 165,
+      "routes": 167,
       "rows": 126,
       "search_complete": false,
       "starters": 23,
@@ -4739,6 +5780,7 @@
     },
     {
       "ambiguous_joins": 4,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 115,
         "low": 72,
@@ -4824,11 +5866,12 @@
       "unmatched": []
     },
     {
-      "ambiguous_joins": 5,
+      "ambiguous_joins": 19,
+      "band_conflicts": 14,
       "by_confidence": {
-        "high": 235,
-        "low": 243,
-        "medium": 279
+        "high": 147,
+        "low": 422,
+        "medium": 188
       },
       "by_reason": {
         "chain_cancel": 210,
@@ -4902,17 +5945,63 @@
         ]
       },
       "cov_starters": {
-        "ambiguous": 0,
+        "ambiguous": 7,
+        "band_conflict": 7,
         "exact": 0,
         "fuzzy": 22,
         "matched": 22,
         "ratio": 1.0,
         "rows": 22,
+        "uncertain_detail": [
+          {
+            "action_id": 971,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 973,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 976,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 978,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 979,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 980,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 981,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          }
+        ],
         "unmatched": 0,
         "unmatched_detail": []
       },
       "cov_targets": {
-        "ambiguous": 5,
+        "ambiguous": 12,
+        "band_conflict": 7,
         "exact": 0,
         "fuzzy": 48,
         "matched": 48,
@@ -4923,7 +6012,49 @@
             "action_id": 923,
             "classic": "63214+P",
             "key": "63214LP",
-            "why": "the frame source spells this move as several distance variants (63214LP, 63214MP, 63214HP) and the join picked 63214LP by sort order, not by knowing which one applies"
+            "why": "the catalog names no strength and the frame source splits this move into 63214LP, 63214MP, 63214HP; the join took 63214LP, and which one the notation means is not in either source"
+          },
+          {
+            "action_id": 971,
+            "classic": "LP",
+            "key": "5LP",
+            "why": "the join took \"5LP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 973,
+            "classic": "MP",
+            "key": "5MP",
+            "why": "the join took \"5MP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 976,
+            "classic": "HP",
+            "key": "5HP",
+            "why": "the join took \"5HP\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 978,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 979,
+            "classic": "LK",
+            "key": "5LK",
+            "why": "the join took \"5LK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 980,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 981,
+            "classic": "MK",
+            "key": "5MK",
+            "why": "the join took \"5MK\", whose frame record describes a normal, but this row's action id puts it among the specials. The two sources disagree about what move this is, so the numbers may belong to a different one"
           },
           {
             "action_id": 1230,
@@ -4963,7 +6094,7 @@
       "frame_data": "data/frame-data/alex.lua",
       "moves": 71,
       "nodes": 56,
-      "routes": 139,
+      "routes": 159,
       "rows": 96,
       "search_complete": false,
       "starters": 22,
@@ -4971,11 +6102,12 @@
       "unmatched": []
     },
     {
-      "ambiguous_joins": 8,
+      "ambiguous_joins": 16,
+      "band_conflicts": 8,
       "by_confidence": {
-        "high": 90,
-        "low": 415,
-        "medium": 264
+        "high": 78,
+        "low": 494,
+        "medium": 197
       },
       "by_reason": {
         "chain_cancel": 60,
@@ -5006,12 +6138,39 @@
         ]
       },
       "cov_starters": {
-        "ambiguous": 0,
+        "ambiguous": 4,
+        "band_conflict": 4,
         "exact": 4,
         "fuzzy": 13,
         "matched": 17,
         "ratio": 0.94444444444444442,
         "rows": 18,
+        "uncertain_detail": [
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "key": "LP",
+            "why": "the join took \"LP\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 612,
+            "classic": "LK",
+            "key": "LK",
+            "why": "the join took \"LK\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 615,
+            "classic": "MK",
+            "key": "MK",
+            "why": "the join took \"MK\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 618,
+            "classic": "HK",
+            "key": "HK",
+            "why": "the join took \"HK\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          }
+        ],
         "unmatched": 1,
         "unmatched_detail": [
           {
@@ -5026,13 +6185,38 @@
         ]
       },
       "cov_targets": {
-        "ambiguous": 8,
+        "ambiguous": 12,
+        "band_conflict": 4,
         "exact": 4,
         "fuzzy": 50,
         "matched": 54,
         "ratio": 0.98181818181818181,
         "rows": 55,
         "uncertain_detail": [
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "key": "LP",
+            "why": "the join took \"LP\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 612,
+            "classic": "LK",
+            "key": "LK",
+            "why": "the join took \"LK\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 615,
+            "classic": "MK",
+            "key": "MK",
+            "why": "the join took \"MK\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
+          {
+            "action_id": 618,
+            "classic": "HK",
+            "key": "HK",
+            "why": "the join took \"HK\", whose frame record describes a special, but this row's action id puts it among the normals. The two sources disagree about what move this is, so the numbers may belong to a different one"
+          },
           {
             "action_id": 990,
             "classic": "214+HP",
@@ -5105,7 +6289,7 @@
       "frame_data": "data/frame-data/ingrid.lua",
       "moves": 86,
       "nodes": 58,
-      "routes": 271,
+      "routes": 276,
       "rows": 158,
       "search_complete": false,
       "starters": 18,
@@ -5123,6 +6307,7 @@
     },
     {
       "ambiguous_joins": 8,
+      "band_conflicts": 0,
       "by_confidence": {
         "high": 32,
         "low": 1122,

@@ -366,4 +366,45 @@ do
     t.is_nil(a2, "the same row after HK is not, so one cache entry cannot serve both")
 end
 
+-- --- the two sources disagreeing travels onto the edge ------------------------
+
+t.group("an edge built on a contradicted record says so")
+
+-- Zangief's action 785 ("22+HK") is numbered among his throws and joins to
+-- Tundra Storm, whose record calls itself a special. Whichever is right, the
+-- numbers on that row are not known to be its own - and an edge that used them
+-- has to carry that, or the uncertainty stops at the lookup and never reaches
+-- anything a reader sees.
+
+do
+    local everything = {
+        categories = { "normal", "command_normal", "special", "od_special", "super", "throw" },
+        input_methods = { "manual" },
+    }
+    local r = CG.generate(cat, idx, { from = everything, to = everything })
+    t.ok(r ~= nil, "generation runs over the wider set")
+
+    local touching, flagged, sample = 0, 0, nil
+    for _, e in ipairs(r.candidates) do
+        if e.from.action_id == 785 or e.to.action_id == 785 then
+            touching = touching + 1
+            local why = (e.unknown_detail or {}).frame_data_variant_ambiguous
+            if why and tostring(why):find("action id puts it among") then
+                flagged = flagged + 1
+                sample = sample or why
+            end
+        end
+    end
+    t.ok(touching > 0, ("the run produced edges touching 785 (%d)"):format(touching))
+    t.eq(flagged, touching, "and every one of them carries the disagreement")
+    t.ok(tostring(sample):find("throws") ~= nil and tostring(sample):find("special") ~= nil,
+         "in words naming both sides: " .. tostring(sample))
+
+    -- The edge is not excluded for it. An uncertain join is a reason to look
+    -- harder, never a reason to decide the pair does not work.
+    for _, e in ipairs(r.candidates) do
+        if e.to.action_id == 785 then t.eq(e.status, "theoretical", e.id .. " survives") end
+    end
+end
+
 return t.finish()

@@ -379,6 +379,11 @@ function M.lookup(idx, classic, opts)
             -- which. Reported as ambiguous with every strength that exists, the
             -- same way a distance variant is - picking the first quietly would
             -- be exactly the confident wrong number this module is against.
+            -- Set here rather than by the caller for the same reason `after`
+            -- is: an info table carrying the key but not the contradiction lets
+            -- a reader take the numbers for this row's own.
+            local conflict = M.band_conflict(opts and opts.band, hit.category)
+
             local alternatives, ambiguous = nil, nil
             if cand.match == M.MATCH.STRENGTH then
                 alternatives = {}
@@ -391,7 +396,7 @@ function M.lookup(idx, classic, opts)
             end
 
             return hit, { matched = true, match = cand.match, key = cand.key, tried = tried,
-                          after = after,
+                          after = after, band_conflict = conflict,
                           ambiguous = ambiguous, alternatives = alternatives,
                           duplicate = dupes and true or nil, duplicate_count = dupes,
                           duplicate_names = dupes and idx.duplicate_names
@@ -469,9 +474,12 @@ end
 -- came back are one of several readings, and using them as fact turns a coin
 -- flip into a frame margin. A caller that ignores this gets a confident edge
 -- built on an arbitrary choice.
+-- `contested` joins the other two: all three mean the record is not known to
+-- be this row's, for three different reasons.
 function M.uncertain(info)
     if type(info) ~= "table" or not info.matched then return false end
     return (info.ambiguous == true) or (info.duplicate == true)
+        or (info.band_conflict ~= nil)
 end
 
 -- Why the join was uncertain, in words, or nil when it was not.
@@ -479,9 +487,27 @@ function M.uncertainty_reason(info)
     if not M.uncertain(info) then return nil end
     if info.ambiguous then
         local alts = table.concat(info.alternatives or {}, ", ")
+        -- Two different ambiguities reach here and they are not the same
+        -- sentence. This used to say "distance variants" for both, which was
+        -- the right words for the prefix match and the wrong ones for a
+        -- strength expansion - a reader chasing "623LK, 623MK, 623HK" would be
+        -- looking for a Close and a Far version that do not exist.
+        if info.match == M.MATCH.STRENGTH then
+            return ("the catalog names no strength and the frame source splits this move "
+                .. "into %s; the join took %s, and which one the notation means is not "
+                .. "in either source"):format(alts, tostring(info.key))
+        end
         return ("the frame source spells this move as several distance variants (%s) and "
             .. "the join picked %s by sort order, not by knowing which one applies")
             :format(alts, tostring(info.key))
+    end
+
+    if info.band_conflict then
+        return ("the join took %q, whose frame record describes a %s, but this row's "
+            .. "action id puts it among the %s. The two sources disagree about what "
+            .. "move this is, so the numbers may belong to a different one")
+            :format(tostring(info.key), tostring(info.band_conflict.category),
+                    tostring(info.band_conflict.band))
     end
     local names = info.duplicate_names
     if type(names) == "table" and #names > 0 then
@@ -511,6 +537,51 @@ function M.missing(rec)
     return out
 end
 
+-- Does the record the join found contradict where the catalog's own numbering
+-- puts the move?
+--
+-- The case this exists for, measured on the shipped data. Guile's catalog has
+-- three rows displaying "6+MP": 665, which is Full Bullet Magnum, and 941 and
+-- 949, which sit in the Sonic Boom block between the "56+MP" rows. The source
+-- has one "6MP" record - Full Bullet Magnum, startup 20, damage 800. All three
+-- rows take it. Sonic Boom is startup 10 and damage 550.
+--
+-- That does not become `frame_data_incomplete`. A margin computes, the
+-- confidence comes out high, and the edge enters route search looking better
+-- founded than an edge with no numbers at all - which is the one failure this
+-- module's header calls worse than none.
+--
+-- Two independent statements are available and they disagree. The frame record
+-- says what KIND of move it describes (`category`), and the catalog's action id
+-- says where in its own numbering the row sits (`action_id_band`). Neither is
+-- derived from the other, and the band is given no vote in classification
+-- precisely so it can serve as a check - it is the instrument that found the
+-- 623 misclassification across 18 characters.
+--
+-- 96 matches across the 31 shipped characters disagree, 72 of them a special's
+-- row holding a normal's numbers. This changes none of them. It makes them say
+-- so, the same way a duplicated key or a distance variant already does.
+--
+-- A band with nothing to say about a category returns nil: "system_or_movement"
+-- holds moves of every kind, and silence is not a contradiction.
+local BAND_EXPECTS = {
+    normals  = { normal = true },
+    throws   = { throw = true },
+    specials = { special = true, drive = true },
+    supers   = { super_art = true, special = true },
+}
+
+function M.band_conflict(band, category)
+    if type(band) ~= "string" or type(category) ~= "string" then return nil end
+    local expected = BAND_EXPECTS[band]
+    if not expected then return nil end
+    if expected[category] then return nil end
+    -- A taunt can be anywhere and is never a combo move; flagging it would be
+    -- noise against a row nothing will ever probe.
+    if category == "taunt" then return nil end
+    return { band = band, category = category }
+end
+
 -- Coverage across a whole catalog, for the report. A join that quietly matched
 -- a third of the moves would otherwise look like a thin edge graph rather than
 -- a broken lookup.
@@ -528,10 +599,14 @@ function M.coverage(idx, rows, opts)
     local unmatched = {}
     for _, row in ipairs(rows or {}) do
         n.rows = n.rows + 1
-        local rec, info = M.lookup(idx, row.classic)
+        -- The row's own band travels with the lookup, so a record that
+        -- describes a different kind of move than the row's numbering implies
+        -- comes back saying so.
+        local rec, info = M.lookup(idx, row.classic, { band = row.action_id_band })
         if not rec and parents then
             for _, parent in ipairs(parents) do
-                local prec, pinfo = M.lookup(idx, row.classic, { after = parent.classic })
+                local prec, pinfo = M.lookup(idx, row.classic,
+                    { after = parent.classic, band = row.action_id_band })
                 if prec then
                     rec, info = prec, pinfo
                     -- `after` comes back from the lookup itself. Only the id is
@@ -546,6 +621,7 @@ function M.coverage(idx, rows, opts)
         if rec then
             n.matched = n.matched + 1
             if info.match == M.MATCH.EXACT then n.exact = n.exact + 1 else n.fuzzy = n.fuzzy + 1 end
+            if info.band_conflict then n.band_conflict = (n.band_conflict or 0) + 1 end
             if M.uncertain(info) then
                 n.ambiguous = n.ambiguous + 1
                 n.uncertain_detail = n.uncertain_detail or {}

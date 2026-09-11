@@ -282,7 +282,7 @@ function M.generate(catalog, frame_idx, opts)
                 hit = { rec = false, info = { matched = false, reason = "no frame data loaded" } }
             else
                 local rec, info = FrameData.lookup(frame_idx, row.classic,
-                    after and { after = after.classic } or nil)
+                    { after = after and after.classic or nil, band = row.action_id_band })
                 hit = { rec = rec or false, info = info }
             end
             store[key] = hit
