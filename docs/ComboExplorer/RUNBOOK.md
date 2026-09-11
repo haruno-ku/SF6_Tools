@@ -538,6 +538,34 @@ lua tools/lua/confirm.lua --character Zangief
 
 ---
 
+### 試行ログは「どの条件で測ったか」を必ず持つ 🆕
+
+スイープの1行1行に `conditions` が入るようになりました（2026-09-11）。
+今の `StageControl` の既定は**位置もリソースも制御していない**ので、記録は正直に
+
+```
+positions=uncontrolled;resources=unpinned;counter=unknown;screen=unknown;opponent=?
+```
+
+になります。「中央」でも「通常ヒット」でもありません。**観測していないからです。**
+
+これが効くのは `confirm.lua` のとき。**同じ条件で測った試行しか1つに畳まれません。**
+
+| 変わると別の実験になるもの |
+|---|
+| game_patch |
+| calibration_id（**セッション途中でキャリブレーションをやり直すと変わります**） |
+| character / control_scheme |
+| conditions（位置・リソース・Counter・相手） |
+
+同じペアが report に2回出てきたら、それは重複ではなく**2つの答え**です。
+`## This log holds more than one experiment` の表がどの実験かを出します。
+
+> なぜ大事か: 平均してしまうと「遅延4Fで成功、8Fで失敗」が
+> 「成功率50%のコンボ」になります。それは測定ではありません。
+
+---
+
 ### まだ書いていないもの
 
 | | 何待ちか |
