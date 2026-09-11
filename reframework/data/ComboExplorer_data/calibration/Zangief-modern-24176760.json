@@ -1,0 +1,28 @@
+{
+    "ac_sha256": "753d02204cec89c5a885d5748cda2d51bde0769144a15be93f1e717f219006b2",
+    "bcm_sha256": "09e9334a458b4e7073d13c5a0e25255d2b35b0cb71ccdccbd67c8774b62d4053",
+    "calibration_id": "ESF_006-20260911T172406Z",
+    "character": "Zangief",
+    "control_scheme": "modern",
+    "game_patch": "24176760",
+    "generated_at": "2026-09-11T17:28:17Z",
+    "overwritten": null,
+    "schema": "ce.calibration.v1",
+    "values": {
+        "direction_bits": {
+            "note": "LEFT and RIGHT confirmed by position delta on both sides",
+            "status": "verified",
+            "value": {
+                "DOWN": 2,
+                "LEFT": 4,
+                "RIGHT": 8,
+                "UP": 1
+            }
+        },
+        "rl_dir_polarity": {
+            "note": "decided by which side needed the mask flipped",
+            "status": "verified",
+            "value": "mirror_when_falsy"
+        }
+    }
+}

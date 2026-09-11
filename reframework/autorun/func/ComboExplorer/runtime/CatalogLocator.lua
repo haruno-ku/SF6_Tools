@@ -50,7 +50,26 @@ M.DIR = "TrainingComboTrials_data/command_display/"
 
 -- REFramework's fs.glob takes a regex over a path with escaped separators, not
 -- a shell glob. Written out once here rather than twice in two callers.
-M.GLOB = "TrainingComboTrials_data\\command_display\\.*json"
+--
+-- FOUR backslashes in the source, which is two at runtime, which is one escaped
+-- separator in the regex. Two in the source is one at runtime, and one
+-- backslash in a regex escapes the letter after it instead of matching a
+-- separator - so `\c` matched nothing and the listing came back empty.
+--
+-- That failure is silent by construction: an empty list is not an error, the
+-- loop below simply finds no catalog, and what the operator sees is "no shipped
+-- catalog claims fighter_id 6" - a sentence about the DATA, for a fault in the
+-- pattern. Measured on build 24176760: it stopped the calibration sweep from
+-- starting at all, while Zangief.json sat in the directory with
+-- _meta.fighter_id = 6.
+--
+-- The spelling with evidence behind it is ComboTrials_Files.lua:151, which is
+-- the one glob in the suite that is known to return files.
+--
+-- tests/lua/test_cataloglocator.lua passes its own `glob`, so nothing there
+-- ever evaluates this literal. It is checked by a test below that asserts the
+-- shape instead.
+M.GLOB = "TrainingComboTrials_data\\\\command_display\\\\.*json"
 
 -- Passed as `io` by a test. A partial table is honoured as given: a table with
 -- a `load` and no `glob` is a machine that can read files and cannot list them,

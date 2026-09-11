@@ -233,4 +233,30 @@ do
          "reporting the missing id: " .. tostring(why))
 end
 
+-- =========================================================
+t.group("the glob literal itself")
+
+-- Every test above hands resolve() its own `glob`, so none of them ever
+-- evaluates M.GLOB. It shipped with one backslash at runtime where fs.glob
+-- wanted two, the listing came back empty, and the operator was told "no
+-- shipped catalog claims fighter_id 6" - a sentence about the data, for a fault
+-- in the pattern. Nothing failed loudly; an empty listing is not an error.
+do
+    -- At runtime the separators must be DOUBLE, because fs.glob takes a regex
+    -- and a lone backslash there escapes the next character instead of matching
+    -- a separator.
+    t.ok(CL.GLOB:find("data\\\\command", 1, true) ~= nil,
+         "the separator is escaped for a regex, not left bare: " .. CL.GLOB)
+    -- Strip every doubled pair; a lone backslash surviving that is one that
+    -- would escape the next letter instead of matching a separator.
+    local stripped = CL.GLOB:gsub("\\\\", "")
+    t.is_nil(stripped:find("\\", 1, true),
+             "and no lone backslash survives, which would escape a letter instead")
+
+    -- The one glob in the suite that is known to return files, for comparison.
+    local known_good = "TrainingComboTrials_data\\\\CustomCombos\\\\.*json"
+    t.eq(CL.GLOB:match("^[^\\]*(\\+)"), known_good:match("^[^\\]*(\\+)"),
+         "the same separator spelling as ComboTrials_Files.lua:151")
+end
+
 return t.finish()
