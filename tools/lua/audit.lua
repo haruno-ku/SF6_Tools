@@ -378,7 +378,13 @@ do
     table.sort(order, function(a, b)
         local sa, sb = standalone_totals[a] or 0, standalone_totals[b] or 0
         if sa ~= sb then return sa > sb end
-        return totals[a] > totals[b]
+        if totals[a] ~= totals[b] then return totals[a] > totals[b] end
+        -- Both counts can tie - "throws -> special" and "throws -> od_special"
+        -- are 1 and 1 - and without a final tiebreak the pair falls back to
+        -- pairs() order, which Lua 5.4 seeds per process. The table then differs
+        -- between two runs over identical data, in a committed report somebody
+        -- diffs.
+        return a < b
     end)
     say("```")
     say("%-40s %6s %11s", "band -> category", "rows", "standalone")
