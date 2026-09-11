@@ -4,49 +4,28 @@
       "ambiguous_joins": 23,
       "by_confidence": {
         "high": 170,
-        "low": 302,
-        "medium": 118
+        "low": 299,
+        "medium": 121
       },
       "by_reason": {
         "chain_cancel": 102,
-        "frame_data_incomplete": 42,
-        "frame_link": 104,
+        "frame_data_incomplete": 39,
+        "frame_link": 105,
         "special_cancel": 242,
         "super_cancel": 160,
         "target_combo": 6
       },
       "character": "Ryu",
       "cov_followups": {
+        "after_parent": 3,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 3,
+        "matched": 3,
+        "ratio": 1.0,
         "rows": 3,
-        "unmatched": 3,
-        "unmatched_detail": [
-          {
-            "action_id": 685,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 687,
-            "classic": ">LK",
-            "tried": [
-              ">LK"
-            ]
-          },
-          {
-            "action_id": 689,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
       "cov_starters": {
         "ambiguous": 0,
@@ -218,7 +197,7 @@
       "frame_data": "data/frame-data/ryu.lua",
       "moves": 67,
       "nodes": 55,
-      "routes": 196,
+      "routes": 198,
       "rows": 102,
       "search_complete": false,
       "starters": 14,
@@ -229,12 +208,12 @@
       "ambiguous_joins": 4,
       "by_confidence": {
         "high": 136,
-        "low": 208,
-        "medium": 54
+        "low": 190,
+        "medium": 72
       },
       "by_reason": {
         "chain_cancel": 44,
-        "frame_data_incomplete": 176,
+        "frame_data_incomplete": 158,
         "frame_link": 40,
         "special_cancel": 138,
         "super_cancel": 56,
@@ -242,92 +221,15 @@
       },
       "character": "Luke",
       "cov_followups": {
+        "after_parent": 11,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 11,
+        "matched": 11,
+        "ratio": 0.6875,
         "rows": 16,
-        "unmatched": 16,
+        "unmatched": 5,
         "unmatched_detail": [
-          {
-            "action_id": 667,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 672,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 674,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 675,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 677,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 678,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 679,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 681,
-            "classic": ">2+HP",
-            "tried": [
-              ">2+HP",
-              ">2HP"
-            ]
-          },
-          {
-            "action_id": 683,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 684,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 685,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
           {
             "action_id": 946,
             "classic": ">j.214+P",
@@ -437,12 +339,12 @@
       "ambiguous_joins": 4,
       "by_confidence": {
         "high": 243,
-        "low": 222,
-        "medium": 131
+        "low": 217,
+        "medium": 136
       },
       "by_reason": {
         "chain_cancel": 138,
-        "frame_data_incomplete": 182,
+        "frame_data_incomplete": 177,
         "frame_link": 78,
         "special_cancel": 225,
         "super_cancel": 90,
@@ -450,55 +352,21 @@
       },
       "character": "Kimberly",
       "cov_followups": {
+        "after_parent": 5,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 5,
+        "matched": 5,
+        "ratio": 0.45454545454545453,
         "rows": 11,
-        "unmatched": 11,
+        "unmatched": 6,
         "unmatched_detail": [
-          {
-            "action_id": 641,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 642,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 643,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 646,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
           {
             "action_id": 648,
             "classic": ">2+HP",
             "tried": [
               ">2+HP",
               ">2HP"
-            ]
-          },
-          {
-            "action_id": 649,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
             ]
           },
           {
@@ -614,7 +482,7 @@
       "frame_data": "data/frame-data/kimberly.lua",
       "moves": 81,
       "nodes": 58,
-      "routes": 166,
+      "routes": 169,
       "rows": 123,
       "search_complete": false,
       "starters": 14,
@@ -773,12 +641,12 @@
       "ambiguous_joins": 8,
       "by_confidence": {
         "high": 417,
-        "low": 150,
-        "medium": 154
+        "low": 138,
+        "medium": 166
       },
       "by_reason": {
         "chain_cancel": 114,
-        "frame_data_incomplete": 78,
+        "frame_data_incomplete": 66,
         "frame_link": 99,
         "special_cancel": 385,
         "super_cancel": 96,
@@ -786,57 +654,15 @@
       },
       "character": "Manon",
       "cov_followups": {
+        "after_parent": 6,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 6,
+        "matched": 6,
+        "ratio": 1.0,
         "rows": 6,
-        "unmatched": 6,
-        "unmatched_detail": [
-          {
-            "action_id": 607,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          },
-          {
-            "action_id": 608,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          },
-          {
-            "action_id": 611,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 613,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 632,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 659,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
       "cov_starters": {
         "ambiguous": 0,
@@ -929,12 +755,12 @@
       "ambiguous_joins": 7,
       "by_confidence": {
         "high": 96,
-        "low": 146,
-        "medium": 136
+        "low": 144,
+        "medium": 138
       },
       "by_reason": {
         "chain_cancel": 90,
-        "frame_data_incomplete": 69,
+        "frame_data_incomplete": 67,
         "frame_link": 131,
         "special_cancel": 88,
         "super_cancel": 64,
@@ -942,43 +768,15 @@
       },
       "character": "Zangief",
       "cov_followups": {
+        "after_parent": 4,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 4,
+        "matched": 4,
+        "ratio": 1.0,
         "rows": 4,
-        "unmatched": 4,
-        "unmatched_detail": [
-          {
-            "action_id": 605,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 606,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 679,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          },
-          {
-            "action_id": 680,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
       "cov_starters": {
         "ambiguous": 0,
@@ -1065,12 +863,12 @@
       "ambiguous_joins": 4,
       "by_confidence": {
         "high": 343,
-        "low": 194,
-        "medium": 147
+        "low": 191,
+        "medium": 150
       },
       "by_reason": {
         "chain_cancel": 108,
-        "frame_data_incomplete": 154,
+        "frame_data_incomplete": 151,
         "frame_link": 136,
         "special_cancel": 370,
         "super_cancel": 80,
@@ -1078,35 +876,15 @@
       },
       "character": "JP",
       "cov_followups": {
+        "after_parent": 3,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 3,
+        "matched": 3,
+        "ratio": 0.27272727272727271,
         "rows": 11,
-        "unmatched": 11,
+        "unmatched": 8,
         "unmatched_detail": [
-          {
-            "action_id": 638,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 642,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 643,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
           {
             "action_id": 644,
             "classic": ">HK",
@@ -1471,12 +1249,12 @@
       "ambiguous_joins": 4,
       "by_confidence": {
         "high": 187,
-        "low": 54,
-        "medium": 225
+        "low": 53,
+        "medium": 226
       },
       "by_reason": {
         "chain_cancel": 90,
-        "frame_data_incomplete": 14,
+        "frame_data_incomplete": 13,
         "frame_link": 198,
         "special_cancel": 198,
         "super_cancel": 72,
@@ -1484,22 +1262,15 @@
       },
       "character": "Cammy",
       "cov_followups": {
+        "after_parent": 1,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 1,
+        "matched": 1,
+        "ratio": 1.0,
         "rows": 1,
-        "unmatched": 1,
-        "unmatched_detail": [
-          {
-            "action_id": 651,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
       "cov_starters": {
         "ambiguous": 0,
@@ -1568,12 +1339,12 @@
       "ambiguous_joins": 4,
       "by_confidence": {
         "high": 158,
-        "low": 454,
-        "medium": 98
+        "low": 452,
+        "medium": 100
       },
       "by_reason": {
         "chain_cancel": 240,
-        "frame_data_incomplete": 418,
+        "frame_data_incomplete": 416,
         "frame_link": 70,
         "special_cancel": 189,
         "super_cancel": 64,
@@ -1581,21 +1352,15 @@
       },
       "character": "Ken",
       "cov_followups": {
+        "after_parent": 20,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 20,
+        "matched": 20,
+        "ratio": 0.55555555555555558,
         "rows": 36,
-        "unmatched": 36,
+        "unmatched": 16,
         "unmatched_detail": [
-          {
-            "action_id": 670,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          },
           {
             "action_id": 671,
             "classic": ">HK",
@@ -1611,161 +1376,10 @@
             ]
           },
           {
-            "action_id": 682,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          },
-          {
             "action_id": 683,
             "classic": ">HK",
             "tried": [
               ">HK"
-            ]
-          },
-          {
-            "action_id": 924,
-            "classic": ">6+LK",
-            "tried": [
-              ">6+LK",
-              ">6LK"
-            ]
-          },
-          {
-            "action_id": 924,
-            "classic": ">6+LK",
-            "tried": [
-              ">6+LK",
-              ">6LK"
-            ]
-          },
-          {
-            "action_id": 924,
-            "classic": ">6+LK",
-            "tried": [
-              ">6+LK",
-              ">6LK"
-            ]
-          },
-          {
-            "action_id": 925,
-            "classic": ">6+MK",
-            "tried": [
-              ">6+MK",
-              ">6MK"
-            ]
-          },
-          {
-            "action_id": 925,
-            "classic": ">6+MK",
-            "tried": [
-              ">6+MK",
-              ">6MK"
-            ]
-          },
-          {
-            "action_id": 925,
-            "classic": ">6+MK",
-            "tried": [
-              ">6+MK",
-              ">6MK"
-            ]
-          },
-          {
-            "action_id": 926,
-            "classic": ">6+HK",
-            "tried": [
-              ">6+HK",
-              ">6HK"
-            ]
-          },
-          {
-            "action_id": 926,
-            "classic": ">6+HK",
-            "tried": [
-              ">6+HK",
-              ">6HK"
-            ]
-          },
-          {
-            "action_id": 926,
-            "classic": ">6+HK",
-            "tried": [
-              ">6+HK",
-              ">6HK"
-            ]
-          },
-          {
-            "action_id": 930,
-            "classic": ">6+LK",
-            "tried": [
-              ">6+LK",
-              ">6LK"
-            ]
-          },
-          {
-            "action_id": 930,
-            "classic": ">6+LK",
-            "tried": [
-              ">6+LK",
-              ">6LK"
-            ]
-          },
-          {
-            "action_id": 930,
-            "classic": ">6+LK",
-            "tried": [
-              ">6+LK",
-              ">6LK"
-            ]
-          },
-          {
-            "action_id": 931,
-            "classic": ">6+MK",
-            "tried": [
-              ">6+MK",
-              ">6MK"
-            ]
-          },
-          {
-            "action_id": 931,
-            "classic": ">6+MK",
-            "tried": [
-              ">6+MK",
-              ">6MK"
-            ]
-          },
-          {
-            "action_id": 931,
-            "classic": ">6+MK",
-            "tried": [
-              ">6+MK",
-              ">6MK"
-            ]
-          },
-          {
-            "action_id": 932,
-            "classic": ">6+HK",
-            "tried": [
-              ">6+HK",
-              ">6HK"
-            ]
-          },
-          {
-            "action_id": 932,
-            "classic": ">6+HK",
-            "tried": [
-              ">6+HK",
-              ">6HK"
-            ]
-          },
-          {
-            "action_id": 932,
-            "classic": ">6+HK",
-            "tried": [
-              ">6+HK",
-              ">6HK"
             ]
           },
           {
@@ -1947,7 +1561,7 @@
       "frame_data": "data/frame-data/ken.lua",
       "moves": 74,
       "nodes": 75,
-      "routes": 202,
+      "routes": 203,
       "rows": 110,
       "search_complete": false,
       "starters": 11,
@@ -1967,12 +1581,12 @@
       "ambiguous_joins": 8,
       "by_confidence": {
         "high": 487,
-        "low": 752,
-        "medium": 788
+        "low": 723,
+        "medium": 817
       },
       "by_reason": {
         "chain_cancel": 550,
-        "frame_data_incomplete": 572,
+        "frame_data_incomplete": 543,
         "frame_link": 419,
         "special_cancel": 525,
         "super_cancel": 176,
@@ -1980,42 +1594,15 @@
       },
       "character": "DeeJay",
       "cov_followups": {
+        "after_parent": 8,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 8,
+        "matched": 8,
+        "ratio": 0.72727272727272729,
         "rows": 11,
-        "unmatched": 11,
+        "unmatched": 3,
         "unmatched_detail": [
-          {
-            "action_id": 668,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          },
-          {
-            "action_id": 669,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          },
-          {
-            "action_id": 671,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 673,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
           {
             "action_id": 674,
             "classic": ">4+HP",
@@ -2025,41 +1612,11 @@
             ]
           },
           {
-            "action_id": 677,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 678,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 1006,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
             "action_id": 1007,
             "classic": ">4+P",
             "tried": [
               ">4+P",
               ">4P"
-            ]
-          },
-          {
-            "action_id": 1009,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
             ]
           },
           {
@@ -2163,12 +1720,12 @@
       "ambiguous_joins": 8,
       "by_confidence": {
         "high": 392,
-        "low": 135,
-        "medium": 132
+        "low": 133,
+        "medium": 134
       },
       "by_reason": {
         "chain_cancel": 90,
-        "frame_data_incomplete": 39,
+        "frame_data_incomplete": 37,
         "frame_link": 178,
         "special_cancel": 370,
         "super_cancel": 110,
@@ -2176,33 +1733,20 @@
       },
       "character": "Lily",
       "cov_followups": {
+        "after_parent": 2,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 2,
+        "matched": 2,
+        "ratio": 0.66666666666666663,
         "rows": 3,
-        "unmatched": 3,
+        "unmatched": 1,
         "unmatched_detail": [
           {
             "action_id": 636,
             "classic": ">j.MP",
             "tried": [
               ">j.MP"
-            ]
-          },
-          {
-            "action_id": 654,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 655,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
             ]
           }
         ]
@@ -2295,7 +1839,7 @@
       "unmatched": []
     },
     {
-      "ambiguous_joins": 4,
+      "ambiguous_joins": 6,
       "by_confidence": {
         "high": 128,
         "low": 104,
@@ -2327,13 +1871,28 @@
         "unmatched_detail": []
       },
       "cov_targets": {
-        "ambiguous": 4,
+        "after_parent": 2,
+        "ambiguous": 6,
         "exact": 0,
-        "fuzzy": 39,
-        "matched": 39,
-        "ratio": 0.95121951219512191,
+        "fuzzy": 41,
+        "matched": 41,
+        "ratio": 1.0,
         "rows": 41,
         "uncertain_detail": [
+          {
+            "action_id": 901,
+            "after": "214+LP",
+            "classic": "6+P",
+            "key": "214LP~6P",
+            "why": "the frame source lists \"214LP~6P\" 2 times - Nightshade Chaser / Nightshade Chaser (Burst) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 907,
+            "after": "214+LP",
+            "classic": "6+P",
+            "key": "214LP~6P",
+            "why": "the frame source lists \"214LP~6P\" 2 times - Nightshade Chaser / Nightshade Chaser (Burst) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
           {
             "action_id": 1254,
             "classic": "236236+P",
@@ -2359,25 +1918,8 @@
             "why": "the frame source lists \"236236P\" 2 times - Claws of Ya Zi / Claws of Ya Zi - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
-        "unmatched": 2,
-        "unmatched_detail": [
-          {
-            "action_id": 901,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 907,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
       "edges": 330,
       "excluded": 285,
@@ -2394,16 +1936,7 @@
       "search_complete": true,
       "starters": 15,
       "targets": 41,
-      "unmatched": [
-        {
-          "action_id": 901,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 907,
-          "classic": "6+P"
-        }
-      ]
+      "unmatched": []
     },
     {
       "ambiguous_joins": 4,
@@ -2421,39 +1954,16 @@
       },
       "character": "Rashid",
       "cov_followups": {
+        "after_parent": 6,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 6,
+        "matched": 6,
+        "ratio": 0.59999999999999998,
         "rows": 10,
-        "unmatched": 10,
+        "unmatched": 4,
         "unmatched_detail": [
           {
-            "action_id": 974,
-            "classic": ">6+K",
-            "tried": [
-              ">6+K",
-              ">6K"
-            ]
-          },
-          {
-            "action_id": 974,
-            "classic": ">6+K",
-            "tried": [
-              ">6+K",
-              ">6K"
-            ]
-          },
-          {
-            "action_id": 974,
-            "classic": ">6+K",
-            "tried": [
-              ">6+K",
-              ">6K"
-            ]
-          },
-          {
             "action_id": 975,
             "classic": ">K",
             "tried": [
@@ -2472,14 +1982,6 @@
             "classic": ">K",
             "tried": [
               ">K"
-            ]
-          },
-          {
-            "action_id": 976,
-            "classic": ">4+K",
-            "tried": [
-              ">4+K",
-              ">4K"
             ]
           },
           {
@@ -2488,22 +1990,6 @@
             "tried": [
               ">6+P",
               ">6P"
-            ]
-          },
-          {
-            "action_id": 998,
-            "classic": ">6+K",
-            "tried": [
-              ">6+K",
-              ">6K"
-            ]
-          },
-          {
-            "action_id": 1015,
-            "classic": ">6+K",
-            "tried": [
-              ">6+K",
-              ">6K"
             ]
           }
         ]
@@ -2766,12 +2252,12 @@
       "ambiguous_joins": 6,
       "by_confidence": {
         "high": 1242,
-        "low": 660,
-        "medium": 564
+        "low": 658,
+        "medium": 566
       },
       "by_reason": {
         "chain_cancel": 300,
-        "frame_data_incomplete": 480,
+        "frame_data_incomplete": 478,
         "frame_link": 457,
         "special_cancel": 1148,
         "super_cancel": 392,
@@ -2779,22 +2265,15 @@
       },
       "character": "Juri",
       "cov_followups": {
+        "after_parent": 1,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 1,
+        "matched": 1,
+        "ratio": 0.083333333333333329,
         "rows": 12,
-        "unmatched": 12,
+        "unmatched": 11,
         "unmatched_detail": [
-          {
-            "action_id": 604,
-            "classic": ">4+HP",
-            "tried": [
-              ">4+HP",
-              ">4HP"
-            ]
-          },
           {
             "action_id": 605,
             "classic": ">HP",
@@ -2958,12 +2437,12 @@
       "ambiguous_joins": 6,
       "by_confidence": {
         "high": 132,
-        "low": 245,
-        "medium": 107
+        "low": 236,
+        "medium": 116
       },
       "by_reason": {
         "chain_cancel": 81,
-        "frame_data_incomplete": 192,
+        "frame_data_incomplete": 183,
         "frame_link": 109,
         "special_cancel": 120,
         "super_cancel": 48,
@@ -2971,134 +2450,20 @@
       },
       "character": "Marisa",
       "cov_followups": {
+        "after_parent": 15,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 15,
+        "matched": 15,
+        "ratio": 0.9375,
         "rows": 16,
-        "unmatched": 16,
+        "unmatched": 1,
         "unmatched_detail": [
-          {
-            "action_id": 601,
-            "classic": ">LP",
-            "tried": [
-              ">LP"
-            ]
-          },
-          {
-            "action_id": 611,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 612,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
           {
             "action_id": 647,
             "classic": ">j.MP",
             "tried": [
               ">j.MP"
-            ]
-          },
-          {
-            "action_id": 667,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 668,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 674,
-            "classic": ">6+HK",
-            "tried": [
-              ">6+HK",
-              ">6HK"
-            ]
-          },
-          {
-            "action_id": 924,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 924,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 927,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 927,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 930,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 930,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 933,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 933,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 933,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
             ]
           }
         ]
@@ -3182,26 +2547,27 @@
       "ambiguous_joins": 8,
       "by_confidence": {
         "high": 790,
-        "low": 1665,
-        "medium": 433
+        "low": 1664,
+        "medium": 434
       },
       "by_reason": {
         "chain_cancel": 423,
-        "frame_data_incomplete": 1497,
-        "frame_link": 264,
+        "frame_data_incomplete": 1496,
+        "frame_link": 265,
         "special_cancel": 722,
         "super_cancel": 240,
         "target_combo": 18
       },
       "character": "Guile",
       "cov_followups": {
+        "after_parent": 1,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 1,
+        "matched": 1,
+        "ratio": 0.33333333333333331,
         "rows": 3,
-        "unmatched": 3,
+        "unmatched": 2,
         "unmatched_detail": [
           {
             "action_id": 627,
@@ -3216,14 +2582,6 @@
             "classic": ">6",
             "tried": [
               ">6"
-            ]
-          },
-          {
-            "action_id": 654,
-            "classic": ">3+HK",
-            "tried": [
-              ">3+HK",
-              ">3HK"
             ]
           }
         ]
@@ -3623,12 +2981,12 @@
       "ambiguous_joins": 4,
       "by_confidence": {
         "high": 143,
-        "low": 157,
-        "medium": 96
+        "low": 152,
+        "medium": 101
       },
       "by_reason": {
         "chain_cancel": 95,
-        "frame_data_incomplete": 129,
+        "frame_data_incomplete": 124,
         "frame_link": 59,
         "special_cancel": 102,
         "super_cancel": 60,
@@ -3636,50 +2994,15 @@
       },
       "character": "Ed",
       "cov_followups": {
+        "after_parent": 5,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 5,
+        "matched": 5,
+        "ratio": 1.0,
         "rows": 5,
-        "unmatched": 5,
-        "unmatched_detail": [
-          {
-            "action_id": 674,
-            "classic": ">LK",
-            "tried": [
-              ">LK"
-            ]
-          },
-          {
-            "action_id": 675,
-            "classic": ">LK",
-            "tried": [
-              ">LK"
-            ]
-          },
-          {
-            "action_id": 677,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          },
-          {
-            "action_id": 678,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 683,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
       "cov_starters": {
         "ambiguous": 0,
@@ -3762,174 +3085,28 @@
       "ambiguous_joins": 4,
       "by_confidence": {
         "high": 267,
-        "low": 326,
-        "medium": 109
+        "low": 324,
+        "medium": 111
       },
       "by_reason": {
         "chain_cancel": 69,
-        "frame_data_incomplete": 286,
-        "frame_link": 86,
+        "frame_data_incomplete": 284,
+        "frame_link": 87,
         "special_cancel": 231,
         "super_cancel": 72,
         "target_combo": 44
       },
       "character": "EHonda",
       "cov_followups": {
+        "after_parent": 20,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 20,
+        "matched": 20,
+        "ratio": 0.90909090909090906,
         "rows": 22,
-        "unmatched": 22,
+        "unmatched": 2,
         "unmatched_detail": [
-          {
-            "action_id": 667,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 670,
-            "classic": ">3+HK",
-            "tried": [
-              ">3+HK",
-              ">3HK"
-            ]
-          },
-          {
-            "action_id": 963,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 963,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 963,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 964,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 964,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 964,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 965,
-            "classic": ">2+P",
-            "tried": [
-              ">2+P",
-              ">2P"
-            ]
-          },
-          {
-            "action_id": 965,
-            "classic": ">2+P",
-            "tried": [
-              ">2+P",
-              ">2P"
-            ]
-          },
-          {
-            "action_id": 965,
-            "classic": ">2+P",
-            "tried": [
-              ">2+P",
-              ">2P"
-            ]
-          },
-          {
-            "action_id": 968,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 968,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 968,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 970,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 970,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 970,
-            "classic": ">P",
-            "tried": [
-              ">P"
-            ]
-          },
-          {
-            "action_id": 971,
-            "classic": ">2+P",
-            "tried": [
-              ">2+P",
-              ">2P"
-            ]
-          },
-          {
-            "action_id": 971,
-            "classic": ">2+P",
-            "tried": [
-              ">2+P",
-              ">2P"
-            ]
-          },
-          {
-            "action_id": 971,
-            "classic": ">2+P",
-            "tried": [
-              ">2+P",
-              ">2P"
-            ]
-          },
           {
             "action_id": 976,
             "classic": ">2+HK",
@@ -4004,7 +3181,7 @@
       "frame_data": "data/frame-data/ehonda.lua",
       "moves": 63,
       "nodes": 76,
-      "routes": 150,
+      "routes": 152,
       "rows": 122,
       "search_complete": false,
       "starters": 13,
@@ -4012,49 +3189,36 @@
       "unmatched": []
     },
     {
-      "ambiguous_joins": 30,
+      "ambiguous_joins": 43,
       "by_confidence": {
         "high": 137,
-        "low": 818,
-        "medium": 89
+        "low": 810,
+        "medium": 91
       },
       "by_reason": {
         "chain_cancel": 88,
-        "frame_data_incomplete": 560,
-        "frame_link": 163,
+        "frame_data_incomplete": 552,
+        "frame_link": 165,
         "special_cancel": 231,
         "super_cancel": 88,
         "target_combo": 16
       },
       "character": "Jamie",
       "cov_followups": {
+        "after_parent": 6,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 2,
-        "matched": 2,
-        "ratio": 0.125,
+        "fuzzy": 8,
+        "matched": 8,
+        "ratio": 0.5,
         "rows": 16,
-        "unmatched": 14,
+        "unmatched": 8,
         "unmatched_detail": [
-          {
-            "action_id": 604,
-            "classic": ">LK",
-            "tried": [
-              ">LK"
-            ]
-          },
           {
             "action_id": 605,
             "classic": ">MP",
             "tried": [
               ">MP"
-            ]
-          },
-          {
-            "action_id": 641,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
             ]
           },
           {
@@ -4072,13 +3236,6 @@
             ]
           },
           {
-            "action_id": 661,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          },
-          {
             "action_id": 662,
             "classic": ">P",
             "tried": [
@@ -4090,28 +3247,6 @@
             "classic": ">P",
             "tried": [
               ">P"
-            ]
-          },
-          {
-            "action_id": 675,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 676,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 681,
-            "classic": ">4+HK",
-            "tried": [
-              ">4+HK",
-              ">4HK"
             ]
           },
           {
@@ -4198,11 +3333,12 @@
         "unmatched_detail": []
       },
       "cov_targets": {
-        "ambiguous": 22,
+        "after_parent": 21,
+        "ambiguous": 35,
         "exact": 0,
-        "fuzzy": 55,
-        "matched": 55,
-        "ratio": 0.72368421052631582,
+        "fuzzy": 76,
+        "matched": 76,
+        "ratio": 1.0,
         "rows": 76,
         "uncertain_detail": [
           {
@@ -4260,6 +3396,20 @@
             "why": "the frame source lists \"236LP\" 2 times - LP Freeflow Strikes 1 (DL2) / LP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
+            "action_id": 901,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 902,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
             "action_id": 904,
             "classic": "236+MP",
             "key": "236MP",
@@ -4270,6 +3420,20 @@
             "classic": "236+MP",
             "key": "236MP",
             "why": "the frame source lists \"236MP\" 2 times - MP Freeflow Strikes 1 (DL2) / MP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 905,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 906,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 908,
@@ -4278,10 +3442,38 @@
             "why": "the frame source lists \"236HP\" 2 times - HP Freeflow Strikes 1 (DL2) / HP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
+            "action_id": 909,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 910,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
             "action_id": 912,
             "classic": "236+PP",
             "key": "236PP",
             "why": "the frame source lists \"236PP\" 2 times - OD Freeflow Strikes 1 (DL2) / OD Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 913,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 914,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 934,
@@ -4308,10 +3500,45 @@
             "why": "the frame source lists \"236HP\" 2 times - HP Freeflow Strikes 1 (DL2) / HP Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
+            "action_id": 938,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 939,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
             "action_id": 941,
             "classic": "236+PP",
             "key": "236PP",
             "why": "the frame source lists \"236PP\" 2 times - OD Freeflow Strikes 1 (DL2) / OD Freeflow Strikes 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 942,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 943,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 958,
+            "after": "236+LP",
+            "classic": "6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - LP Freeflow Strikes Punch 1 (DL2) / LP Freeflow Strikes Punch 1 (DL4) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           },
           {
             "action_id": 1211,
@@ -4338,180 +3565,11 @@
             "why": "the frame source lists \"236236P\" 2 times - Getsuga Saiho (CA) (DL2) / Getsuga Saiho (DL2) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
-        "unmatched": 21,
-        "unmatched_detail": [
-          {
-            "action_id": 901,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 902,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 905,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 906,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 909,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 910,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 913,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 914,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 918,
-            "classic": "6+K",
-            "tried": [
-              "6+K",
-              "6K"
-            ]
-          },
-          {
-            "action_id": 919,
-            "classic": "6+K",
-            "tried": [
-              "6+K",
-              "6K"
-            ]
-          },
-          {
-            "action_id": 922,
-            "classic": "6+K",
-            "tried": [
-              "6+K",
-              "6K"
-            ]
-          },
-          {
-            "action_id": 923,
-            "classic": "6+K",
-            "tried": [
-              "6+K",
-              "6K"
-            ]
-          },
-          {
-            "action_id": 926,
-            "classic": "6+K",
-            "tried": [
-              "6+K",
-              "6K"
-            ]
-          },
-          {
-            "action_id": 927,
-            "classic": "6+K",
-            "tried": [
-              "6+K",
-              "6K"
-            ]
-          },
-          {
-            "action_id": 930,
-            "classic": "6+K",
-            "tried": [
-              "6+K",
-              "6K"
-            ]
-          },
-          {
-            "action_id": 931,
-            "classic": "6+K",
-            "tried": [
-              "6+K",
-              "6K"
-            ]
-          },
-          {
-            "action_id": 938,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 939,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 942,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 943,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 958,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
-      "edges": 1044,
-      "excluded": 428,
+      "edges": 1038,
+      "excluded": 434,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 21,
@@ -4525,103 +3583,18 @@
       "search_complete": false,
       "starters": 16,
       "targets": 76,
-      "unmatched": [
-        {
-          "action_id": 901,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 902,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 905,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 906,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 909,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 910,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 913,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 914,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 918,
-          "classic": "6+K"
-        },
-        {
-          "action_id": 919,
-          "classic": "6+K"
-        },
-        {
-          "action_id": 922,
-          "classic": "6+K"
-        },
-        {
-          "action_id": 923,
-          "classic": "6+K"
-        },
-        {
-          "action_id": 926,
-          "classic": "6+K"
-        },
-        {
-          "action_id": 927,
-          "classic": "6+K"
-        },
-        {
-          "action_id": 930,
-          "classic": "6+K"
-        },
-        {
-          "action_id": 931,
-          "classic": "6+K"
-        },
-        {
-          "action_id": 938,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 939,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 942,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 943,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 958,
-          "classic": "6+P"
-        }
-      ]
+      "unmatched": []
     },
     {
       "ambiguous_joins": 8,
       "by_confidence": {
         "high": 270,
-        "low": 438,
-        "medium": 183
+        "low": 435,
+        "medium": 186
       },
       "by_reason": {
         "chain_cancel": 132,
-        "frame_data_incomplete": 350,
+        "frame_data_incomplete": 347,
         "frame_link": 146,
         "special_cancel": 231,
         "super_cancel": 170,
@@ -4629,41 +3602,20 @@
       },
       "character": "Akuma",
       "cov_followups": {
+        "after_parent": 3,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 3,
+        "matched": 3,
+        "ratio": 0.75,
         "rows": 4,
-        "unmatched": 4,
+        "unmatched": 1,
         "unmatched_detail": [
           {
             "action_id": 606,
             "classic": ">MP",
             "tried": [
               ">MP"
-            ]
-          },
-          {
-            "action_id": 615,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 668,
-            "classic": ">6+HP",
-            "tried": [
-              ">6+HP",
-              ">6HP"
-            ]
-          },
-          {
-            "action_id": 670,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
             ]
           }
         ]
@@ -4812,12 +3764,12 @@
       "ambiguous_joins": 8,
       "by_confidence": {
         "high": 171,
-        "low": 312,
-        "medium": 163
+        "low": 306,
+        "medium": 169
       },
       "by_reason": {
         "chain_cancel": 155,
-        "frame_data_incomplete": 240,
+        "frame_data_incomplete": 234,
         "frame_link": 134,
         "special_cancel": 160,
         "super_cancel": 96,
@@ -4825,136 +3777,20 @@
       },
       "character": "Sagat",
       "cov_followups": {
+        "after_parent": 15,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 15,
+        "matched": 15,
+        "ratio": 0.9375,
         "rows": 16,
-        "unmatched": 16,
+        "unmatched": 1,
         "unmatched_detail": [
-          {
-            "action_id": 608,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 615,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
           {
             "action_id": 630,
             "classic": ">HP",
             "tried": [
               ">HP"
-            ]
-          },
-          {
-            "action_id": 631,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 958,
-            "classic": ">6+LK",
-            "tried": [
-              ">6+LK",
-              ">6LK"
-            ]
-          },
-          {
-            "action_id": 958,
-            "classic": ">6+LK",
-            "tried": [
-              ">6+LK",
-              ">6LK"
-            ]
-          },
-          {
-            "action_id": 960,
-            "classic": ">6+MK",
-            "tried": [
-              ">6+MK",
-              ">6MK"
-            ]
-          },
-          {
-            "action_id": 960,
-            "classic": ">6+MK",
-            "tried": [
-              ">6+MK",
-              ">6MK"
-            ]
-          },
-          {
-            "action_id": 963,
-            "classic": ">6+HK",
-            "tried": [
-              ">6+HK",
-              ">6HK"
-            ]
-          },
-          {
-            "action_id": 963,
-            "classic": ">6+HK",
-            "tried": [
-              ">6+HK",
-              ">6HK"
-            ]
-          },
-          {
-            "action_id": 970,
-            "classic": ">6+LK",
-            "tried": [
-              ">6+LK",
-              ">6LK"
-            ]
-          },
-          {
-            "action_id": 970,
-            "classic": ">6+LK",
-            "tried": [
-              ">6+LK",
-              ">6LK"
-            ]
-          },
-          {
-            "action_id": 972,
-            "classic": ">6+MK",
-            "tried": [
-              ">6+MK",
-              ">6MK"
-            ]
-          },
-          {
-            "action_id": 972,
-            "classic": ">6+MK",
-            "tried": [
-              ">6+MK",
-              ">6MK"
-            ]
-          },
-          {
-            "action_id": 975,
-            "classic": ">6+HK",
-            "tried": [
-              ">6+HK",
-              ">6HK"
-            ]
-          },
-          {
-            "action_id": 975,
-            "classic": ">6+HK",
-            "tried": [
-              ">6+HK",
-              ">6HK"
             ]
           }
         ]
@@ -5039,7 +3875,7 @@
       "frame_data": "data/frame-data/sagat.lua",
       "moves": 68,
       "nodes": 63,
-      "routes": 175,
+      "routes": 179,
       "rows": 100,
       "search_complete": false,
       "starters": 15,
@@ -5353,12 +4189,12 @@
       "ambiguous_joins": 8,
       "by_confidence": {
         "high": 216,
-        "low": 164,
-        "medium": 107
+        "low": 158,
+        "medium": 113
       },
       "by_reason": {
         "chain_cancel": 114,
-        "frame_data_incomplete": 84,
+        "frame_data_incomplete": 78,
         "frame_link": 79,
         "special_cancel": 180,
         "super_cancel": 108,
@@ -5366,62 +4202,20 @@
       },
       "character": "Terry",
       "cov_followups": {
+        "after_parent": 6,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 6,
+        "matched": 6,
+        "ratio": 0.8571428571428571,
         "rows": 7,
-        "unmatched": 7,
+        "unmatched": 1,
         "unmatched_detail": [
-          {
-            "action_id": 670,
-            "classic": ">2+HK",
-            "tried": [
-              ">2+HK",
-              ">2HK"
-            ]
-          },
-          {
-            "action_id": 674,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          },
           {
             "action_id": 677,
             "classic": ">MP",
             "tried": [
               ">MP"
-            ]
-          },
-          {
-            "action_id": 679,
-            "classic": ">MK",
-            "tried": [
-              ">MK"
-            ]
-          },
-          {
-            "action_id": 682,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 683,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 685,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
             ]
           }
         ]
@@ -5506,7 +4300,7 @@
       "frame_data": "data/frame-data/terry.lua",
       "moves": 63,
       "nodes": 51,
-      "routes": 179,
+      "routes": 183,
       "rows": 87,
       "search_complete": false,
       "starters": 12,
@@ -5912,12 +4706,12 @@
       "ambiguous_joins": 8,
       "by_confidence": {
         "high": 180,
-        "low": 872,
-        "medium": 124
+        "low": 863,
+        "medium": 133
       },
       "by_reason": {
         "chain_cancel": 123,
-        "frame_data_incomplete": 808,
+        "frame_data_incomplete": 799,
         "frame_link": 89,
         "special_cancel": 138,
         "super_cancel": 98,
@@ -5925,43 +4719,15 @@
       },
       "character": "Elena",
       "cov_followups": {
+        "after_parent": 4,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 4,
+        "matched": 4,
+        "ratio": 1.0,
         "rows": 4,
-        "unmatched": 4,
-        "unmatched_detail": [
-          {
-            "action_id": 604,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
-          {
-            "action_id": 637,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 681,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 682,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
       "cov_starters": {
         "ambiguous": 0,
@@ -6023,11 +4789,12 @@
         ]
       },
       "cov_targets": {
+        "after_parent": 16,
         "ambiguous": 8,
         "exact": 0,
-        "fuzzy": 58,
-        "matched": 58,
-        "ratio": 0.78378378378378377,
+        "fuzzy": 74,
+        "matched": 74,
+        "ratio": 1.0,
         "rows": 74,
         "uncertain_detail": [
           {
@@ -6079,137 +4846,8 @@
             "why": "the frame source lists \"214214K\" 2 times - Song of the Grasslands / Song of the Grasslands (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
-        "unmatched": 16,
-        "unmatched_detail": [
-          {
-            "action_id": 943,
-            "classic": "6+LP",
-            "tried": [
-              "6+LP",
-              "6LP"
-            ]
-          },
-          {
-            "action_id": 944,
-            "classic": "6+MP",
-            "tried": [
-              "6+MP",
-              "6MP"
-            ]
-          },
-          {
-            "action_id": 947,
-            "classic": "6+LP",
-            "tried": [
-              "6+LP",
-              "6LP"
-            ]
-          },
-          {
-            "action_id": 948,
-            "classic": "6+MP",
-            "tried": [
-              "6+MP",
-              "6MP"
-            ]
-          },
-          {
-            "action_id": 952,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 953,
-            "classic": "6+P",
-            "tried": [
-              "6+P",
-              "6P"
-            ]
-          },
-          {
-            "action_id": 956,
-            "classic": "6+LP",
-            "tried": [
-              "6+LP",
-              "6LP"
-            ]
-          },
-          {
-            "action_id": 958,
-            "classic": "6+MP",
-            "tried": [
-              "6+MP",
-              "6MP"
-            ]
-          },
-          {
-            "action_id": 961,
-            "classic": "6+LP",
-            "tried": [
-              "6+LP",
-              "6LP"
-            ]
-          },
-          {
-            "action_id": 962,
-            "classic": "6+MP",
-            "tried": [
-              "6+MP",
-              "6MP"
-            ]
-          },
-          {
-            "action_id": 967,
-            "classic": "6+LK",
-            "tried": [
-              "6+LK",
-              "6LK"
-            ]
-          },
-          {
-            "action_id": 969,
-            "classic": "6+HK",
-            "tried": [
-              "6+HK",
-              "6HK"
-            ]
-          },
-          {
-            "action_id": 971,
-            "classic": "6+LK",
-            "tried": [
-              "6+LK",
-              "6LK"
-            ]
-          },
-          {
-            "action_id": 975,
-            "classic": "6+HK",
-            "tried": [
-              "6+HK",
-              "6HK"
-            ]
-          },
-          {
-            "action_id": 978,
-            "classic": "6+LK",
-            "tried": [
-              "6+LK",
-              "6LK"
-            ]
-          },
-          {
-            "action_id": 980,
-            "classic": "6+HK",
-            "tried": [
-              "6+HK",
-              "6HK"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
       "edges": 1176,
       "excluded": 618,
@@ -6221,76 +4859,12 @@
       "frame_data": "data/frame-data/elena.lua",
       "moves": 83,
       "nodes": 78,
-      "routes": 161,
+      "routes": 165,
       "rows": 126,
       "search_complete": false,
       "starters": 23,
       "targets": 74,
       "unmatched": [
-        {
-          "action_id": 967,
-          "classic": "6+LK"
-        },
-        {
-          "action_id": 969,
-          "classic": "6+HK"
-        },
-        {
-          "action_id": 971,
-          "classic": "6+LK"
-        },
-        {
-          "action_id": 975,
-          "classic": "6+HK"
-        },
-        {
-          "action_id": 978,
-          "classic": "6+LK"
-        },
-        {
-          "action_id": 980,
-          "classic": "6+HK"
-        },
-        {
-          "action_id": 943,
-          "classic": "6+LP"
-        },
-        {
-          "action_id": 944,
-          "classic": "6+MP"
-        },
-        {
-          "action_id": 947,
-          "classic": "6+LP"
-        },
-        {
-          "action_id": 948,
-          "classic": "6+MP"
-        },
-        {
-          "action_id": 952,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 953,
-          "classic": "6+P"
-        },
-        {
-          "action_id": 956,
-          "classic": "6+LP"
-        },
-        {
-          "action_id": 958,
-          "classic": "6+MP"
-        },
-        {
-          "action_id": 961,
-          "classic": "6+LP"
-        },
-        {
-          "action_id": 962,
-          "classic": "6+MP"
-        },
         {
           "action_id": 967,
           "classic": "6+LK"
@@ -6350,11 +4924,12 @@
         "unmatched_detail": []
       },
       "cov_targets": {
+        "after_parent": 4,
         "ambiguous": 4,
         "exact": 0,
-        "fuzzy": 37,
-        "matched": 37,
-        "ratio": 0.86046511627906974,
+        "fuzzy": 41,
+        "matched": 41,
+        "ratio": 0.95348837209302328,
         "rows": 43,
         "uncertain_detail": [
           {
@@ -6382,40 +4957,8 @@
             "why": "the frame source lists \"214214K\" 2 times - Hard Luck Rejector / Hard Luck Rejector (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
-        "unmatched": 6,
+        "unmatched": 2,
         "unmatched_detail": [
-          {
-            "action_id": 914,
-            "classic": "6+PP",
-            "tried": [
-              "6+PP",
-              "6PP"
-            ]
-          },
-          {
-            "action_id": 915,
-            "classic": "6+PP",
-            "tried": [
-              "6+PP",
-              "6PP"
-            ]
-          },
-          {
-            "action_id": 916,
-            "classic": "6+PP",
-            "tried": [
-              "6+PP",
-              "6PP"
-            ]
-          },
-          {
-            "action_id": 917,
-            "classic": "6+PP",
-            "tried": [
-              "6+PP",
-              "6PP"
-            ]
-          },
           {
             "action_id": 1214,
             "classic": "214214+LP+MP",
@@ -6453,22 +4996,6 @@
       "targets": 43,
       "unmatched": [
         {
-          "action_id": 914,
-          "classic": "6+PP"
-        },
-        {
-          "action_id": 915,
-          "classic": "6+PP"
-        },
-        {
-          "action_id": 916,
-          "classic": "6+PP"
-        },
-        {
-          "action_id": 917,
-          "classic": "6+PP"
-        },
-        {
           "action_id": 1214,
           "classic": "214214+LP+MP"
         },
@@ -6482,12 +5009,12 @@
       "ambiguous_joins": 4,
       "by_confidence": {
         "high": 235,
-        "low": 254,
-        "medium": 277
+        "low": 252,
+        "medium": 279
       },
       "by_reason": {
         "chain_cancel": 210,
-        "frame_data_incomplete": 198,
+        "frame_data_incomplete": 196,
         "frame_link": 185,
         "special_cancel": 198,
         "super_cancel": 96,
@@ -6495,21 +5022,15 @@
       },
       "character": "Alex",
       "cov_followups": {
+        "after_parent": 1,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 1,
+        "matched": 1,
+        "ratio": 0.125,
         "rows": 8,
-        "unmatched": 8,
+        "unmatched": 7,
         "unmatched_detail": [
-          {
-            "action_id": 606,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
           {
             "action_id": 962,
             "classic": ">6",
@@ -6643,46 +5164,33 @@
       "ambiguous_joins": 8,
       "by_confidence": {
         "high": 90,
-        "low": 419,
-        "medium": 260
+        "low": 415,
+        "medium": 264
       },
       "by_reason": {
         "chain_cancel": 60,
-        "frame_data_incomplete": 339,
-        "frame_link": 282,
+        "frame_data_incomplete": 335,
+        "frame_link": 284,
         "special_cancel": 140,
         "super_cancel": 36,
         "target_combo": 6
       },
       "character": "Ingrid",
       "cov_followups": {
+        "after_parent": 2,
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 2,
+        "matched": 2,
+        "ratio": 0.66666666666666663,
         "rows": 3,
-        "unmatched": 3,
+        "unmatched": 1,
         "unmatched_detail": [
           {
             "action_id": 656,
             "classic": ">j.HK",
             "tried": [
               ">j.HK"
-            ]
-          },
-          {
-            "action_id": 671,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
-            ]
-          },
-          {
-            "action_id": 675,
-            "classic": ">HP",
-            "tried": [
-              ">HP"
             ]
           }
         ]
@@ -6787,7 +5295,7 @@
       "frame_data": "data/frame-data/ingrid.lua",
       "moves": 85,
       "nodes": 58,
-      "routes": 269,
+      "routes": 271,
       "rows": 158,
       "search_complete": false,
       "starters": 18,
@@ -6820,61 +5328,218 @@
       },
       "character": "Yasmine",
       "cov_followups": {
-        "ambiguous": 0,
+        "after_parent": 34,
+        "ambiguous": 28,
         "exact": 0,
-        "fuzzy": 0,
-        "matched": 0,
-        "ratio": 0.0,
+        "fuzzy": 34,
+        "matched": 34,
+        "ratio": 0.89473684210526316,
         "rows": 38,
-        "unmatched": 38,
+        "uncertain_detail": [
+          {
+            "action_id": 929,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 929,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 929,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 933,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 937,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 941,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 941,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 941,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 947,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 947,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 947,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 952,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 955,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 955,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 955,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 960,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 960,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 960,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 965,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 965,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 965,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 968,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 971,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 971,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 971,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 975,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 975,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          },
+          {
+            "action_id": 975,
+            "after": "236+LP",
+            "classic": ">6+P",
+            "key": "236LP~6P",
+            "why": "the frame source lists \"236LP~6P\" 2 times - Alon / Alon (Bayani) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
+          }
+        ],
+        "unmatched": 4,
         "unmatched_detail": [
-          {
-            "action_id": 606,
-            "classic": ">LP",
-            "tried": [
-              ">LP"
-            ]
-          },
-          {
-            "action_id": 607,
-            "classic": ">LP",
-            "tried": [
-              ">LP"
-            ]
-          },
-          {
-            "action_id": 610,
-            "classic": ">MP",
-            "tried": [
-              ">MP"
-            ]
-          },
           {
             "action_id": 617,
             "classic": ">MK",
             "tried": [
               ">MK"
-            ]
-          },
-          {
-            "action_id": 618,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 643,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
-            ]
-          },
-          {
-            "action_id": 644,
-            "classic": ">HK",
-            "tried": [
-              ">HK"
             ]
           },
           {
@@ -6900,230 +5565,6 @@
               ">22+MP+HP",
               ">22MPHP"
             ]
-          },
-          {
-            "action_id": 929,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 929,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 929,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 933,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 937,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 941,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 941,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 941,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 947,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 947,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 947,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 952,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 955,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 955,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 955,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 960,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 960,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 960,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 965,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 965,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 965,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 968,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 971,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 971,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 971,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 975,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 975,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
-          },
-          {
-            "action_id": 975,
-            "classic": ">6+P",
-            "tried": [
-              ">6+P",
-              ">6P"
-            ]
           }
         ]
       },
@@ -7147,11 +5588,12 @@
         ]
       },
       "cov_targets": {
+        "after_parent": 1,
         "ambiguous": 8,
         "exact": 0,
-        "fuzzy": 55,
-        "matched": 55,
-        "ratio": 0.9821428571428571,
+        "fuzzy": 56,
+        "matched": 56,
+        "ratio": 1.0,
         "rows": 56,
         "uncertain_detail": [
           {
@@ -7203,17 +5645,8 @@
             "why": "the frame source lists \"236236P\" 2 times - Pamumukadkad ng Sampaguita / Pamumukadkad ng Sampaguita (CA) - and the join took whichever came first; which one the input produces depends on something the frame table does not model"
           }
         ],
-        "unmatched": 1,
-        "unmatched_detail": [
-          {
-            "action_id": 1044,
-            "classic": "4+KK",
-            "tried": [
-              "4+KK",
-              "4KK"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
       "edges": 1215,
       "excluded": 101,
@@ -7231,10 +5664,6 @@
       "starters": 14,
       "targets": 56,
       "unmatched": [
-        {
-          "action_id": 1044,
-          "classic": "4+KK"
-        },
         {
           "action_id": 1044,
           "classic": "4+KK"

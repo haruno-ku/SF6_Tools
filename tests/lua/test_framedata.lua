@@ -261,16 +261,104 @@ t.ok(cov_all.rows > cov_start.rows,
      :format(cov_all.rows, cov_start.rows))
 t.ok(cov_all.rows >= #targets, "every target row was looked up, not sampled")
 
--- Derivations join for nobody, on any character. The source spells a follow-up
--- as a chain from the move before it - "5MP~MP" - and nothing in candidate_keys
--- turns ">MP" into that, because ">MP" does not say what it follows. Pinned as
--- a known gap rather than left to be rediscovered; fixing it needs the move
--- before, which a single-row lookup does not have.
+-- Asked on its own, a derivation joins to nothing - on any character. The
+-- source spells one as a chain from the move before it ("5MP~MP") and never on
+-- its own, and ">MP" does not say what it follows.
+--
+-- This used to assert `matched == 0` and stop there, as a known gap. It is the
+-- shape the block above warns about: a test that pins today's gap fails the day
+-- the gap is fixed and teaches nobody why. What is pinned now is the PROPERTY -
+-- a derivation needs its parent, a parent is enough, and a wrong parent is not.
 local cov_deriv = FD.coverage(idx, derivations)
-t.eq(cov_deriv.matched, 0, "no derivation joins to frame data")
+t.eq(cov_deriv.matched, 0, "asked on its own, no derivation joins to frame data")
 t.eq(cov_deriv.rows, #derivations, "and all of them were looked up, not skipped")
 for _, u in ipairs(cov_deriv.unmatched_detail) do
     t.ok(#u.tried > 0, ("derivation %s records what was tried"):format(tostring(u.classic)))
+end
+
+t.group("a derivation read against the move it comes out of")
+
+-- Zangief's source carries "5MP~MP" (Double Lariat 1 off 5MP) and "22MK~MK".
+-- The catalog carries ">MP" and ">MK". Neither spelling can reach the other.
+do
+    local alone, info_alone = FD.lookup(idx, ">MP")
+    t.is_nil(alone, "\">MP\" alone finds nothing")
+
+    local rec, info = FD.lookup(idx, ">MP", { after = "MP" })
+    t.ok(rec ~= nil, "the same row read after MP finds a record")
+    t.eq(info.key, "5MP~MP", "and it is the chain the source actually spells")
+    t.eq(info.match, "derivation", "reported under its own match kind, not as a fuzzy hit")
+
+    -- The parent goes through the same candidate ladder as any other lookup,
+    -- which is why a bare "MP" reaches the source's "5MP".
+    t.ok(info.tried ~= nil and #info.tried > #info_alone.tried,
+         "the contextual keys are additions to what was tried, not replacements")
+end
+
+do
+    -- A parent the source does not chain this move from is not a match. The
+    -- danger being tested for is a fallback loose enough to accept any parent,
+    -- which would hand out numbers for chains that do not exist.
+    local rec = FD.lookup(idx, ">MP", { after = "HK" })
+    t.is_nil(rec, "a parent the source never chains this move from stays unmatched")
+end
+
+do
+    -- Ordering. A row whose own spelling is in the source must keep its own
+    -- record even when a parent is supplied, or every edge would rewrite the
+    -- numbers of moves that were never derivations.
+    local own = FD.lookup(idx, "2+MP")
+    local with_parent, info = FD.lookup(idx, "2+MP", { after = "MP" })
+    t.ok(own ~= nil, "an ordinary move joins on its own")
+    t.eq(with_parent, own, "and joins to the SAME record when a parent is offered")
+    t.ok(info.match ~= "derivation", "by its own key, not a chained one: " .. tostring(info.match))
+end
+
+do
+    -- Omitting opts has to be byte-identical to the old behaviour, because
+    -- every existing caller does exactly that.
+    local a = FD.candidate_keys("2+MP")
+    local b = FD.candidate_keys("2+MP", nil)
+    local c = FD.candidate_keys("2+MP", {})
+    t.eq(#a, #b, "candidate_keys(x) and candidate_keys(x, nil) agree in length")
+    t.eq(#a, #c, "and so does an empty opts table")
+    for i = 1, #a do
+        t.eq(b[i].key, a[i].key, "same key at " .. i)
+        t.eq(c[i].key, a[i].key, "empty opts too, at " .. i)
+    end
+end
+
+do
+    -- Coverage takes the parent set rather than one parent, because "does this
+    -- row ever join" is the question a report is asking.
+    local parents = {}
+    for _, r in ipairs(targets) do parents[#parents + 1] = r end
+    local with = FD.coverage(idx, derivations, { parents = parents })
+    t.ok(with.matched > cov_deriv.matched,
+         ("derivations join once the set they could follow is offered: %d against %d")
+         :format(with.matched, cov_deriv.matched))
+    t.ok((with.after_parent or 0) > 0, "and the count of those says so separately")
+
+    -- Unconditionally, and that matters: written as `if d.after then ... end`
+    -- this passed with the field deleted, because an empty loop body asserts
+    -- nothing. Find a match made through a parent and require the field on it.
+    local named = 0
+    for _, d in ipairs(derivations) do
+        local rec, info = nil, nil
+        for _, parent in ipairs(parents) do
+            rec, info = FD.lookup(idx, d.classic, { after = parent.classic })
+            if rec then break end
+        end
+        if rec then
+            t.eq(info.after ~= nil, true,
+                 ("%s joined through a parent, so it has to say which"):format(tostring(d.classic)))
+            named = named + 1
+        end
+    end
+    t.ok(named > 0, "at least one derivation joined through a parent (" .. named .. ")")
+
+    local without = FD.coverage(idx, derivations)
+    t.eq(without.matched, 0, "and with no parents offered the answer is unchanged")
 end
 
 -- A guessed match is counted separately from a clean one, and the count is what

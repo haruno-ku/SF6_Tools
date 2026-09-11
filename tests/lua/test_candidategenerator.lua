@@ -309,4 +309,61 @@ t.group("degenerate input")
 t.is_nil(CG.generate(nil, idx, {}), "no catalog is refused")
 t.is_nil(CG.generate({}, idx, {}), "a table that is not a catalog is refused")
 
+-- --- move B is read against move A -------------------------------------------
+
+t.group("a derivation edge carries the frames of the chain, not of nothing")
+
+-- The source spells a derivation as a chain from the move before it - Zangief's
+-- is "5MP~MP" - and the catalog spells it ">MP", which does not say what it
+-- follows. Looked up a row at a time it joins to nothing, so every derivation
+-- edge carried `frame_data_incomplete` and sat in `low` for want of a record
+-- the source had all along.
+--
+-- The generator is the one place that knows the parent: in the edge (A -> B),
+-- A is what B comes out of, by construction.
+
+do
+    local with_fups = CG.generate(cat, idx, { from = GROUND, include_followups = true })
+    t.ok(with_fups ~= nil, "generation runs with derivations included")
+
+    -- Split by whether move B's startup is known, which is the whole
+    -- difference the parent makes.
+    local knows, blind = {}, {}
+    for _, e in ipairs(with_fups.candidates) do
+        if e.context_dependent then
+            if e.basis and e.basis.to_startup ~= nil then knows[#knows + 1] = e
+            else blind[#blind + 1] = e end
+        end
+    end
+
+    t.ok(#knows > 0, "some derivation edges know move B's startup (" .. #knows .. ")")
+    t.ok(#blind > 0, "and some still do not, which is the honest half (" .. #blind .. ")")
+
+    -- Not just "some": the ones that know are exactly the ones whose parent the
+    -- source actually chains from. Zangief's source carries "5MP~MP" and no
+    -- other chain into ">MP", so MP is the only A that can answer for it.
+    for _, e in ipairs(knows) do
+        t.eq(e.from.classic, "MP",
+             ("%s knows to_startup, so its A must be the one the source chains from")
+             :format(e.id))
+        t.eq(e.to.classic, ">MP", ("%s ends on the derivation the chain names"):format(e.id))
+    end
+
+    -- And the edges that do not know are not claiming to. A derivation whose
+    -- chain the source does not carry stays an unknown, never an exclusion.
+    for _, e in ipairs(blind) do
+        t.eq(e.status, "theoretical", ("%s is still a candidate"):format(e.id))
+    end
+end
+
+do
+    -- The same B row after two different As can be two different moves, so a
+    -- per-row cache would produce a wrong answer rather than a missing one.
+    -- Asserted through FrameData directly, because that is where they differ.
+    local a1 = FrameData.lookup(idx, ">MP", { after = "MP" })
+    local a2 = FrameData.lookup(idx, ">MP", { after = "HK" })
+    t.ok(a1 ~= nil, "\">MP\" after MP is a real record")
+    t.is_nil(a2, "the same row after HK is not, so one cache entry cannot serve both")
+end
+
 return t.finish()

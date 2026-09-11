@@ -258,16 +258,34 @@ function M.generate(catalog, frame_idx, opts)
     -- chosen distance variant's numbers become a frame margin nobody could
     -- argue with.
     local frame_of = {}
-    local function frame_for(row)
-        local hit = frame_of[row]
+    local frame_of_pair = {}
+
+    -- `after` is the row this one comes out of, when the caller knows it. Only
+    -- move B of an edge has one; move A is being produced from neutral.
+    --
+    -- Two caches, not one, and that is forced rather than chosen. The source
+    -- spells a derivation as a chain from its parent ("5MK~MK"), so the same B
+    -- row genuinely has DIFFERENT numbers after different As - which is the
+    -- fact the old single-row cache could not hold. A row with no parent still
+    -- uses the row cache, so the common path is unchanged.
+    local function frame_for(row, after)
+        local key, store = row, frame_of
+        if after ~= nil then
+            local per_a = frame_of_pair[after]
+            if per_a == nil then per_a = {} frame_of_pair[after] = per_a end
+            key, store = row, per_a
+        end
+
+        local hit = store[key]
         if hit == nil then
             if not frame_idx then
                 hit = { rec = false, info = { matched = false, reason = "no frame data loaded" } }
             else
-                local rec, info = FrameData.lookup(frame_idx, row.classic)
+                local rec, info = FrameData.lookup(frame_idx, row.classic,
+                    after and { after = after.classic } or nil)
                 hit = { rec = rec or false, info = info }
             end
-            frame_of[row] = hit
+            store[key] = hit
         end
         return hit.rec ~= false and hit.rec or nil, hit.info
     end
@@ -275,8 +293,10 @@ function M.generate(catalog, frame_idx, opts)
     local function consider(a_row, b_row, context_dependent)
         stats.pairs_considered = stats.pairs_considered + 1
 
+        -- A is produced from neutral, so it has no parent to be read against.
+        -- B does: in this edge, A is what it comes out of.
         local a_frame, a_info = frame_for(a_row)
-        local b_frame, b_info = frame_for(b_row)
+        local b_frame, b_info = frame_for(b_row, a_row)
         local a = assess(a_row, b_row, a_frame, b_frame, opts)
 
         -- If either half's numbers came from a guessed join, the reasoning

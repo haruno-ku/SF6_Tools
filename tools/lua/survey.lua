@@ -108,14 +108,34 @@ local function measure(entry)
     -- Coverage, per set. One number over a mixed set hides the case worth
     -- seeing: starters joining and targets not.
     if idx then
-        local function cov(list)
+        local function cov(list, parents)
             if #list == 0 then return { rows = 0, matched = 0, ratio = 1, ambiguous = 0,
                                         unmatched_detail = {} } end
-            return FrameData.coverage(idx, list)
+            return FrameData.coverage(idx, list, parents and { parents = parents } or nil)
         end
+        -- The parent set: every probeable move this character has, which is the
+        -- same set the edge builder pairs them with.
+        local could_precede = {}
+        for _, r in ipairs(starters) do could_precede[#could_precede + 1] = r end
+        for _, r in ipairs(tgts) do could_precede[#could_precede + 1] = r end
+
         m.cov_starters = cov(starters)
-        m.cov_targets = cov(tgts)
-        m.cov_followups = cov(fups)
+
+        -- Targets get the parent set too, and not only the rows marked as
+        -- derivations. A rekka's later hits are spelled "6+P" in the catalog
+        -- with no ">" on them at all - Jamie has thirteen such rows, A.K.I. two,
+        -- C.Viper four - so they arrive here as ordinary targets and join to
+        -- nothing, while the source has had them all along as "236LP~6P".
+        -- Tried only after the row's own spelling fails, so nothing that
+        -- matches today changes.
+        m.cov_targets = cov(tgts, could_precede)
+
+        -- Derivations are measured against the moves they could come out of.
+        -- Asked on its own a derivation row joins to nothing on any character,
+        -- because the source never spells one on its own - it spells the chain.
+        -- The parent list is every probeable move this character has, which is
+        -- the same set the edge builder would pair them with.
+        m.cov_followups = cov(fups, could_precede)
         m.ambiguous_joins = (m.cov_starters.ambiguous or 0) + (m.cov_targets.ambiguous or 0)
         m.unmatched = {}
         for _, part in ipairs({ m.cov_starters, m.cov_targets }) do

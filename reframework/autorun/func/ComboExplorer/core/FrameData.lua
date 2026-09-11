@@ -46,12 +46,20 @@ M.MATCH = {
     -- one move's numbers because the source says they are one move.
     GENERIC    = "generic_button",
     PREFIX     = "prefix",       -- "63214KK" -> "63214KK (Close)"
+    -- "5MK~MK" - the move BEFORE it, then this one. The source spells a
+    -- derivation as a chain from its parent and never on its own, so this key
+    -- can only be built by a caller who knows what came first. See
+    -- M.candidate_keys' `after`.
+    DERIVATION = "derivation",
     NONE       = "none",
 }
 
 -- Candidate keys for one classic display, in order of confidence. Order
 -- matters: an exact hit is never overridden by a fuzzier one.
-function M.candidate_keys(classic)
+--
+-- opts.after : the classic display of the move this one comes out of, when the
+-- caller knows it. Omitted, the result is byte-identical to what it always was.
+function M.candidate_keys(classic, opts)
     if type(classic) ~= "string" or classic == "" then return {} end
     local keys = {}
     local seen = {}
@@ -82,6 +90,36 @@ function M.candidate_keys(classic)
     -- source always wins; see M.MATCH.GENERIC.
     local generic = M.generic_button_key(classic)
     if generic then add(generic, M.MATCH.GENERIC) end
+
+    -- LAST, and the ordering is the whole safety of it.
+    --
+    -- The source spells a derivation as a chain from the move before it -
+    -- "5MK~MK", "236LP~6P" - and never on its own. The catalog spells the same
+    -- move either ">MK", which does not say what it follows, or as a bare
+    -- "6+P" that is indistinguishable from a standalone move. Neither can be
+    -- turned into the source's key by looking at one row.
+    --
+    -- The caller can, though. CandidateGenerator builds an edge (A -> B) and
+    -- has A in hand; in that edge A IS B's parent, by construction. So "what
+    -- are B's frames if it comes out of A" is answered by asking for A~B, and
+    -- that is a reading rather than a guess.
+    --
+    -- These come after every key above so nothing that matches today stops
+    -- matching: a row whose own spelling is in the source keeps its own record,
+    -- and only a row that finds nothing at all can reach this far.
+    --
+    -- The child is looked up WITHOUT its ">" but never on its own - a bare
+    -- "MK" key here would hand a standalone move's numbers to a derivation,
+    -- which is the failure this module's header is about.
+    local after = opts and opts.after
+    if type(after) == "string" and after ~= "" then
+        local child = classic:gsub("^%s*>%s*", "")
+        for _, parent_key in ipairs(M.candidate_keys(after)) do
+            for _, child_key in ipairs(M.candidate_keys(child)) do
+                add(parent_key.key .. "~" .. child_key.key, M.MATCH.DERIVATION)
+            end
+        end
+    end
 
     return keys
 end
@@ -196,14 +234,14 @@ end
 -- Looks up one classic display. Returns record, match_info - where match_info
 -- always exists and says what was tried, so an unmatched move is a documented
 -- unknown rather than a silent gap.
-function M.lookup(idx, classic)
+function M.lookup(idx, classic, opts)
     local tried = {}
     if type(idx) ~= "table" or type(idx.by_key) ~= "table" then
         return nil, { matched = false, match = M.MATCH.NONE, tried = tried,
                       reason = "no frame-data index" }
     end
 
-    for _, cand in ipairs(M.candidate_keys(classic)) do
+    for _, cand in ipairs(M.candidate_keys(classic, opts)) do
         tried[#tried + 1] = cand.key
         local hit = idx.by_key[cand.key]
         if hit then
@@ -214,7 +252,14 @@ function M.lookup(idx, classic)
             -- this the losing row's numbers are simply gone and the winner is
             -- consumed as if the source agreed with itself.
             local dupes = idx.duplicates and idx.duplicates[cand.key]
+            -- Recorded here rather than by the caller, because a record reached
+            -- through a chain is only that move's record IN THAT CHAIN. An
+            -- info table that carried the key but not the parent would let a
+            -- reader take "5MP~MP" for a property of ">MP" itself.
+            local after = nil
+            if cand.match == M.MATCH.DERIVATION then after = opts and opts.after end
             return hit, { matched = true, match = cand.match, key = cand.key, tried = tried,
+                          after = after,
                           duplicate = dupes and true or nil, duplicate_count = dupes,
                           duplicate_names = dupes and idx.duplicate_names
                               and idx.duplicate_names[cand.key] or nil }
@@ -224,7 +269,7 @@ function M.lookup(idx, classic)
     -- Last resort, and deliberately last: a key that begins with one of the
     -- candidates followed by a space and a bracket, which is how the source
     -- spells distance variants. Ambiguous by nature, so it says so.
-    for _, cand in ipairs(M.candidate_keys(classic)) do
+    for _, cand in ipairs(M.candidate_keys(classic, opts)) do
         local matches = {}
         for _, k in ipairs(idx.keys) do
             if k:sub(1, #cand.key + 2) == cand.key .. " (" then
@@ -336,12 +381,35 @@ end
 -- Coverage across a whole catalog, for the report. A join that quietly matched
 -- a third of the moves would otherwise look like a thin edge graph rather than
 -- a broken lookup.
-function M.coverage(idx, rows)
+--
+-- opts.parents : rows this set's moves could come out of. Only derivations need
+-- it, and they need it because "does this row join" is not a question about the
+-- row: the source spells a derivation as a chain from its parent, so the honest
+-- form is "does it join after ANY move this character has". Tried only after
+-- the row's own spelling has failed, and the parent that answered is recorded -
+-- a coverage figure that could not say which parent it used would be a number
+-- nobody can check.
+function M.coverage(idx, rows, opts)
+    local parents = opts and opts.parents or nil
     local n = { rows = 0, matched = 0, exact = 0, fuzzy = 0, unmatched = 0, ambiguous = 0 }
     local unmatched = {}
     for _, row in ipairs(rows or {}) do
         n.rows = n.rows + 1
         local rec, info = M.lookup(idx, row.classic)
+        if not rec and parents then
+            for _, parent in ipairs(parents) do
+                local prec, pinfo = M.lookup(idx, row.classic, { after = parent.classic })
+                if prec then
+                    rec, info = prec, pinfo
+                    -- `after` comes back from the lookup itself. Only the id is
+                    -- added here, because the lookup takes a display string and
+                    -- has no row to read an action id from.
+                    info.after_action_id = parent.action_id
+                    n.after_parent = (n.after_parent or 0) + 1
+                    break
+                end
+            end
+        end
         if rec then
             n.matched = n.matched + 1
             if info.match == M.MATCH.EXACT then n.exact = n.exact + 1 else n.fuzzy = n.fuzzy + 1 end
@@ -350,7 +418,7 @@ function M.coverage(idx, rows)
                 n.uncertain_detail = n.uncertain_detail or {}
                 n.uncertain_detail[#n.uncertain_detail + 1] = {
                     action_id = row.action_id, classic = row.classic,
-                    key = info.key, why = M.uncertainty_reason(info),
+                    key = info.key, after = info.after, why = M.uncertainty_reason(info),
                 }
             end
         else
