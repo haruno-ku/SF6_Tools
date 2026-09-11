@@ -35,12 +35,21 @@ the sweep: **let go of the pad** (the writer ORs into whatever else is running
 that frame) and **turn Distance Viewer's Auto-Activate off**.
 
 What has NOT changed is the gate. `core/Provenance.lua` still refuses every
-other injection path until the button map is measured, and
-`runtime/Injector.lua` — the one that runs trials — does not exist yet. The
-calibration sweep is allowed through because it is *testing* the provisional
-button map rather than *using* it: a bit that produces no move is a measurement
-about that bit, which is exactly what the gate elsewhere exists to prevent
-being mistaken for "these moves do not link".
+other injection path until the button map is measured. `runtime/Injector.lua`
+— the one that runs trials — now exists, and it is the gate's first caller:
+`Provenance.can` had been implemented since the first commit and invoked from
+nowhere. It refuses to start until `modern_button_bits`, `direction_bits` and
+`rl_dir_polarity` are measured, and the refusal names them.
+
+The calibration sweep is allowed through because it is *testing* the
+provisional button map rather than *using* it: a bit that produces no move is a
+measurement about that bit, which is exactly what the gate elsewhere exists to
+prevent being mistaken for "these moves do not link".
+
+The stage reset (`runtime/StageControl.lua`) is outside the gate for a
+different reason — it writes no input at all, only the training refresh — which
+is why it can be run before the sweep, and why it is the first thing to try on
+a machine that has the game.
 
 ### The four probes, and why they came first
 
@@ -385,7 +394,7 @@ tools/lua/                           the offline CLIs and their JSON codec - nev
   survey.lua                         31 characters: the frame-data join
   explore.lua                        one character, every candidate
   characters.lua                     reads data/characters.json
-tests/lua/                           unit tests (3129 assertions)
+tests/lua/                           unit tests (3245 assertions)
 docs/ComboExplorer/                  the plan, the work split and the reports
 ```
 

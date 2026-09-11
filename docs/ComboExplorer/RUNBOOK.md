@@ -185,6 +185,56 @@ git push
 
 ---
 
+## Step 6.5 — ステージリセットを1回試す 🆕
+
+> パネルの **STAGE RESET**
+
+**キャリブレーションより先にこれをやる。** 理由は2つ:
+
+1. **入力を1ビットも書かない。** 書くのはリフレッシュ要求だけなので、
+   ボタンマップが未測定でも安全に走らせられる。いちばん安全な最初の一歩
+2. **リセットが動かないなら試行は動かない。** Step 11-12 はすべてこの上に乗っている
+
+### なぜ今まで無かったか
+
+`core/StageControlFsm.lua`（588行）は最初から完成していてテストも通っていたが、
+**`GameAdapter` に書き込み関数が1つも無かった**ので、FSM が出す4つのコマンド
+（`request_refresh` / `write_setup` / `correct_position` / `pin_resources`）は
+どれも実行できなかった。さらに `snapshot()` が `refreshing` を返さないので、
+FSM は **WAIT_REFRESH から永遠に出られなかった。**
+
+### やること
+
+パネル → **STAGE RESET** → `RESET ONCE`。
+
+`outcome: ready` と `ticks to ready` が出れば通っている。
+`WRITE REPORT` で `diagnostics/stage_reset-*.json` に書き出してコミットする。
+
+### これが測るもの
+
+`StageControlFsm` は8つの設定値を要求し、**キャリブレーションのスイープは1つも産出しない。**
+今は次の値で走っている。画面にも成果物にも、測定値か推測かが書いてある:
+
+| 設定 | 値 | 出所 |
+|---|---|---|
+| `settle_ticks` | 9 | **実測**（Probe C: 7-9 tick、中央値7） |
+| `grace_ticks` | 15 | 推測（上流の `_reset_grace`） |
+| `refresh_timeout_ticks` | 600 | 推測（大きめの予算） |
+| `settle_timeout_ticks` | 600 | 推測（同上） |
+| `target_positions` | `false` | 今回は位置補正をしない |
+| `pin` | `false` | 今回は HP/Drive/SA を固定しない |
+
+> **なぜこれが「未測定値を仮に決める」に当たらないか。**
+> この8つは**リンクの成否を決めない**。予算と許容差で、外れると
+> `reset_failed` で**大声で**落ちる。ボタンビットを仮に決めた場合は逆で、
+> 技が出ないまま「繋がらない」という**自信のある否定**が記録される。
+> 壊れ方の向きが逆。
+>
+> それでも推測は推測なので、**この回が8つを測る回**になる。
+> レポートの `ticks_to_ready` を見て、次から本物の数字に置き換える。
+
+---
+
 ## Step 7-10 — キャリブレーション
 
 **道具は揃っている。** `core/Calibration.lua` / `core/CalibrationFsm.lua` /
@@ -289,9 +339,37 @@ y 座標も空中フラグも無い）ので、しゃがみとジャンプはラ
 > Issue [#11](https://github.com/haruno-ku/SF6_Tools/issues/11)
 
 Step 7-10 が終わって初めて `Provenance` が注入を許可する。
+`runtime/Injector.lua` が**そのゲートの最初の呼び出し元**で、
+3項目が verified になるまで起動を拒否し、**拒否のときに何が足りないかを名前で言う。**
 
-**やること**: 既知の1ペア（例 `2L → 2L`）を単発実行して目視。
+### やること
+
+1. **PROBE D** で `LOAD CATALOG`（試行ペアはカタログから取る）
+2. パネル → **TRIAL**。A / B / delay が表示される。
+   `NEXT PAIR` で順番に送れる（自己ペアは飛ばす）
+3. `Config.allow_injection` を **on** にする（レジスタとは別の、操作者自身のスイッチ）
+4. `RUN ONE TRIAL`
+
+`outcome: judged` なら通っている。結果は
+`ComboExplorer_data/trials/trials.jsonl` に1行ずつ追記される。
+
+### 見るところ
+
+| | |
+|---|---|
+| `masks written` | 0 のままなら書けていない。`_shared_input_post` か mirror の問題 |
+| `FAILED WRITES` | 赤で出たら中身を読む。黙って失敗するのがいちばん困る |
+| `stage` | リセットが READY まで行っているか |
+
 多段技（623 等）を A に置いて、**`combo_cnt` の絶対値判定に依存していない**ことも確認。
+
+### 初回に出てもおかしくないもの
+
+- **`the recorder cannot encode`** — このビルドの REFramework に
+  `json.dump_string` が無い。**1試行目より前に**出る（開始時に1回だけ確かめている）
+- **`could not open ... for append`** — `io.open` の基準ディレクトリが
+  `json.dump_file` と違う。どちらなのかは**まだ測っていない**ので、
+  違えば大声で落ちるようにしてある。出たら、それが答え
 
 ---
 
@@ -332,17 +410,23 @@ lua tools/lua/explore.lua
 **この971は「繋がるコンボ」ではない。** 全件 `status: theoretical` /
 `runtime_verified: false`。全文は `zangief-offline-report.md`。
 
-テスト: **3129 アサーション**（Lua 5.4、SF6 不要）。
+テスト: **3245 アサーション**（Lua 5.4、SF6 不要）。
 
-### 未実装（実機の結果を見てから書くもの）
+### ランタイムの配線（2026-09-11 に完了）
 
-| | 何が決まってから書けるか |
+| | |
 |---|---|
-| `runtime/Injector.lua` | Step 7-10 が `verified` になってから |
-| `runtime/StageControl.lua` | `StageControlFsm` は実装済み、`GameAdapter` との配線が残り |
-| Runner の実機結線 | `RunnerFsm` は実装済み、同上 |
+| `GameAdapter` の書き込み側 | **完了** — `request_refresh` / `set_position` / `pin_resources` / `write_setup`、および `tick_snapshot`（`refreshing` と `can_inject` を合わせる層。これが無いのでリセットは永遠に完了しなかった） |
+| `runtime/StageControl.lua` | **完了** — FSM のコマンドをその tick の分だけ実行する。入力は1ビットも書かない |
+| `runtime/Injector.lua` | **完了** — park して `_shared_input_post` で spend。`Provenance.can` の最初の呼び出し元。ミラーの持ち主 |
+| `JsonIO.append` / `encode_line` | **完了** — JSONL 追記。エンコーダは**開始時に1回**確かめる |
+| パネル | **完了** — STAGE RESET と TRIAL |
 
-`Calibration.lua` は**実装済み**（Step 4 の結果が出たので書けた）。
+### まだ書いていないもの
+
+| | 何待ちか |
+|---|---|
+| 総当たりのループ | **1試行が実機で通ってから。** 候補列挙・delay 掃引・リトライ。順番を逆にすると、動かないものを大量に走らせることになる |
 
 ### 開発機で回せる道具
 

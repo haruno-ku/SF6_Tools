@@ -33,7 +33,7 @@
 | 全31キャラのカタログ監査 / 分類器の汎用化 | **完了** — `tools/lua/audit.lua` |
 | 全31キャラのフレームデータと join 計測 | **完了** — `tools/lua/survey.lua` |
 
-テスト: **3129 アサーション**（Lua 5.4.6、SF6 不要）。
+テスト: **3245 アサーション**（Lua 5.4.6、SF6 不要）。
 `node tools/lua-runner.mjs syntax` は構文＋**require 解決**もチェックする
 （実機でしか出ないロードエラーを開発機で捕まえる）。
 
@@ -217,15 +217,26 @@ classic 側にだけ `>` があって Modern 側に無い派生（Alex など）
 
 ### A2. 実機依存 / 非依存の分離
 
+> **この表は2026-09-11に狭くなった。** 左列は当初「`runtime/` は全部テスト不可」
+> だったが、実際に不可なのは **`sdk` を file scope で触るもの**だけだった。
+> `runtime/` のうち `CatalogLocator` / `Config` / `StageControl` / `Injector` /
+> `JsonIO` はテスト済みで、いずれも I/O を引数で受け取る。
+> #29 はこの誤りのせいで「検証は実機でやるしかない」と見積もられていた。
+
 ```
 実機依存（開発機でテスト不可）        開発機でテスト可能（純粋 or I/O注入）
 ────────────────────────────         ──────────────────────────────────
 runtime/GameAdapter.lua              core/Provenance.lua
 runtime/Clock.lua                    core/InputMask.lua
-runtime/Probe.lua                    core/Catalog.lua
-runtime/Injector.lua                 core/Classify.lua
-runtime/StageControl.lua             core/CandidateGenerator.lua
-UI.lua                               core/SequenceCompiler.lua
+UI.lua                               core/Catalog.lua
+（sdk を file scope で触るもの）      core/Classify.lua
+                                     core/CandidateGenerator.lua
+                                     core/SequenceCompiler.lua
+                                     runtime/CatalogLocator.lua
+                                     runtime/StageControl.lua
+                                     runtime/Injector.lua
+                                     runtime/Config.lua
+                                     runtime/JsonIO.lua
                                      core/RunnerFsm.lua
                                      core/StageControlFsm.lua
                                      core/LinkVerdict.lua
@@ -308,9 +319,9 @@ FSM を純粋にしておくと、実機が来る前に**遷移とタイムア�
 | 7 | 入力→action_id スイープ | 同上 |
 | 8 | canonical / variant の確定 | #7 |
 | 9 | 1F 粒度の実証 | Probe B |
-| 10 | 入力注入（Injector の実装完了と有効化） | #3-#6 が verified |
+| 10 | 入力注入の**有効化** | #3-#6 が verified。**実装は2026-09-11に完了**（`runtime/Injector.lua`） |
 | 11 | injection smoke test | #10 |
-| 12 | リセット整定時間の実測 | #11 |
+| 12 | リセット整定時間の実測 | **#11 ではなく先に出来る** — ステージリセットは入力を書かないので、キャリブレーション前に走らせて測れる（RUNBOOK Step 6.5） |
 | 13 | コスト実測スパイク（1 試行の壁時計） | #11 |
 | 14 | A→B 総当たり | #12, #13 |
 | 15 | フレームメーター実挙動 | #1 |
