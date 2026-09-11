@@ -45,6 +45,11 @@ M.MATCH = {
     -- spelling wins, and if it did not, the three catalog rows genuinely share
     -- one move's numbers because the source says they are one move.
     GENERIC    = "generic_button",
+    -- The other direction. "623+K" names no strength, and the source splits
+    -- Dragonlash Kick into 623LK / 623MK / 623HK - so the catalog is the
+    -- generic side and the source is the specific one. Always ambiguous when
+    -- more than one strength exists, and says so.
+    STRENGTH   = "generic_expanded",
     PREFIX     = "prefix",       -- "63214KK" -> "63214KK (Close)"
     -- "5MK~MK" - the move BEFORE it, then this one. The source spells a
     -- derivation as a chain from its parent and never on its own, so this key
@@ -88,8 +93,29 @@ function M.candidate_keys(classic, opts)
     -- Last, and only for a notation that names a motion: the generic-button
     -- form. Added after everything above so a strength-specific key in the
     -- source always wins; see M.MATCH.GENERIC.
-    local generic = M.generic_button_key(classic)
+    local generic, kind, n, motion = M.generic_button_key(classic)
     if generic then add(generic, M.MATCH.GENERIC) end
+
+    -- One letter for a doubled button. The source does not always repeat it:
+    -- Guile's Sonic Hurricane is "[4]646P" and C.Viper's Mission Complete is
+    -- "214214P", while the catalog spells both with two buttons. Tried after
+    -- the repeated form, so a source that DID draw the distinction keeps it.
+    if generic and kind and n and n > 1 then
+        add(motion .. kind, M.MATCH.GENERIC)
+    end
+
+    -- And the reverse: a catalog notation that names no strength at all, where
+    -- the source split the move into three. Motion-gated exactly as
+    -- generic_button_key is, and for the same reason - "6+P" must never expand
+    -- to "6LP"/"6MP"/"6HP", because Guile's 6MP is a command normal and that
+    -- would hand a normal's numbers to a special. A rekka spelled "6+P" is
+    -- answered by reading it against its parent instead.
+    local exp_motion, exp_kind = M.generic_expansion(classic)
+    if exp_motion then
+        for _, strength in ipairs({ "L", "M", "H" }) do
+            add(exp_motion .. strength .. exp_kind, M.MATCH.STRENGTH)
+        end
+    end
 
     -- LAST, and the ordering is the whole safety of it.
     --
@@ -158,7 +184,57 @@ function M.generic_button_key(classic)
         if #buttons ~= (n * 2) + plus then return nil end
     end
 
-    return motion .. string.rep(kind, n)
+    return motion .. string.rep(kind, n), kind, n, motion
+end
+
+-- The mirror of generic_button_key: a notation whose buttons are ONE generic
+-- letter, for a real motion. "623+K" -> "623", "K". Returns nil for anything
+-- that names a strength, and nil for a single-digit motion.
+--
+-- The motion gate is not a formality. Without it "6+P" would expand to "6LP",
+-- "6MP" and "6HP" - and Guile's "6MP" is Full Bullet Magnum, a command normal.
+-- The rows spelled that way are rekka follow-ups; their answer is the chain
+-- their parent names, not a strength guess.
+function M.generic_expansion(classic)
+    if type(classic) ~= "string" then return nil end
+    local motion, button = classic:match("^([%d%[%]~]+)%+?([PK])$")
+    if not motion or not button then return nil end
+    local digits = select(2, motion:gsub("%d", ""))
+    if digits < 2 and not motion:find("[", 1, true) then return nil end
+    return motion, button
+end
+
+-- Every input one source record answers to.
+--
+-- The source writes alternatives with " or ": Dhalsim's record is "2KK or 3KK"
+-- and Guile's is "4MK or 6MK", one move reachable two ways. The catalog has a
+-- separate row for each, so indexing the literal string matched neither of
+-- them - which is why Dhalsim joined 69% of his targets and Guile 83%.
+--
+-- This is not a guess about what the source meant. It is the source listing
+-- both inputs itself.
+-- The source writes two more alternations besides " or ", and both were being
+-- indexed as literal strings nobody could generate:
+--
+--   "4/6MP"          -- 4MP or 6MP. Also "5/6KK", "5/6KK~6P", "5/6KK~dl.6P"
+--   "214236HP/HK"    -- 214236HP or 214236HK. Also "214P~214LP/MP"
+--
+-- A "/" alternates one piece of the key and everything around it is shared.
+-- Which piece is decided by what is on each side, and the two shapes above are
+-- the only two in the data: digits on both sides of the slash, or buttons.
+local function slash_parts(k)
+    -- <head><d>/<d><tail> : a direction alternation. The digit before the slash
+    -- is the alternative to the one after it, and the tail belongs to both.
+    local head, a, b, tail = k:match("^(.-)(%d)/(%d)(.*)$")
+    if head then return { head .. a .. tail, head .. b .. tail } end
+
+    -- <head><buttons>/<buttons> : a button alternation, always at the end.
+    -- The optional "j." is the air prefix, which the source keeps on both sides
+    -- of the slash: "j.PPP/j.KKK".
+    local h, x, y = k:match("^(.-)(j?%.?[LMH]?[PK]+)/(j?%.?[LMH]?[PK]+)$")
+    if h then return { h .. x, h .. y } end
+
+    return nil
 end
 
 -- Every input one source record answers to.
@@ -175,12 +251,50 @@ function M.spellings(numpad)
     local out, seen = {}, {}
     local function add(k)
         k = k:match("^%s*(.-)%s*$")
-        if k ~= "" and not seen[k] then seen[k] = true out[#out + 1] = k end
+        if k == "" or seen[k] then return end
+        seen[k] = true
+        out[#out + 1] = k
     end
+
+    -- "4 or 6 + PPP/KKK" and "6 or 4 + PPP/KKK", plus their j. forms. Four keys
+    -- in the whole dataset - Dhalsim's and M.Bison's teleports - and the only
+    -- ones where an " or " part carries no buttons of its own.
+    --
+    -- Split on " or " alone, the first part is the bare string "4": not an
+    -- input, and not something any catalog row can ask for. The buttons after
+    -- the "+" belong to both directions, which is the only reading under which
+    -- the record describes a move at all.
+    local dirs, buttons = numpad:match("^%s*(%d[%s%w]-)%s*%+%s*(.+)$")
+    if dirs and dirs:find(" or ", 1, true) and buttons:find("/", 1, true) then
+        for d in (dirs .. " or "):gmatch("(.-) or ") do
+            d = d:match("^%s*(.-)%s*$")
+            for _, b in ipairs(slash_parts(buttons) or { buttons }) do
+                -- The join is written without the "+" the prose put spaces
+                -- around, because that is how the source spells every other
+                -- key: "4PPP", not "4 + PPP". The "+" is NOT stripped from
+                -- keys generally - "360+HP" keeps its own, and a catalog row
+                -- spelled "360+HP" has to go on matching it exactly.
+                if d ~= "" then add(d .. b) end
+            end
+        end
+        return out
+    end
+
+    local parts = {}
     if numpad:find(" or ", 1, true) then
-        for part in (numpad .. " or "):gmatch("(.-) or ") do add(part) end
+        for part in (numpad .. " or "):gmatch("(.-) or ") do parts[#parts + 1] = part end
     else
-        add(numpad)
+        parts[1] = numpad
+    end
+
+    for _, part in ipairs(parts) do
+        part = part:match("^%s*(.-)%s*$")
+        local alts = slash_parts(part)
+        if alts then
+            for _, a in ipairs(alts) do add(a) end
+        else
+            add(part)
+        end
     end
     return out
 end
@@ -241,7 +355,8 @@ function M.lookup(idx, classic, opts)
                       reason = "no frame-data index" }
     end
 
-    for _, cand in ipairs(M.candidate_keys(classic, opts)) do
+    local cands = M.candidate_keys(classic, opts)
+    for _, cand in ipairs(cands) do
         tried[#tried + 1] = cand.key
         local hit = idx.by_key[cand.key]
         if hit then
@@ -258,8 +373,26 @@ function M.lookup(idx, classic, opts)
             -- reader take "5MP~MP" for a property of ">MP" itself.
             local after = nil
             if cand.match == M.MATCH.DERIVATION then after = opts and opts.after end
+
+            -- An expanded strength is a choice between records the source drew
+            -- a distinction between, and the catalog notation does not say
+            -- which. Reported as ambiguous with every strength that exists, the
+            -- same way a distance variant is - picking the first quietly would
+            -- be exactly the confident wrong number this module is against.
+            local alternatives, ambiguous = nil, nil
+            if cand.match == M.MATCH.STRENGTH then
+                alternatives = {}
+                for _, other in ipairs(cands) do
+                    if other.match == M.MATCH.STRENGTH and idx.by_key[other.key] then
+                        alternatives[#alternatives + 1] = other.key
+                    end
+                end
+                ambiguous = #alternatives > 1
+            end
+
             return hit, { matched = true, match = cand.match, key = cand.key, tried = tried,
                           after = after,
+                          ambiguous = ambiguous, alternatives = alternatives,
                           duplicate = dupes and true or nil, duplicate_count = dupes,
                           duplicate_names = dupes and idx.duplicate_names
                               and idx.duplicate_names[cand.key] or nil }

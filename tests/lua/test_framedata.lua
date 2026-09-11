@@ -421,4 +421,108 @@ t.eq(dup.duplicate, true, "and the lookup says so")
 t.eq(FD.uncertain(dup), true, "which counts as having guessed")
 t.ok(FD.uncertainty_reason(dup):find("whichever came first") ~= nil, "and says why")
 
+-- --- the two sides generalise in opposite directions --------------------------
+
+-- These read other characters' frame data on purpose. The rules below exist
+-- because the convention differs per character and per move - Ken splits
+-- Dragonlash Kick into three strengths while the catalog writes "623+K", and
+-- C.Viper writes "214214P" for a move the catalog spells with two buttons -
+-- so a fixture built from one character cannot show either shape.
+local KEN     = FD.index(dofile("data/frame-data/ken.lua"))
+local GUILE   = FD.index(dofile("data/frame-data/guile.lua"))
+local CVIPER  = FD.index(dofile("data/frame-data/cviper.lua"))
+
+t.group("the catalog is generic and the source is specific")
+
+do
+    -- The rule already had specific -> generic ("214+LP" -> "214P"). This is
+    -- the other direction, and it was missing entirely: "623+K" has no
+    -- strength+button pair in it, so generic_button_key returned nil and not
+    -- one of 623LK / 623MK / 623HK was ever tried.
+    local rec, info = FD.lookup(KEN, "623+K")
+    t.ok(rec ~= nil, "\"623+K\" finds Ken's Dragonlash Kick")
+    t.eq(info.match, "generic_expanded", "under its own match kind")
+    t.eq(info.ambiguous, true, "and it is ambiguous, because the source split the move")
+    t.eq_list(info.alternatives, { "623LK", "623MK", "623HK" },
+              "naming every strength that exists rather than picking one quietly")
+
+    -- FD.uncertain is what the reports and the candidate generator read.
+    t.eq(FD.uncertain(info), true, "so the join counts as uncertain downstream")
+end
+
+do
+    -- THE GATE, and the reason it is not a formality. Guile's "6MP" is Full
+    -- Bullet Magnum, a command normal. If a single-digit motion could expand,
+    -- every rekka hit the catalog spells "6+P" would collect some normal's
+    -- numbers - a confident wrong answer, which is worse than no answer.
+    t.is_nil(FD.generic_expansion("6+P"), "a single-digit motion does not expand")
+    t.is_nil(FD.generic_expansion("6+K"), "in either button family")
+    t.is_nil(FD.generic_expansion("2+MP"), "and a notation that names a strength has nothing to expand")
+
+    local motion, button = FD.generic_expansion("623+K")
+    t.eq(motion, "623", "a real motion does expand")
+    t.eq(button, "K", "carrying the button family")
+
+    local m2 = FD.generic_expansion("[4]6+P")
+    t.eq(m2, "[4]6", "a charge counts as a motion even with one digit")
+
+    -- End to end: Guile's 6+MP keeps its own key and picks up no strength guess.
+    local _, ginfo = FD.lookup(GUILE, "6+MP")
+    t.ok(ginfo.match ~= "generic_expanded",
+         "Guile's 6+MP is read as itself, not expanded: " .. tostring(ginfo.match))
+end
+
+t.group("the source generalises one level further than the catalog")
+
+do
+    -- "[4]646+LP+MP" generalises to "[4]646PP" by the existing rule, and the
+    -- source spells it "[4]646P" - one letter for the pair.
+    local rec, info = FD.lookup(GUILE, "[4]646+LP+MP")
+    t.ok(rec ~= nil, "Guile's Sonic Hurricane joins")
+    t.eq(info.key, "[4]646P", "through the collapsed single-letter form")
+
+    local rec2, info2 = FD.lookup(CVIPER, "214214+LP+MP")
+    t.ok(rec2 ~= nil, "and so does C.Viper's Mission Complete")
+    t.eq(info2.key, "214214P", "the same way")
+
+    -- Ordering: the repeated form is still tried first, so a source that DID
+    -- draw the distinction keeps it.
+    local keys = FD.candidate_keys("[4]646+LP+MP")
+    local at_pp, at_p
+    for i, k in ipairs(keys) do
+        if k.key == "[4]646PP" then at_pp = i end
+        if k.key == "[4]646P" then at_p = i end
+    end
+    t.ok(at_pp ~= nil and at_p ~= nil, "both forms are candidates")
+    t.ok(at_pp < at_p, "and the two-letter form is tried first")
+end
+
+t.group("alternations the source writes with a slash")
+
+do
+    -- Indexed as literal strings before this, so the move was in by_key under a
+    -- name no catalog row could ever generate.
+    t.eq_list(FD.spellings("4/6MP"), { "4MP", "6MP" }, "a direction alternation")
+    t.eq_list(FD.spellings("5/6KK~6P"), { "5KK~6P", "6KK~6P" }, "with a chain attached")
+    t.eq_list(FD.spellings("214236HP/HK"), { "214236HP", "214236HK" }, "a button alternation")
+    t.eq_list(FD.spellings("214P~214LP/MP"), { "214P~214LP", "214P~214MP" },
+              "a button alternation inside a chain")
+
+    -- The prose form. Split on " or " alone the first part is the bare string
+    -- "4", which is not an input and which no row can ask for.
+    t.eq_list(FD.spellings("4 or 6 + PPP/KKK"), { "4PPP", "4KKK", "6PPP", "6KKK" },
+              "the teleport's two directions times its two button groups")
+    t.eq_list(FD.spellings("6 or 4 + PPP/KKK"), { "6PPP", "6KKK", "4PPP", "4KKK" },
+              "written the other way round too")
+    t.eq_list(FD.spellings("4 or 6 + j.PPP/j.KKK"), { "4j.PPP", "4j.KKK", "6j.PPP", "6j.KKK" },
+              "and the air version keeps its prefix on both sides")
+
+    -- What must NOT change.
+    t.eq_list(FD.spellings("2KK or 3KK"), { "2KK", "3KK" }, "a plain \" or \" is untouched")
+    t.eq_list(FD.spellings("360+HP"), { "360+HP" },
+              "and a key keeps its own \"+\" - only the prose form had spaces around one")
+    t.eq_list(FD.spellings("63214HK or 63214K (Close)"),
+              { "63214HK", "63214K (Close)" }, "a distance suffix survives the split")
+end
+
 return t.finish()
