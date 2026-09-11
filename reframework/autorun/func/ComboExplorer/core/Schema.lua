@@ -40,6 +40,48 @@ M.STATUS = {
 local STATUS_SET = {}
 for _, v in pairs(M.STATUS) do STATUS_SET[v] = true end
 
+-- How well SUPPORTED a candidate's reasoning is. Not how likely it is to work -
+-- nothing offline can say that - but whether the case rests on numbers that were
+-- actually present, on a mechanism the source named, or on nothing having
+-- refuted it.
+--
+-- Closed here for the same reason STATUS is. It was an open vocabulary of bare
+-- strings produced in CandidateGenerator and read in GraphStore, RouteSearch,
+-- Scoring and Exporter, with the rank table written out three separate times.
+-- Nothing validated it, and every reader coerced an unrecognised value to the
+-- bottom of the scale - `rank[c] or 0`, `CONF_RANK[c] or 1` - so a typo did not
+-- raise anything, it quietly reordered the output.
+M.CONFIDENCE = {
+    LOW    = "low",
+    MEDIUM = "medium",
+    HIGH   = "high",
+}
+
+local CONFIDENCE_RANK = {
+    [M.CONFIDENCE.LOW]    = 1,
+    [M.CONFIDENCE.MEDIUM] = 2,
+    [M.CONFIDENCE.HIGH]   = 3,
+}
+
+-- nil for anything not in the vocabulary, deliberately. A caller that wants to
+-- treat an unknown as the bottom of the scale has to say so, which is different
+-- from doing it by accident inside an `or`.
+function M.confidence_rank(c)
+    return CONFIDENCE_RANK[c]
+end
+
+function M.is_confidence(c)
+    return CONFIDENCE_RANK[c] ~= nil
+end
+
+-- The other direction, which was its own duplicated table in two modules.
+local CONFIDENCE_BY_RANK = {}
+for name, rank in pairs(CONFIDENCE_RANK) do CONFIDENCE_BY_RANK[rank] = name end
+
+function M.confidence_by_rank(n)
+    return CONFIDENCE_BY_RANK[n]
+end
+
 -- Statuses that are claims about the real game, and therefore need evidence.
 local RUNTIME_STATUS = {
     [M.STATUS.VERIFIED] = true,
@@ -226,6 +268,9 @@ VALIDATORS[M.KIND.EDGE] = function(o, p)
         -- fully settle: spacing alone can break any of them.
         err(p, "requires_runtime_validation", "no edge is fully decidable offline")
     end
+    if o.confidence ~= nil and not M.is_confidence(o.confidence) then
+        err(p, "confidence", ("%q is not one of low, medium, high"):format(tostring(o.confidence)))
+    end
 end
 
 VALIDATORS[M.KIND.ROUTE] = function(o, p)
@@ -235,6 +280,10 @@ VALIDATORS[M.KIND.ROUTE] = function(o, p)
     end
     if o.offline_score ~= nil and type(o.offline_score) ~= "table" then
         err(p, "offline_score", "must be a table")
+    end
+    if o.min_confidence ~= nil and not M.is_confidence(o.min_confidence) then
+        err(p, "min_confidence",
+            ("%q is not one of low, medium, high"):format(tostring(o.min_confidence)))
     end
     -- Offline predictions and runtime measurements never share a field, so a
     -- prediction can never be mistaken for a measurement later.

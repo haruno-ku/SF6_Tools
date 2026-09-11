@@ -136,8 +136,12 @@ function M.neighbours(g, key, opts)
         local keep = true
         if e.status == Schema.STATUS.REJECTED and not opts.include_rejected then keep = false end
         if keep and opts.min_confidence then
-            local rank = { low = 1, medium = 2, high = 3 }
-            if (rank[e.confidence] or 0) < (rank[opts.min_confidence] or 0) then keep = false end
+            -- An edge whose confidence is not in the vocabulary sorts below
+            -- everything, which is the same behaviour as before - but it is now
+            -- a decision made here rather than an `or 0` nobody wrote on
+            -- purpose, and Schema.validate refuses such an edge upstream.
+            local want = Schema.confidence_rank(opts.min_confidence) or 0
+            if (Schema.confidence_rank(e.confidence) or 0) < want then keep = false end
         end
         if keep and opts.exclude_context_dependent and e.context_dependent then keep = false end
         if keep then out[#out + 1] = e end

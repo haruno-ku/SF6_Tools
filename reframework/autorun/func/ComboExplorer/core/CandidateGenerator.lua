@@ -55,6 +55,9 @@ M.EXCLUDED = {
 }
 
 local U = Schema.RUNTIME_UNKNOWNS
+-- The producer names the vocabulary it produces, so a typo here is a nil index
+-- rather than a string nobody validates.
+local C = Schema.CONFIDENCE
 
 -- --- helpers -----------------------------------------------------------------
 
@@ -183,36 +186,36 @@ end
 -- high-confidence candidate is one whose case rests on numbers that were
 -- actually present, not one that is likely to succeed.
 local function confidence_of(a)
-    if contains(a.reasons, M.REASON.FRAME_DATA_INCOMPLETE) then return "low" end
+    if contains(a.reasons, M.REASON.FRAME_DATA_INCOMPLETE) then return C.LOW end
 
     -- Numbers from a join that had to guess cannot support a confident case,
     -- however clean the arithmetic on top of them looks. Zangief's 63214+KK
     -- resolves to the (Close) variant at startup 10 purely by sort order, while
     -- (Mid) is 23 and (Far) is 54 - three readings that turn the same margin
     -- from +26 into -18.
-    if a.frame_join_uncertain then return "low" end
+    if a.frame_join_uncertain then return C.LOW end
 
     -- A suspected knockdown caps the case: the advantage the reasoning rests on
     -- may not be the kind of advantage that links.
     local capped = a.advantage_may_be_knockdown
 
-    if #a.unknowns > 0 then return "low" end
+    if #a.unknowns > 0 then return C.LOW end
 
     -- Both halves known and named: A cancels into specials AND B is a special.
     if contains(a.reasons, M.REASON.SPECIAL_CANCEL)
         or contains(a.reasons, M.REASON.SUPER_CANCEL) then
-        return capped and "medium" or "high"
+        return capped and C.MEDIUM or C.HIGH
     end
 
     -- A chain cancel is only half known. The source says the move chains; it
     -- does not say what it chains INTO. Calling that high confidence would
     -- claim knowledge the data does not contain.
-    if contains(a.reasons, M.REASON.CHAIN_CANCEL) then return "medium" end
+    if contains(a.reasons, M.REASON.CHAIN_CANCEL) then return C.MEDIUM end
 
     local m = a.basis.margin_frames
-    if m ~= nil and m >= 3 then return capped and "medium" or "high" end
-    if m ~= nil then return "medium" end
-    return "low"
+    if m ~= nil and m >= 3 then return capped and C.MEDIUM or C.HIGH end
+    if m ~= nil then return C.MEDIUM end
+    return C.LOW
 end
 
 -- --- generation --------------------------------------------------------------

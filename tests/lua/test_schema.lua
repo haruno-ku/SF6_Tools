@@ -239,6 +239,64 @@ t.eq(S.validate(S.KIND.EDGE, { schema = "something.else" }), false, "the wrong s
 t.eq(S.validate("ce.nonexistent.v1", { schema = "ce.nonexistent.v1" }), false,
      "an unknown kind has no validator and is refused")
 
+-- --- the confidence vocabulary -----------------------------------------------
+
+t.group("confidence is a closed vocabulary")
+
+-- It was an open one: bare strings produced in CandidateGenerator and read in
+-- four other modules, with the rank table written out three separate times and
+-- the name-by-rank table twice. Nothing validated it, and every reader coerced
+-- an unrecognised value to the bottom of the scale inside an `or`, so a typo
+-- did not raise anything - it quietly reordered the output.
+t.eq(S.CONFIDENCE.LOW, "low", "the vocabulary names its own values")
+t.eq(S.CONFIDENCE.MEDIUM, "medium", "medium")
+t.eq(S.CONFIDENCE.HIGH, "high", "high")
+
+t.eq(S.confidence_rank("low"), 1, "low ranks below")
+t.eq(S.confidence_rank("medium"), 2, "medium between")
+t.eq(S.confidence_rank("high"), 3, "high above")
+
+-- nil, not 0 and not 1. A caller that wants to treat an unknown as the bottom
+-- has to write that down, which is different from doing it by accident.
+t.is_nil(S.confidence_rank("hi"), "a typo has no rank at all")
+t.is_nil(S.confidence_rank(nil), "and neither does nothing")
+t.is_nil(S.confidence_rank("HIGH"), "the vocabulary is case-sensitive, like every other one here")
+
+t.eq(S.is_confidence("high"), true, "membership is askable")
+t.eq(S.is_confidence("hi"), false, "and answers no for a near miss")
+
+t.eq(S.confidence_by_rank(3), "high", "the reverse lookup works")
+t.is_nil(S.confidence_by_rank(4), "and stops at the top of the scale")
+t.is_nil(S.confidence_by_rank(0), "and at the bottom")
+
+-- The point of closing it: the record carrying a bad value is refused.
+local function edge(conf)
+    return S.new(S.KIND.EDGE, {
+        id = "a->b", from = { action_id = 1 }, to = { action_id = 2 },
+        reasons = { "frame_link" }, confidence = conf,
+        requires_runtime_validation = { "actual_input_timing" },
+        provenance = { game_patch = "p", calibration_id = "c" },
+    })
+end
+t.ok(S.validate(S.KIND.EDGE, edge("high")), "an edge with a real confidence validates")
+t.ok(S.validate(S.KIND.EDGE, edge(nil)), "and one that does not claim a confidence validates")
+
+local ok, problems = S.validate(S.KIND.EDGE, edge("hi"))
+t.eq(ok, false, "an edge with a typo does not")
+local named = false
+for _, pr in ipairs(problems) do if pr.field == "confidence" then named = true end end
+t.ok(named, "and the problem names the field")
+
+-- Routes carry the weakest link's confidence, and it is the same vocabulary.
+local function route(conf)
+    return S.new(S.KIND.ROUTE, {
+        id = "r", steps = { { index = 1 }, { index = 2 } },
+        min_confidence = conf, provenance = { game_patch = "p" },
+    })
+end
+t.ok(S.validate(S.KIND.ROUTE, route("medium")), "a route's min_confidence is checked too")
+t.eq((S.validate(S.KIND.ROUTE, route("mediumm"))), false, "and refused when it is not a value")
+
 -- --- re-testing after a patch ------------------------------------------------
 
 t.group("leaving a runtime status")

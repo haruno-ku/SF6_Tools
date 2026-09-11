@@ -40,6 +40,7 @@
 -- "the good ones".
 
 local InputMask = require("func/ComboExplorer/core/InputMask")
+local Schema = require("func/ComboExplorer/core/Schema")
 
 local M = { name = "ComboExplorer.Scoring" }
 
@@ -53,8 +54,7 @@ M.WEIGHTS = {
     repeat_relief   = -0.5,  -- the same move twice is one thing learned, not two
 }
 
-local CONF_RANK = { low = 1, medium = 2, high = 3 }
-local RANK_NAME = { "low", "medium", "high" }
+-- The confidence vocabulary and its order live in Schema, with STATUS.
 
 -- --- per-step input shape ----------------------------------------------------
 
@@ -226,7 +226,7 @@ local function axis_value(r, axis)
         return -s.execution_cost
     elseif axis == M.AXES.CONFIDENCE then
         -- Ties on confidence are common, so damage decides within a band.
-        local rank = CONF_RANK[s.theoretical_confidence or "low"] or 1
+        local rank = Schema.confidence_rank(s.theoretical_confidence) or 1
         return rank * 1e9 - (s.steps_with_missing_data or 0) * 1e6 + (s.predicted_damage or 0)
     elseif axis == M.AXES.RESOURCE_FREE then
         return -(s.od_steps * 1000 + s.super_steps * 1000) + (s.predicted_damage or 0) / 1000
@@ -316,7 +316,5 @@ function M.summary(routes)
     }
 end
 
-M.CONF_RANK = CONF_RANK
-M.RANK_NAME = RANK_NAME
 
 return M

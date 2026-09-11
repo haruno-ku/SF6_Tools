@@ -64,7 +64,7 @@ M.DEFAULTS = {
     collapse_canonical_variants = false,
 }
 
-local CONF_RANK = { low = 1, medium = 2, high = 3 }
+-- The vocabulary and its order live in Schema, with STATUS and the rest.
 
 -- --- per-move facts ----------------------------------------------------------
 
@@ -217,7 +217,10 @@ local function extend(p, edge, node, facts)
 
     local c = edge.confidence or "low"
     q.confidence_counts[c] = (q.confidence_counts[c] or 0) + 1
-    q.min_confidence_rank = math.min(q.min_confidence_rank, CONF_RANK[c] or 1)
+    -- An unrecognised confidence sinks the route to the bottom of the scale.
+    -- Said here rather than left to an `or` on a lookup, and Schema.validate
+    -- refuses such an edge before it ever reaches a route.
+    q.min_confidence_rank = math.min(q.min_confidence_rank, Schema.confidence_rank(c) or 1)
     if edge.context_dependent then q.context_dependent = true end
 
     for _, u in ipairs(edge.requires_runtime_validation or {}) do
@@ -264,7 +267,6 @@ local function shape_key(nodes)
     return table.concat(parts, ">")
 end
 
-local RANK_NAME = { "low", "medium", "high" }
 
 local function to_route(p, cfg, provenance)
     local steps = {}
@@ -300,7 +302,8 @@ local function to_route(p, cfg, provenance)
         edge_ids = edge_ids,
         shape_key = shape_key(p.nodes),
         length = #p.nodes,
-        min_confidence = RANK_NAME[p.min_confidence_rank] or "low",
+        min_confidence = Schema.confidence_by_rank(p.min_confidence_rank)
+            or Schema.CONFIDENCE.LOW,
         confidence_counts = p.confidence_counts,
         context_dependent = p.context_dependent,
         requires_runtime_validation = p.unknowns,
