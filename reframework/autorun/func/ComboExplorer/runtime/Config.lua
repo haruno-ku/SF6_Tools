@@ -117,6 +117,10 @@ function M.header(ctx)
         p1 = ctx.p1,
         p2 = ctx.p2,
         p1_control_scheme = ctx.p1_control_scheme,
+        -- Which command_display the session was reading, by checksum. An action
+        -- id is only meaningful against one AC/BCM pair, so this is the field a
+        -- later build is invalidated against.
+        catalog = ctx.catalog,
         provenance = ctx.provenance,
         config = {
             probe_a_idle_ticks  = M.data.probe_a_idle_ticks,

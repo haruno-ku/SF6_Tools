@@ -392,6 +392,21 @@ end
 -- =========================================================
 
 local function artifact_ctx()
+    -- The catalog this session is actually reading, named by its checksums.
+    --
+    -- Config.header has always had the fields; nothing was filling them, so
+    -- every committed probe report says which mod version and which player
+    -- produced it and nothing about which GAME DATA it was measured against.
+    -- That is the field an action id has to be invalidated against when a patch
+    -- moves it, and tools/lua/calibrate-from-probes.lua needs it before it can
+    -- build a calibration profile at all - it currently reads the checksums back
+    -- out of the repository's own copy of the catalog and takes the operator's
+    -- word for the build.
+    --
+    -- game_patch stays whatever the register holds, which is usually nothing:
+    -- the build number is not something this process can read, and writing a
+    -- plausible stand-in would be inventing the identity of a measurement.
+    local cat = probe_d.catalog
     return {
         version = VERSION,
         game_patch = reg.game_patch,
@@ -401,6 +416,14 @@ local function artifact_ctx()
         p1 = live.p1_char,
         p2 = live.p2_char,
         p1_control_scheme = live.p1_control,
+        catalog = cat and {
+            character = cat.character,
+            fighter_id = cat.fighter_id,
+            generated_at = cat.generated_at,
+            ac_sha256 = cat.ac_sha256,
+            bcm_sha256 = cat.bcm_sha256,
+            path = probe_d.catalog_path,
+        } or nil,
         provenance = reg:snapshot(),
     }
 end

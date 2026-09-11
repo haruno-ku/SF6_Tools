@@ -28,10 +28,14 @@
 -- bcm_sha256, and refuses without them: a profile that cannot say which build it
 -- was taken on cannot be invalidated when the build changes, it just goes on
 -- being believed. The checksums come from the character's catalog. The game
--- patch does not - nothing in a probe report records it, which is a gap worth
--- closing at the writing end - so it is a required argument here rather than a
--- default, because the one thing this must not do is invent the identity of a
--- measurement.
+-- patch does not - nothing a REFramework process can read reports the build
+-- number - so it is a required argument here rather than a default, because the
+-- one thing this must not do is invent the identity of a measurement.
+--
+-- The checksums are taken from the report's own header when it has them.
+-- Reading them out of this repository's copy of the catalog instead assumes the
+-- two files are the same, which is the assumption a checksum exists to prevent;
+-- reports written before the header carried the field fall back to it and say so.
 --
 -- WHAT IT DOES NOT DO
 --
@@ -109,6 +113,7 @@ local WANTED = {
 }
 
 local reports, found = {}, {}
+local header_catalog     -- the catalog the reports say they were measured against
 local listing = io.popen(('ls -1 "%s" 2>/dev/null'):format(opt.diagnostics))
 for name in (listing and listing:lines() or function() return nil end) do
     if name:match("%-latest%.json$") then
@@ -118,6 +123,10 @@ for name in (listing and listing:lines() or function() return nil end) do
         if key then
             reports[key] = body
             found[#found + 1] = ("%s -> %s"):format(name, key)
+            local h = doc.header
+            if type(h) == "table" and type(h.catalog) == "table" and h.catalog.ac_sha256 then
+                header_catalog = header_catalog or h.catalog
+            end
         end
     end
 end
@@ -133,16 +142,28 @@ end
 local reg = Provenance.new()
 local values, notes = Calibration.from_probes(reports, { provenance = reg })
 
-local catalog = json.load_file(Characters.catalog_path(entry))
-if not catalog or type(catalog._meta) ~= "table" then
-    die("could not read " .. Characters.catalog_path(entry))
+-- Prefer what the REPORT says it was measured against. Falling back to this
+-- repository's copy of the catalog assumes the two are the same file, which is
+-- exactly the thing a checksum exists to stop anybody assuming - Probe D
+-- confirmed it for this run, but that is a finding, not a guarantee.
+local ident_source, ac, bcm
+if header_catalog then
+    ident_source = "the probe report header"
+    ac, bcm = header_catalog.ac_sha256, header_catalog.bcm_sha256
+else
+    local catalog = json.load_file(Characters.catalog_path(entry))
+    if not catalog or type(catalog._meta) ~= "table" then
+        die("could not read " .. Characters.catalog_path(entry))
+    end
+    ident_source = "this repository's catalog (the reports predate the header field)"
+    ac, bcm = catalog._meta.ac_sha256, catalog._meta.bcm_sha256
 end
 
 local identity = {
     calibration_id = ("probes-%s-%s"):format(entry.catalog:lower(), opt.game_patch),
     game_patch = opt.game_patch,
-    ac_sha256 = catalog._meta.ac_sha256,
-    bcm_sha256 = catalog._meta.bcm_sha256,
+    ac_sha256 = ac,
+    bcm_sha256 = bcm,
     character = entry.catalog,
     control_scheme = opt.control_scheme,
     generated_at = os.date("!%Y-%m-%dT%H:%M:%SZ"),
@@ -164,6 +185,10 @@ print("down in the shape Provenance.apply_calibration takes.")
 print("")
 print("## Reports read")
 for _, f in ipairs(found) do print("  " .. f) end
+print("")
+print("## Identity")
+print("  checksums from " .. ident_source)
+print("  game patch     " .. opt.game_patch .. "  (given on the command line)")
 print("")
 
 print("## Settled")
