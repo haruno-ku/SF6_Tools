@@ -325,4 +325,134 @@ do
     Injector.stop()
 end
 
+-- --- the conditions the trial ran under ---------------------------------------------
+
+t.group("every trial says what conditions it ran under")
+
+-- `conditions` had been a field on the record since ResultCollector was written
+-- and nothing had ever set one. A sweep run in that state produces rows that
+-- cannot say whether the fighters were controlled or what the gauges held, and
+-- none of it is recoverable afterwards.
+
+local TestContext = require("func/ComboExplorer/core/TestContext")
+local StageControl = require("func/ComboExplorer/runtime/StageControl")
+
+local function run_one(over)
+    local opts = {
+        provenance = measured_register(), allow_injection = true, route = ROUTE,
+        delay = 4, expected = { [1] = { 601 }, [2] = { 621 } },
+        edge_id = "601:manual->621:manual", attempt = 1,
+        sink = false, adapter = adapter(),
+    }
+    for k, v in pairs(over or {}) do opts[k] = v end
+    local ok, why = Injector.start(opts)
+    if not ok then return nil, why end
+    local cmd
+    for _ = 1, 3000 do
+        cmd = Injector.tick()
+        if cmd and cmd.outcome ~= nil then break end
+    end
+    local spec = Injector.record(nil)
+    Injector.stop()
+    return spec, cmd
+end
+
+do
+    local spec = run_one()
+    t.ok(spec ~= nil, "a trial produces a spec")
+    t.ok(type(spec.conditions) == "table",
+         "and it carries the conditions it ran under, rather than a nil")
+    t.eq(spec.conditions.schema, TestContext.SCHEMA, "as a ce.conditions.v1 block")
+
+    -- What StageControl actually ships. The honest record of a trial run today
+    -- is "nothing was controlled", and writing anything else would describe an
+    -- experiment nobody performed.
+    t.eq(spec.conditions.positions.controlled, false,
+         "which today says the positions were NOT controlled")
+    t.eq(spec.conditions.resources.pinned, false, "and the gauges were not pinned")
+    t.eq(spec.conditions.counter_state, TestContext.COUNTER.UNKNOWN,
+         "and the counter state is unknown, because nothing observed it")
+
+    t.ok(type(spec.conditions.canonical) == "string",
+         "with the canonical string a later fold groups on: "
+         .. tostring(spec.conditions.canonical))
+end
+
+-- A stage that pins a gauge only reaches READY once the snapshot reads that
+-- gauge back, so the fake has to answer with it. That is StageControlFsm being
+-- right - a pin it cannot verify is not a pin - rather than something to work
+-- around.
+local function adapter_reading(fields)
+    local a = adapter()
+    local underlying = a.tick_snapshot
+    a.tick_snapshot = function(...)
+        local s = underlying(...)
+        if type(s) == "table" then
+            for k, v in pairs(fields) do s[k] = v end
+        end
+        return s
+    end
+    return a
+end
+
+do
+    -- Derived from the config that was APPLIED. Overriding the stage has to
+    -- move the record, or the record is describing some other trial.
+    local spec, why = run_one({ stage_cfg = { pin = { attacker_super = 3 } },
+                                adapter = adapter_reading({ attacker_super = 3 }) })
+    t.ok(spec ~= nil, "a trial with the gauges pinned runs: " .. tostring(why))
+    t.eq(spec.conditions.resources.pinned, true, "and the record says they were pinned")
+    t.eq(spec.conditions.resources.attacker_super, 3, "at the value that was pinned")
+
+    local plain = run_one()
+    t.ok(spec.conditions.canonical ~= plain.conditions.canonical,
+         "so the two trials are not folded into one cohort")
+end
+
+do
+    -- The derived block has to agree with what TestContext would say about the
+    -- same config. If these ever diverge, one of the two is describing a setup
+    -- that did not run.
+    local spec = run_one()
+    local direct = TestContext.of({ stage = StageControl.config(nil) })
+    t.eq(spec.conditions.canonical, direct.canonical,
+         "and it is the same block TestContext builds from the resolved config")
+
+    -- The panel scopes its resume by conditions_for(), and a resume scoped by
+    -- a block that differs from the one on the rows recognises nothing.
+    local asked = Injector.conditions_for(nil)
+    t.ok(asked ~= nil, "conditions_for answers without a game")
+    t.eq(asked.canonical, spec.conditions.canonical,
+         "and answers with exactly what a trial would record")
+
+    local pinned = Injector.conditions_for({ pin = { attacker_super = 3 } })
+    t.ok(pinned.canonical ~= asked.canonical,
+         "while a different stage override gives a different answer")
+end
+
+do
+    local spec = run_one({ opponent = { character = "Ryu" },
+                           counter_state = TestContext.COUNTER.COUNTER })
+    t.eq(spec.conditions.opponent.character, "Ryu",
+         "what the caller KNOWS is folded in - the opponent")
+    t.eq(spec.conditions.counter_state, TestContext.COUNTER.COUNTER,
+         "and the counter state, when somebody actually observed it")
+end
+
+do
+    -- Refused rather than ignored. A caller passing a block believes it is
+    -- describing this trial; replacing it silently leaves that belief wrong.
+    local ok, why = Injector.start({
+        provenance = measured_register(), allow_injection = true, route = ROUTE,
+        delay = 4, expected = { [1] = { 601 }, [2] = { 621 } },
+        edge_id = "601:manual->621:manual", attempt = 1,
+        sink = false, adapter = adapter(),
+        conditions = { schema = "ce.conditions.v1", positions = { controlled = true } },
+    })
+    t.is_nil(ok, "a caller cannot supply the conditions")
+    t.ok(tostring(why):find("derived from the stage configuration") ~= nil,
+         "because this module is the only thing that knows what was applied: "
+         .. tostring(why))
+end
+
 return t.finish()

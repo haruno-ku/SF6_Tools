@@ -48,12 +48,29 @@
 -- The calibration sweep's direction steps do the opposite on purpose (they set
 -- mirror = false, because they are measuring the polarity rather than using
 -- it). Here the polarity is known - the gate above guarantees it - and used.
+--
+-- WHO OWNS THE CONDITIONS
+--
+-- This file, for the same reason it owns the mirror: it is the only place that
+-- knows what was actually applied.
+--
+-- `conditions` has been a field on every trial record since ResultCollector was
+-- written and nothing ever set one, so a sweep run today would produce a few
+-- hundred lines that cannot say whether the fighters were controlled, what the
+-- gauges held, or who was standing there. None of that is recoverable
+-- afterwards: the conditions stop existing when the trial ends.
+--
+-- They are DERIVED from the stage configuration this function resolved, not
+-- accepted from the caller. A caller-supplied block could describe a setup that
+-- did not run - the caller does not see StageControl.config's defaults - and a
+-- row describing the wrong experiment is worse than a row describing none.
 
 local Provenance      = require("func/ComboExplorer/core/Provenance")
 local InputMask       = require("func/ComboExplorer/core/InputMask")
 local SequenceCompiler = require("func/ComboExplorer/core/SequenceCompiler")
 local RunnerFsm       = require("func/ComboExplorer/core/RunnerFsm")
 local StageControlFsm = require("func/ComboExplorer/core/StageControlFsm")
+local TestContext     = require("func/ComboExplorer/core/TestContext")
 local StageControl    = require("func/ComboExplorer/runtime/StageControl")
 local JsonIO          = require("func/ComboExplorer/runtime/JsonIO")
 
@@ -184,6 +201,11 @@ function M.install_error() return install_error end
 -- opts.subject / edge_id / route_id, opts.attempt
 -- opts.allow_injection : the operator's own switch, passed in rather than read
 --                        from Config, so this module owes nothing to the panel
+-- opts.opponent / counter_state / screen_position : what is KNOWN about the
+--                        setup, folded into the conditions this derives. The
+--                        conditions themselves are not accepted from a caller
+-- opts.stage_cfg  : overrides for StageControl.DEFAULTS. The conditions on the
+--                   record are derived from whatever this resolves to
 -- opts.sink       : { path, dirs } for the JSONL log, or false for no recording
 -- opts.adapter    : substituted by tests
 function M.start(opts)
@@ -192,6 +214,15 @@ function M.start(opts)
 
     local reg = opts.provenance
     if type(reg) ~= "table" then return nil, "no provenance register" end
+
+    -- Refused, not ignored. A caller that passed a conditions block believes it
+    -- is describing this trial, and silently replacing it with the derived one
+    -- would leave that belief intact and wrong.
+    if opts.conditions ~= nil then
+        return nil, "conditions are derived from the stage configuration that is "
+            .. "actually applied, not supplied by the caller - pass opponent, "
+            .. "counter_state or screen_position instead"
+    end
 
     -- THE GATE. First caller in the project's history.
     local allowed, blockers = Provenance.can(reg, Provenance.CAPABILITY.INJECTION)
@@ -248,8 +279,14 @@ function M.start(opts)
     if sink == nil then return nil, serr end
 
     local cfg = M.config(opts.cfg)
-    local stage, staged_err = StageControlFsm.new(StageControl.config(opts.stage_cfg))
+    local stage_cfg = StageControl.config(opts.stage_cfg)
+    local stage, staged_err = StageControlFsm.new(stage_cfg)
     if not stage then return nil, "the stage machine refused: " .. tostring(staged_err) end
+
+    local conditions, cond_err = M.conditions_for(opts.stage_cfg, opts)
+    if not conditions then
+        return nil, "could not describe the conditions: " .. tostring(cond_err)
+    end
 
     local runner, rerr = RunnerFsm.new({
         stage = stage,
@@ -283,7 +320,7 @@ function M.start(opts)
         edge_id = opts.edge_id,
         route_id = opts.route_id,
         provenance = opts.trial_provenance,
-        conditions = opts.conditions,
+        conditions = conditions,
     })
     if not ok then return nil, berr end
 
@@ -309,6 +346,26 @@ function M.start(opts)
     }
     pending_mask = nil
     return true
+end
+
+-- The conditions a trial started with THIS stage override would run under.
+--
+-- Public, and the only implementation. The panel needs the same block to scope
+-- a resume by - a pair answered under one setup has not been answered under
+-- another - and a second place computing it would be a second place for it to
+-- be computed differently, which is the disagreement the derivation exists to
+-- prevent.
+--
+-- Takes the override rather than the resolved config, so a caller cannot hand
+-- it something StageControl.config never saw.
+function M.conditions_for(stage_cfg, known)
+    known = known or {}
+    return TestContext.of({
+        stage = StageControl.config(stage_cfg),
+        opponent = known.opponent,
+        counter_state = known.counter_state,
+        screen_position = known.screen_position,
+    })
 end
 
 -- Returns a sink table, or false for "recording is off", or nil plus a reason.

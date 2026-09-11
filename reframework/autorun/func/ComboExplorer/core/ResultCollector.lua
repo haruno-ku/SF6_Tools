@@ -87,6 +87,7 @@
 local Schema = require("func/ComboExplorer/core/Schema")
 local LinkVerdict = require("func/ComboExplorer/core/LinkVerdict")
 local SequenceCompiler = require("func/ComboExplorer/core/SequenceCompiler")
+local TestContext = require("func/ComboExplorer/core/TestContext")
 
 local M = { name = "ComboExplorer.ResultCollector" }
 
@@ -252,6 +253,19 @@ function M.identity_of(rec)
     }
 end
 
+-- `conditions` is a table, and two structurally identical tables are not equal
+-- in Lua. Compared raw, a scope that named the conditions would match no line
+-- at all - every resume would come back empty and every sweep would start from
+-- the beginning while reporting itself resumed.
+--
+-- TestContext.key is the comparable form, and it is the same one ConfirmedEdge
+-- groups cohorts by, so "this line is about my experiment" and "these lines
+-- fold together" cannot mean two different things.
+local function comparable(field, v)
+    if field == "conditions" then return TestContext.key(v) end
+    return v
+end
+
 -- Only the fields the caller actually scoped by are compared: a run that names
 -- no calibration is asking about every line, and a run that names one is asking
 -- about that one. A line missing a field the scope names does not match,
@@ -266,9 +280,10 @@ function M.identity_matches(want, have)
             local h = have and have[f]
             if h == nil then
                 problems[#problems + 1] = { field = f, problem = "not recorded on the line" }
-            elseif h ~= w then
+            elseif comparable(f, h) ~= comparable(f, w) then
                 problems[#problems + 1] = { field = f,
-                    problem = ("%s, not %s"):format(tostring(h), tostring(w)) }
+                    problem = ("%s, not %s"):format(tostring(comparable(f, h)),
+                                                   tostring(comparable(f, w))) }
             end
         end
     end

@@ -52,6 +52,7 @@ local SUITES = {
     "tests.lua.test_exporter",
     "tests.lua.test_resultcollector",
     "tests.lua.test_confirmededge",
+    "tests.lua.test_testcontext",
     "tests.lua.test_knowledgedb",
     "tests.lua.test_stagecontrolfsm",
     "tests.lua.test_runnerfsm",

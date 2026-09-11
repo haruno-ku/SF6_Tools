@@ -486,6 +486,74 @@ t.eq(anyix.counts.foreign, 0, "a run that scopes by nothing is asking about ever
 t.eq(anyix.counts.trials, 1, "and reads them all")
 t.eq(anyix.identity_checked, false, "and says that no identity was checked")
 
+-- --- scoping by the conditions ------------------------------------------------------
+
+t.group("a pair answered under one setup is not answered under another")
+
+-- `conditions` is the only identity field that is a TABLE, and two structurally
+-- identical tables are not equal in Lua. Compared raw, a scope naming the
+-- conditions matches NO line: every resume comes back empty and every sweep
+-- starts from the beginning while reporting itself resumed.
+
+local TestContext = require("func/ComboExplorer/core/TestContext")
+
+local LOOSE = TestContext.of({ stage = { target_positions = false, pin = false } })
+local PINNED = TestContext.of({ stage = { target_positions = false,
+                                          pin = { attacker_super = 3 } } })
+
+local under_loose = RC.trial({ edge_id = "c9", delay = 4, attempt = 1,
+                               verdict = LV.VERDICT.LINK, evidence = EVIDENCE,
+                               character = ID.character,
+                               control_scheme = ID.control_scheme,
+                               conditions = LOOSE, provenance = PROV })
+local line_loose = RC.line(under_loose, json.encode)
+
+do
+    -- A DIFFERENT table with the same contents. This is the real case: the
+    -- panel builds one block, the file was written from another.
+    local same_again = TestContext.of({ stage = { target_positions = false, pin = false } })
+    t.ok(same_again ~= LOOSE, "the scope is a different table from the one on the line")
+
+    local scope = { character = ID.character, control_scheme = ID.control_scheme,
+                    game_patch = ID.game_patch, calibration_id = ID.calibration_id,
+                    conditions = same_again }
+    local ix = RC.index(line_loose, { decode = json.decode, identity = scope })
+    t.eq(ix.counts.foreign, 0, "and it still recognises its own line")
+    t.eq(ix.counts.trials, 1, "so the work already done is not done again")
+end
+
+do
+    local scope = { character = ID.character, control_scheme = ID.control_scheme,
+                    game_patch = ID.game_patch, calibration_id = ID.calibration_id,
+                    conditions = PINNED }
+    local ix = RC.index(line_loose, { decode = json.decode, identity = scope })
+    t.eq(ix.counts.foreign, 1,
+         "a pair answered with the gauges loose is not answered with them pinned")
+    t.eq(ix.counts.trials, 0, "so it is run again rather than skipped")
+    local named = false
+    for _, f in ipairs(((ix.problems[1] or {}).problems) or {}) do
+        if f.field == "conditions" then named = true end
+    end
+    t.eq(named, true, "and the conditions are named as the field that disagrees")
+end
+
+do
+    -- A line written before conditions existed carries none. It is not an
+    -- answer about a setup it never recorded.
+    local unconditioned = RC.trial({ edge_id = "c9", delay = 4, attempt = 1,
+                                     verdict = LV.VERDICT.LINK, evidence = EVIDENCE,
+                                     character = ID.character,
+                                     control_scheme = ID.control_scheme,
+                                     provenance = PROV })
+    local scope = { character = ID.character, control_scheme = ID.control_scheme,
+                    game_patch = ID.game_patch, calibration_id = ID.calibration_id,
+                    conditions = LOOSE }
+    local ix = RC.index(RC.line(unconditioned, json.encode),
+                        { decode = json.decode, identity = scope })
+    t.eq(ix.counts.foreign, 1, "an older line that never recorded its conditions is foreign")
+    t.eq(ix.counts.trials, 0, "because unknown is not the same as equal")
+end
+
 -- --- retrying what answered nothing ---------------------------------------------
 
 t.group("verdicts the operator wants tried again")

@@ -1079,6 +1079,15 @@ local function draw_sweep()
                     identity = {
                         calibration_id = reg.calibration_id,
                         game_patch = reg.game_patch or Config.data.game_patch or "unknown",
+                        -- The conditions scope the resume as well as stamping the
+                        -- rows. A pair answered with the gauges pinned has not
+                        -- been answered with them loose, and without this the
+                        -- second sweep would skip it as already done.
+                        --
+                        -- Injector.conditions_for is the same call start() makes,
+                        -- so the block scoping the resume and the block on every
+                        -- row cannot describe different setups.
+                        conditions = Injector.conditions_for(nil),
                     },
                     resume = prior,
                 })
