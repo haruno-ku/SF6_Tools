@@ -155,6 +155,70 @@ for _, u in ipairs(cov.unmatched_detail) do
          ("unmatched %s says what was tried"):format(tostring(u.classic)))
 end
 
+-- --- the two spellings the source actually uses ------------------------------
+
+t.group("a generic button letter is the source declining to split by strength")
+
+-- The source writes a special with a generic letter - "214P" - when the
+-- strengths do not differ, and splits it into 214LP / 214MP / 214HP when they
+-- do. Ryu's Hadoken is three records with startups 16, 14 and 12; JP's
+-- Departure is one record. The catalog always has a row per strength, so
+-- without this JP joined 55% of his targets.
+t.eq(FD.generic_button_key("214+LP"), "214P", "a strength becomes the generic letter")
+t.eq(FD.generic_button_key("214+MP"), "214P", "whichever strength it was")
+t.eq(FD.generic_button_key("236+HK"), "236K", "kicks too")
+t.eq(FD.generic_button_key("214+LP+MP"), "214PP", "two punches are the OD spelling")
+t.eq(FD.generic_button_key("236+LK+MK"), "236KK", "and two kicks")
+t.eq(FD.generic_button_key("[4]6+LP"), "[4]6P", "a charge keeps its bracket")
+
+-- Refusals, each for a reason.
+t.is_nil(FD.generic_button_key("214+LP+HK"),
+         "a mixed punch and kick has no generic spelling, so none is invented")
+t.is_nil(FD.generic_button_key("LP"), "a bare button is not a motion")
+t.is_nil(FD.generic_button_key("2+MP"),
+         "and neither is one direction - the source spells every normal with its "
+         .. "strength, so generalising 2+MP could only attach a special's numbers "
+         .. "to a crouching medium punch")
+t.is_nil(FD.generic_button_key("6+HK"), "the same for a command normal")
+
+-- Order is the whole safety argument: the strength-specific key must win when
+-- the source drew the distinction.
+local ryu = FD.index(dofile("data/frame-data/ryu.lua"))
+local rec, info = FD.lookup(ryu, "236+LP")
+t.ok(rec ~= nil, "Ryu's light fireball joins")
+t.eq(info.key, "236LP", "to the strength-specific record, not the generic one")
+t.eq(FD.startup(rec), 16, "with the light startup")
+local hrec = FD.lookup(ryu, "236+HP")
+t.ok(FD.startup(hrec) ~= FD.startup(rec),
+     "and the heavy one differs, which is why the source split them")
+
+-- JP is the case that motivated it.
+local jp = FD.index(dofile("data/frame-data/jp.lua"))
+local jrec, jinfo = FD.lookup(jp, "214+LP")
+t.ok(jrec ~= nil, "JP's 214+LP joins")
+t.eq(jinfo.match, "generic_button", "by the generic fallback")
+t.eq(jinfo.key, "214P", "because that is the only spelling the source has")
+t.eq(FD.lookup(jp, "214+MP"), jrec,
+     "and the other strengths reach the same record - the source says it is one move")
+
+t.group("one record can answer to several inputs")
+
+-- The source writes alternatives with " or ": Dhalsim's record is "2KK or 3KK",
+-- one move reachable two ways, and the catalog has a row for each.
+t.eq_list(FD.spellings("2KK or 3KK"), { "2KK", "3KK" }, "an \"or\" record is split")
+t.eq_list(FD.spellings("4MK or 6MK"), { "4MK", "6MK" }, "on both sides")
+t.eq_list(FD.spellings("214P"), { "214P" }, "an ordinary key is left alone")
+t.eq_list(FD.spellings("63214KK (Close)"), { "63214KK (Close)" },
+          "and a distance variant is not split on its own words")
+t.eq_list(FD.spellings(nil), {}, "nothing spells nothing")
+
+local dhal = FD.index(dofile("data/frame-data/dhalsim.lua"))
+local d2 = FD.lookup(dhal, "2+KK")
+local d3 = FD.lookup(dhal, "3+KK")
+t.ok(d2 ~= nil, "Dhalsim's 2+KK joins")
+t.ok(d3 ~= nil, "and so does 3+KK")
+t.eq(d2, d3, "to the same record, because the source lists both inputs for it")
+
 -- --- the instrument has to measure the whole run -----------------------------
 
 t.group("coverage over the rows a run actually uses")
@@ -185,10 +249,17 @@ t.ok(#derivations > 0, "and the run collects derivations on top of both")
 local cov_start = FD.coverage(idx, starters)
 local cov_all = FD.coverage(idx, targets)
 t.eq(cov_start.ratio, 1.0, "every starter joins - which is the number that was being reported")
-t.ok(cov_all.ratio < 1.0,
-     ("and the targets do not: %d of %d"):format(cov_all.matched, cov_all.rows))
-t.ok(cov_all.ratio ~= cov_start.ratio,
-     "so measuring one set and printing it as the other hides a real gap")
+
+-- The property is that the two are DIFFERENT MEASUREMENTS, not that one of them
+-- is failing. This first asserted that the targets did not all join, which was
+-- true for Zangief at the time and stopped being true when the generic-button
+-- fallback landed and took him from 91% to 100%. A test that pins today's gap
+-- fails when the gap is fixed, which teaches nobody anything; a test that pins
+-- the size of the set being measured keeps working either way.
+t.ok(cov_all.rows > cov_start.rows,
+     ("the target set is measured over more rows than the starters: %d against %d")
+     :format(cov_all.rows, cov_start.rows))
+t.ok(cov_all.rows >= #targets, "every target row was looked up, not sampled")
 
 -- Derivations join for nobody, on any character. The source spells a follow-up
 -- as a chain from the move before it - "5MP~MP" - and nothing in candidate_keys

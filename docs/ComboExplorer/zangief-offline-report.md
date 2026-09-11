@@ -20,20 +20,19 @@ not combos that are known to work.
 - starting moves          14  (normal,command_normal / manual)
 - target moves            33  (normal,command_normal,special,od_special,super / manual,simple)
 - excluded from probing   51  (classic-only, air, throws, system, follow-ups)
-- frame data coverage     30 of 37 (81%)  over every row this run uses
+- frame data coverage     33 of 37 (89%)  over every row this run uses
     starters      14 of  14 (100%)
-    targets       30 of  33 ( 91%)
+    targets       33 of  33 (100%)
     follow-ups     0 of   4 (  0%)
-    5 matched only by guessing between several source spellings:
+    7 matched only by guessing between several source spellings:
+      63214+LK+MK (918) -> 63214KK (Close)
+      63214+LK+MK (918) -> 63214KK (Close)
       63214+KK (924) -> 63214KK (Close)
       720+P (1218) -> 720+P
       720+P (1218) -> 720+P
       720+P (1222) -> 720+P
       720+P (1222) -> 720+P
-    7 with no frame data at all:
-      63214+LK+MK (918)
-      63214+LK+MK (918)
-      63214+HK (1010)
+    4 with no frame data at all:
       >MP (605)
       >MP (606)
       >MK (679)
@@ -53,24 +52,24 @@ not combos that are known to work.
 ## Theoretical edges
 
 - pairs considered        518
-- candidate edges         387
-- excluded                131
+- candidate edges         378
+- excluded                140
 
 by reason:
   chain_cancel             90
-  frame_data_incomplete    111
-  frame_link               122
+  frame_data_incomplete    69
+  frame_link               131
   special_cancel           88
   super_cancel             64
   target_combo             4
 
 by confidence:
-  high                     88
-  medium                   133
-  low                      166
+  high                     96
+  medium                   136
+  low                      146
 
 excluded because the numbers said no:
-  frame_margin_negative    122
+  frame_margin_negative    131
   self_pair_without_chain  9
 
 Nothing was excluded for missing data. A gap in the source is recorded as
@@ -79,13 +78,13 @@ excludes, and the margin is kept with it.
 
 ## Route candidates
 
-- routes                  1037
+- routes                  971
 - graph nodes             37
-- graph edges             387
-- folded canonical variants 2333  (same buttons, unresolved action id)
+- graph edges             378
+- folded canonical variants 2303  (same buttons, unresolved action id)
 - search complete         true
-  length 2               188
-  length 3               849
+  length 2               179
+  length 3               792
 
 dropped by a search bound (not by the game):
   max_repeat_per_action    5
@@ -161,8 +160,8 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/zangief/modern/candidate-edges.json  (500013 bytes)
-- candidates/zangief/modern/candidate-routes.json  (4456513 bytes)
+- candidates/zangief/modern/candidate-edges.json  (492169 bytes)
+- candidates/zangief/modern/candidate-routes.json  (4168188 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

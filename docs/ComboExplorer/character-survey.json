@@ -434,14 +434,14 @@
     {
       "ambiguous_joins": 4,
       "by_confidence": {
-        "high": 216,
-        "low": 264,
-        "medium": 128
+        "high": 243,
+        "low": 222,
+        "medium": 131
       },
       "by_reason": {
         "chain_cancel": 138,
-        "frame_data_incomplete": 224,
-        "frame_link": 75,
+        "frame_data_incomplete": 182,
+        "frame_link": 78,
         "special_cancel": 225,
         "super_cancel": 90,
         "target_combo": 44
@@ -554,9 +554,9 @@
       "cov_targets": {
         "ambiguous": 4,
         "exact": 0,
-        "fuzzy": 42,
-        "matched": 42,
-        "ratio": 0.8936170212765957,
+        "fuzzy": 45,
+        "matched": 45,
+        "ratio": 0.95744680851063835,
         "rows": 47,
         "uncertain_detail": [
           {
@@ -584,7 +584,7 @@
             "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 5,
+        "unmatched": 2,
         "unmatched_detail": [
           {
             "action_id": 908,
@@ -599,35 +599,11 @@
             "tried": [
               "6"
             ]
-          },
-          {
-            "action_id": 975,
-            "classic": "22+LP",
-            "tried": [
-              "22+LP",
-              "22LP"
-            ]
-          },
-          {
-            "action_id": 976,
-            "classic": "22+LP",
-            "tried": [
-              "22+LP",
-              "22LP"
-            ]
-          },
-          {
-            "action_id": 981,
-            "classic": "22+LP+MP",
-            "tried": [
-              "22+LP+MP",
-              "22LPMP"
-            ]
           }
         ]
       },
-      "edges": 608,
-      "excluded": 204,
+      "edges": 596,
+      "excluded": 216,
       "excluded_missing_data": 0,
       "fighter_id": 3,
       "followups": 11,
@@ -635,7 +611,7 @@
       "frame_data": "data/frame-data/kimberly.lua",
       "moves": 81,
       "nodes": 58,
-      "routes": 169,
+      "routes": 166,
       "rows": 123,
       "search_complete": false,
       "starters": 14,
@@ -648,18 +624,6 @@
         {
           "action_id": 912,
           "classic": "6"
-        },
-        {
-          "action_id": 975,
-          "classic": "22+LP"
-        },
-        {
-          "action_id": 976,
-          "classic": "22+LP"
-        },
-        {
-          "action_id": 981,
-          "classic": "22+LP+MP"
         }
       ]
     },
@@ -783,7 +747,7 @@
       "followups": 3,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/chunli.lua",
-      "moves": 77,
+      "moves": 78,
       "nodes": 52,
       "routes": 195,
       "rows": 109,
@@ -957,16 +921,16 @@
       "unmatched": []
     },
     {
-      "ambiguous_joins": 5,
+      "ambiguous_joins": 7,
       "by_confidence": {
-        "high": 88,
-        "low": 166,
-        "medium": 133
+        "high": 96,
+        "low": 146,
+        "medium": 136
       },
       "by_reason": {
         "chain_cancel": 90,
-        "frame_data_incomplete": 111,
-        "frame_link": 122,
+        "frame_data_incomplete": 69,
+        "frame_link": 131,
         "special_cancel": 88,
         "super_cancel": 64,
         "target_combo": 4
@@ -1022,13 +986,25 @@
         "unmatched_detail": []
       },
       "cov_targets": {
-        "ambiguous": 5,
+        "ambiguous": 7,
         "exact": 9,
-        "fuzzy": 21,
-        "matched": 30,
-        "ratio": 0.90909090909090906,
+        "fuzzy": 24,
+        "matched": 33,
+        "ratio": 1.0,
         "rows": 33,
         "uncertain_detail": [
+          {
+            "action_id": 918,
+            "classic": "63214+LK+MK",
+            "key": "63214KK (Close)",
+            "why": "the frame source spells this move as several distance variants (63214KK (Close), 63214KK (Far), 63214KK (Mid)) and the join picked 63214KK (Close) by sort order, not by knowing which one applies"
+          },
+          {
+            "action_id": 918,
+            "classic": "63214+LK+MK",
+            "key": "63214KK (Close)",
+            "why": "the frame source spells this move as several distance variants (63214KK (Close), 63214KK (Far), 63214KK (Mid)) and the join picked 63214KK (Close) by sort order, not by knowing which one applies"
+          },
           {
             "action_id": 924,
             "classic": "63214+KK",
@@ -1060,74 +1036,36 @@
             "why": "the frame source lists \"720+P\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 3,
-        "unmatched_detail": [
-          {
-            "action_id": 918,
-            "classic": "63214+LK+MK",
-            "tried": [
-              "63214+LK+MK",
-              "63214LKMK"
-            ]
-          },
-          {
-            "action_id": 918,
-            "classic": "63214+LK+MK",
-            "tried": [
-              "63214+LK+MK",
-              "63214LKMK"
-            ]
-          },
-          {
-            "action_id": 1010,
-            "classic": "63214+HK",
-            "tried": [
-              "63214+HK",
-              "63214HK"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
-      "edges": 387,
-      "excluded": 131,
+      "edges": 378,
+      "excluded": 140,
       "excluded_missing_data": 0,
       "fighter_id": 6,
       "followups": 4,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/zangief.lua",
-      "moves": 66,
+      "moves": 67,
       "nodes": 37,
-      "routes": 188,
+      "routes": 179,
       "rows": 88,
       "search_complete": true,
       "starters": 14,
       "targets": 33,
-      "unmatched": [
-        {
-          "action_id": 918,
-          "classic": "63214+LK+MK"
-        },
-        {
-          "action_id": 918,
-          "classic": "63214+LK+MK"
-        },
-        {
-          "action_id": 1010,
-          "classic": "63214+HK"
-        }
-      ]
+      "unmatched": []
     },
     {
       "ambiguous_joins": 4,
       "by_confidence": {
-        "high": 121,
-        "low": 530,
-        "medium": 117
+        "high": 343,
+        "low": 194,
+        "medium": 147
       },
       "by_reason": {
         "chain_cancel": 108,
-        "frame_data_incomplete": 490,
-        "frame_link": 86,
+        "frame_data_incomplete": 154,
+        "frame_link": 136,
         "special_cancel": 370,
         "super_cancel": 80,
         "target_combo": 22
@@ -1240,9 +1178,9 @@
       "cov_targets": {
         "ambiguous": 4,
         "exact": 0,
-        "fuzzy": 29,
-        "matched": 29,
-        "ratio": 0.54716981132075471,
+        "fuzzy": 53,
+        "matched": 53,
+        "ratio": 1.0,
         "rows": 53,
         "uncertain_detail": [
           {
@@ -1270,204 +1208,11 @@
             "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 24,
-        "unmatched_detail": [
-          {
-            "action_id": 915,
-            "classic": "214+LP",
-            "tried": [
-              "214+LP",
-              "214LP"
-            ]
-          },
-          {
-            "action_id": 916,
-            "classic": "214+MP",
-            "tried": [
-              "214+MP",
-              "214MP"
-            ]
-          },
-          {
-            "action_id": 917,
-            "classic": "214+HP",
-            "tried": [
-              "214+HP",
-              "214HP"
-            ]
-          },
-          {
-            "action_id": 918,
-            "classic": "214+LP+MP",
-            "tried": [
-              "214+LP+MP",
-              "214LPMP"
-            ]
-          },
-          {
-            "action_id": 919,
-            "classic": "214+LP+HP",
-            "tried": [
-              "214+LP+HP",
-              "214LPHP"
-            ]
-          },
-          {
-            "action_id": 920,
-            "classic": "214+MP+HP",
-            "tried": [
-              "214+MP+HP",
-              "214MPHP"
-            ]
-          },
-          {
-            "action_id": 936,
-            "classic": "214+LP",
-            "tried": [
-              "214+LP",
-              "214LP"
-            ]
-          },
-          {
-            "action_id": 937,
-            "classic": "214+LP",
-            "tried": [
-              "214+LP",
-              "214LP"
-            ]
-          },
-          {
-            "action_id": 939,
-            "classic": "214+MP",
-            "tried": [
-              "214+MP",
-              "214MP"
-            ]
-          },
-          {
-            "action_id": 940,
-            "classic": "214+MP",
-            "tried": [
-              "214+MP",
-              "214MP"
-            ]
-          },
-          {
-            "action_id": 947,
-            "classic": "214+HP",
-            "tried": [
-              "214+HP",
-              "214HP"
-            ]
-          },
-          {
-            "action_id": 948,
-            "classic": "214+HP",
-            "tried": [
-              "214+HP",
-              "214HP"
-            ]
-          },
-          {
-            "action_id": 956,
-            "classic": "22+LP",
-            "tried": [
-              "22+LP",
-              "22LP"
-            ]
-          },
-          {
-            "action_id": 956,
-            "classic": "22+LP",
-            "tried": [
-              "22+LP",
-              "22LP"
-            ]
-          },
-          {
-            "action_id": 957,
-            "classic": "22+MP",
-            "tried": [
-              "22+MP",
-              "22MP"
-            ]
-          },
-          {
-            "action_id": 957,
-            "classic": "22+MP",
-            "tried": [
-              "22+MP",
-              "22MP"
-            ]
-          },
-          {
-            "action_id": 958,
-            "classic": "22+HP",
-            "tried": [
-              "22+HP",
-              "22HP"
-            ]
-          },
-          {
-            "action_id": 958,
-            "classic": "22+HP",
-            "tried": [
-              "22+HP",
-              "22HP"
-            ]
-          },
-          {
-            "action_id": 959,
-            "classic": "22+LP+MP",
-            "tried": [
-              "22+LP+MP",
-              "22LPMP"
-            ]
-          },
-          {
-            "action_id": 959,
-            "classic": "22+LP+MP",
-            "tried": [
-              "22+LP+MP",
-              "22LPMP"
-            ]
-          },
-          {
-            "action_id": 995,
-            "classic": "22+LK",
-            "tried": [
-              "22+LK",
-              "22LK"
-            ]
-          },
-          {
-            "action_id": 1010,
-            "classic": "214+LK",
-            "tried": [
-              "214+LK",
-              "214LK"
-            ]
-          },
-          {
-            "action_id": 1211,
-            "classic": "214214+LP",
-            "tried": [
-              "214214+LP",
-              "214214LP"
-            ]
-          },
-          {
-            "action_id": 1211,
-            "classic": "214214+LP",
-            "tried": [
-              "214214+LP",
-              "214214LP"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
-      "edges": 768,
-      "excluded": 128,
+      "edges": 684,
+      "excluded": 212,
       "excluded_missing_data": 0,
       "fighter_id": 7,
       "followups": 11,
@@ -1475,121 +1220,24 @@
       "frame_data": "data/frame-data/jp.lua",
       "moves": 62,
       "nodes": 64,
-      "routes": 218,
+      "routes": 190,
       "rows": 93,
       "search_complete": false,
       "starters": 14,
       "targets": 53,
-      "unmatched": [
-        {
-          "action_id": 915,
-          "classic": "214+LP"
-        },
-        {
-          "action_id": 916,
-          "classic": "214+MP"
-        },
-        {
-          "action_id": 917,
-          "classic": "214+HP"
-        },
-        {
-          "action_id": 918,
-          "classic": "214+LP+MP"
-        },
-        {
-          "action_id": 919,
-          "classic": "214+LP+HP"
-        },
-        {
-          "action_id": 920,
-          "classic": "214+MP+HP"
-        },
-        {
-          "action_id": 936,
-          "classic": "214+LP"
-        },
-        {
-          "action_id": 937,
-          "classic": "214+LP"
-        },
-        {
-          "action_id": 939,
-          "classic": "214+MP"
-        },
-        {
-          "action_id": 940,
-          "classic": "214+MP"
-        },
-        {
-          "action_id": 947,
-          "classic": "214+HP"
-        },
-        {
-          "action_id": 948,
-          "classic": "214+HP"
-        },
-        {
-          "action_id": 956,
-          "classic": "22+LP"
-        },
-        {
-          "action_id": 956,
-          "classic": "22+LP"
-        },
-        {
-          "action_id": 957,
-          "classic": "22+MP"
-        },
-        {
-          "action_id": 957,
-          "classic": "22+MP"
-        },
-        {
-          "action_id": 958,
-          "classic": "22+HP"
-        },
-        {
-          "action_id": 958,
-          "classic": "22+HP"
-        },
-        {
-          "action_id": 959,
-          "classic": "22+LP+MP"
-        },
-        {
-          "action_id": 959,
-          "classic": "22+LP+MP"
-        },
-        {
-          "action_id": 995,
-          "classic": "22+LK"
-        },
-        {
-          "action_id": 1010,
-          "classic": "214+LK"
-        },
-        {
-          "action_id": 1211,
-          "classic": "214214+LP"
-        },
-        {
-          "action_id": 1211,
-          "classic": "214214+LP"
-        }
-      ]
+      "unmatched": []
     },
     {
       "ambiguous_joins": 12,
       "by_confidence": {
-        "high": 77,
-        "low": 622,
-        "medium": 79
+        "high": 161,
+        "low": 424,
+        "medium": 99
       },
       "by_reason": {
         "chain_cancel": 72,
-        "frame_data_incomplete": 526,
-        "frame_link": 44,
+        "frame_data_incomplete": 328,
+        "frame_link": 56,
         "special_cancel": 140,
         "super_cancel": 112
       },
@@ -1640,11 +1288,11 @@
       "cov_starters": {
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 14,
-        "matched": 14,
-        "ratio": 0.77777777777777779,
+        "fuzzy": 16,
+        "matched": 16,
+        "ratio": 0.88888888888888884,
         "rows": 18,
-        "unmatched": 4,
+        "unmatched": 2,
         "unmatched_detail": [
           {
             "action_id": 1031,
@@ -1661,31 +1309,15 @@
               "4+PPP",
               "4PPP"
             ]
-          },
-          {
-            "action_id": 1042,
-            "classic": "2+KK",
-            "tried": [
-              "2+KK",
-              "2KK"
-            ]
-          },
-          {
-            "action_id": 1043,
-            "classic": "3+KK",
-            "tried": [
-              "3+KK",
-              "3KK"
-            ]
           }
         ]
       },
       "cov_targets": {
         "ambiguous": 12,
         "exact": 0,
-        "fuzzy": 37,
-        "matched": 37,
-        "ratio": 0.68518518518518523,
+        "fuzzy": 51,
+        "matched": 51,
+        "ratio": 0.94444444444444442,
         "rows": 54,
         "uncertain_detail": [
           {
@@ -1761,94 +1393,15 @@
             "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 17,
+        "unmatched": 3,
         "unmatched_detail": [
-          {
-            "action_id": 900,
-            "classic": "236+LP",
-            "tried": [
-              "236+LP",
-              "236LP"
-            ]
-          },
-          {
-            "action_id": 900,
-            "classic": "236+LP",
-            "tried": [
-              "236+LP",
-              "236LP"
-            ]
-          },
-          {
-            "action_id": 904,
-            "classic": "236+MP",
-            "tried": [
-              "236+MP",
-              "236MP"
-            ]
-          },
-          {
-            "action_id": 908,
-            "classic": "236+HP",
-            "tried": [
-              "236+HP",
-              "236HP"
-            ]
-          },
-          {
-            "action_id": 912,
-            "classic": "236+LP+MP",
-            "tried": [
-              "236+LP+MP",
-              "236LPMP"
-            ]
-          },
-          {
-            "action_id": 912,
-            "classic": "236+LP+MP",
-            "tried": [
-              "236+LP+MP",
-              "236LPMP"
-            ]
-          },
-          {
-            "action_id": 913,
-            "classic": "236+LP+HP",
-            "tried": [
-              "236+LP+HP",
-              "236LPHP"
-            ]
-          },
-          {
-            "action_id": 914,
-            "classic": "236+MP+HP",
-            "tried": [
-              "236+MP+HP",
-              "236MPHP"
-            ]
-          },
-          {
-            "action_id": 914,
-            "classic": "236+MP+HP",
-            "tried": [
-              "236+MP+HP",
-              "236MPHP"
-            ]
-          },
           {
             "action_id": 989,
             "classic": "236+MK",
             "tried": [
               "236+MK",
-              "236MK"
-            ]
-          },
-          {
-            "action_id": 993,
-            "classic": "236+LK+HK",
-            "tried": [
-              "236+LK+HK",
-              "236LKHK"
+              "236MK",
+              "236K"
             ]
           },
           {
@@ -1866,51 +1419,19 @@
               "4+PPP",
               "4PPP"
             ]
-          },
-          {
-            "action_id": 1042,
-            "classic": "2+KK",
-            "tried": [
-              "2+KK",
-              "2KK"
-            ]
-          },
-          {
-            "action_id": 1043,
-            "classic": "3+KK",
-            "tried": [
-              "3+KK",
-              "3KK"
-            ]
-          },
-          {
-            "action_id": 1232,
-            "classic": "214214+MK",
-            "tried": [
-              "214214+MK",
-              "214214MK"
-            ]
-          },
-          {
-            "action_id": 1232,
-            "classic": "214214+MK",
-            "tried": [
-              "214214+MK",
-              "214214MK"
-            ]
           }
         ]
       },
-      "edges": 778,
-      "excluded": 266,
+      "edges": 684,
+      "excluded": 360,
       "excluded_missing_data": 0,
       "fighter_id": 8,
       "followups": 4,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/dhalsim.lua",
-      "moves": 67,
+      "moves": 69,
       "nodes": 58,
-      "routes": 242,
+      "routes": 228,
       "rows": 108,
       "search_complete": false,
       "starters": 18,
@@ -1925,56 +1446,8 @@
           "classic": "4+PPP"
         },
         {
-          "action_id": 1042,
-          "classic": "2+KK"
-        },
-        {
-          "action_id": 1043,
-          "classic": "3+KK"
-        },
-        {
-          "action_id": 900,
-          "classic": "236+LP"
-        },
-        {
-          "action_id": 900,
-          "classic": "236+LP"
-        },
-        {
-          "action_id": 904,
-          "classic": "236+MP"
-        },
-        {
-          "action_id": 908,
-          "classic": "236+HP"
-        },
-        {
-          "action_id": 912,
-          "classic": "236+LP+MP"
-        },
-        {
-          "action_id": 912,
-          "classic": "236+LP+MP"
-        },
-        {
-          "action_id": 913,
-          "classic": "236+LP+HP"
-        },
-        {
-          "action_id": 914,
-          "classic": "236+MP+HP"
-        },
-        {
-          "action_id": 914,
-          "classic": "236+MP+HP"
-        },
-        {
           "action_id": 989,
           "classic": "236+MK"
-        },
-        {
-          "action_id": 993,
-          "classic": "236+LK+HK"
         },
         {
           "action_id": 1031,
@@ -1983,36 +1456,20 @@
         {
           "action_id": 1033,
           "classic": "4+PPP"
-        },
-        {
-          "action_id": 1042,
-          "classic": "2+KK"
-        },
-        {
-          "action_id": 1043,
-          "classic": "3+KK"
-        },
-        {
-          "action_id": 1232,
-          "classic": "214214+MK"
-        },
-        {
-          "action_id": 1232,
-          "classic": "214214+MK"
         }
       ]
     },
     {
       "ambiguous_joins": 4,
       "by_confidence": {
-        "high": 145,
-        "low": 138,
-        "medium": 207
+        "high": 187,
+        "low": 54,
+        "medium": 225
       },
       "by_reason": {
         "chain_cancel": 90,
-        "frame_data_incomplete": 98,
-        "frame_link": 180,
+        "frame_data_incomplete": 14,
+        "frame_link": 198,
         "special_cancel": 198,
         "super_cancel": 72,
         "target_combo": 1
@@ -2049,9 +1506,9 @@
       "cov_targets": {
         "ambiguous": 4,
         "exact": 0,
-        "fuzzy": 38,
-        "matched": 38,
-        "ratio": 0.86363636363636365,
+        "fuzzy": 44,
+        "matched": 44,
+        "ratio": 1.0,
         "rows": 44,
         "uncertain_detail": [
           {
@@ -2079,60 +1536,11 @@
             "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 6,
-        "unmatched_detail": [
-          {
-            "action_id": 945,
-            "classic": "236+LP",
-            "tried": [
-              "236+LP",
-              "236LP"
-            ]
-          },
-          {
-            "action_id": 946,
-            "classic": "236+MP",
-            "tried": [
-              "236+MP",
-              "236MP"
-            ]
-          },
-          {
-            "action_id": 947,
-            "classic": "236+HP",
-            "tried": [
-              "236+HP",
-              "236HP"
-            ]
-          },
-          {
-            "action_id": 949,
-            "classic": "236+LP+MP",
-            "tried": [
-              "236+LP+MP",
-              "236LPMP"
-            ]
-          },
-          {
-            "action_id": 950,
-            "classic": "236+LP+HP",
-            "tried": [
-              "236+LP+HP",
-              "236LPHP"
-            ]
-          },
-          {
-            "action_id": 951,
-            "classic": "236+MP+HP",
-            "tried": [
-              "236+MP+HP",
-              "236MPHP"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
-      "edges": 490,
-      "excluded": 140,
+      "edges": 466,
+      "excluded": 164,
       "excluded_missing_data": 0,
       "fighter_id": 9,
       "followups": 1,
@@ -2140,37 +1548,12 @@
       "frame_data": "data/frame-data/cammy.lua",
       "moves": 72,
       "nodes": 45,
-      "routes": 219,
+      "routes": 233,
       "rows": 93,
       "search_complete": false,
       "starters": 14,
       "targets": 44,
-      "unmatched": [
-        {
-          "action_id": 945,
-          "classic": "236+LP"
-        },
-        {
-          "action_id": 946,
-          "classic": "236+MP"
-        },
-        {
-          "action_id": 947,
-          "classic": "236+HP"
-        },
-        {
-          "action_id": 949,
-          "classic": "236+LP+MP"
-        },
-        {
-          "action_id": 950,
-          "classic": "236+LP+HP"
-        },
-        {
-          "action_id": 951,
-          "classic": "236+MP+HP"
-        }
-      ]
+      "unmatched": []
     },
     {
       "ambiguous_joins": 4,
@@ -2552,7 +1935,7 @@
       "followups": 36,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/ken.lua",
-      "moves": 73,
+      "moves": 74,
       "nodes": 75,
       "routes": 202,
       "rows": 110,
@@ -2768,14 +2151,14 @@
     {
       "ambiguous_joins": 8,
       "by_confidence": {
-        "high": 352,
-        "low": 187,
-        "medium": 128
+        "high": 392,
+        "low": 135,
+        "medium": 132
       },
       "by_reason": {
         "chain_cancel": 90,
-        "frame_data_incomplete": 91,
-        "frame_link": 174,
+        "frame_data_incomplete": 39,
+        "frame_link": 178,
         "special_cancel": 370,
         "super_cancel": 110,
         "target_combo": 3
@@ -2826,9 +2209,9 @@
       "cov_targets": {
         "ambiguous": 8,
         "exact": 5,
-        "fuzzy": 51,
-        "matched": 56,
-        "ratio": 0.93333333333333335,
+        "fuzzy": 55,
+        "matched": 60,
+        "ratio": 1.0,
         "rows": 60,
         "uncertain_detail": [
           {
@@ -2880,86 +2263,36 @@
             "why": "the frame source lists \"214214P\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 4,
-        "unmatched_detail": [
-          {
-            "action_id": 926,
-            "classic": "236+MK+HK",
-            "tried": [
-              "236+MK+HK",
-              "236MKHK"
-            ]
-          },
-          {
-            "action_id": 926,
-            "classic": "236+MK+HK",
-            "tried": [
-              "236+MK+HK",
-              "236MKHK"
-            ]
-          },
-          {
-            "action_id": 932,
-            "classic": "236+MK+HK",
-            "tried": [
-              "236+MK+HK",
-              "236MKHK"
-            ]
-          },
-          {
-            "action_id": 932,
-            "classic": "236+MK+HK",
-            "tried": [
-              "236+MK+HK",
-              "236MKHK"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
-      "edges": 667,
-      "excluded": 152,
+      "edges": 659,
+      "excluded": 160,
       "excluded_missing_data": 0,
       "fighter_id": 12,
       "followups": 3,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/lily.lua",
-      "moves": 72,
+      "moves": 73,
       "nodes": 63,
-      "routes": 164,
+      "routes": 148,
       "rows": 126,
       "search_complete": false,
       "starters": 13,
       "targets": 60,
-      "unmatched": [
-        {
-          "action_id": 926,
-          "classic": "236+MK+HK"
-        },
-        {
-          "action_id": 926,
-          "classic": "236+MK+HK"
-        },
-        {
-          "action_id": 932,
-          "classic": "236+MK+HK"
-        },
-        {
-          "action_id": 932,
-          "classic": "236+MK+HK"
-        }
-      ]
+      "unmatched": []
     },
     {
       "ambiguous_joins": 4,
       "by_confidence": {
-        "high": 112,
-        "low": 132,
-        "medium": 96
+        "high": 128,
+        "low": 104,
+        "medium": 98
       },
       "by_reason": {
         "chain_cancel": 51,
-        "frame_data_incomplete": 96,
-        "frame_link": 64,
+        "frame_data_incomplete": 68,
+        "frame_link": 66,
         "special_cancel": 96,
         "super_cancel": 64
       },
@@ -2984,9 +2317,9 @@
       "cov_targets": {
         "ambiguous": 4,
         "exact": 0,
-        "fuzzy": 37,
-        "matched": 37,
-        "ratio": 0.90243902439024393,
+        "fuzzy": 39,
+        "matched": 39,
+        "ratio": 0.95121951219512191,
         "rows": 41,
         "uncertain_detail": [
           {
@@ -3014,7 +2347,7 @@
             "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 4,
+        "unmatched": 2,
         "unmatched_detail": [
           {
             "action_id": 901,
@@ -3031,27 +2364,11 @@
               "6+P",
               "6P"
             ]
-          },
-          {
-            "action_id": 1224,
-            "classic": "214214+MP",
-            "tried": [
-              "214214+MP",
-              "214214MP"
-            ]
-          },
-          {
-            "action_id": 1224,
-            "classic": "214214+MP",
-            "tried": [
-              "214214+MP",
-              "214214MP"
-            ]
           }
         ]
       },
-      "edges": 340,
-      "excluded": 275,
+      "edges": 330,
+      "excluded": 285,
       "excluded_missing_data": 0,
       "fighter_id": 13,
       "followups": 0,
@@ -3059,7 +2376,7 @@
       "frame_data": "data/frame-data/aki.lua",
       "moves": 60,
       "nodes": 41,
-      "routes": 143,
+      "routes": 135,
       "rows": 77,
       "search_complete": true,
       "starters": 15,
@@ -3072,28 +2389,20 @@
         {
           "action_id": 907,
           "classic": "6+P"
-        },
-        {
-          "action_id": 1224,
-          "classic": "214214+MP"
-        },
-        {
-          "action_id": 1224,
-          "classic": "214214+MP"
         }
       ]
     },
     {
       "ambiguous_joins": 4,
       "by_confidence": {
-        "high": 228,
-        "low": 281,
-        "medium": 146
+        "high": 256,
+        "low": 229,
+        "medium": 150
       },
       "by_reason": {
         "chain_cancel": 126,
-        "frame_data_incomplete": 245,
-        "frame_link": 87,
+        "frame_data_incomplete": 193,
+        "frame_link": 91,
         "special_cancel": 224,
         "super_cancel": 64
       },
@@ -3199,9 +2508,9 @@
       "cov_targets": {
         "ambiguous": 4,
         "exact": 0,
-        "fuzzy": 50,
-        "matched": 50,
-        "ratio": 0.92592592592592593,
+        "fuzzy": 54,
+        "matched": 54,
+        "ratio": 1.0,
         "rows": 54,
         "uncertain_detail": [
           {
@@ -3229,44 +2538,11 @@
             "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 4,
-        "unmatched_detail": [
-          {
-            "action_id": 900,
-            "classic": "236+LK",
-            "tried": [
-              "236+LK",
-              "236LK"
-            ]
-          },
-          {
-            "action_id": 910,
-            "classic": "236+MK",
-            "tried": [
-              "236+MK",
-              "236MK"
-            ]
-          },
-          {
-            "action_id": 910,
-            "classic": "236+MK",
-            "tried": [
-              "236+MK",
-              "236MK"
-            ]
-          },
-          {
-            "action_id": 921,
-            "classic": "236+HK",
-            "tried": [
-              "236+HK",
-              "236HK"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
-      "edges": 655,
-      "excluded": 241,
+      "edges": 635,
+      "excluded": 261,
       "excluded_missing_data": 0,
       "fighter_id": 14,
       "followups": 10,
@@ -3274,40 +2550,23 @@
       "frame_data": "data/frame-data/rashid.lua",
       "moves": 77,
       "nodes": 64,
-      "routes": 144,
+      "routes": 137,
       "rows": 135,
       "search_complete": false,
       "starters": 14,
       "targets": 54,
-      "unmatched": [
-        {
-          "action_id": 900,
-          "classic": "236+LK"
-        },
-        {
-          "action_id": 910,
-          "classic": "236+MK"
-        },
-        {
-          "action_id": 910,
-          "classic": "236+MK"
-        },
-        {
-          "action_id": 921,
-          "classic": "236+HK"
-        }
-      ]
+      "unmatched": []
     },
     {
       "ambiguous_joins": 16,
       "by_confidence": {
-        "high": 55,
-        "low": 424,
+        "high": 60,
+        "low": 413,
         "medium": 92
       },
       "by_reason": {
         "chain_cancel": 34,
-        "frame_data_incomplete": 314,
+        "frame_data_incomplete": 303,
         "frame_link": 128,
         "special_cancel": 95,
         "super_cancel": 50
@@ -3353,9 +2612,9 @@
       "cov_targets": {
         "ambiguous": 16,
         "exact": 0,
-        "fuzzy": 42,
-        "matched": 42,
-        "ratio": 0.95454545454545459,
+        "fuzzy": 43,
+        "matched": 43,
+        "ratio": 0.97727272727272729,
         "rows": 44,
         "uncertain_detail": [
           {
@@ -3455,7 +2714,7 @@
             "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 2,
+        "unmatched": 1,
         "unmatched_detail": [
           {
             "action_id": 926,
@@ -3464,19 +2723,11 @@
               "214+LP+LK+MK",
               "214LPLKMK"
             ]
-          },
-          {
-            "action_id": 935,
-            "classic": "22+LP",
-            "tried": [
-              "22+LP",
-              "22LP"
-            ]
           }
         ]
       },
-      "edges": 571,
-      "excluded": 211,
+      "edges": 565,
+      "excluded": 217,
       "excluded_missing_data": 0,
       "fighter_id": 15,
       "followups": 2,
@@ -3493,10 +2744,6 @@
         {
           "action_id": 926,
           "classic": "214+LP+LK+MK"
-        },
-        {
-          "action_id": 935,
-          "classic": "22+LP"
         }
       ]
     },
@@ -3682,7 +2929,7 @@
       "followups": 12,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/juri.lua",
-      "moves": 84,
+      "moves": 85,
       "nodes": 120,
       "routes": 60,
       "rows": 182,
@@ -3918,13 +3165,13 @@
       "ambiguous_joins": 8,
       "by_confidence": {
         "high": 790,
-        "low": 1883,
-        "medium": 409
+        "low": 1665,
+        "medium": 433
       },
       "by_reason": {
         "chain_cancel": 423,
-        "frame_data_incomplete": 1715,
-        "frame_link": 258,
+        "frame_data_incomplete": 1497,
+        "frame_link": 264,
         "special_cancel": 722,
         "super_cancel": 240,
         "target_combo": 18
@@ -3967,28 +3214,12 @@
       "cov_starters": {
         "ambiguous": 0,
         "exact": 0,
-        "fuzzy": 29,
-        "matched": 29,
-        "ratio": 0.70731707317073167,
+        "fuzzy": 31,
+        "matched": 31,
+        "ratio": 0.75609756097560976,
         "rows": 41,
-        "unmatched": 12,
+        "unmatched": 10,
         "unmatched_detail": [
-          {
-            "action_id": 662,
-            "classic": "4+MK",
-            "tried": [
-              "4+MK",
-              "4MK"
-            ]
-          },
-          {
-            "action_id": 671,
-            "classic": "6+MK",
-            "tried": [
-              "6+MK",
-              "6MK"
-            ]
-          },
           {
             "action_id": 939,
             "classic": "6+LP",
@@ -4002,7 +3233,8 @@
             "classic": "56+LP",
             "tried": [
               "56+LP",
-              "56LP"
+              "56LP",
+              "56P"
             ]
           },
           {
@@ -4010,7 +3242,8 @@
             "classic": "56+MP",
             "tried": [
               "56+MP",
-              "56MP"
+              "56MP",
+              "56P"
             ]
           },
           {
@@ -4018,7 +3251,8 @@
             "classic": "56+HP",
             "tried": [
               "56+HP",
-              "56HP"
+              "56HP",
+              "56P"
             ]
           },
           {
@@ -4034,7 +3268,8 @@
             "classic": "56+LP",
             "tried": [
               "56+LP",
-              "56LP"
+              "56LP",
+              "56P"
             ]
           },
           {
@@ -4042,7 +3277,8 @@
             "classic": "56+MP",
             "tried": [
               "56+MP",
-              "56MP"
+              "56MP",
+              "56P"
             ]
           },
           {
@@ -4050,7 +3286,8 @@
             "classic": "56+HP",
             "tried": [
               "56+HP",
-              "56HP"
+              "56HP",
+              "56P"
             ]
           },
           {
@@ -4074,9 +3311,9 @@
       "cov_targets": {
         "ambiguous": 8,
         "exact": 0,
-        "fuzzy": 78,
-        "matched": 78,
-        "ratio": 0.82978723404255317,
+        "fuzzy": 80,
+        "matched": 80,
+        "ratio": 0.85106382978723405,
         "rows": 94,
         "uncertain_detail": [
           {
@@ -4128,24 +3365,8 @@
             "why": "the frame source lists \"[4]646K\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 16,
+        "unmatched": 14,
         "unmatched_detail": [
-          {
-            "action_id": 662,
-            "classic": "4+MK",
-            "tried": [
-              "4+MK",
-              "4MK"
-            ]
-          },
-          {
-            "action_id": 671,
-            "classic": "6+MK",
-            "tried": [
-              "6+MK",
-              "6MK"
-            ]
-          },
           {
             "action_id": 939,
             "classic": "6+LP",
@@ -4167,7 +3388,8 @@
             "classic": "56+LP",
             "tried": [
               "56+LP",
-              "56LP"
+              "56LP",
+              "56P"
             ]
           },
           {
@@ -4175,7 +3397,8 @@
             "classic": "56+MP",
             "tried": [
               "56+MP",
-              "56MP"
+              "56MP",
+              "56P"
             ]
           },
           {
@@ -4183,7 +3406,8 @@
             "classic": "56+HP",
             "tried": [
               "56+HP",
-              "56HP"
+              "56HP",
+              "56P"
             ]
           },
           {
@@ -4215,7 +3439,8 @@
             "classic": "56+LP",
             "tried": [
               "56+LP",
-              "56LP"
+              "56LP",
+              "56P"
             ]
           },
           {
@@ -4223,7 +3448,8 @@
             "classic": "56+MP",
             "tried": [
               "56+MP",
-              "56MP"
+              "56MP",
+              "56P"
             ]
           },
           {
@@ -4231,7 +3457,8 @@
             "classic": "56+HP",
             "tried": [
               "56+HP",
-              "56HP"
+              "56HP",
+              "56P"
             ]
           },
           {
@@ -4239,7 +3466,8 @@
             "classic": "[4]646+LP+MP",
             "tried": [
               "[4]646+LP+MP",
-              "[4]646LPMP"
+              "[4]646LPMP",
+              "[4]646PP"
             ]
           },
           {
@@ -4260,14 +3488,14 @@
           }
         ]
       },
-      "edges": 3082,
-      "excluded": 895,
+      "edges": 2888,
+      "excluded": 1089,
       "excluded_missing_data": 0,
       "fighter_id": 18,
       "followups": 3,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/guile.lua",
-      "moves": 65,
+      "moves": 66,
       "nodes": 97,
       "routes": 73,
       "rows": 144,
@@ -4275,14 +3503,6 @@
       "starters": 41,
       "targets": 94,
       "unmatched": [
-        {
-          "action_id": 662,
-          "classic": "4+MK"
-        },
-        {
-          "action_id": 671,
-          "classic": "6+MK"
-        },
         {
           "action_id": 939,
           "classic": "6+LP"
@@ -4322,14 +3542,6 @@
         {
           "action_id": 1214,
           "classic": "6+PP"
-        },
-        {
-          "action_id": 662,
-          "classic": "4+MK"
-        },
-        {
-          "action_id": 671,
-          "classic": "6+MK"
         },
         {
           "action_id": 939,
@@ -4392,14 +3604,14 @@
     {
       "ambiguous_joins": 4,
       "by_confidence": {
-        "high": 119,
-        "low": 205,
-        "medium": 92
+        "high": 143,
+        "low": 157,
+        "medium": 96
       },
       "by_reason": {
         "chain_cancel": 95,
-        "frame_data_incomplete": 177,
-        "frame_link": 51,
+        "frame_data_incomplete": 129,
+        "frame_link": 59,
         "special_cancel": 102,
         "super_cancel": 60,
         "target_combo": 15
@@ -4464,9 +3676,9 @@
       "cov_targets": {
         "ambiguous": 4,
         "exact": 0,
-        "fuzzy": 36,
-        "matched": 36,
-        "ratio": 0.87804878048780488,
+        "fuzzy": 40,
+        "matched": 40,
+        "ratio": 0.97560975609756095,
         "rows": 41,
         "uncertain_detail": [
           {
@@ -4494,7 +3706,7 @@
             "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 5,
+        "unmatched": 1,
         "unmatched_detail": [
           {
             "action_id": 911,
@@ -4503,43 +3715,11 @@
               "6+MP",
               "6MP"
             ]
-          },
-          {
-            "action_id": 1210,
-            "classic": "214214+LP",
-            "tried": [
-              "214214+LP",
-              "214214LP"
-            ]
-          },
-          {
-            "action_id": 1210,
-            "classic": "214214+LP",
-            "tried": [
-              "214214+LP",
-              "214214LP"
-            ]
-          },
-          {
-            "action_id": 1211,
-            "classic": "214214+MP",
-            "tried": [
-              "214214+MP",
-              "214214MP"
-            ]
-          },
-          {
-            "action_id": 1211,
-            "classic": "214214+MP",
-            "tried": [
-              "214214+MP",
-              "214214MP"
-            ]
           }
         ]
       },
-      "edges": 416,
-      "excluded": 182,
+      "edges": 396,
+      "excluded": 202,
       "excluded_missing_data": 0,
       "fighter_id": 19,
       "followups": 5,
@@ -4547,31 +3727,15 @@
       "frame_data": "data/frame-data/ed.lua",
       "moves": 62,
       "nodes": 46,
-      "routes": 232,
+      "routes": 239,
       "rows": 82,
-      "search_complete": false,
+      "search_complete": true,
       "starters": 13,
       "targets": 41,
       "unmatched": [
         {
           "action_id": 911,
           "classic": "6+MP"
-        },
-        {
-          "action_id": 1210,
-          "classic": "214214+LP"
-        },
-        {
-          "action_id": 1210,
-          "classic": "214214+LP"
-        },
-        {
-          "action_id": 1211,
-          "classic": "214214+MP"
-        },
-        {
-          "action_id": 1211,
-          "classic": "214214+MP"
         }
       ]
     },
@@ -5430,14 +4594,14 @@
     {
       "ambiguous_joins": 8,
       "by_confidence": {
-        "high": 261,
-        "low": 452,
-        "medium": 181
+        "high": 270,
+        "low": 438,
+        "medium": 183
       },
       "by_reason": {
         "chain_cancel": 132,
-        "frame_data_incomplete": 364,
-        "frame_link": 144,
+        "frame_data_incomplete": 350,
+        "frame_link": 146,
         "special_cancel": 231,
         "super_cancel": 170,
         "target_combo": 8
@@ -5497,7 +4661,8 @@
             "classic": "5565+HP",
             "tried": [
               "5565+HP",
-              "5565HP"
+              "5565HP",
+              "5565P"
             ]
           },
           {
@@ -5513,9 +4678,9 @@
       "cov_targets": {
         "ambiguous": 8,
         "exact": 0,
-        "fuzzy": 53,
-        "matched": 53,
-        "ratio": 0.9464285714285714,
+        "fuzzy": 54,
+        "matched": 54,
+        "ratio": 0.9642857142857143,
         "rows": 56,
         "uncertain_detail": [
           {
@@ -5567,22 +4732,15 @@
             "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 3,
+        "unmatched": 2,
         "unmatched_detail": [
-          {
-            "action_id": 990,
-            "classic": "236+MK",
-            "tried": [
-              "236+MK",
-              "236MK"
-            ]
-          },
           {
             "action_id": 1231,
             "classic": "5565+HP",
             "tried": [
               "5565+HP",
-              "5565HP"
+              "5565HP",
+              "5565P"
             ]
           },
           {
@@ -5595,8 +4753,8 @@
           }
         ]
       },
-      "edges": 894,
-      "excluded": 186,
+      "edges": 891,
+      "excluded": 189,
       "excluded_missing_data": 0,
       "fighter_id": 22,
       "followups": 4,
@@ -5604,7 +4762,7 @@
       "frame_data": "data/frame-data/akuma.lua",
       "moves": 89,
       "nodes": 60,
-      "routes": 229,
+      "routes": 233,
       "rows": 116,
       "search_complete": false,
       "starters": 18,
@@ -5619,10 +4777,6 @@
           "classic": "2+LP+MP+HP+LK+MK+HK"
         },
         {
-          "action_id": 990,
-          "classic": "236+MK"
-        },
-        {
           "action_id": 1231,
           "classic": "5565+HP"
         },
@@ -5635,14 +4789,14 @@
     {
       "ambiguous_joins": 8,
       "by_confidence": {
-        "high": 164,
-        "low": 327,
-        "medium": 161
+        "high": 171,
+        "low": 312,
+        "medium": 163
       },
       "by_reason": {
         "chain_cancel": 155,
-        "frame_data_incomplete": 255,
-        "frame_link": 132,
+        "frame_data_incomplete": 240,
+        "frame_link": 134,
         "special_cancel": 160,
         "super_cancel": 96,
         "target_combo": 32
@@ -5796,9 +4950,9 @@
       "cov_targets": {
         "ambiguous": 8,
         "exact": 0,
-        "fuzzy": 46,
-        "matched": 46,
-        "ratio": 0.97872340425531912,
+        "fuzzy": 47,
+        "matched": 47,
+        "ratio": 1.0,
         "rows": 47,
         "uncertain_detail": [
           {
@@ -5850,50 +5004,36 @@
             "why": "the frame source lists \"236236K\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 1,
-        "unmatched_detail": [
-          {
-            "action_id": 903,
-            "classic": "236+LP+HP",
-            "tried": [
-              "236+LP+HP",
-              "236LPHP"
-            ]
-          }
-        ]
+        "unmatched": 0,
+        "unmatched_detail": []
       },
-      "edges": 652,
-      "excluded": 293,
+      "edges": 646,
+      "excluded": 299,
       "excluded_missing_data": 0,
       "fighter_id": 25,
       "followups": 16,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/sagat.lua",
-      "moves": 67,
+      "moves": 68,
       "nodes": 63,
-      "routes": 177,
+      "routes": 175,
       "rows": 100,
       "search_complete": false,
       "starters": 15,
       "targets": 47,
-      "unmatched": [
-        {
-          "action_id": 903,
-          "classic": "236+LP+HP"
-        }
-      ]
+      "unmatched": []
     },
     {
       "ambiguous_joins": 18,
       "by_confidence": {
-        "high": 113,
-        "low": 529,
-        "medium": 111
+        "high": 149,
+        "low": 477,
+        "medium": 115
       },
       "by_reason": {
         "chain_cancel": 102,
-        "frame_data_incomplete": 341,
-        "frame_link": 69,
+        "frame_data_incomplete": 289,
+        "frame_link": 73,
         "special_cancel": 189,
         "super_cancel": 130
       },
@@ -6018,9 +5158,9 @@
       "cov_targets": {
         "ambiguous": 18,
         "exact": 0,
-        "fuzzy": 43,
-        "matched": 43,
-        "ratio": 0.87755102040816324,
+        "fuzzy": 47,
+        "matched": 47,
+        "ratio": 0.95918367346938771,
         "rows": 49,
         "uncertain_detail": [
           {
@@ -6132,40 +5272,8 @@
             "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 6,
+        "unmatched": 2,
         "unmatched_detail": [
-          {
-            "action_id": 908,
-            "classic": "[2]8+LK",
-            "tried": [
-              "[2]8+LK",
-              "[2]8LK"
-            ]
-          },
-          {
-            "action_id": 909,
-            "classic": "[2]8+MK",
-            "tried": [
-              "[2]8+MK",
-              "[2]8MK"
-            ]
-          },
-          {
-            "action_id": 909,
-            "classic": "[2]8+MK",
-            "tried": [
-              "[2]8+MK",
-              "[2]8MK"
-            ]
-          },
-          {
-            "action_id": 910,
-            "classic": "[2]8+HK",
-            "tried": [
-              "[2]8+HK",
-              "[2]8HK"
-            ]
-          },
           {
             "action_id": 1080,
             "classic": "6+PPP",
@@ -6184,16 +5292,16 @@
           }
         ]
       },
-      "edges": 753,
-      "excluded": 147,
+      "edges": 741,
+      "excluded": 159,
       "excluded_missing_data": 0,
       "fighter_id": 26,
       "followups": 11,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/mbison.lua",
-      "moves": 62,
+      "moves": 65,
       "nodes": 60,
-      "routes": 180,
+      "routes": 175,
       "rows": 94,
       "search_complete": false,
       "starters": 15,
@@ -6206,22 +5314,6 @@
         {
           "action_id": 1082,
           "classic": "4+PPP"
-        },
-        {
-          "action_id": 908,
-          "classic": "[2]8+LK"
-        },
-        {
-          "action_id": 909,
-          "classic": "[2]8+MK"
-        },
-        {
-          "action_id": 909,
-          "classic": "[2]8+MK"
-        },
-        {
-          "action_id": 910,
-          "classic": "[2]8+HK"
         },
         {
           "action_id": 1080,
@@ -6387,7 +5479,7 @@
       "followups": 7,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/terry.lua",
-      "moves": 62,
+      "moves": 63,
       "nodes": 51,
       "routes": 179,
       "rows": 87,
@@ -7100,7 +6192,7 @@
       "followups": 4,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/elena.lua",
-      "moves": 80,
+      "moves": 83,
       "nodes": 78,
       "routes": 161,
       "rows": 126,
@@ -7201,14 +6293,14 @@
     {
       "ambiguous_joins": 4,
       "by_confidence": {
-        "high": 75,
-        "low": 168,
-        "medium": 100
+        "high": 105,
+        "low": 96,
+        "medium": 106
       },
       "by_reason": {
         "chain_cancel": 80,
-        "frame_data_incomplete": 144,
-        "frame_link": 65,
+        "frame_data_incomplete": 72,
+        "frame_link": 71,
         "special_cancel": 95,
         "super_cancel": 40
       },
@@ -7233,9 +6325,9 @@
       "cov_targets": {
         "ambiguous": 4,
         "exact": 0,
-        "fuzzy": 31,
-        "matched": 31,
-        "ratio": 0.72093023255813948,
+        "fuzzy": 37,
+        "matched": 37,
+        "ratio": 0.86046511627906974,
         "rows": 43,
         "uncertain_detail": [
           {
@@ -7263,7 +6355,7 @@
             "why": "the frame source lists \"214214K\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 12,
+        "unmatched": 6,
         "unmatched_detail": [
           {
             "action_id": 914,
@@ -7298,51 +6390,12 @@
             ]
           },
           {
-            "action_id": 969,
-            "classic": "623+LP",
+            "action_id": 1214,
+            "classic": "214214+LP+MP",
             "tried": [
-              "623+LP",
-              "623LP"
-            ]
-          },
-          {
-            "action_id": 969,
-            "classic": "623+LP",
-            "tried": [
-              "623+LP",
-              "623LP"
-            ]
-          },
-          {
-            "action_id": 971,
-            "classic": "623+MP",
-            "tried": [
-              "623+MP",
-              "623MP"
-            ]
-          },
-          {
-            "action_id": 971,
-            "classic": "623+MP",
-            "tried": [
-              "623+MP",
-              "623MP"
-            ]
-          },
-          {
-            "action_id": 972,
-            "classic": "623+HP",
-            "tried": [
-              "623+HP",
-              "623HP"
-            ]
-          },
-          {
-            "action_id": 972,
-            "classic": "623+HP",
-            "tried": [
-              "623+HP",
-              "623HP"
+              "214214+LP+MP",
+              "214214LPMP",
+              "214214PP"
             ]
           },
           {
@@ -7350,21 +6403,14 @@
             "classic": "214214+LP+MP",
             "tried": [
               "214214+LP+MP",
-              "214214LPMP"
-            ]
-          },
-          {
-            "action_id": 1214,
-            "classic": "214214+LP+MP",
-            "tried": [
-              "214214+LP+MP",
-              "214214LPMP"
+              "214214LPMP",
+              "214214PP"
             ]
           }
         ]
       },
-      "edges": 343,
-      "excluded": 173,
+      "edges": 307,
+      "excluded": 209,
       "excluded_missing_data": 0,
       "fighter_id": 30,
       "followups": 0,
@@ -7372,7 +6418,7 @@
       "frame_data": "data/frame-data/cviper.lua",
       "moves": 62,
       "nodes": 43,
-      "routes": 177,
+      "routes": 147,
       "rows": 117,
       "search_complete": true,
       "starters": 12,
@@ -7393,30 +6439,6 @@
         {
           "action_id": 917,
           "classic": "6+PP"
-        },
-        {
-          "action_id": 969,
-          "classic": "623+LP"
-        },
-        {
-          "action_id": 969,
-          "classic": "623+LP"
-        },
-        {
-          "action_id": 971,
-          "classic": "623+MP"
-        },
-        {
-          "action_id": 971,
-          "classic": "623+MP"
-        },
-        {
-          "action_id": 972,
-          "classic": "623+HP"
-        },
-        {
-          "action_id": 972,
-          "classic": "623+HP"
         },
         {
           "action_id": 1214,
@@ -7591,16 +6613,16 @@
     {
       "ambiguous_joins": 8,
       "by_confidence": {
-        "high": 108,
-        "low": 503,
-        "medium": 225
+        "high": 90,
+        "low": 419,
+        "medium": 260
       },
       "by_reason": {
-        "chain_cancel": 80,
-        "frame_data_incomplete": 403,
-        "frame_link": 207,
-        "special_cancel": 224,
-        "super_cancel": 72,
+        "chain_cancel": 60,
+        "frame_data_incomplete": 339,
+        "frame_link": 282,
+        "special_cancel": 140,
+        "super_cancel": 36,
         "target_combo": 6
       },
       "character": "Ingrid",
@@ -7638,8 +6660,8 @@
       },
       "cov_starters": {
         "ambiguous": 0,
-        "exact": 0,
-        "fuzzy": 17,
+        "exact": 4,
+        "fuzzy": 13,
         "matched": 17,
         "ratio": 0.94444444444444442,
         "rows": 18,
@@ -7650,17 +6672,18 @@
             "classic": "5545+HK",
             "tried": [
               "5545+HK",
-              "5545HK"
+              "5545HK",
+              "5545K"
             ]
           }
         ]
       },
       "cov_targets": {
         "ambiguous": 8,
-        "exact": 0,
+        "exact": 4,
         "fuzzy": 50,
-        "matched": 50,
-        "ratio": 0.90909090909090906,
+        "matched": 54,
+        "ratio": 0.98181818181818181,
         "rows": 55,
         "uncertain_detail": [
           {
@@ -7712,60 +6735,29 @@
             "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 5,
+        "unmatched": 1,
         "unmatched_detail": [
-          {
-            "action_id": 912,
-            "classic": "236+LP+MP",
-            "tried": [
-              "236+LP+MP",
-              "236LPMP"
-            ]
-          },
-          {
-            "action_id": 986,
-            "classic": "214+MP+HP",
-            "tried": [
-              "214+MP+HP",
-              "214MPHP"
-            ]
-          },
-          {
-            "action_id": 1217,
-            "classic": "214214+MP",
-            "tried": [
-              "214214+MP",
-              "214214MP"
-            ]
-          },
-          {
-            "action_id": 1217,
-            "classic": "214214+MP",
-            "tried": [
-              "214214+MP",
-              "214214MP"
-            ]
-          },
           {
             "action_id": 1492,
             "classic": "5545+HK",
             "tried": [
               "5545+HK",
-              "5545HK"
+              "5545HK",
+              "5545K"
             ]
           }
         ]
       },
-      "edges": 836,
-      "excluded": 208,
+      "edges": 769,
+      "excluded": 275,
       "excluded_missing_data": 0,
       "fighter_id": 32,
       "followups": 3,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/ingrid.lua",
-      "moves": 81,
+      "moves": 85,
       "nodes": 58,
-      "routes": 256,
+      "routes": 269,
       "rows": 158,
       "search_complete": false,
       "starters": 18,
@@ -7774,22 +6766,6 @@
         {
           "action_id": 1492,
           "classic": "5545+HK"
-        },
-        {
-          "action_id": 912,
-          "classic": "236+LP+MP"
-        },
-        {
-          "action_id": 986,
-          "classic": "214+MP+HP"
-        },
-        {
-          "action_id": 1217,
-          "classic": "214214+MP"
-        },
-        {
-          "action_id": 1217,
-          "classic": "214214+MP"
         },
         {
           "action_id": 1492,
@@ -8143,9 +7119,9 @@
       "cov_targets": {
         "ambiguous": 8,
         "exact": 0,
-        "fuzzy": 49,
-        "matched": 49,
-        "ratio": 0.875,
+        "fuzzy": 55,
+        "matched": 55,
+        "ratio": 0.9821428571428571,
         "rows": 56,
         "uncertain_detail": [
           {
@@ -8197,56 +7173,8 @@
             "why": "the frame source lists \"236236P\" 2 times with different values, and the join took whichever came first"
           }
         ],
-        "unmatched": 7,
+        "unmatched": 1,
         "unmatched_detail": [
-          {
-            "action_id": 900,
-            "classic": "22+LP",
-            "tried": [
-              "22+LP",
-              "22LP"
-            ]
-          },
-          {
-            "action_id": 901,
-            "classic": "22+MP",
-            "tried": [
-              "22+MP",
-              "22MP"
-            ]
-          },
-          {
-            "action_id": 904,
-            "classic": "22+LP+MP",
-            "tried": [
-              "22+LP+MP",
-              "22LPMP"
-            ]
-          },
-          {
-            "action_id": 998,
-            "classic": "236+LK",
-            "tried": [
-              "236+LK",
-              "236LK"
-            ]
-          },
-          {
-            "action_id": 999,
-            "classic": "236+MK",
-            "tried": [
-              "236+MK",
-              "236MK"
-            ]
-          },
-          {
-            "action_id": 1001,
-            "classic": "236+HK",
-            "tried": [
-              "236+HK",
-              "236HK"
-            ]
-          },
           {
             "action_id": 1044,
             "classic": "4+KK",
@@ -8264,7 +7192,7 @@
       "followups": 38,
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/yasmine.lua",
-      "moves": 64,
+      "moves": 66,
       "nodes": 94,
       "routes": 162,
       "rows": 138,
@@ -8275,30 +7203,6 @@
         {
           "action_id": 1044,
           "classic": "4+KK"
-        },
-        {
-          "action_id": 900,
-          "classic": "22+LP"
-        },
-        {
-          "action_id": 901,
-          "classic": "22+MP"
-        },
-        {
-          "action_id": 904,
-          "classic": "22+LP+MP"
-        },
-        {
-          "action_id": 998,
-          "classic": "236+LK"
-        },
-        {
-          "action_id": 999,
-          "classic": "236+MK"
-        },
-        {
-          "action_id": 1001,
-          "classic": "236+HK"
         },
         {
           "action_id": 1044,

@@ -37,6 +37,14 @@ M.MATCH = {
     EXACT      = "exact",        -- the classic display is already the key
     NO_PLUS    = "no_plus",      -- "2+MP" -> "2MP"
     NEUTRAL_5  = "neutral_5",    -- "LP" -> "5LP"
+    -- "214+LP" -> "214P". The source writes a special with a generic button
+    -- letter when the strengths do NOT differ, and splits it into 214LP/214MP/
+    -- 214HP when they do - Ryu's Hadoken is three records with startups 16, 14
+    -- and 12. So this is a FALLBACK, tried only after the strength-specific
+    -- spellings have failed: if the source drew the distinction, its own
+    -- spelling wins, and if it did not, the three catalog rows genuinely share
+    -- one move's numbers because the source says they are one move.
+    GENERIC    = "generic_button",
     PREFIX     = "prefix",       -- "63214KK" -> "63214KK (Close)"
     NONE       = "none",
 }
@@ -69,7 +77,74 @@ function M.candidate_keys(classic)
         add("5" .. no_plus, M.MATCH.NEUTRAL_5)
     end
 
+    -- Last, and only for a notation that names a motion: the generic-button
+    -- form. Added after everything above so a strength-specific key in the
+    -- source always wins; see M.MATCH.GENERIC.
+    local generic = M.generic_button_key(classic)
+    if generic then add(generic, M.MATCH.GENERIC) end
+
     return keys
+end
+
+-- "214+LP" -> "214P", "214+LP+MP" -> "214PP", "236+LK+MK" -> "236KK".
+--
+-- Only for a notation whose buttons are ALL punches or ALL kicks: a mixed pair
+-- has no generic spelling in the source, and inventing one would be a guess
+-- rather than a reading. Returns nil when there is nothing to generalise.
+function M.generic_button_key(classic)
+    if type(classic) ~= "string" then return nil end
+    local motion, buttons = classic:match("^([%d%[%]~]+)%+?([LMH%+PK]+)$")
+    if not motion or not buttons then return nil end
+
+    -- Only for a real motion. The source uses the generic letter for specials
+    -- and never for normals - Ryu's normals are 5LP, 2MP, 5HK, every one of them
+    -- strength-specific - so letting "2+MP" generalise to "2P" could only ever
+    -- attach some special's numbers to a crouching medium punch. A motion is two
+    -- or more directions, or a charge.
+    local digits = select(2, motion:gsub("%d", ""))
+    if digits < 2 and not motion:find("[", 1, true) then return nil end
+
+    local kind, n = nil, 0
+    for strength, btn in buttons:gmatch("([LMH])([PK])") do
+        if strength == nil then return nil end
+        if kind ~= nil and kind ~= btn then return nil end   -- mixed punch/kick
+        kind = btn
+        n = n + 1
+    end
+    if not kind or n == 0 then return nil end
+
+    -- The buttons have to account for the whole tail, or something in it was
+    -- not a strength+button pair and this is not the notation we think it is.
+    if #buttons ~= (n * 2) + (n - 1) and #buttons ~= n * 2 then
+        local plus = select(2, buttons:gsub("%+", ""))
+        if #buttons ~= (n * 2) + plus then return nil end
+    end
+
+    return motion .. string.rep(kind, n)
+end
+
+-- Every input one source record answers to.
+--
+-- The source writes alternatives with " or ": Dhalsim's record is "2KK or 3KK"
+-- and Guile's is "4MK or 6MK", one move reachable two ways. The catalog has a
+-- separate row for each, so indexing the literal string matched neither of
+-- them - which is why Dhalsim joined 69% of his targets and Guile 83%.
+--
+-- This is not a guess about what the source meant. It is the source listing
+-- both inputs itself.
+function M.spellings(numpad)
+    if type(numpad) ~= "string" or numpad == "" then return {} end
+    local out, seen = {}, {}
+    local function add(k)
+        k = k:match("^%s*(.-)%s*$")
+        if k ~= "" and not seen[k] then seen[k] = true out[#out + 1] = k end
+    end
+    if numpad:find(" or ", 1, true) then
+        for part in (numpad .. " or "):gmatch("(.-) or ") do add(part) end
+    else
+        add(numpad)
+    end
+    return out
 end
 
 -- decoded: { _meta = {...}, moves = { { numpad = "2MP", startup = 8, ... }, ... } }
@@ -90,8 +165,7 @@ function M.index(decoded)
     }
 
     for _, mv in ipairs(decoded.moves) do
-        local k = mv.numpad
-        if type(k) == "string" and k ~= "" then
+        for _, k in ipairs(M.spellings(mv.numpad)) do
             if idx.by_key[k] then
                 -- Real in this data: "720+P" appears twice with different
                 -- damage, and the distance variants share a stem. Recorded
