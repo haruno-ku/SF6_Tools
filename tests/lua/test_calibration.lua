@@ -420,6 +420,23 @@ do
          "RIGHT went forward only where rl_dir was truthy, so the falsy side is the one to flip")
     t.eq(rep.values.rl_dir_polarity.status, "verified", "which is what the guess said")
     t.ok(rep.values.direction_bits ~= nil, "and LEFT/RIGHT came out opposite, confirming the bits")
+
+    -- The assertion that was missing, and the reason the defect survived: this
+    -- block checked that direction_bits EXISTS and never what it said.
+    --
+    -- conclude_direction used to return the whole four-key guess, so
+    -- verdict_status compared it against a copy of itself and could return
+    -- nothing but VERIFIED - stamping the entry that gates INJECTION as measured
+    -- with UP and DOWN never once held. Those two build six of the nine numpad
+    -- digits: every crouching normal, and the down leg of every 236, 214 and 623.
+    local d = rep.values.direction_bits
+    t.eq(d.status, "partial",
+         "the sweep pressed LEFT and RIGHT, so the entry is PARTIAL, not verified")
+    t.eq_list(d.unwitnessed, { "DOWN", "UP" }, "and names the two it never pressed")
+    t.eq(d.value.LEFT, 4, "the bits it did measure are there")
+    t.eq(d.value.RIGHT, 8, "both of them")
+    t.is_nil(d.value.UP, "and the ones it did not are absent, not copied from the guess")
+    t.is_nil(d.value.DOWN, "neither of them")
 end
 
 do

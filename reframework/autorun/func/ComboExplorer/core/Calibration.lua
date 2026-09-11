@@ -645,7 +645,17 @@ local function conclude_direction(session, steps)
             "LEFT and RIGHT did not come out opposite, so the direction bits are not confirmed"
     end
 
-    return copy(provisional), polarity, problems, nil
+    -- Only what was pressed. This used to return `copy(provisional)` - the
+    -- whole four-key guess, UP and DOWN included - so verdict_status compared
+    -- the guess against a copy of itself and could return nothing but VERIFIED.
+    -- The entry gating INJECTION was therefore stamped "measured" with UP and
+    -- DOWN never once held, and those two bits build six of the nine numpad
+    -- digits: every crouching normal, and the down leg of every 236, 214 and
+    -- 623.
+    --
+    -- The comment a few lines up has always said UP and DOWN are not exercised.
+    -- Now the status says it too, because a subset comes back PARTIAL.
+    return { LEFT = provisional.LEFT, RIGHT = provisional.RIGHT }, polarity, problems, nil
 end
 
 -- --- the whole verdict -------------------------------------------------------
