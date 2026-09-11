@@ -388,6 +388,46 @@ function M.plan(session)
         end
     end
 
+    -- #8b - UP and DOWN. Two steps, not four: which way the character is facing
+    -- has nothing to do with whether up is up, so unlike #8 there is no side to
+    -- repeat them on. They come after #8 rather than before it so the first
+    -- direction step is still one that names a side - the operator is asked to
+    -- take a position once, at the start of the phase, instead of part way in.
+    --
+    -- What these can prove and what they cannot, stated because the difference
+    -- decides how the result is read. Holding the bit and watching the action id
+    -- leave neutral proves the bit IS a direction input - it does something, and
+    -- the two bits do different things. It does NOT prove which of them is up:
+    -- nothing in the snapshot reports height (GameAdapter exposes no y position
+    -- and no airborne flag), so a crouch and a jump are two action ids with no
+    -- label.
+    --
+    -- That is the right division of labour anyway. The danger these steps exist
+    -- to rule out is a bit that is not a direction at all, because then every
+    -- crouching normal and the down leg of every 236 silently presses nothing.
+    -- Up and down being swapped is caught by the action sweep instead, where
+    -- "2 + light" would come back as some jumping id and the catalog would
+    -- report the conflict.
+    for _, name in ipairs({ "UP", "DOWN" }) do
+        local bit = dirs[name]
+        if type(bit) == "number" then
+            add {
+                phase = M.PHASE.DIRECTION,
+                mask = bit,
+                bit = bit,
+                direction = name,
+                -- No side. CalibrationFsm only gates a step on rl_dir when the
+                -- step names one, so this runs wherever the operator is.
+                side = nil,
+                mirror = false,
+                hold_ticks = session.hold_ticks,
+                purpose = ("hold %s (0x%X) alone and record whether the action id leaves neutral")
+                    :format(name, bit),
+                tests = { "direction_bits" },
+            }
+        end
+    end
+
     -- #9 - one step per group the catalog cannot resolve on its own. Driven off
     -- the catalog rather than off a written-out {5,2,4,6,1,3}x{L,M,H,SP} grid,
     -- so the sweep asks exactly the questions the data still has open and
@@ -585,9 +625,33 @@ local function conclude_direction(session, steps)
     -- side -> direction name -> which way the world position went
     local went = {}
     local problems = {}
+    local vertical = {}          -- name -> the action id holding it produced
 
     for _, s in ipairs(steps) do
-        if s.phase == M.PHASE.DIRECTION then
+        if s.phase == M.PHASE.DIRECTION and (s.direction == "UP" or s.direction == "DOWN") then
+            -- Judged on the action id, not on a position delta: holding up or
+            -- down does not move the character along x, and there is no y to
+            -- read. The neutral id is known before any of this runs - the FSM
+            -- refuses to leave SETTLE on a non-neutral step until it is - so
+            -- "the id left neutral" is a comparison rather than an assumption.
+            local obs = session.observations[s.id]
+            if not obs then
+                problems[#problems + 1] = { step = s.id, direction = s.direction,
+                                            reason = "not run" }
+            elseif obs.action_id == nil then
+                problems[#problems + 1] = { step = s.id, direction = s.direction,
+                                            reason = "nothing came out" }
+            elseif session.neutral_action_id == nil then
+                problems[#problems + 1] = { step = s.id, direction = s.direction,
+                                            reason = "the neutral step was never run" }
+            elseif obs.action_id == session.neutral_action_id then
+                problems[#problems + 1] = { step = s.id, direction = s.direction,
+                    action_id = obs.action_id,
+                    reason = "holding it produced no action, so this bit is not that direction" }
+            else
+                vertical[s.direction] = obs.action_id
+            end
+        elseif s.phase == M.PHASE.DIRECTION then
             local obs = session.observations[s.id]
             if not obs then
                 problems[#problems + 1] = { step = s.id, reason = "not run" }
@@ -646,16 +710,32 @@ local function conclude_direction(session, steps)
     end
 
     -- Only what was pressed. This used to return `copy(provisional)` - the
-    -- whole four-key guess, UP and DOWN included - so verdict_status compared
-    -- the guess against a copy of itself and could return nothing but VERIFIED.
-    -- The entry gating INJECTION was therefore stamped "measured" with UP and
-    -- DOWN never once held, and those two bits build six of the nine numpad
-    -- digits: every crouching normal, and the down leg of every 236, 214 and
-    -- 623.
-    --
-    -- The comment a few lines up has always said UP and DOWN are not exercised.
-    -- Now the status says it too, because a subset comes back PARTIAL.
-    return { LEFT = provisional.LEFT, RIGHT = provisional.RIGHT }, polarity, problems, nil
+    -- whole four-key guess - so verdict_status compared the guess against a copy
+    -- of itself and could return nothing but VERIFIED, stamping the entry that
+    -- gates INJECTION as measured with UP and DOWN never once held. Those two
+    -- build six of the nine numpad digits: every crouching normal, and the down
+    -- leg of every 236, 214 and 623.
+    local measured = { LEFT = provisional.LEFT, RIGHT = provisional.RIGHT }
+
+    -- UP and DOWN join the map only when BOTH produced an action and the two
+    -- actions differ. One of them alone proves less than it looks: if a single
+    -- bit were wrong and happened to repeat the other's id, "something came out"
+    -- would still be true. Distinct ids on distinct bits is the weakest claim
+    -- that rules out the failure these steps exist for.
+    if vertical.UP and vertical.DOWN then
+        if vertical.UP ~= vertical.DOWN then
+            measured.UP = provisional.UP
+            measured.DOWN = provisional.DOWN
+        else
+            problems[#problems + 1] = {
+                direction = "UP/DOWN", action_id = vertical.UP,
+                reason = "both produced the same action, so the two bits are not "
+                    .. "two different directions",
+            }
+        end
+    end
+
+    return measured, polarity, problems, nil
 end
 
 -- --- the whole verdict -------------------------------------------------------

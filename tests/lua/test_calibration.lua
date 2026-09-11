@@ -205,7 +205,38 @@ do
     local by_phase = {}
     for _, st in ipairs(steps) do by_phase[st.phase] = (by_phase[st.phase] or 0) + 1 end
     t.eq(by_phase.button_bits, 8, "one step per distinct bit in the provisional map")
-    t.eq(by_phase.direction, 4, "LEFT and RIGHT, on both sides")
+    t.eq(by_phase.direction, 6,
+         "LEFT and RIGHT on both sides, plus UP and DOWN once each")
+
+    -- Counted per direction rather than only in total, because the total is the
+    -- same whether UP and DOWN are swept once each or LEFT is swept four times.
+    local per_dir, sided = {}, {}
+    for _, st in ipairs(steps) do
+        if st.phase == "direction" then
+            per_dir[st.direction] = (per_dir[st.direction] or 0) + 1
+            if st.side ~= nil then sided[st.direction] = true end
+        end
+    end
+    t.eq(per_dir.LEFT, 2, "LEFT twice")
+    t.eq(per_dir.RIGHT, 2, "RIGHT twice")
+    t.eq(per_dir.UP, 1, "UP once - facing has nothing to do with whether up is up")
+    t.eq(per_dir.DOWN, 1, "DOWN once, for the same reason")
+    t.ok(sided.LEFT and sided.RIGHT, "the horizontal steps name a side")
+    t.is_nil(sided.UP, "and the vertical ones do not, so the FSM never gates them")
+    t.is_nil(sided.DOWN, "neither of them")
+
+    -- The vertical bits used to be guessed and never pressed. If the plan stops
+    -- pressing them the guess silently becomes an assumption again, and it
+    -- builds six of the nine numpad digits.
+    local dir_masks = {}
+    for _, st in ipairs(steps) do
+        if st.phase == "direction" then dir_masks[st.mask] = true end
+    end
+    local guess = Provenance.provisional(s.provenance, "direction_bits")
+    for _, name in ipairs({ "UP", "DOWN", "LEFT", "RIGHT" }) do
+        t.ok(dir_masks[guess[name]] == true,
+             ("the bit guessed for %s is actually written at some point"):format(name))
+    end
 
     -- Every step that writes from a guess has to say which guess.
     local untested = 0
@@ -437,6 +468,110 @@ do
     t.eq(d.value.RIGHT, 8, "both of them")
     t.is_nil(d.value.UP, "and the ones it did not are absent, not copied from the guess")
     t.is_nil(d.value.DOWN, "neither of them")
+end
+
+-- The other half of the same phase: the two steps that hold UP and DOWN.
+-- `run_dirs` cannot drive these - it indexes `moves[st.side]` and these steps
+-- name no side - so the two halves are run separately, which is also how the
+-- blocks below vary one without touching the other.
+local function run_vertical(s, neutral, produced)
+    for _, st in ipairs(Calibration.plan(s)) do
+        if st.phase == "neutral" then
+            Calibration.observe(s, st.id, { action_id = neutral })
+        elseif st.phase == "direction" and st.side == nil then
+            local id = produced[st.direction]
+            if id ~= nil then Calibration.observe(s, st.id, { action_id = id }) end
+        end
+    end
+end
+
+local function vertical_problem(rep, needle)
+    for _, pr in ipairs(rep.problems.direction) do
+        if tostring(pr.reason):find(needle) then return pr end
+    end
+end
+
+do
+    local s = new_session()
+    run_dirs(s, FORWARD_ON_TRUTHY)
+    -- Crouch and jump, whichever is which. 7 is the idle id the other blocks use.
+    run_vertical(s, 7, { UP = 800, DOWN = 900 })
+    local rep = Calibration.conclude(s)
+
+    local d = rep.values.direction_bits
+    t.eq(d.status, "verified",
+         "all four bits were actually held, so nothing is left unwitnessed")
+    t.is_nil(d.unwitnessed, "and there is no list of excuses")
+    t.eq(d.value.UP, 1, "the vertical bits are in the value now")
+    t.eq(d.value.DOWN, 2, "both of them")
+    t.eq(d.value.LEFT, 4, "alongside the horizontal pair")
+    t.eq(d.value.RIGHT, 8, "which did not change")
+end
+
+do
+    -- One of the two bits does nothing. That is the failure the steps exist to
+    -- catch: a bit that is not a direction at all means every crouching normal
+    -- and the down leg of every 236 silently presses nothing.
+    local s = new_session()
+    run_dirs(s, FORWARD_ON_TRUTHY)
+    run_vertical(s, 7, { UP = 800, DOWN = 7 })
+    local rep = Calibration.conclude(s)
+
+    local d = rep.values.direction_bits
+    t.eq(d.status, "partial", "a bit that produced no action is not a measured bit")
+    t.eq_list(d.unwitnessed, { "DOWN", "UP" },
+              "and NEITHER vertical bit is claimed - UP is only credible as half "
+              .. "of a pair that did two different things")
+    local pr = vertical_problem(rep, "not that direction")
+    t.ok(pr ~= nil, "the finding is reported")
+    t.eq(pr and pr.direction, "DOWN", "against the bit that failed")
+end
+
+do
+    -- Both bits held, both produced the SAME action. Something came out, so a
+    -- per-step check passes, but the two bits are not two directions.
+    local s = new_session()
+    run_dirs(s, FORWARD_ON_TRUTHY)
+    run_vertical(s, 7, { UP = 800, DOWN = 800 })
+    local rep = Calibration.conclude(s)
+
+    t.eq(rep.values.direction_bits.status, "partial",
+         "two bits with one action between them is not two directions")
+    local pr = vertical_problem(rep, "same action")
+    t.ok(pr ~= nil, "and it says so rather than passing on the count alone")
+    t.eq(pr and pr.action_id, 800, "naming the id both produced")
+end
+
+do
+    -- The plan has the steps; the operator stopped before running them.
+    local s = new_session()
+    run_dirs(s, FORWARD_ON_TRUTHY)
+    run_vertical(s, 7, { UP = 800 })
+    local rep = Calibration.conclude(s)
+
+    t.eq(rep.values.direction_bits.status, "partial", "a step nobody ran measures nothing")
+    local pr = vertical_problem(rep, "not run")
+    t.ok(pr ~= nil and pr.direction == "DOWN",
+         "and the unrun step is named, not silently treated as a pass")
+end
+
+do
+    -- The neutral step is what "left neutral" is measured against. Without it
+    -- there is no baseline, and guessing one would be the whole bug.
+    local s = new_session()
+    run_dirs(s, FORWARD_ON_TRUTHY)
+    for _, st in ipairs(Calibration.plan(s)) do
+        if st.phase == "direction" and st.side == nil then
+            Calibration.observe(s, st.id, { action_id = st.direction == "UP" and 800 or 900 })
+        end
+    end
+    local rep = Calibration.conclude(s)
+
+    t.eq(rep.values.direction_bits.status, "partial",
+         "two different ids came out, but with no baseline neither is known to be an action")
+    local pr = vertical_problem(rep, "neutral step was never run")
+    t.ok(pr ~= nil, "and the report says which measurement is missing: "
+         .. tostring(pr and pr.reason))
 end
 
 do
