@@ -721,14 +721,27 @@ local function calibration_identity()
     }
 end
 
+-- What a new profile should carry besides the sweep's own findings.
+--
+-- Two layers, and the order matters. The register is the base: it was loaded
+-- from whatever profile this machine already had, so it is the only place the
+-- measurements from previous sessions still exist. This session's probes go on
+-- top, because a probe that has just run is newer than the value it replaces.
+--
+-- It used to be the probes alone. On a machine where the probes ran on another
+-- day - which is every machine, the day after - finishing a sweep wrote a
+-- profile containing only the sweep, and the five values behind timing, damage
+-- and stage_reset were gone from latest.json. Nothing failed; the capabilities
+-- simply went back to blocked on the next load.
 local function probe_values_now()
-    return Calibration.from_probes({
+    local live = Calibration.from_probes({
         probe_a = probe_a.probe:report({ min_comparable = Config.data.probe_a_min_samples }),
         probe_b = Clock.diag_report({ min_frames = Config.data.probe_b_min_frames }),
         -- ProbeC has no :report(); the verdict is a module function over the
         -- episode list, the same way draw_probe_c does it.
         probe_c = ProbeC.conclude(probe_c.probe.episodes),
     }, { provenance = reg })
+    return Calibration.merge_values(Calibration.from_register(reg), live)
 end
 
 local function draw_calibration()

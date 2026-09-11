@@ -378,18 +378,49 @@ end
 
 do
     local s = new_session()
-    -- One bit produces a light attack; the other seven produce nothing. Six of
-    -- eight buttons therefore have no bit.
+    -- One bit produces a light attack; the other seven produce nothing, so
+    -- seven of the eight buttons have no bit.
+    --
+    -- This used to be refused outright, on the grounds that a map missing a
+    -- button would silently press nothing. It is settled now, as `partial`,
+    -- because that is not where the safety lives - see the group below, which
+    -- pins the thing that actually prevents the whiff.
     run_bits(s, 1, { [0x10] = 611 })
     local rep = Calibration.conclude(s)
-    t.is_nil(rep.values.modern_button_bits,
-             "a partial map is refused - a profile that cannot press two of the buttons "
-             .. "would still report injection as available")
-    local why
-    for _, n in ipairs(rep.notes) do
-        if n.key == "modern_button_bits" then why = n.reason end
+    local v = rep.values.modern_button_bits
+    t.ok(v ~= nil, "a map with holes in it is reported, not thrown away")
+    if v then
+        t.eq(v.status, "partial", "as partial: nothing contradicted the guess, most was not seen")
+        t.eq(v.value.L, 0x10, "the one bit that was witnessed is in the map")
+        t.is_nil(v.value.H, "and the ones that were not are absent, rather than guessed")
+        -- The operator has to be able to tell one missing route from six
+        -- hundred, so the cost travels with the name.
+        t.ok(tostring(v.note):find("no bit for H"), "the note names H: " .. tostring(v.note))
+        t.ok(tostring(v.note):find("probeable row%(s%) need it"),
+             "and says how many rows each one costs")
     end
-    t.ok(tostring(why):find("no bit was found for"), "and names the buttons still missing")
+end
+
+do
+    -- What a button being absent from the map actually costs, and why that is
+    -- safe. InputMask.compile asks button_mask for every route and refuses the
+    -- ones it cannot express, BY NAME. That refusal is what stops a trial from
+    -- pressing nothing and recording "these two moves do not link" - not the
+    -- completeness check that used to sit in conclude_button_bits.
+    local InputMask = require("func/ComboExplorer/core/InputMask")
+    local profile = InputMask.profile({
+        buttons = { L = 0x10, M = 0x80 },     -- no H
+        dir = { UP = 1, DOWN = 2, LEFT = 4, RIGHT = 8 },
+        mirror_when = "falsy", status = "partial", measured = true,
+    })
+    t.ok(profile ~= nil, "a partial profile is a profile")
+
+    local light = InputMask.compile(InputMask.parse("\229\188\177"), { profile = profile })
+    t.ok(light ~= nil, "a route using a button the map HAS still compiles")
+
+    local heavy, err = InputMask.compile(InputMask.parse("\229\188\186"), { profile = profile })
+    t.is_nil(heavy, "a route using a button the map lacks does NOT compile")
+    t.ok(tostring(err):find("H"), "and the refusal names the button: " .. tostring(err))
 end
 
 do
@@ -888,3 +919,68 @@ do
              "and the note still says how many were out of reach")
     end
 end
+
+-- =========================================================
+t.group("a new profile does not drop what the machine already knew")
+
+-- The register is loaded from a profile at startup, so it is the only place the
+-- measurements from previous sessions still exist. Rebuilding a profile from
+-- this session's probes alone threw them away: reproduced on build 24176760,
+-- latest.json went from five entries to two and three capabilities went back to
+-- blocked, with nothing reported.
+do
+    local reg = Provenance.new()
+    Provenance.apply_calibration(reg, {
+        calibration_id = "yesterday", game_patch = "24176760",
+        values = {
+            reset_settle_ticks = { status = "refuted", value = 9, note = "probe C" },
+            input_hook_calls_per_frame = { status = "verified", value = 1 },
+        },
+    })
+
+    local carried = Calibration.from_register(reg)
+    t.eq(carried.reset_settle_ticks.value, 9, "a measured entry is carried out of the register")
+    t.eq(carried.reset_settle_ticks.status, "refuted", "with the status it was measured under")
+    t.eq(carried.reset_settle_ticks.note, "probe C", "and its note")
+    t.is_nil(carried.modern_button_bits,
+             "an entry nobody measured is NOT carried - a guess written into a profile "
+             .. "comes back as a measurement on the next load")
+end
+
+do
+    -- Later wins, so a probe that has just run replaces the older value rather
+    -- than being shadowed by it.
+    local base = { a = { status = "verified", value = 1 },
+                   b = { status = "verified", value = 2 } }
+    local fresh = { b = { status = "refuted", value = 99 } }
+    local m = Calibration.merge_values(base, fresh)
+    t.eq(m.a.value, 1, "what only the base had survives")
+    t.eq(m.b.value, 99, "and the newer measurement wins")
+    t.eq(m.b.status, "refuted", "carrying its own status")
+end
+
+do
+    -- The whole point, end to end: a session with NO probes run still writes a
+    -- profile that keeps them.
+    local reg = Provenance.new()
+    Provenance.apply_calibration(reg, {
+        calibration_id = "yesterday", game_patch = "24176760",
+        values = { reset_settle_ticks = { status = "refuted", value = 9 } },
+    })
+    local no_probes = Calibration.from_probes({})     -- nothing ran this session
+    local merged = Calibration.merge_values(Calibration.from_register(reg), no_probes)
+    local doc = Calibration.document(IDENTITY, { merged, { rl_dir_polarity =
+        { status = "verified", value = "mirror_when_falsy" } } })
+
+    t.ok(doc ~= nil, "a document is produced")
+    t.eq(doc.values.reset_settle_ticks.value, 9,
+         "and yesterday's measurement is still in it after a sweep with no probes run")
+    t.eq(doc.values.rl_dir_polarity.value, "mirror_when_falsy", "alongside today's")
+
+    local fresh = Provenance.new()
+    Provenance.apply_calibration(fresh, doc)
+    t.eq(Provenance.can(fresh, "stage_reset"), true,
+         "so the capability it gates does not close again on the next load")
+end
+
+return t.finish()

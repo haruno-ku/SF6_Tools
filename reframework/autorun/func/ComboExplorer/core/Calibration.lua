@@ -248,6 +248,47 @@ function M.from_probes(reports, opts)
     return values, notes
 end
 
+-- Everything the register already holds a measurement for, as a values block.
+--
+-- The register is loaded from a profile at startup and is therefore the most
+-- complete account of this machine that exists. A caller assembling a new
+-- profile needs it as the base layer, because the alternative is what used to
+-- happen: the panel rebuilt the probe block from THIS SESSION's probes, a
+-- session with no probes run produced an empty block, and finishing a sweep
+-- wrote a profile containing only the sweep - silently dropping five values
+-- measured on another day. Reproduced on build 24176760: latest.json went from
+-- five entries to two, and timing, damage and stage_reset went from available
+-- back to blocked.
+--
+-- Only measured entries travel. An unverified entry is a guess, and a guess
+-- written into a profile would come back as a measurement on the next load.
+function M.from_register(reg)
+    local out = {}
+    if type(reg) ~= "table" or type(reg.entries) ~= "table" then return out end
+    for key, e in pairs(reg.entries) do
+        if Provenance.is_measured(reg, key) and e.value ~= nil then
+            out[key] = {
+                status = e.status,
+                value = copy(e.value),
+                note = e.measurement_note,
+                unwitnessed = copy(e.unwitnessed),
+            }
+        end
+    end
+    return out
+end
+
+-- Merges values blocks, later wins - the same rule M.document uses, exposed so
+-- a caller can lay a fresh measurement over what was already known without
+-- building the document yet.
+function M.merge_values(...)
+    local out = {}
+    for i = 1, select("#", ...) do
+        for key, v in pairs(select(i, ...) or {}) do out[key] = copy(v) end
+    end
+    return out
+end
+
 -- =========================================================
 -- HALF TWO: the sweep
 -- =========================================================
@@ -283,6 +324,25 @@ end
 -- keyed by button name. This is what turns "bit 0x10 produced action 611" into
 -- "bit 0x10 is the light button": 611 is in the group for the notation that
 -- names only the light button, and in no other.
+-- How many rows a sweep could actually be built from need this button.
+--
+-- This is the cost of not having witnessed it: InputMask.compile refuses a
+-- route whose notation names a button the profile has no bit for, so each of
+-- these rows becomes uncompilable rather than silently whiffed. Reported beside
+-- the button so "THROW is missing" can be read as the one row it is on Zangief
+-- rather than as a disaster, and so "H is missing" reads as the 599 it is.
+function M.rows_needing(catalog, button)
+    if type(catalog) ~= "table" or type(button) ~= "string" then return 0 end
+    local n = 0
+    for _, row in ipairs(Catalog.probeable(catalog, { input_methods = { "manual", "simple" } })) do
+        local parsed = InputMask.parse(row.notation)
+        for _, b in ipairs(parsed and parsed.buttons or {}) do
+            if b == button then n = n + 1 break end
+        end
+    end
+    return n
+end
+
 local function single_button_groups(catalog)
     local by_button = {}
     for _, g in pairs(catalog.groups or {}) do
@@ -596,24 +656,44 @@ local function conclude_button_bits(session, steps)
     -- AUTO cannot express AUTO, and InputMask.button_mask reports an unknown
     -- name rather than quietly pressing nothing - which is the loud failure,
     -- and the right one.
+    -- A button the sweep did not witness is REPORTED, not a reason to throw the
+    -- whole map away.
+    --
+    -- It used to refuse outright when the catalog names a button and no bit
+    -- produced it, on the grounds that a map missing a button would silently
+    -- press nothing. That is no longer where the safety lives, and arguably
+    -- never was: InputMask.compile asks button_mask for every route and refuses
+    -- the route by name when the profile has no bit for it
+    -- (InputMask.lua:429, and the note above it). A partial map therefore
+    -- costs the routes that need the missing button, loudly and individually -
+    -- it does not produce a whiffed trial recorded as "these do not link".
+    --
+    -- The old line also did not match the harm. AUTO can never be witnessed on
+    -- any shipped catalog and has always been let through as `underivable`,
+    -- and AUTO is asked for by 209 probeable rows across 31 characters. THROW,
+    -- which refused the entire entry, is asked for by 8. Measured on build
+    -- 24176760: THROW whiffs at midscreen and produces an id the catalog
+    -- itself declares unmapped, so no amount of sweeping witnesses it, and the
+    -- gate stayed shut on a button the sweep matrix barely uses.
+    --
+    -- What matters instead is that the operator can SEE the cost, so each
+    -- entry carries how many probeable rows it takes out. One row is a
+    -- rounding error; 599 means the sweep was bad and should be re-run.
     local provisional = Provenance.provisional(reg, "modern_button_bits") or {}
-    local missing, underivable = {}, {}
+    local unwitnessed = {}
     for _, name in ipairs(sorted_keys(provisional)) do
         if derived[name] == nil then
-            if by_button[name] then
-                missing[#missing + 1] = name
-            else
-                underivable[#underivable + 1] = name
-            end
+            unwitnessed[#unwitnessed + 1] = {
+                button = name,
+                why = by_button[name]
+                    and "the sweep pressed every bit and none produced it"
+                    or "this catalog has no single-button notation for it",
+                probeable_rows = M.rows_needing(session.catalog, name),
+            }
         end
     end
-    if #missing > 0 then
-        return nil, problems,
-            ("no bit was found for %s, which this catalog does name"):format(
-                table.concat(missing, ", "))
-    end
 
-    return derived, problems, nil, underivable
+    return derived, problems, nil, unwitnessed
 end
 
 -- --- deriving the directions and the polarity --------------------------------
@@ -760,16 +840,16 @@ function M.conclude(session)
         }
     end
 
-    local bits, bit_problems, bit_err, underivable = conclude_button_bits(session, steps)
+    local bits, bit_problems, bit_err, unwitnessed = conclude_button_bits(session, steps)
     if bits then
         local note = ("derived from %d single-bit step(s)"):format(#steps)
         -- Named in the note rather than left to be noticed by whoever later
-        -- asks the profile to press one of them. The map genuinely does not
-        -- contain these, and it must be obvious why.
-        if underivable and #underivable > 0 then
-            note = note .. ("; no bit for %s - this catalog has no single-button "
-                .. "notation for them, so the sweep could not witness one")
-                :format(table.concat(underivable, ", "))
+        -- asks the profile to press one of them, and carrying what each one
+        -- costs. The map genuinely does not contain these; the reader needs to
+        -- know whether that is one route or six hundred.
+        for _, u in ipairs(unwitnessed or {}) do
+            note = note .. ("; no bit for %s (%s) - %d probeable row(s) need it")
+                :format(u.button, u.why, u.probeable_rows)
         end
         settle("modern_button_bits", bits, note)
     else

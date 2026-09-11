@@ -1,14 +1,39 @@
 {
     "ac_sha256": "753d02204cec89c5a885d5748cda2d51bde0769144a15be93f1e717f219006b2",
     "bcm_sha256": "09e9334a458b4e7073d13c5a0e25255d2b35b0cb71ccdccbd67c8774b62d4053",
-    "calibration_id": "ESF_006-20260911T172406Z",
+    "calibration_id": "ESF_006-20260911T180157Z",
     "character": "Zangief",
     "control_scheme": "modern",
     "game_patch": "24176760",
-    "generated_at": "2026-09-11T17:28:17Z",
+    "generated_at": "2026-09-11T18:02:31Z",
     "overwritten": null,
     "schema": "ce.calibration.v1",
     "values": {
+        "action_id_canonical": {
+            "note": "8 group(s) resolved by observation; 5 group(s) were out of this sweep's reach and remain open",
+            "status": "verified",
+            "value": {
+                "assist|AUTO + 弱": 627,
+                "manual|2 + 弱": 617,
+                "manual|DI": 855,
+                "manual|中 + 强": 900,
+                "manual|弱": 611,
+                "manual|弱 + 中 + 强": 901,
+                "simple|2 + SP": 900,
+                "simple|2 + SP + 强": 1218
+            }
+        },
+        "combo_damage_readable": {
+            "note": "mComboDamage and the HP delta disagree on 3 of 18 comparable samples - record both and do not trust either alone",
+            "status": "verified",
+            "value": {
+                "agreed": 15,
+                "comparable": 18,
+                "readable": true,
+                "recommended_source": "both",
+                "side": "attacker"
+            }
+        },
         "direction_bits": {
             "note": "LEFT and RIGHT confirmed by position delta on both sides",
             "status": "verified",
@@ -19,10 +44,49 @@
                 "UP": 1
             }
         },
+        "hitstop_advances_tick": {
+            "note": "475 hitstop frame(s), 1.000 call(s) per frame",
+            "status": "refuted",
+            "value": true
+        },
+        "input_hook_calls_per_frame": {
+            "note": "every one of 76565 usable frames saw exactly 1 call(s)",
+            "status": "verified",
+            "value": 1
+        },
+        "modern_button_bits": {
+            "note": "derived from 23 single-bit step(s); no bit for AUTO (this catalog has no single-button notation for it) - 2 probeable row(s) need it; no bit for PARRY (this catalog has no single-button notation for it) - 0 probeable row(s) need it",
+            "status": "partial",
+            "unwitnessed": [
+                "AUTO",
+                "PARRY"
+            ],
+            "value": {
+                "DI": 4096,
+                "H": 256,
+                "L": 16,
+                "M": 128,
+                "SP": 32,
+                "THROW": 8192
+            }
+        },
+        "reset_settle_ticks": {
+            "note": "a reset settles in 7-9 ticks (median 7), 122-168 ms wall clock (median 125)",
+            "status": "refuted",
+            "value": 9
+        },
         "rl_dir_polarity": {
             "note": "decided by which side needed the mask flipped",
             "status": "verified",
             "value": "mirror_when_falsy"
+        },
+        "tick_equals_frame": {
+            "note": "every one of 76565 usable frames saw exactly 1 call(s)",
+            "status": "verified",
+            "value": {
+                "frames": 76565,
+                "ticks_per_frame": 1
+            }
         }
     }
 }
