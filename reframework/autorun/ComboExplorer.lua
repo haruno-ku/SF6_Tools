@@ -315,7 +315,18 @@ Clock.on_frame(function(frame)
     -- this runs inside a battle-sim hook. Taking one every frame when nothing
     -- is looking at it is pure cost, so it is only taken when a probe is
     -- running or the panel was drawn recently enough to still be on screen.
-    local wanted = probe_a.on or probe_c.on
+    -- A running machine is a reason to keep reading, and it was not one.
+    --
+    -- The panel-recency test below is a cost optimisation: a snapshot is about
+    -- twenty reflection reads inside a battle-sim hook, so it is skipped when
+    -- nothing is looking. But CalRunner.tick() is called AFTER this early
+    -- return, so closing the panel - or just looking away for half a second -
+    -- silently froze a calibration sweep mid-run. For something whose whole
+    -- purpose is "start it and walk away", that was the opposite of the
+    -- behaviour wanted.
+    local machines_running = CalRunner.running() or StageControl.running()
+        or Injector.running()
+    local wanted = machines_running or probe_a.on or probe_c.on
         or (live.panel_frame ~= nil and (frame - live.panel_frame) < 30)
     if not wanted then
         live.snap = nil
@@ -677,6 +688,28 @@ end
 -- reads in the order the runbook does: measure, then calibrate.
 local calib = { last_status = nil }
 
+-- Both of these were inlined in the WRITE PROFILE button. They are named now
+-- because the START button needs them too: a run that writes itself at the end
+-- has to be told who it is at the beginning.
+local function calibration_identity()
+    return {
+        calibration_id = ("%s-%s"):format(tostring(live.p1_char and live.p1_char.key),
+                                          os.date("!%Y%m%dT%H%M%SZ")),
+        game_patch = reg.game_patch or Config.data.game_patch or "unknown",
+        control_scheme = live.p1_control or "modern",
+    }
+end
+
+local function probe_values_now()
+    return Calibration.from_probes({
+        probe_a = probe_a.probe:report({ min_comparable = Config.data.probe_a_min_samples }),
+        probe_b = Clock.diag_report({ min_frames = Config.data.probe_b_min_frames }),
+        -- ProbeC has no :report(); the verdict is a module function over the
+        -- episode list, the same way draw_probe_c does it.
+        probe_c = ProbeC.conclude(probe_c.probe.episodes),
+    }, { provenance = reg })
+end
+
 local function draw_calibration()
     imgui.text_colored(T("calib_help"), UIKit.COLORS.Grey)
 
@@ -685,29 +718,43 @@ local function draw_calibration()
 
     if CalRunner.running() then
         if UIKit.styled_button(T("stop") .. "##ce_cal", THEME.stop, UIKit.COLORS.White) then
-            CalRunner.stop()
+            -- Refuses once when there are observations and no profile written,
+            -- because `run` is the only place they live. Pressing again forces
+            -- it, for someone who means it.
+            local ok, why = CalRunner.stop()
+            if ok then
+                calib.last_status = "stopped"
+                calib.stop_armed = nil
+            else
+                calib.last_status = tostring(why)
+                calib.stop_armed = true
+            end
+        end
+        if calib.stop_armed then
+            imgui.same_line()
+            if UIKit.styled_button("DISCARD##ce_cal_force", THEME.stop, UIKit.COLORS.White) then
+                CalRunner.stop({ force = true })
+                calib.last_status = "discarded"
+                calib.stop_armed = nil
+            end
         end
     else
         if UIKit.styled_button(T("calib_start") .. "##ce_cal", THEME.go, UIKit.COLORS.White) then
-            local r, err = CalRunner.start(reg, {})
+            -- Identity and probe values handed over AT THE START, because the
+            -- run writes itself when it finishes and there is nobody here to
+            -- supply them then. The same two things the WRITE PROFILE button
+            -- below assembles.
+            local r, err = CalRunner.start(reg, {
+                identity = calibration_identity(),
+                probe_values = probe_values_now(),
+            })
             calib.last_status = r and "sweep started" or ("could not start: " .. tostring(err))
         end
     end
     imgui.same_line()
     if UIKit.styled_button(T("calib_write") .. "##ce_cal_write", THEME.neutral, UIKit.COLORS.White) then
-        local probe_values = Calibration.from_probes({
-            probe_a = probe_a.probe:report({ min_comparable = Config.data.probe_a_min_samples }),
-            probe_b = Clock.diag_report({ min_frames = Config.data.probe_b_min_frames }),
-            -- ProbeC has no :report(); the verdict is a module function over
-            -- the episode list, the same way draw_probe_c does it.
-            probe_c = ProbeC.conclude(probe_c.probe.episodes),
-        }, { provenance = reg })
-        local path, err = CalRunner.write_profile({
-            calibration_id = ("%s-%s"):format(tostring(live.p1_char and live.p1_char.key),
-                                              os.date("!%Y%m%dT%H%M%SZ")),
-            game_patch = reg.game_patch or Config.data.game_patch or "unknown",
-            control_scheme = live.p1_control or "modern",
-        }, probe_values)
+        local path, err = CalRunner.write_profile(calibration_identity(),
+                                                  probe_values_now())
         calib.last_status = path and (T("wrote") .. " " .. path)
             or (T("write_failed") .. ": " .. tostring(err))
     end

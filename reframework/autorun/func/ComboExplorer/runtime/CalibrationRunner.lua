@@ -121,6 +121,13 @@ function M.install_error() return install_error end
 
 -- opts.character : catalog key, for the document identity
 -- opts.game_patch / ac_sha256 / bcm_sha256 : required by Calibration.document
+-- opts.identity      : the identity the finished profile is written under.
+--                      Held from the start rather than collected at the end,
+--                      because the run now writes itself when it finishes and
+--                      there is nobody there to supply it.
+-- opts.probe_values  : the Calibration.from_probes block, folded into the same
+--                      document so one file carries everything measured on this
+--                      build. Also needed up front, for the same reason.
 function M.start(reg, opts)
     opts = opts or {}
     if run then return nil, "a calibration is already running" end
@@ -151,6 +158,21 @@ function M.start(reg, opts)
     if not fsm then return nil, ferr end
 
     run = {
+        -- The arrangement currently written. Upstream's default, and the one
+        -- both of its copies agree on: P1 on the left.
+        start_x = { p1 = GameAdapter.DEFAULT_START_X.p1, p2 = GameAdapter.DEFAULT_START_X.p2 },
+        side_request_for = nil,
+        side_flips = 0,
+        side_writes = 0,
+        side_error = nil,
+        abandoned = 0,
+        auto_written = false,
+        auto_write_path = nil,
+        auto_write_error = nil,
+
+        identity = opts.identity,
+        probe_values = opts.probe_values,
+
         session = session,
         fsm = fsm,
         catalog = cat,
@@ -164,9 +186,27 @@ function M.start(reg, opts)
     return run
 end
 
-function M.stop()
+-- Returns true, or false plus a reason when there is something to lose.
+--
+-- It used to discard `run` outright, and `run` is the only place the sweep's
+-- observations live - so an operator who came back to a finished sweep and
+-- pressed STOP before WRITE PROFILE destroyed the whole thing. That is exactly
+-- the sequence an unattended run invites.
+--
+-- opts.force stops anyway, for someone who means it.
+function M.stop(opts)
+    opts = opts or {}
+    if run and not opts.force then
+        local wrote = run.auto_write_path ~= nil
+        if not wrote and run.ticks > 0 then
+            return false, ("this run has %d ticks of observations and no profile "
+                .. "written yet - press WRITE PROFILE first, or stop again to discard")
+                :format(run.ticks)
+        end
+    end
     pending_mask, pending_mirror = nil, nil
     run = nil
+    return true
 end
 
 function M.running() return run ~= nil end
@@ -185,6 +225,39 @@ end
 -- One battle frame. Driven from Clock.on_frame, which is the anchor Probe B
 -- validated - NOT from the input callback, which is a different clock and the
 -- one this build is not allowed to assume things about.
+-- Ask the game to put P1 on the other side.
+--
+-- WHAT THIS DOES AND DOES NOT KNOW
+--
+-- It does not know which arrangement produces which rl_dir. That is the
+-- polarity the sweep exists to measure, so choosing "the truthy arrangement"
+-- here would be answering the question under test. All it does is write the
+-- OPPOSITE of whatever it last wrote and let the FSM watch rl_dir.
+--
+-- WHY A RETRY RE-WRITES THE SAME THING
+--
+-- The FSM asks again every `side_retry_ticks` while it is still waiting.
+-- Flipping again on each ask would walk the players back and forth forever and
+-- never settle. So a request for a step that is already being served re-writes
+-- the SAME arrangement - another chance for the engine to apply it - and only a
+-- request for a DIFFERENT step flips.
+local function serve_side_request(step_id)
+    if run.side_request_for ~= step_id then
+        -- A new step wants the other side: flip.
+        run.start_x = { p1 = run.start_x.p2, p2 = run.start_x.p1 }
+        run.side_request_for = step_id
+        run.side_flips = run.side_flips + 1
+    end
+
+    local ok, why = GameAdapter.set_start_positions(run.start_x.p1, run.start_x.p2)
+    run.side_writes = run.side_writes + 1
+    if not ok then
+        run.side_error = why
+    else
+        run.side_error = nil
+    end
+end
+
 function M.tick()
     if not run then return end
     local snap = GameAdapter.snapshot(0)
@@ -205,6 +278,36 @@ function M.tick()
     pending_mirror = cmd.mirror
     run.last_note = cmd.note
     run.last_state = cmd.state
+
+    -- Only on the ticks the machine actually asked. The command carries
+    -- request_side on entry to the wait and then once every retry interval -
+    -- writing it every tick would ask the engine to refresh the stage on every
+    -- frame, which is a stutter rather than a swap.
+    if cmd.request_side ~= nil then serve_side_request(cmd.step_id) end
+
+    if cmd.abandoned then
+        run.abandoned = (run.abandoned or 0) + 1
+    end
+
+    -- The sweep is over. Write the profile HERE rather than waiting for someone
+    -- to press a button: the whole point is that it can be left alone, and
+    -- until now finishing did nothing and M.stop() threw the run away.
+    if cmd.state == Fsm.STATE.DONE and not run.auto_written then
+        run.auto_written = true
+        if run.identity == nil then
+            -- Refused rather than invented. Calibration.document needs a
+            -- calibration_id and a game_patch, and a profile filed under a made
+            -- up build is worse than one nobody wrote: it would be indexed,
+            -- found, and believed.
+            run.auto_write_error = "no identity was given at start, so the finished "
+                .. "profile cannot say which build it describes - press WRITE PROFILE"
+        else
+            local path, werr = M.write_profile(run.identity, run.probe_values)
+            run.auto_write_path = path
+            run.auto_write_error = path and nil or tostring(werr)
+        end
+    end
+
     return cmd
 end
 
