@@ -66,6 +66,7 @@ local SUITES = {
     "tests.lua.test_cataloglocator",
     "tests.lua.test_config",
     "tests.lua.test_jsonio",
+    "tests.lua.test_calibrationrunner",
     "tests.lua.test_stagecontrol",
     "tests.lua.test_injector",
     "tests.lua.test_sweep",

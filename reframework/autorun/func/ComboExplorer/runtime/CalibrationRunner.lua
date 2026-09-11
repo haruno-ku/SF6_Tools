@@ -41,13 +41,35 @@ local InputMask   = require("func/ComboExplorer/core/InputMask")
 local Calibration = require("func/ComboExplorer/core/Calibration")
 local Fsm         = require("func/ComboExplorer/core/CalibrationFsm")
 
-local GameAdapter = require("func/ComboExplorer/runtime/GameAdapter")
+-- Declared above the adapter helper so that helper can see it: a run carries
+-- its own adapter when a test gave it one.
+local run = nil          -- the live run, or nil
+
+-- Resolved on first use, not at load.
+--
+-- GameAdapter calls sdk.find_type_definition at file scope, so requiring it
+-- here made this whole file unloadable on the machine it is written on - which
+-- is where its decisions have to be tested. It was the only runtime module left
+-- doing that; StageControl, Injector, Sweep and CatalogLocator all take the
+-- adapter as an argument and fall back lazily.
+--
+-- The decisions that were untestable because of it are the ones added when the
+-- sweep became unattended: which arrangement a side request writes, that a
+-- RETRY re-writes the same one rather than flipping again, and that finishing
+-- writes the profile by itself.
+local _adapter = nil
+local function adapter()
+    if run and run.adapter then return run.adapter end
+    if _adapter == nil then
+        _adapter = require("func/ComboExplorer/runtime/GameAdapter")
+    end
+    return _adapter
+end
 local JsonIO      = require("func/ComboExplorer/runtime/JsonIO")
 local CatalogLocator = require("func/ComboExplorer/runtime/CatalogLocator")
 
 local M = { name = "ComboExplorer.CalibrationRunner" }
 
-local run = nil          -- the live run, or nil
 local pending_mask = nil   -- decided by the tick, spent by the input callback
 local pending_mirror = nil -- and whether that mask may be flipped for facing
 local hooked = false
@@ -76,7 +98,7 @@ function M.install(is_current)
         if not run then return end
 
         pcall(function()
-            local p1 = GameAdapter.player(0)
+            local p1 = adapter().player(0)
             if not p1 then return end
 
             -- Mirrored only when the STEP says so.
@@ -121,6 +143,7 @@ function M.install_error() return install_error end
 
 -- opts.character : catalog key, for the document identity
 -- opts.game_patch / ac_sha256 / bcm_sha256 : required by Calibration.document
+-- opts.adapter       : substituted by tests. Defaults to GameAdapter.
 -- opts.identity      : the identity the finished profile is written under.
 --                      Held from the start rather than collected at the end,
 --                      because the run now writes itself when it finishes and
@@ -132,10 +155,25 @@ function M.start(reg, opts)
     opts = opts or {}
     if run then return nil, "a calibration is already running" end
 
-    local info = GameAdapter.character(0)
+    -- Taken before `run` exists, because everything below reads through it.
+    local ad = opts.adapter
+    if ad == nil then
+        local ok, mod = pcall(require, "func/ComboExplorer/runtime/GameAdapter")
+        if not ok then return nil, "GameAdapter is unavailable: " .. tostring(mod) end
+        ad = mod
+    end
+    local start_defaults = ad.DEFAULT_START_X or { p1 = -150, p2 = 150 }
+
+    local info = ad.character(0)
     if not info then return nil, "P1 is not resolved yet - start a battle first" end
 
-    local raw, err = M.load_catalog(info)
+    -- opts.catalog_raw is the decoded command_display, for a caller that already
+    -- has one. Only the tests use it: M.load_catalog goes through CatalogLocator
+    -- and a JSON reader, neither of which exists on a machine with no game, and
+    -- without this seam the whole run - the side requests, the auto-write, the
+    -- budgets - could not be driven anywhere it can be checked.
+    local raw, err = opts.catalog_raw, nil
+    if raw == nil then raw, err = M.load_catalog(info) end
     if not raw then return nil, err end
     local cat, problems = Catalog.build(raw)
     if not cat then
@@ -158,9 +196,11 @@ function M.start(reg, opts)
     if not fsm then return nil, ferr end
 
     run = {
+        adapter = ad,
+
         -- The arrangement currently written. Upstream's default, and the one
         -- both of its copies agree on: P1 on the left.
-        start_x = { p1 = GameAdapter.DEFAULT_START_X.p1, p2 = GameAdapter.DEFAULT_START_X.p2 },
+        start_x = { p1 = start_defaults.p1, p2 = start_defaults.p2 },
         side_request_for = nil,
         side_flips = 0,
         side_writes = 0,
@@ -249,7 +289,7 @@ local function serve_side_request(step_id)
         run.side_flips = run.side_flips + 1
     end
 
-    local ok, why = GameAdapter.set_start_positions(run.start_x.p1, run.start_x.p2)
+    local ok, why = adapter().set_start_positions(run.start_x.p1, run.start_x.p2)
     run.side_writes = run.side_writes + 1
     if not ok then
         run.side_error = why
@@ -260,7 +300,7 @@ end
 
 function M.tick()
     if not run then return end
-    local snap = GameAdapter.snapshot(0)
+    local snap = adapter().snapshot(0)
     if not snap then return end
 
     run.ticks = run.ticks + 1
@@ -271,7 +311,7 @@ function M.tick()
         -- The raw field, not an interpretation of it. Which truth value means
         -- "mirrored" is rl_dir_polarity, which is what the sweep is measuring.
         rl_dir = snap.attacker_rl_dir_raw,
-        can_inject = GameAdapter.can_inject(),
+        can_inject = adapter().can_inject(),
     })
 
     pending_mask = cmd.write_mask
