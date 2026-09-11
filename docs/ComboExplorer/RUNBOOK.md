@@ -37,7 +37,7 @@ Step 7-10 がその昇格作業にあたる。
 ```powershell
 git clone https://github.com/haruno-ku/SF6_Tools.git sf6-combo-explorer
 cd sf6-combo-explorer
-git checkout feat/combo-explorer
+# checkout は不要。PR #31 で main にマージ済み（2026-09-11）
 
 # 何がコピーされるか見るだけ（書き込まない）
 .\scripts\install-dev.ps1 -WhatIf
@@ -239,6 +239,20 @@ RSM の `MASKS` だけ LEFT/RIGHT が逆なので注意。
 **やること**: **左右両サイド**で `6+H` / `4+H` を注入し、期待した action_id が出るか。
 合わなければ極性を反転。360 系が特に壊れやすい。
 
+`Calibration.plan` の方向フェーズは **6 ステップ**。LEFT と RIGHT を両サイドで 4回、
+UP と DOWN を 1回ずつ（向きは「上が上か」に関係しないので side を持たない）。
+UP/DOWN のステップは 2026-09-11 に足した（#28）。それまでは押さずに推測のまま
+`verified` と刻まれており、`direction_bits` は**構造的に refuted になれなかった**。
+
+判定は「保持中に action_id がニュートラルから離れ、かつ UP と DOWN が**別の id** を出す」。
+これが証明するのは「そのビットは方向入力であり、2つは別物である」まで。
+**どちらが上かは証明しない** — スナップショットに高さが無い（`GameAdapter` に
+y 座標も空中フラグも無い）ので、しゃがみとジャンプはラベルの無い2つの id でしかない。
+上下の取り違えは Step 9 のスイープが捕まえる（`2 + 弱` がジャンプ系 id で返る）。
+
+片方でも出なければ `direction_bits` は `partial` で止まり、
+`unwitnessed` にどれを押せていないかが残る。**`verified` にはならない。**
+
 ### Step 9 — 入力→action_id スイープ / canonical 確定
 
 > Issue [#9](https://github.com/haruno-ku/SF6_Tools/issues/9)
@@ -311,14 +325,14 @@ lua tools/lua/explore.lua
 | | |
 |---|---|
 | 始動技 | 14 |
-| 理論エッジ | 387（high 88 / medium 133 / low 166） |
-| ルート候補 | 1037（3手まで） |
+| 理論エッジ | 378（high 96 / medium 136 / low 146） |
+| ルート候補 | 971（3手まで — 2手 179 / 3手 792） |
 | 情報不足による除外 | **0件** |
 
-**この1037は「繋がるコンボ」ではない。** 全件 `status: theoretical` /
+**この971は「繋がるコンボ」ではない。** 全件 `status: theoretical` /
 `runtime_verified: false`。全文は `zangief-offline-report.md`。
 
-テスト: **2656 アサーション**（Lua 5.4、SF6 不要）。
+テスト: **2853 アサーション**（Lua 5.4、SF6 不要）。
 
 ### 未実装（実機の結果を見てから書くもの）
 

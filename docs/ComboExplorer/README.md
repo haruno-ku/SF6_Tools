@@ -95,7 +95,7 @@ If that is not already true, set it up and confirm it before going further.
 ```powershell
 git clone https://github.com/haruno-ku/SF6_Tools.git sf6-combo-explorer
 cd sf6-combo-explorer
-git checkout feat/combo-explorer
+# No checkout: PR #31 merged the work into main on 2026-09-11.
 
 # See what would be copied, without writing anything
 .\scripts\install-dev.ps1 -WhatIf
@@ -385,7 +385,7 @@ tools/lua/                           the offline CLIs and their JSON codec - nev
   survey.lua                         31 characters: the frame-data join
   explore.lua                        one character, every candidate
   characters.lua                     reads data/characters.json
-tests/lua/                           unit tests (2656 assertions)
+tests/lua/                           unit tests (2853 assertions)
 docs/ComboExplorer/                  the plan, the work split and the reports
 ```
 
