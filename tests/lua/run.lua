@@ -65,6 +65,7 @@ local SUITES = {
     -- argument. Every decision in it is still a decision.
     "tests.lua.test_cataloglocator",
     "tests.lua.test_config",
+    "tests.lua.test_stagecontrol",
 }
 
 local total_passed, total_failed = 0, 0
