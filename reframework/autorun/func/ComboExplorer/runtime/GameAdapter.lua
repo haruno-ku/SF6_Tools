@@ -410,6 +410,60 @@ function M.pin_resources(attacker_index, pin)
     return true, nil, written
 end
 
+-- Where the two players START, written on the training menu and applied by a
+-- refresh. This is how the suite moves people between rounds, and it is a
+-- different block from write_setup below: ManualPosX and StartLocation live on
+-- `SelectMenu`, while the vital settings live on `ParameterSetting`.
+--
+-- Ported from the two upstream copies, which agree with each other:
+--   TrainingMoveExecution.lua:184-197   set_positions(p1x, p2x)
+--   TrainingComboTrials_v1.0.lua:2978-2992   reset_positions_to_default()
+-- Both use StartLocation = 3 with explicit per-player x, and both default to
+-- P1 at -150 and P2 at +150.
+--
+-- WHAT THIS DELIBERATELY DOES NOT KNOW
+--
+-- Which arrangement produces which rl_dir. That is the polarity the calibration
+-- sweep exists to measure, so a function that claimed to place a character
+-- "on the truthy side" would be answering the question under test. It takes two
+-- numbers and reports whether they were written; deciding what to do with the
+-- result belongs to whoever is watching rl_dir.
+--
+-- The engine does not adopt the write immediately - it is applied by the
+-- refresh, which takes frames - so a caller has to poll for the effect rather
+-- than assume it. CalibrationFsm's WAITING_FOR_SIDE already polls, which is why
+-- this needs no confirmation loop of its own.
+M.DEFAULT_START_X = { p1 = -150, p2 = 150 }
+
+function M.set_start_positions(p1x, p2x)
+    if type(p1x) ~= "number" or type(p2x) ~= "number" then
+        return false, "both start positions have to be numbers"
+    end
+    -- Upstream refuses in a replay and on the training-hub map, and so does
+    -- this: the positions there are not ours to move.
+    if _G.IsInReplay or _G.FlowMapID == 10 then
+        return false, "not in a context where start positions may be written"
+    end
+
+    local wrote = false
+    local ok, err = pcall(function()
+        local tm = sdk.get_managed_singleton("app.training.TrainingManager")
+        if not tm then return end
+        local tData = tm:get_field("_tData")
+        if not tData then return end
+        local sm = tData:get_field("SelectMenu")
+        if not sm or not sm.PlayerDatas then return end
+        sm.StartLocation = 3
+        sm.PlayerDatas[0].ManualPosX = p1x
+        sm.PlayerDatas[1].ManualPosX = p2x
+        tm._IsReqRefresh = true
+        wrote = true
+    end)
+    if not ok then return false, tostring(err) end
+    if not wrote then return false, "the training menu did not resolve" end
+    return true
+end
+
 -- setup : a list of { index = <player>, field = "...", value = ... } written on
 -- the training menu per-player parameter block - the same block
 -- M.vital_settings reads.
