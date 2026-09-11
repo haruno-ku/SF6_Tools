@@ -53,6 +53,7 @@ local Clock       = require("func/ComboExplorer/runtime/Clock")
 local JsonIO      = require("func/ComboExplorer/runtime/JsonIO")
 local CatalogLocator = require("func/ComboExplorer/runtime/CatalogLocator")
 local StageControl = require("func/ComboExplorer/runtime/StageControl")
+local Injector = require("func/ComboExplorer/runtime/Injector")
 
 local VERSION = "0.3.0-diagnostics"
 local MODE_ID = 6
@@ -130,6 +131,13 @@ i18n.register("combo_explorer", {
                     .. "calibration sweep. It measures the numbers the sweep does not produce.",
         stage_start  = "RESET ONCE",
         stage_write  = "WRITE REPORT",
+        hdr_trial    = "TRIAL",
+        trial_help   = "Runs ONE A-into-B attempt and records it. This is the first thing that "
+                    .. "uses the measured button map rather than testing it, so it refuses to "
+                    .. "start until the calibration sweep has settled all three input entries. "
+                    .. "Load the catalog in PROBE D first.",
+        trial_run    = "RUN ONE TRIAL",
+        trial_next   = "NEXT PAIR",
         no_battle    = "Waiting for a battle (no players resolved).",
         anchor_dead  = "FRAME ANCHOR DEAD: app.BattleFlow::UpdateFrameMain not found. "
                     .. "Every timing measurement on this build is invalid - report this.",
@@ -170,6 +178,11 @@ i18n.register("combo_explorer", {
                     .. "因此可以在校准扫描之前安全运行。",
         stage_start  = "重置一次",
         stage_write  = "写入报告",
+        hdr_trial    = "试行",
+        trial_help   = "执行一次 A→B 连段尝试并记录结果。这是第一个真正使用已测按键映射的功能，"
+                    .. "因此在校准扫描确定全部三项输入条目之前会拒绝启动。请先在 PROBE D 中加载目录。",
+        trial_run    = "执行一次试行",
+        trial_next   = "下一组",
         no_battle    = "等待对战开始（尚未获取到角色）。",
         anchor_dead  = "帧锚点失效：未找到 app.BattleFlow::UpdateFrameMain，本版本所有计时均无效。",
         probe_a_help = "请自行对假人打出连段。长度要有变化，并且至少包含一次不会击杀的连段。",
@@ -281,6 +294,11 @@ end)
 
 local stage = { last_status = nil, last_result = nil }
 
+-- Which pair the next trial will use. An index into the probeable rows rather
+-- than a typed action id: the panel has no numeric input widget, and picking
+-- from the catalog means the pair is always one the catalog says is reachable.
+local trial = { pair = 1, delay = 4, last_status = nil, last_result = nil }
+
 -- =========================================================
 -- THE FRAME TICK
 -- =========================================================
@@ -329,6 +347,19 @@ Clock.on_frame(function(frame)
         end
     end
 
+    -- Same reason as the stage reset: it takes its own snapshot, because it
+    -- needs `can_inject` and `refreshing`, and it parks a mask that the shared
+    -- input callback spends on this same frame.
+    if Injector.running() then
+        local cmd = Injector.tick()
+        if cmd and cmd.outcome ~= nil then
+            trial.last_result = Injector.result()
+            trial.last_status = ("trial %s after %d ticks"):format(
+                tostring(cmd.outcome), trial.last_result.ticks)
+            Injector.stop()
+        end
+    end
+
     if probe_c.on then
         probe_c.probe:tick({
             refreshing = GameAdapter.is_refreshing(),
@@ -348,6 +379,7 @@ end)
 -- The error, if any, is kept on the module so the panel can show it: the local
 -- the panel reads is not in scope this far up the file.
 CalRunner.install(current)
+Injector.install(current)
 
 if _G._shared_input_post then
     table.insert(_G._shared_input_post, function(p_id, retval)
@@ -792,6 +824,139 @@ local function draw_stage_reset()
     end
 end
 
+-- The two moves the next trial will use, taken from the loaded catalog rather
+-- than typed: the panel has no numeric input, and a pair chosen from the
+-- catalog is always one the catalog says is reachable.
+local function trial_pair()
+    local cat = probe_d.catalog
+    if not cat then return nil, nil, "load the catalog in PROBE D first" end
+    local rows = Catalog.probeable(cat, {
+        categories = { "normal", "command_normal" },
+        input_methods = { "manual" },
+    })
+    if #rows < 2 then return nil, nil, "this catalog has fewer than two probeable moves" end
+
+    -- Ordered pairs, A before B, skipping A into itself. The index walks them.
+    local n = #rows
+    local i = ((trial.pair - 1) % (n * (n - 1))) + 1
+    local a_i = math.floor((i - 1) / (n - 1)) + 1
+    local b_off = ((i - 1) % (n - 1)) + 1
+    local b_i = (b_off >= a_i) and (b_off + 1) or b_off
+    return rows[a_i], rows[b_i]
+end
+
+-- One A-into-B attempt. The first thing in the project that USES the button map
+-- rather than testing it, which is why it is the first caller of the gate.
+local function draw_trial()
+    imgui.text_colored(T("trial_help"), UIKit.COLORS.Grey)
+
+    local ierr = Injector.install_error()
+    if ierr then imgui.text_colored(ierr, UIKit.COLORS.Red) end
+
+    -- What injection is waiting on, said before the operator presses anything.
+    -- Through can() rather than explain(): explain returns one formatted string
+    -- with embedded newlines, and imgui.text_colored draws it as a single line.
+    local open, blocked = Provenance.can(reg, Provenance.CAPABILITY.INJECTION)
+    if open then
+        imgui.text_colored("injection: available", UIKit.COLORS.Green)
+    else
+        imgui.text_colored("injection is blocked until these are measured:", UIKit.COLORS.Orange)
+        for _, key in ipairs(blocked or {}) do
+            local e = reg.entries[key]
+            imgui.text_colored(("  %s [%s] - measured by: %s"):format(
+                tostring(key), tostring(e and e.status), tostring(e and e.measured_by)),
+                UIKit.COLORS.Orange)
+        end
+    end
+
+    local a, b, why = trial_pair()
+    if why then
+        imgui.text_colored(why, UIKit.COLORS.Yellow)
+    else
+        kv("A", ("%s  (%d)"):format(tostring(a.notation), a.action_id))
+        kv("B", ("%s  (%d)"):format(tostring(b.notation), b.action_id))
+        kv("delay", ("%d ticks"):format(trial.delay))
+    end
+
+    if Injector.running() then
+        if UIKit.styled_button(T("stop") .. "##ce_trial", THEME.stop, UIKit.COLORS.White) then
+            trial.last_result = Injector.result()
+            Injector.stop()
+            trial.last_status = "stopped by the operator"
+        end
+    else
+        if UIKit.styled_button(T("trial_run") .. "##ce_trial", THEME.go, UIKit.COLORS.White) then
+            if not a then
+                trial.last_status = tostring(why)
+            else
+                local route = {
+                    id = ("t-%d-%d"):format(a.action_id, b.action_id),
+                    character = live.p1_char and tostring(live.p1_char.key) or "unknown",
+                    control_scheme = live.p1_control or "modern",
+                    steps = {
+                        { index = 1, action_id = a.action_id,
+                          input_method = a.input_method, notation = a.notation },
+                        { index = 2, action_id = b.action_id,
+                          input_method = b.input_method, notation = b.notation },
+                    },
+                }
+                local ok, err = Injector.start({
+                    provenance = reg,
+                    allow_injection = Config.data.allow_injection,
+                    route = route,
+                    delay = trial.delay,
+                    expected = { [1] = { a.action_id }, [2] = { b.action_id } },
+                    edge_id = ("%d:%s->%d:%s"):format(a.action_id, a.input_method,
+                                                      b.action_id, b.input_method),
+                    attempt = 1,
+                    sink = {
+                        path = "ComboExplorer_data/trials/trials.jsonl",
+                        dirs = { "ComboExplorer_data", "ComboExplorer_data/trials" },
+                    },
+                })
+                trial.last_status = ok and "trial started"
+                    or ("could not start: " .. tostring(err))
+            end
+        end
+        imgui.same_line()
+        if UIKit.styled_button(T("trial_next") .. "##ce_trial_next", THEME.neutral,
+                               UIKit.COLORS.White) then
+            trial.pair = trial.pair + 1
+            trial.last_status = nil
+        end
+    end
+
+    local p = Injector.progress()
+    if p then
+        kv("tick", ("%d  program %s/%s  [%s]"):format(
+            p.ticks, tostring(p.program_tick), tostring(p.program_ticks), tostring(p.state)),
+           p.outcome and UIKit.COLORS.Green or UIKit.COLORS.Cyan)
+        if p.stage_state then kv("stage", tostring(p.stage_state)) end
+        kv("masks written", tostring(p.writes))
+        if p.reason then imgui.text_colored("  " .. p.reason, UIKit.COLORS.Yellow) end
+        if p.write_error then imgui.text_colored("  " .. p.write_error, UIKit.COLORS.Red) end
+        if p.write_errors > 0 then
+            kv("FAILED WRITES", tostring(p.write_errors), UIKit.COLORS.Red)
+        end
+        if p.unreadable > 0 then kv("unreadable ticks", tostring(p.unreadable)) end
+    else
+        imgui.text_colored("not running", UIKit.COLORS.DarkGrey)
+    end
+
+    local res = trial.last_result
+    if res then
+        kv("outcome", tostring(res.outcome),
+           res.outcome == "judged" and UIKit.COLORS.Green or UIKit.COLORS.Orange)
+        kv("masks written", tostring(res.writes))
+        local v = res.trial and res.trial.verdict
+        if v then kv("verdict", tostring(type(v) == "table" and v.verdict or v)) end
+    end
+
+    if trial.last_status then
+        imgui.text_colored(trial.last_status, UIKit.COLORS.Cyan)
+    end
+end
+
 local function draw_probe_d()
     imgui.text_colored(T("probe_d_help"), UIKit.COLORS.Grey)
 
@@ -890,6 +1055,7 @@ re.on_draw_ui(function()
     if UIKit.styled_header(T("hdr_probe_d"), THEME.hdr) then draw_probe_d() end
     if UIKit.styled_header(T("hdr_stage"), THEME.hdr) then draw_stage_reset() end
     if UIKit.styled_header(T("hdr_calib"), THEME.hdr) then draw_calibration() end
+    if UIKit.styled_header(T("hdr_trial"), THEME.hdr) then draw_trial() end
 
     imgui.tree_pop()
 end)
