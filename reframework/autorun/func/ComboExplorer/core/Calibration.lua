@@ -382,6 +382,45 @@ end
 -- group the notation names - applied to a notation with two names in it.
 --
 -- Returned keyed by the pair, sorted so "AUTO + L" and "L + AUTO" are one key.
+-- Which buttons this CATALOG needs, read off the rows.
+--
+-- WHY NOT THE BUTTON MAP
+--
+-- Provenance.provisional returns the entry's CURRENT value, and once a partial
+-- calibration has been applied that value is the measured map - which no longer
+-- contains the button that was missing. Measured on build 24176760: the paired
+-- phase was written, deployed, and emitted ZERO steps, because AUTO had already
+-- been dropped from the map by the run that failed to witness it. The probe for
+-- a missing button cannot be planned from a list the button is missing from.
+--
+-- The same trap is why the unwitnessed report is built from this too: after one
+-- partial run, a map with no AUTO in it has nothing to report as absent, and
+-- the entry quietly stops saying what it cannot press.
+local function needed_buttons(catalog)
+    local names = {}
+    for _, row in ipairs(Catalog.probeable(catalog, { input_methods = { "manual", "simple" } })) do
+        local parsed = InputMask.parse(row.notation)
+        for _, b in ipairs(parsed and parsed.buttons or {}) do names[b] = true end
+    end
+    return names
+end
+
+-- Every single bit a button could be, independent of any map.
+--
+-- The single-bit phase sweeps the bits the guess names, which is right for it:
+-- it is checking a guess. This phase is looking for a bit no guess currently
+-- holds - on this machine AUTO's 0x200 had been dropped from the map entirely -
+-- so it has to consider the whole button field.
+local function candidate_bits()
+    local out = {}
+    local bit = 1
+    while bit <= 0x8000 do
+        if (InputMask.BTN_BITS & bit) ~= 0 then out[#out + 1] = bit end
+        bit = bit << 1
+    end
+    return out
+end
+
 local function paired_button_groups(catalog)
     local by_pair = {}
     for _, g in pairs(catalog.groups or {}) do
@@ -491,12 +530,12 @@ function M.plan(session)
     do
         local singles = single_button_groups(session.catalog)
         local provisional = Provenance.provisional(session.provenance, "modern_button_bits") or {}
-        for _, name in ipairs(sorted_keys(provisional)) do
+        for _, name in ipairs(sorted_keys(needed_buttons(session.catalog))) do
             if not singles[name] then
                 local pair, partner = witnessing_pair(session.catalog, name, singles)
                 local partner_bit = pair and provisional[partner] or nil
                 if pair and type(partner_bit) == "number" then
-                    for _, bit in ipairs(bits) do
+                    for _, bit in ipairs(candidate_bits()) do
                         -- Pressing the partner's own bit twice is the partner
                         -- alone, which the phase above already answered.
                         if bit ~= partner_bit then
@@ -850,9 +889,10 @@ local function conclude_button_bits(session, steps)
         end
     end
 
-    local provisional = Provenance.provisional(reg, "modern_button_bits") or {}
+    -- From the catalog, not from the map. A map that has already lost AUTO has
+    -- nothing to report as absent - see needed_buttons.
     local unwitnessed = {}
-    for _, name in ipairs(sorted_keys(provisional)) do
+    for _, name in ipairs(sorted_keys(needed_buttons(session.catalog))) do
         if derived[name] == nil then
             unwitnessed[#unwitnessed + 1] = {
                 button = name,

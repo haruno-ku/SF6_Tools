@@ -935,17 +935,21 @@ t.group("the buttons a single bit can never witness")
 -- candidate bit with the partner's bit and ask the same question of the pair's
 -- group.
 
--- The action id the fixture's "AUTO + 弱" group carries, found the way the
--- module finds it rather than typed in - a hard-coded id here would pass with
--- the catalog lookup removed.
-local function pair_action_id(cat, a, b)
+-- An action id from a group the MODULE accepted for this step.
+--
+-- Looked up through the step's own `pair_notations` rather than by re-deciding
+-- which groups count. The first version of this helper re-implemented the
+-- filter and got it subtly wrong: it returned an id from a group the module
+-- excludes, so the test held the right bit, observed an id the catalog really
+-- does carry, and the module correctly refused to recognise it. The failure
+-- looked like a bug in the module.
+local function pair_action_id(cat, step)
+    local want = {}
+    for _, n in ipairs(step.pair_notations or {}) do want[n] = true end
     for _, g in pairs(cat.groups or {}) do
-        local parsed = InputMask.parse(g.notation)
-        if parsed and parsed.dirs == "" and #parsed.buttons == 2 then
-            local x, y = parsed.buttons[1], parsed.buttons[2]
-            if (x == a and y == b) or (x == b and y == a) then
-                return (g.action_ids or {})[1], g.notation
-            end
+        if want[g.notation] then
+            local id = (g.action_ids or {})[1]
+            if id then return id end
         end
     end
 end
@@ -974,11 +978,26 @@ do
     -- Every bit but the partner's, because WHICH bit is AUTO is the question.
     -- Sweeping only the guess would assume the answer, which is the same
     -- mistake the single-bit phase is written to avoid.
-    local n_bits = 0
-    for _, st in ipairs(steps) do if st.phase == "button_bits" then n_bits = n_bits + 1 end end
-    local auto_steps = 0
-    for _, st in ipairs(paired) do if st.button == "AUTO" then auto_steps = auto_steps + 1 end end
-    t.eq(auto_steps, n_bits - 1, "one step per bit, minus the partner's own")
+    --
+    -- Counted against the whole button field, NOT against the provisional map's
+    -- bits. Measured on build 24176760: the map had already lost AUTO - and
+    -- with it AUTO's 0x200 - so a phase that swept the map's bits could never
+    -- press the bit it was looking for. The plan emitted zero steps on the
+    -- machine while this test was green.
+    local n_field = 0
+    do
+        local bit = 1
+        while bit <= 0x8000 do
+            if (InputMask.BTN_BITS & bit) ~= 0 then n_field = n_field + 1 end
+            bit = bit << 1
+        end
+    end
+    local auto_steps, partner_bit = 0, nil
+    for _, st in ipairs(paired) do
+        if st.button == "AUTO" then auto_steps = auto_steps + 1; partner_bit = st.partner_bit end
+    end
+    t.eq(auto_steps, n_field - 1, "one step per button bit in the field, minus the partner's own")
+    t.ok(partner_bit ~= nil, "and the partner's bit is named on the step")
 end
 
 -- The happy path: the bit the guess named produces the pair, and AUTO settles.
@@ -1000,7 +1019,7 @@ do
             -- single-button notation, and asserting "AUTO + 弱" here passed only
             -- because of which letter sorts first - a test that would go green
             -- against a planner pairing with something else entirely.
-            local pair_id = pair_action_id(s.catalog, st.button, st.partner)
+            local pair_id = pair_action_id(s.catalog, st)
             -- Only the bit the guess calls AUTO produces the pair. Every other
             -- bit held with the partner produces nothing this catalog names.
             local produced = (st.bit == provisional.AUTO) and pair_id or 1
@@ -1043,7 +1062,7 @@ do
             Calibration.observe(s, st.id, { action_id = (name and witnessable[name]) or 1 })
         elseif st.phase == "paired_button" then
             -- M's bit is the one that "produces the pair" here. It must not win.
-            local pair_id = pair_action_id(s.catalog, st.button, st.partner)
+            local pair_id = pair_action_id(s.catalog, st)
             local produced = (st.bit == provisional.M) and pair_id or 1
             Calibration.observe(s, st.id, { action_id = produced })
         end
