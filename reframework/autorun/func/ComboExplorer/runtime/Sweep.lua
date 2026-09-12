@@ -43,6 +43,7 @@
 local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
 local Canonical       = require("func/ComboExplorer/core/Canonical")
 local Timing          = require("func/ComboExplorer/core/Timing")
+local Catalog         = require("func/ComboExplorer/core/Catalog")
 local Provenance      = require("func/ComboExplorer/core/Provenance")
 local JsonIO          = require("func/ComboExplorer/runtime/JsonIO")
 
@@ -208,6 +209,8 @@ function M.start(opts)
         -- one, because a sweep whose trials ran under different setups is not
         -- one dataset.
         stage_cfg = opts.stage_cfg,
+        -- For Catalog.group_ids as well as the identity check.
+        catalog = opts.catalog,
         -- For Timing. The buffer is unverified, and the sweep is allowed to use
         -- the guess for the same reason the calibration sweep is: it is testing
         -- the window, not trusting it.
@@ -384,7 +387,13 @@ function M.tick()
         route = route_for(p),
         delay = delay,
         delays = run.delays,
-        expected = { [1] = { p.a_id }, [2] = { p.b_id } },
+        -- The whole notation group, not the one id the worklist names. See
+        -- Catalog.group_ids: 105 of this sweep's 216 rows came back "saw action
+        -- id(s) N instead" on the OTHER member of the same group.
+        expected = {
+            [1] = Catalog.group_ids(run.catalog, p.a_id),
+            [2] = Catalog.group_ids(run.catalog, p.b_id),
+        },
         edge_id = key,
         attempt = run.attempts[key],
         sink = run.sink,

@@ -601,4 +601,43 @@ function M.apply_observations(catalog, observations)
     return applied, conflicts
 end
 
+-- Every action id that shares a notation with this one.
+--
+-- WHY A TRIAL EXPECTS A GROUP AND NOT AN ID
+--
+-- A notation names a move as the player sees it, and this catalog gives several
+-- ids the same notation - thirteen such groups on Zangief, which is what Probe
+-- D's "ambiguous notation groups" counts. Which member comes out depends on
+-- context: measured on build 24176760, "2 + SP" is 900 from a standing
+-- character and 903 mid-combo.
+--
+-- A trial that expects one id therefore records a combo that connected as
+-- "move B never appeared; saw action id(s) 903 instead". Measured twice: 19 of
+-- 30 rows in the #48 route run, and then 105 of 216 in the sweep - in both
+-- cases the majority verdict of the whole run, and in both cases wrong.
+--
+-- action_id_canonical resolves a group to one id and is not wrong; it measured
+-- what the button produces from standing. Which member comes out mid-combo is a
+-- different question nobody has measured, so the group is what a trial accepts
+-- and the narrower question stays open.
+--
+-- An id the catalog does not have comes back as itself: the caller asked about
+-- something, and answering with an empty list would turn "unknown" into
+-- "expects nothing", which matches everything.
+function M.group_ids(catalog, action_id)
+    if type(catalog) ~= "table" or type(action_id) ~= "number" then
+        return { action_id }
+    end
+    for _, g in pairs(catalog.groups or {}) do
+        for _, id in ipairs(g.action_ids or {}) do
+            if id == action_id then
+                local out = {}
+                for _, other in ipairs(g.action_ids) do out[#out + 1] = other end
+                return out
+            end
+        end
+    end
+    return { action_id }
+end
+
 return M

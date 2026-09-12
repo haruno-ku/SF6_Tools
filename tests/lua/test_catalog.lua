@@ -441,4 +441,47 @@ t.is_nil(Catalog.build({}), "a table with no _meta is refused")
 local _, why = Catalog.build({})
 t.ok(why[1].reason:find("_meta", 1, true) ~= nil, "and the reason says what was missing")
 
+
+-- =========================================================
+t.group("the ids that share a notation")
+
+-- Measured twice on build 24176760, and in both runs this was the MAJORITY
+-- verdict and in both runs it was wrong: 19 of 30 rows in the #48 route run
+-- and 105 of 216 in the sweep came back "move B never appeared; saw action
+-- id(s) N instead" - where N was another id with the same notation, on a combo
+-- that had connected.
+
+do
+    local cat = (Catalog.build(RAW))
+    -- Found from the catalog rather than typed: a hard-coded pair would pass
+    -- with the lookup removed.
+    local multi_id, multi_n
+    for _, g in pairs(cat.groups or {}) do
+        if #(g.action_ids or {}) > 1 then multi_id = g.action_ids[1]; multi_n = #g.action_ids end
+        if multi_id then break end
+    end
+    t.ok(multi_id ~= nil, "this catalog has a notation with more than one id")
+
+    local ids = Catalog.group_ids(cat, multi_id)
+    t.eq(#ids, multi_n, "asking about one of them returns all of them")
+    local seen = {}
+    for _, id in ipairs(ids) do seen[id] = true end
+    t.ok(seen[multi_id], "including the one asked about")
+end
+
+do
+    local cat = (Catalog.build(RAW))
+    -- An id the catalog does not have comes back as itself. An empty list would
+    -- turn "unknown" into "expects nothing", and a trial that expects nothing
+    -- matches everything.
+    local ids = Catalog.group_ids(cat, 999999)
+    t.eq(#ids, 1, "an unknown id is one id")
+    t.eq(ids[1], 999999, "itself")
+end
+
+do
+    t.eq(Catalog.group_ids(nil, 601)[1], 601, "no catalog, the id asked about")
+    t.eq(#Catalog.group_ids(nil, 601), 1, "and only that")
+end
+
 return t.finish()

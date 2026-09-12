@@ -35,6 +35,7 @@
 
 local Route = require("func/ComboExplorer/core/Route")
 local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
+local Catalog = require("func/ComboExplorer/core/Catalog")
 
 local M = { name = "ComboExplorer.RouteRun" }
 
@@ -147,15 +148,11 @@ M.key_for = key_for
 local function expected_for(route, catalog)
     local out = {}
     for i, s in ipairs(route.steps) do
-        local ids = { s.action_id }
-        if catalog then
-            local g = Route.find(catalog, s.action_id)
-            if g and type(g.action_ids) == "table" and #g.action_ids > 0 then
-                ids = {}
-                for _, id in ipairs(g.action_ids) do ids[#ids + 1] = id end
-            end
-        end
-        out[i] = ids
+        -- One implementation, shared with Sweep. Two copies of "which ids count
+        -- as this notation" is two chances to answer it differently, and the
+        -- answer is the difference between a combo that connected and a row
+        -- that says it did not.
+        out[i] = Catalog.group_ids(catalog, s.action_id)
     end
     return out
 end
