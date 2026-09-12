@@ -41,6 +41,8 @@
 -- rather than as done. This calls claim() and skips what comes back refused.
 
 local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
+local Canonical       = require("func/ComboExplorer/core/Canonical")
+local Provenance      = require("func/ComboExplorer/core/Provenance")
 local JsonIO          = require("func/ComboExplorer/runtime/JsonIO")
 
 local M = { name = "ComboExplorer.Sweep" }
@@ -169,9 +171,39 @@ function M.start(opts)
             .. "the sweep would report itself finished having pressed nothing"
     end
 
+    -- The worklist names action ids the CATALOG chose within a notation group;
+    -- the register knows which of them the button actually produces on this
+    -- build. Applied here, once, before the first trial - see
+    -- core/Canonical.lua for why it is not applied when the worklist is
+    -- generated, and for the 148 pairs that could not have succeeded without
+    -- it.
+    --
+    -- Failure is not fatal on its own: an operator may be sweeping before the
+    -- calibration has run, and a sweep against the shipped ids is still a
+    -- sweep. What must not happen is it being silent, so the reason rides on
+    -- the run and the panel prints it.
+    local canonical, cwhy = nil, nil
+    if opts.provenance then
+        canonical, cwhy = Provenance.value(opts.provenance, "action_id_canonical")
+    else
+        cwhy = "no provenance register was given"
+    end
+
+    local creport = nil
+    if canonical then
+        local folded, rep = Canonical.apply(worklist, canonical)
+        if folded then
+            worklist, creport = folded, rep
+        else
+            cwhy = tostring(rep)
+        end
+    end
+
     run = {
         injector = opts.injector or default_injector(),
         worklist = worklist,
+        canonical_report = creport,
+        canonical_why = (creport == nil) and tostring(cwhy or "unavailable") or nil,
         collector = opts.collector,
         provenance = opts.provenance,
         delay = opts.delay,
@@ -369,6 +401,12 @@ function M.progress()
         stopped_because = run.stopped_because,
         current = run.current_key,
         last_skip = run.last_skip,
+        -- What the register did to this list. Shown while it runs, because
+        -- "230 / 230" against a 378-pair file needs its reason next to it or it
+        -- reads as a truncated worklist.
+        canonical = run.canonical_report
+            and Canonical.summary(run.canonical_report) or nil,
+        canonical_why = run.canonical_why,
     }
 end
 

@@ -1196,6 +1196,16 @@ local function draw_sweep()
     if p then
         kv("pair", ("%d / %d"):format(p.index, p.total),
            p.done and UIKit.COLORS.Green or UIKit.COLORS.Cyan)
+        -- Why the total is smaller than the file's. Without this line a
+        -- canonicalised list reads as a truncated one.
+        if p.canonical then
+            imgui.text_colored("  " .. p.canonical, UIKit.COLORS.Cyan)
+        elseif p.canonical_why then
+            imgui.text_colored("  running against the catalog's ids - the measured "
+                .. "one-id-per-notation map is not available (" .. p.canonical_why
+                .. "), so a pair may wait for an id this build's button does not "
+                .. "produce", UIKit.COLORS.Orange)
+        end
         kv("finished", tostring(p.finished))
         kv("skipped (already answered)", tostring(p.skipped))
         if p.requeued > 0 then kv("waiting for another go", tostring(p.requeued)) end

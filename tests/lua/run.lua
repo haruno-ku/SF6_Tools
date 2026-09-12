@@ -60,6 +60,7 @@ local SUITES = {
     "tests.lua.test_probec",
     "tests.lua.test_catalogaudit",
     "tests.lua.test_calibration",
+    "tests.lua.test_canonical",
     "tests.lua.test_calibrationfsm",
     -- runtime/, and the first of them. The header above says the pure modules
     -- are what is testable here; CatalogLocator sits in runtime/ because it
