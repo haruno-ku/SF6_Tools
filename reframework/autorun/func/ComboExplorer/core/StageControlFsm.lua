@@ -507,10 +507,38 @@ function Fsm:tick(snap)
     return command(self, self.state)
 end
 
+-- WHY THE POSITIONS ARE ASKED FOR BEFORE THE REFRESH, NOT WRITTEN AFTER IT
+--
+-- CORRECT writes pos.x directly and polls until it sticks. On build 24176760 it
+-- never stuck: 10 writes, still 603.7500 units out, every trial, and the
+-- fighters sat at 558.750 / 68.750 afterwards - the same two numbers every
+-- time, with P1 on the RIGHT.
+--
+-- Those two numbers are the TRAINING MENU's start positions, left there by the
+-- calibration sweep's side swap. A refresh applies them, so every reset put the
+-- fighters back where the menu said and the direct writes were overwritten
+-- before the next tick could read them. The mechanism was never broken -
+-- SF6_Teleport moves the same objects through the same POS_SETx and reported
+-- APPLIED: 184.00000 while this was failing. It was fighting the reset.
+--
+-- So the reset is TOLD instead. set_start_positions is the entry the suite
+-- already had for this, ported from the two upstream copies that agree with
+-- each other, and a refresh is what applies it - which is the refresh this tick
+-- is about to raise anyway.
+--
+-- CORRECT still runs and still refuses. It is no longer the mechanism, it is
+-- the check: if the menu write did not take, the positions are wrong and the
+-- trial must not start on a stage nobody placed.
 function Fsm:_request()
     enter(self, M.STATE.WAIT_REFRESH)
+    local target = self.cfg.target_positions
     return command(self, M.STATE.REQUEST, {
         write_setup = self.cfg.setup,
+        -- Absent, not false, when positions are uncontrolled: this tick is not
+        -- asking for that write rather than asking for it with no value.
+        set_start_positions = (target ~= false) and {
+            attacker = target.attacker, victim = target.victim,
+        } or nil,
         request_refresh = true,
     })
 end

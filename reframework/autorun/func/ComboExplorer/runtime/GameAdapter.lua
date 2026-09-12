@@ -501,10 +501,16 @@ end
 -- this needs no confirmation loop of its own.
 M.DEFAULT_START_X = { p1 = -150, p2 = 150 }
 
-function M.set_start_positions(p1x, p2x)
+-- opts.raise_refresh : false to write the menu and NOT raise _IsReqRefresh.
+-- The calibration sweep has no separate refresh request, so raising it here is
+-- the whole point for that caller and stays the default. StageControl raises
+-- its own on the same tick and needs the readback to see a flag that was low
+-- before it wrote, or every trial carries a coalesced-refresh caveat (#40).
+function M.set_start_positions(p1x, p2x, opts)
     if type(p1x) ~= "number" or type(p2x) ~= "number" then
         return false, "both start positions have to be numbers"
     end
+    local raise = not (type(opts) == "table" and opts.raise_refresh == false)
     -- Upstream refuses in a replay and on the training-hub map, and so does
     -- this: the positions there are not ours to move.
     if _G.IsInReplay or _G.FlowMapID == 10 then
@@ -522,7 +528,7 @@ function M.set_start_positions(p1x, p2x)
         sm.StartLocation = 3
         sm.PlayerDatas[0].ManualPosX = p1x
         sm.PlayerDatas[1].ManualPosX = p2x
-        tm._IsReqRefresh = true
+        if raise then tm._IsReqRefresh = true end
         wrote = true
     end)
     if not ok then return false, tostring(err) end

@@ -337,6 +337,35 @@ local stage = { last_status = nil, last_result = nil }
 local trial = { pair = 1, delay = 4, last_status = nil, last_result = nil }
 local sweep = { last_status = nil, last_result = nil }
 
+-- WHERE THE FIGHTERS STAND FOR A TRIAL  (measured 2026-09-12, build 24176760)
+--
+-- StageControl ships target_positions = false, which means "wherever the reset
+-- left them". That is -150 / +150, a separation of 300, and at 300 nothing
+-- Zangief has reaches. Measured on hardware: the first canonicalised sweep
+-- stopped saying "move A never came out" and started saying "move A came out
+-- but never hit" - 29 rows of a light attack whiffing into open space.
+--
+-- The two numbers this is built from were read off the panel, not guessed:
+--
+--   reset leaves them at   pos -150 / 150   dist 300
+--   walked into contact    pos 392.4 / 478.4  dist 86
+--
+-- 86 is where the pushboxes stop them, so it is the smallest separation the
+-- game will hold. 90 is just outside that - close enough that a light attack
+-- connects, far enough that the correction can converge instead of fighting
+-- the pushbox for its ten retries.
+--
+-- Symmetric about 0 because the reset is, so a trial starts midscreen and the
+-- screen_position in every row's conditions block stays honest.
+--
+-- This is a SETUP, not a measurement of the game, and it travels as one:
+-- Injector.conditions_for turns it into the conditions block on every row, and
+-- that block scopes the resume - a pair answered at 300 apart has not been
+-- answered at 90 apart, and must not be skipped as done.
+local STAGE_CFG = {
+    target_positions = { attacker = -45, victim = 45 },
+}
+
 -- =========================================================
 -- THE FRAME TICK
 -- =========================================================
@@ -1048,6 +1077,7 @@ local function draw_trial()
                                                       b.action_id, b.input_method),
                     attempt = 1,
                     frame = Clock.frame,
+                    stage_cfg = STAGE_CFG,
                     sink = {
                         path = "ComboExplorer_data/trials/trials.jsonl",
                         dirs = { "ComboExplorer_data", "ComboExplorer_data/trials" },
@@ -1087,6 +1117,22 @@ local function draw_trial()
         kv("outcome", tostring(res.outcome),
            res.outcome == "judged" and UIKit.COLORS.Green or UIKit.COLORS.Orange)
         kv("masks written", tostring(res.writes))
+        -- Why it ended. The outcome alone is a category - "reset_failed" is
+        -- true of a refresh that never landed, a correction that would not
+        -- converge and a settle that timed out, and those send an operator to
+        -- three different places. Measured 2026-09-12: a run of reset_failed
+        -- trials was unreadable from this panel until this line existed.
+        local tr = res.trial
+        if tr and tr.reason then
+            imgui.text_colored("  " .. tostring(tr.reason), UIKit.COLORS.Yellow)
+        end
+        if tr and tr.stage and tr.stage.reason then
+            imgui.text_colored("  stage: " .. tostring(tr.stage.reason), UIKit.COLORS.Orange)
+        end
+        if tr and tr.stage and tr.stage.position_error then
+            kv("position error", ("%.4f"):format(tr.stage.position_error),
+               UIKit.COLORS.Orange)
+        end
         local v = res.trial and res.trial.verdict
         if v then kv("verdict", tostring(type(v) == "table" and v.verdict or v)) end
     end
@@ -1168,7 +1214,7 @@ local function draw_sweep()
                         -- Injector.conditions_for is the same call start() makes,
                         -- so the block scoping the resume and the block on every
                         -- row cannot describe different setups.
-                        conditions = Injector.conditions_for(nil),
+                        conditions = Injector.conditions_for(STAGE_CFG),
                     },
                     resume = prior,
                 })
@@ -1182,6 +1228,7 @@ local function draw_sweep()
                         provenance = reg,
                         allow_injection = Config.data.allow_injection,
                         delay = trial.delay,
+                        stage_cfg = STAGE_CFG,
                         sink = { path = log_path,
                                  dirs = { "ComboExplorer_data", "ComboExplorer_data/trials" } },
                     })

@@ -185,6 +185,35 @@ function M.perform(cmd, adapter, attacker_index)
         note("write_setup", ok, reason)
     end
 
+    -- Before the refresh, because the refresh is what APPLIES it. Writing
+    -- pos.x after the reset loses to the menu's own start positions - measured
+    -- on build 24176760 as ten writes that moved nothing while the fighters sat
+    -- at the menu's 558.750 / 68.750. See StageControlFsm:_request.
+    if type(cmd.set_start_positions) == "table" then
+        local t = cmd.set_start_positions
+        -- attacker/victim -> p1/p2. The machine speaks in roles because it does
+        -- not know which index is playing; this file does.
+        local p1 = (attacker_index == 0) and t.attacker or t.victim
+        local p2 = (attacker_index == 0) and t.victim or t.attacker
+        -- raise_refresh = false: set_start_positions raises _IsReqRefresh
+        -- itself, for the calibration sweep which has no separate request. Here
+        -- the next write IS that request, and letting this one raise it first
+        -- would make the readback report our own flag as somebody else's and
+        -- attach a coalesced-refresh caveat to every trial.
+        -- An adapter that predates this command is a real case - the Injector
+        -- can be handed a hand-rolled one - and it has to be a recorded write
+        -- failure rather than a crash inside a hook, where the error is
+        -- swallowed and the trial just stops.
+        local ok, reason
+        if type(adapter.set_start_positions) == "function" then
+            ok, reason = adapter.set_start_positions(p1, p2, { raise_refresh = false })
+        else
+            ok, reason = false, "this adapter cannot write the training menu's "
+                .. "start positions, so the reset cannot place the fighters"
+        end
+        note("set_start_positions", ok, reason)
+    end
+
     if cmd.request_refresh == true then
         local ok, reason, ack = adapter.request_refresh()
         note("request_refresh", ok, reason)

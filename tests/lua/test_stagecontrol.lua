@@ -20,7 +20,7 @@ local Fsm = require("func/ComboExplorer/core/StageControlFsm")
 -- difference between "attempted" and "landed" is expressible.
 local function adapter(opts)
     opts = opts or {}
-    local log = { calls = {}, positions = {}, pins = {}, setups = {} }
+    local log = { calls = {}, positions = {}, pins = {}, setups = {}, starts = {} }
     local function record(name)
         log.calls[name] = (log.calls[name] or 0) + 1
     end
@@ -37,6 +37,11 @@ local function adapter(opts)
             -- to have seen; absent means an adapter that reports none, which
             -- is the pre-#40 behaviour and has to go on working.
             return ok, reason, opts.ack
+        end,
+        set_start_positions = function(p1x, p2x, o)
+            record("set_start_positions")
+            log.starts[#log.starts + 1] = { p1 = p1x, p2 = p2x, opts = o }
+            return answer("set_start_positions")
         end,
         set_position = function(index, x)
             record("set_position")
@@ -458,6 +463,62 @@ do
     t.is_nil(log.calls.set_position, "so no position is written")
     t.is_nil(log.calls.pin_resources, "and nothing is pinned")
     SC.stop()
+end
+
+
+-- --- the reset places the fighters ------------------------------------------
+
+t.group("the positions are asked for BEFORE the refresh, not written after it")
+
+-- Measured on build 24176760: CORRECT's direct pos.x writes never stuck - ten
+-- writes, still 603.7500 units out, every trial - because a refresh applies the
+-- TRAINING MENU's start positions and the fighters went back to the 558.750 /
+-- 68.750 the calibration sweep's side swap had left there. The write mechanism
+-- was fine; it was losing to the reset. So the reset is told instead.
+
+do
+    local a, log = adapter()
+    local did = SC.perform({ state = "request",
+                             set_start_positions = { attacker = -45, victim = 45 },
+                             request_refresh = true }, a, 0)
+    t.eq(#log.starts, 1, "the menu was written once")
+    t.eq(log.starts[1].p1, -45, "P1 takes the attacker's x when P1 is the attacker")
+    t.eq(log.starts[1].p2, 45, "and P2 the victim's")
+    t.eq(log.starts[1].opts.raise_refresh, false,
+         "without raising the flag - the request below is that raise, and a "
+         .. "flag already high would read back as somebody else's refresh")
+    t.eq(did[1], "set_start_positions", "and it happens BEFORE the request")
+    t.eq(did[2], "request_refresh", "which is the write that applies it")
+end
+
+do
+    -- Roles, not indices. The machine does not know which side is playing.
+    local a, log = adapter()
+    SC.perform({ state = "request",
+                 set_start_positions = { attacker = -45, victim = 45 } }, a, 1)
+    t.eq(log.starts[1].p1, 45, "with P2 attacking, P1 takes the victim's x")
+    t.eq(log.starts[1].p2, -45, "and P2 the attacker's")
+end
+
+do
+    -- Absent is not a write of nil.
+    local a, log = adapter()
+    SC.perform({ state = "request", request_refresh = true }, a, 0)
+    t.eq(#log.starts, 0, "a command that does not name it writes nothing")
+    t.is_nil(log.calls.set_start_positions, "and the adapter is not called at all")
+end
+
+do
+    -- An adapter from before this command must fail the write, not throw
+    -- inside a hook where the error is swallowed and the trial simply stops.
+    local a = adapter()
+    a.set_start_positions = nil
+    local did, failed = SC.perform({ state = "request",
+                                     set_start_positions = { attacker = -45, victim = 45 } }, a, 0)
+    t.eq(did[1], "set_start_positions", "it is still reported as attempted")
+    t.eq(#failed, 1, "and as failed")
+    t.ok(tostring(failed[1].reason):find("start positions") ~= nil,
+         "naming what could not be written: " .. tostring(failed[1].reason))
 end
 
 return t.finish()

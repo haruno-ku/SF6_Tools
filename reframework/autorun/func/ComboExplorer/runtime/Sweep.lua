@@ -202,6 +202,11 @@ function M.start(opts)
     run = {
         injector = opts.injector or default_injector(),
         worklist = worklist,
+        -- Passed straight through to every Injector.start. Sweep owns no
+        -- judgement about the stage; it only has to hand every trial the same
+        -- one, because a sweep whose trials ran under different setups is not
+        -- one dataset.
+        stage_cfg = opts.stage_cfg,
         canonical_report = creport,
         canonical_why = (creport == nil) and tostring(cwhy or "unavailable") or nil,
         collector = opts.collector,
@@ -319,6 +324,12 @@ function M.tick()
         edge_id = key,
         attempt = run.attempts[key],
         sink = run.sink,
+        -- The same override every trial in this sweep runs under. It also
+        -- scopes the resume, through Injector.conditions_for: a pair answered
+        -- with the fighters 300 apart has not been answered with them in
+        -- range, and skipping it as done would be the sweep believing a
+        -- whiffed trial.
+        stage_cfg = run.stage_cfg,
     })
 
     if not ok then
