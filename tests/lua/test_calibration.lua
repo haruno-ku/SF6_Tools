@@ -1088,6 +1088,156 @@ do
     t.eq(n, 0, "a catalog with no two-button notation is not swept for one")
 end
 
+
+-- =========================================================
+t.group("bits read off the operator's pad")
+
+-- Measured on build 24176760, in pl_input_new, by the operator pressing:
+--
+--   0x0200  one button   -> action 1     (the idle id: nothing came out)
+--   0x0100  one button   -> action 637
+--   0x0300  two buttons  -> action 660   notation "AUTO + 强"
+--
+-- The sweep could see none of it. 0x200 alone produces the idle id, which
+-- conclude_button_bits classifies as "produced no action", so a button that
+-- does nothing on its own is invisible to it - and the assist button is exactly
+-- that. 660's notation names two buttons, so there was no single-button group
+-- to match even when it did come out.
+
+local function pad_row(mask, action_id, over)
+    local bits, b = {}, 1
+    while b <= 0x8000 do
+        if (mask & b) ~= 0 then bits[#bits + 1] = b end
+        b = b << 1
+    end
+    -- from_idle defaults TRUE: these rows stand for presses made from a
+    -- standing character. The contaminated case is asserted below by passing
+    -- it explicitly, because that is the one that must not derive anything.
+    local r = { mask = mask, bits = bits, single_bit = (#bits == 1),
+                settled = true, presses = 1, ticks = 10,
+                top_action_id = action_id, first_non_idle = action_id,
+                action_id = action_id, from_idle = true }
+    for k, v in pairs(over or {}) do r[k] = v end
+    return r
+end
+
+-- An action id whose group names exactly the two buttons asked for, taken from
+-- the fixture rather than typed.
+local function two_button_action(cat, want_a, want_b)
+    for _, g in pairs(cat.groups or {}) do
+        local parsed = InputMask.parse(g.notation)
+        if parsed and #parsed.buttons == 2 and not parsed.any_button then
+            local x, y = parsed.buttons[1], parsed.buttons[2]
+            if (x == want_a and y == want_b) or (x == want_b and y == want_a) then
+                return (g.action_ids or {})[1], g.notation
+            end
+        end
+    end
+end
+
+do
+    local cat = fresh_catalog()
+    local aid, notation = two_button_action(cat, "AUTO", "H")
+    t.ok(aid ~= nil, "the fixture has an AUTO + H group")
+
+    -- H known; AUTO not. The mask has both bits, the notation names both
+    -- buttons, so the bit that is not H is AUTO. No guess in that chain.
+    local derived, evidence, problems = Calibration.bits_from_pad(
+        { pad_row(0x300, aid) }, cat, { H = 0x100 })
+    t.eq(derived.AUTO, 0x200, "the leftover bit is the leftover button")
+    t.eq(#problems, 0, "with nothing to report")
+    t.eq(#evidence, 1, "and the evidence is kept")
+    t.eq(evidence[1].action_id, aid, "naming the action it rested on")
+    t.eq(evidence[1].notation, notation, "and the notation that named the buttons")
+end
+
+do
+    -- The row that defeated the sweep: a button that produces nothing alone.
+    -- It must not be read as evidence about anything.
+    local cat = fresh_catalog()
+    local derived = Calibration.bits_from_pad({ pad_row(0x200, 1) }, cat, { H = 0x100 })
+    t.is_nil(derived.AUTO, "a mask whose action belongs to no group names nothing")
+end
+
+do
+    -- Nothing known: a two-button mask leaves TWO unknowns and must stay
+    -- unresolved rather than guessing which bit is which.
+    local cat = fresh_catalog()
+    local aid = two_button_action(cat, "AUTO", "H")
+    local derived = Calibration.bits_from_pad({ pad_row(0x300, aid) }, cat, {})
+    t.is_nil(derived.AUTO, "two unknowns in one mask resolve neither")
+    t.is_nil(derived.H, "neither of them")
+end
+
+do
+    -- A contradiction is reported, not overwritten. A bit that disagrees with
+    -- a measurement is the one thing that must never be applied quietly.
+    local cat = fresh_catalog()
+    local aid = two_button_action(cat, "AUTO", "H")
+    local derived, _, problems = Calibration.bits_from_pad(
+        { pad_row(0x300, aid) }, cat, { H = 0x100, AUTO = 0x800 })
+    t.eq(derived.AUTO, nil, "the existing measurement is not replaced")
+    t.eq(#problems, 1, "and the disagreement is named")
+    t.ok(tostring(problems[1].reason):find("0x800") ~= nil,
+         "carrying both readings: " .. tostring(problems[1].reason))
+end
+
+do
+    -- The notation names a button whose known bit is NOT in the mask. Taking
+    -- the leftover here would attribute a bit to a button on the strength of a
+    -- notation that does not describe this press.
+    local cat = fresh_catalog()
+    local aid = two_button_action(cat, "AUTO", "H")
+    local derived, _, problems = Calibration.bits_from_pad(
+        { pad_row(0x300, aid) }, cat, { H = 0x4000 })
+    t.is_nil(derived.AUTO, "nothing is derived from a mask that contradicts itself")
+    t.ok(#problems >= 1, "and it says why: " .. tostring(problems[1] and problems[1].reason))
+end
+
+do
+    -- The press that began while the PREVIOUS move was still playing. It wears
+    -- that move's action id, so reading it attributes a bit to the button
+    -- pressed before this one. Measured on build 24176760: it shifted a whole
+    -- column by one row - 0x0080 reported 611 and 0x0100 reported 604, each
+    -- mask wearing its predecessor's action.
+    local cat = fresh_catalog()
+    local aid = two_button_action(cat, "AUTO", "H")
+    local derived = Calibration.bits_from_pad(
+        { pad_row(0x300, aid, { from_idle = false }) }, cat, { H = 0x100 })
+    t.is_nil(derived.AUTO, "a press that did not start from idle derives nothing")
+end
+
+do
+    -- Unsettled rows are the transients a pad passes through on the way into a
+    -- two-button press. Reading them would name a button from a press nobody
+    -- made.
+    local cat = fresh_catalog()
+    local aid = two_button_action(cat, "AUTO", "H")
+    local derived = Calibration.bits_from_pad(
+        { pad_row(0x300, aid, { settled = false }) }, cat, { H = 0x100 })
+    t.is_nil(derived.AUTO, "an unsettled row is not evidence")
+end
+
+do
+    -- Order independence: a one-button row later in the list must still be
+    -- usable by a two-button row, so the shorter masks are read first.
+    local cat = fresh_catalog()
+    local aid2 = two_button_action(cat, "AUTO", "H")
+    local h_id
+    for _, g in pairs(cat.groups or {}) do
+        local parsed = InputMask.parse(g.notation)
+        if parsed and #parsed.buttons == 1 and parsed.buttons[1] == "H"
+            and parsed.dirs == "" and not parsed.any_button then
+            h_id = (g.action_ids or {})[1]
+        end
+    end
+    t.ok(h_id ~= nil, "the fixture has a single-button H group")
+    local derived = Calibration.bits_from_pad(
+        { pad_row(0x300, aid2), pad_row(0x100, h_id) }, cat, {})
+    t.eq(derived.H, 0x100, "the single-button row names H")
+    t.eq(derived.AUTO, 0x200, "and the two-button row can then name AUTO")
+end
+
 -- =========================================================
 t.group("a new profile does not drop what the machine already knew")
 

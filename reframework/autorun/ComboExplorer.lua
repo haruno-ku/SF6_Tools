@@ -40,6 +40,7 @@ local Provenance  = require("func/ComboExplorer/core/Provenance")
 local InputMask   = require("func/ComboExplorer/core/InputMask")
 local ProbeA      = require("func/ComboExplorer/core/ProbeA")
 local ProbeC      = require("func/ComboExplorer/core/ProbeC")
+local PadWatch    = require("func/ComboExplorer/core/PadWatch")
 local ClockStats  = require("func/ComboExplorer/core/ClockStats")
 local Catalog     = require("func/ComboExplorer/core/Catalog")
 local CatalogAudit = require("func/ComboExplorer/core/CatalogAudit")
@@ -127,6 +128,12 @@ i18n.register("combo_explorer", {
         -- things that decide whether a write can surprise them.
         readonly     = "This build CAN write: the calibration sweep writes inputs, and a stage "
                     .. "reset writes the training menu. Neither runs unless you start it here.",
+        hdr_pad      = "PAD WATCH: WHICH BIT IS THE BUTTON YOU PRESSED",
+        pad_help     = "Reads P1's pl_input_new - the same field this suite writes - and records every distinct button mask it sees, with the action that came out. Press ONE button, hold it a moment, release. No catalog, no notation: what comes back is the bit.",
+        pad_start    = "WATCH",
+        pad_stop     = "STOP",
+        pad_clear    = "CLEAR",
+        pad_derive   = "DERIVE + WRITE PROFILE",
         hdr_stage    = "STAGE RESET",
         stage_help   = "Performs one training-stage reset and reports what it took. Writes NO "
                     .. "input - only the refresh request - so this is safe to run before the "
@@ -467,11 +474,46 @@ end)
 CalRunner.install(current)
 Injector.install(current)
 
+-- What the OPERATOR's pad sets, read in the same field this suite writes to.
+--
+-- The button map was being derived the long way round - press a bit, see what
+-- came out, look that action up in a single-button notation - and on build
+-- 24176760 that discarded a real measurement: 0x40 pressed alone produced an
+-- action whose notation has two tokens ("AUTO + 强"), so nothing matched and
+-- the bit was reported unwitnessed. Reading the pad needs no catalog and no
+-- notation. See core/PadWatch.lua.
+--
+-- On _G rather than a file local, which costs nothing and would help if the
+-- state survived. It does NOT: REFramework's Reset scripts rebuilds the Lua
+-- state and _G with it, so a reload loses the record and the operator has to
+-- press again. Checked on build 24176760 after claiming otherwise - the
+-- generation counter at the top of this file reads as evidence that _G
+-- persists and is not, because it works either way.
+_G._ce_pad = _G._ce_pad or { watch = PadWatch.new(), on = false }
+local pad = _G._ce_pad
+
 if _G._shared_input_post then
     table.insert(_G._shared_input_post, function(p_id, retval)
         if not current() then return end
         if not Config.data.enabled then return end
         Clock.count_call(p_id)
+
+        -- P1 only, and read AFTER the hook so it is the value the engine will
+        -- act on - which is also the value anything this suite injected has
+        -- already been ORed into. Watching with the sweep running would record
+        -- our own writes as the operator's presses, so it is off by default and
+        -- the panel says what it is watching.
+        if pad.on and p_id == 0 then
+            local mask, aid
+            pcall(function()
+                local p = GameAdapter.player(0)
+                if p then
+                    mask = p:get_field("pl_input_new")
+                    aid = GameAdapter.action_id(p)
+                end
+            end)
+            PadWatch.observe(pad.watch, mask, aid)
+        end
     end)
 else
     if _G._mod_errors then
@@ -879,6 +921,141 @@ end
 -- One reset, and what it cost. This is the first thing to run on a machine
 -- that has the game, because everything after it depends on the stage being
 -- reproducible and because it writes no input at all.
+local function draw_pad_watch()
+    imgui.text_colored(T("pad_help"), UIKit.COLORS.Grey)
+
+    if pad.on then
+        if UIKit.styled_button(T("pad_stop") .. "##ce_pad", THEME.stop, UIKit.COLORS.White) then
+            pad.on = false
+        end
+    else
+        if UIKit.styled_button(T("pad_start") .. "##ce_pad", THEME.go, UIKit.COLORS.White) then
+            pad.on = true
+        end
+    end
+    imgui.same_line()
+    if UIKit.styled_button(T("pad_clear") .. "##ce_pad_clear", THEME.neutral, UIKit.COLORS.White) then
+        pad.watch = PadWatch.new()
+        pad.status = nil
+    end
+    imgui.same_line()
+    -- The sweep cannot witness a button that does nothing on its own: 0x200
+    -- alone produces the idle id and conclude_button_bits reads that as
+    -- "produced no action". The pad can. This turns what was pressed into the
+    -- same profile, by the same writer, so there is one spelling of it.
+    if UIKit.styled_button(T("pad_derive") .. "##ce_pad_derive", THEME.go, UIKit.COLORS.White) then
+        pad.status = nil
+        if not probe_d.catalog then
+            pad.status = "load the catalog in PROBE D first - a mask names a "
+                .. "button only through the notation of the action it produced"
+        else
+            local known = Provenance.value(reg, "modern_button_bits") or {}
+            local rep = PadWatch.report(pad.watch)
+            local derived, evidence, problems =
+                Calibration.bits_from_pad(rep and rep.rows or {}, probe_d.catalog, known)
+
+            local n = 0
+            local merged = {}
+            for k, v in pairs(known) do merged[k] = v end
+            for k, v in pairs(derived) do merged[k] = v; n = n + 1 end
+
+            if n == 0 then
+                pad.status = ("nothing new was derived from %d recorded mask(s)%s")
+                    :format(rep and #rep.rows or 0,
+                            #problems > 0 and (" - " .. tostring(problems[1].reason)) or "")
+            else
+                local note = "measured on the operator's pad, in pl_input_new:"
+                for _, e in ipairs(evidence) do
+                    note = note .. (" mask 0x%X produced action %d, whose notation is %q, "
+                        .. "and every other button it names already had a measured bit in "
+                        .. "that mask - so 0x%X is %s;"):format(
+                        e.mask, e.action_id, tostring(e.notation), e.bit, e.button)
+                end
+                local values = { modern_button_bits = {
+                    status = Provenance.STATUS.PARTIAL,
+                    value = merged,
+                    note = note,
+                } }
+                -- The catalog's checksums, because an action id means nothing
+                -- except against the catalog it was read from - and the bits
+                -- above were named through one. Calibration.document refuses
+                -- without them, which is how this was found.
+                local identity = calibration_identity()
+                identity.character = probe_d.catalog.character
+                identity.ac_sha256 = probe_d.catalog.ac_sha256
+                identity.bcm_sha256 = probe_d.catalog.bcm_sha256
+                local path, werr = CalRunner.write_values(identity,
+                    { Calibration.from_register(reg), values })
+                if path then
+                    local applied = reg:apply_calibration({
+                        calibration_id = "pad-" .. tostring(os.date("!%Y%m%dT%H%M%SZ")),
+                        game_patch = reg.game_patch, schema = "ce.calibration.v1",
+                        values = values,
+                    })
+                    pad.status = ("%d bit(s) derived and written to %s (%d applied live)")
+                        :format(n, path, #applied)
+                else
+                    pad.status = "could not write the profile: " .. tostring(werr)
+                end
+            end
+            pad.problems = problems
+        end
+    end
+
+    if pad.status then imgui.text_colored("  " .. pad.status, UIKit.COLORS.Cyan) end
+    for _, pr in ipairs(pad.problems or {}) do
+        imgui.text_colored("  " .. tostring(pr.reason), UIKit.COLORS.Orange)
+    end
+
+    -- Said out loud rather than left to be noticed. This reads the mask AFTER
+    -- the hook, so anything the sweep or a trial injected is in it too, and a
+    -- row recorded while one of those is running is not a press.
+    if pad.on and (CalRunner.running() or Injector.running() or Sweep.running()) then
+        imgui.text_colored("  something is INJECTING right now - what is being recorded is "
+            .. "this suite's writes, not your pad", UIKit.COLORS.Red)
+    end
+
+    local rep = PadWatch.report(pad.watch)
+    if not rep then return end
+    kv("watched ticks", tostring(rep.ticks), pad.on and UIKit.COLORS.Green or UIKit.COLORS.DarkGrey)
+    if rep.unreadable > 0 then
+        kv("unreadable", tostring(rep.unreadable), UIKit.COLORS.Orange)
+    end
+    if rep.current then kv("held now", ("0x%X"):format(rep.current), UIKit.COLORS.Cyan) end
+    -- Which id "standing still" is, measured rather than assumed: it came
+    -- back 1 on one run and 2 on another, and every "produced" below is
+    -- read against it.
+    kv("idle action id", tostring(rep.idle_action_id),
+       rep.idle_action_id and UIKit.COLORS.Grey or UIKit.COLORS.Orange)
+
+    for _, r in ipairs(rep.rows) do
+        local colour = r.single_bit and r.settled and UIKit.COLORS.Green or UIKit.COLORS.Grey
+        local what = r.single_bit and "one button" or (#r.bits .. " buttons together")
+        imgui.text_colored(("  0x%04X  %s  %d press(es), %d tick(s)%s")
+            :format(r.mask, what, r.presses, r.ticks,
+                    r.settled and "" or "  [not held long enough to mean anything]"),
+            colour)
+        -- The action id is evidence for naming the mask later, against the
+        -- catalog, by whoever has it. This panel names nothing.
+        -- The FIRST non-idle id, not the most-seen one. A button held for two
+        -- seconds is mostly a character standing still, and the most-seen id is
+        -- then the idle: measured, 0x0010 held 134 ticks reported action 1.
+        if r.from_idle and r.first_non_idle then
+            imgui.text_colored(("      produced action %d"):format(r.first_non_idle),
+                               UIKit.COLORS.Cyan)
+        elseif r.dirty_action then
+            -- Pressed while the previous move was still playing, so what was
+            -- seen is that move, not this button's. Shown so the row does not
+            -- read as a press that never registered - and NOT used.
+            imgui.text_colored(("      pressed before the last move ended - saw %d, "
+                .. "which is not this button's. Let go, wait, press again.")
+                :format(r.dirty_action), UIKit.COLORS.Orange)
+        else
+            imgui.text_colored("      never left idle", UIKit.COLORS.DarkGrey)
+        end
+    end
+end
+
 local function draw_stage_reset()
     imgui.text_colored(T("stage_help"), UIKit.COLORS.Grey)
 
@@ -1379,6 +1556,7 @@ re.on_draw_ui(function()
     if UIKit.styled_header(T("hdr_probe_b"), THEME.hdr) then draw_probe_b() end
     if UIKit.styled_header(T("hdr_probe_c"), THEME.hdr) then draw_probe_c() end
     if UIKit.styled_header(T("hdr_probe_d"), THEME.hdr) then draw_probe_d() end
+    if UIKit.styled_header(T("hdr_pad"), THEME.hdr) then draw_pad_watch() end
     if UIKit.styled_header(T("hdr_stage"), THEME.hdr) then draw_stage_reset() end
     if UIKit.styled_header(T("hdr_calib"), THEME.hdr) then draw_calibration() end
     if UIKit.styled_header(T("hdr_trial"), THEME.hdr) then draw_trial() end

@@ -429,6 +429,26 @@ function M.write_profile(identity, probe_values)
     if probe_values then blocks[#blocks + 1] = probe_values end
     blocks[#blocks + 1] = rep.values
 
+    local path, werr = M.write_values(identity, blocks)
+    if not path then return nil, werr end
+    return path, rep
+end
+
+-- The write itself, without a session.
+--
+-- Extracted because a profile can now be produced by something other than a
+-- completed sweep: the pad measurement names bits the sweep is structurally
+-- unable to witness (a button that does nothing on its own produces the idle
+-- id, which conclude_button_bits reads as "produced no action"). That value has
+-- to reach the same file by the same route, or there are two spellings of the
+-- profile and they will disagree.
+--
+-- blocks : a list of values blocks, later ones winning, as Calibration.document
+--          takes them.
+function M.write_values(identity, blocks)
+    identity = identity or {}
+    identity.generated_at = identity.generated_at or utc("!%Y-%m-%dT%H:%M:%SZ")
+
     local doc, err = Calibration.document(identity, blocks)
     if not doc then return nil, err end
 
@@ -450,7 +470,7 @@ function M.write_profile(identity, probe_values)
     -- record above actually landed; reporting one for a file that is not there
     -- would send the operator looking for it.
     JsonIO.dump(dir .. "/latest.json", doc, dirs)
-    return path, rep
+    return path
 end
 
 return M

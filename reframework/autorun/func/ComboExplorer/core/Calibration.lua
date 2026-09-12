@@ -463,6 +463,131 @@ local function witnessing_pair(catalog, button, singles)
     return best, partner
 end
 
+-- Button bits derived from what the OPERATOR pressed, not from what we wrote.
+--
+-- WHY THIS EXISTS AT ALL
+--
+-- conclude_button_bits presses a bit and names it from a SINGLE-button
+-- notation. Measured on build 24176760, that rule cannot see the assist button
+-- in either direction:
+--
+--   * 0x200 held alone produces action 1 - the idle id. The rule classifies
+--     that as "produced no action" and reports the bit unwitnessed. A button
+--     that does nothing on its own is invisible to a sweep that only presses
+--     one thing at a time, and the assist button is exactly that.
+--   * the action it DOES produce, 660, has the notation "AUTO + 强" - two
+--     tokens - so even when it came out there was no single-button group to
+--     match it against.
+--
+-- The pad answers both. Measured, in the same pl_input_new this suite writes:
+--
+--   0x0200  one button        -> action 1     (nothing)
+--   0x0100  one button        -> action 637
+--   0x0300  two buttons       -> action 660   ("AUTO + 强")
+--
+-- H is already known to be 0x100. 0x300 produced a notation naming exactly two
+-- buttons, one of which is H, so the other bit IS the other button: 0x200 is
+-- AUTO. No guess anywhere in that chain.
+--
+-- THE RULE
+--
+-- For a mask whose action belongs to a notation naming N buttons, where the
+-- mask has N bits and all but one of those buttons already has a known bit
+-- present in the mask: the leftover bit is the leftover button. It subsumes the
+-- single-button case (N = 1, nothing known needed) and does not need the
+-- catalog to agree about anything except which buttons a notation names.
+--
+-- rows  : PadWatch.report(w).rows
+-- known : the bits already measured, by name
+--
+-- Returns derived (name -> bit) and a list of what each one rested on, so the
+-- profile note can say it rather than the reader having to take it on trust.
+function M.bits_from_pad(rows, catalog, known)
+    local derived, evidence, problems = {}, {}, {}
+    if type(rows) ~= "table" or type(catalog) ~= "table" then
+        return derived, evidence, { { reason = "no rows or no catalog" } }
+    end
+    known = known or {}
+
+    -- Longest-first: a two-button mask can only be read once the one-button
+    -- masks in this same batch have named their bits.
+    local ordered = {}
+    for _, r in ipairs(rows) do ordered[#ordered + 1] = r end
+    table.sort(ordered, function(a, b) return #a.bits < #b.bits end)
+
+    local function lookup(action_id)
+        for _, g in pairs(catalog.groups or {}) do
+            for _, id in ipairs(g.action_ids or {}) do
+                if id == action_id then return g end
+            end
+        end
+    end
+
+    for _, r in ipairs(ordered) do
+        -- from_idle only. A press that began while the previous move was still
+        -- playing wears that move's action id, and reading it would attribute a
+        -- bit to the button pressed BEFORE this one - measured, and it shifted a
+        -- whole column by one row.
+        local seen = r.from_idle and (r.first_non_idle or r.action_id) or nil
+        if r.settled and seen then
+            local g = lookup(seen)
+            local parsed = g and InputMask.parse(g.notation)
+            local names = parsed and parsed.buttons or nil
+            if names and #names == #r.bits and not parsed.any_button then
+                local unknown, accounted = {}, 0
+                for _, name in ipairs(names) do
+                    local bit = derived[name] or known[name]
+                    if bit and (r.mask & bit) ~= 0 then
+                        accounted = accounted | bit
+                    elseif bit then
+                        -- The notation names a button whose known bit is NOT in
+                        -- the mask. Something disagrees; say so rather than
+                        -- taking the leftover.
+                        unknown = nil
+                        problems[#problems + 1] = {
+                            mask = r.mask, action_id = seen,
+                            reason = ("%s is known to be 0x%X and that bit is not in this mask")
+                                :format(name, bit),
+                        }
+                        break
+                    else
+                        unknown[#unknown + 1] = name
+                    end
+                end
+                if unknown and #unknown == 1 then
+                    local left = r.mask & ~accounted
+                    -- Exactly one bit left, or the arithmetic did not work out
+                    -- and nothing may be concluded from it.
+                    if left ~= 0 and (left & (left - 1)) == 0 then
+                        local name = unknown[1]
+                        if derived[name] and derived[name] ~= left then
+                            problems[#problems + 1] = {
+                                mask = r.mask, action_id = seen,
+                                reason = ("%s was already derived as 0x%X here")
+                                    :format(name, derived[name]),
+                            }
+                        elseif known[name] and known[name] ~= left then
+                            problems[#problems + 1] = {
+                                mask = r.mask, action_id = seen,
+                                reason = ("%s is already measured as 0x%X and this says 0x%X")
+                                    :format(name, known[name], left),
+                            }
+                        else
+                            derived[name] = left
+                            evidence[#evidence + 1] = {
+                                button = name, bit = left, mask = r.mask,
+                                action_id = seen, notation = g.notation,
+                                presses = r.presses,
+                            }
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return derived, evidence, problems
+end
+
 -- The ordered list of inputs to write. Each step is a plain record; the runtime
 -- shim reads `mask`, holds it for `hold_ticks`, releases, and reports back.
 function M.plan(session)
