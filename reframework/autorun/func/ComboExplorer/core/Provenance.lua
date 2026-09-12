@@ -252,6 +252,30 @@ M.DEFAULTS = {
             .. "from them.",
         measured_by = "calibration_frame_meter",
     },
+
+    input_buffer_ticks = entry {
+        value = 4,
+        -- UNVERIFIED on a fresh register even though a run has bracketed it,
+        -- because a fresh register is what this machine knows before a profile
+        -- is applied. A measurement that arrives any way other than through
+        -- apply_calibration is a measurement nothing can tell from a default.
+        status = M.STATUS.UNVERIFIED,
+        gates = { C.FRAME_DATA },
+        question = "How many ticks before a character is actionable will the engine still hold an "
+            .. "input and apply it on the first actionable frame?",
+        provisional_source = "MEASURED as a bound, not derived. Build 24176760, Zangief 6HP into 3MP: "
+            .. "the frame data puts A's last recovery tick at gap 44 and the trial linked there; it "
+            .. "also linked at 40 and did NOT at 36, so the buffer is at least 4 and less than 8. "
+            .. "4 is the low end of that bracket, which is the safe direction - too small only "
+            .. "narrows the window that gets swept, while too large spends trials on gaps where the "
+            .. "input is eaten. See docs and reframework/data/ComboExplorer_data/trials/"
+            .. "zangief-assist-ab.jsonl for the 18 rows.",
+        if_wrong = "The predicted gap window opens too early or too late. Too small and a link whose "
+            .. "input had to be buffered is recorded as 'these do not link'; too large and trials are "
+            .. "spent on gaps where the second input is swallowed - which is what delay 4 was doing "
+            .. "to every pair in the first sweep.",
+        measured_by = "route_run_gap_sweep",
+    },
 }
 
 -- --- live state --------------------------------------------------------------

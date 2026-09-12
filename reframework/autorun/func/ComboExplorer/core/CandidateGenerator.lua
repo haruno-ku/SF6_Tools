@@ -100,6 +100,15 @@ local function edge_id(a, b)
     return ("%d:%s->%d:%s"):format(a.action_id, a.input_method, b.action_id, b.input_method)
 end
 
+-- The frame data stores some numbers as strings. Kept local rather than added
+-- to FrameData's accessor list, because these are carried through as evidence
+-- rather than reasoned about here.
+local function num_or_nil(v)
+    if type(v) == "number" then return v end
+    if type(v) == "string" then return tonumber(v) end
+    return nil
+end
+
 -- --- the judgement -----------------------------------------------------------
 
 -- Everything the two frame records say about this pair, without deciding
@@ -119,6 +128,21 @@ local function assess(a_row, b_row, a_frame, b_frame, opts)
     out.basis.to_startup = b_startup
     out.basis.from_damage = FrameData.damage(a_frame)
     out.basis.to_damage = FrameData.damage(b_frame)
+
+    -- The rest of A's frames, carried so the worklist can hand core/Timing.lua
+    -- enough to predict WHEN a link has to be pressed - not just whether one is
+    -- possible.
+    --
+    -- The margin below answers "can B start before the advantage runs out".
+    -- That was the only thing ever written down, and the sweep then ran every
+    -- pair at delay 4: a cancel window, never a link window (#46). The gap needs
+    -- A's whole animation, hitstop included, because
+    -- Provenance.hitstop_advances_tick is REFUTED on this build.
+    out.basis.from_startup  = FrameData.startup(a_frame)
+    out.basis.from_active   = a_frame and a_frame.active or nil
+    out.basis.from_recovery = a_frame and num_or_nil(a_frame.recovery) or nil
+    out.basis.from_hitstop  = a_frame and num_or_nil(a_frame.hitstop) or nil
+    out.basis.from_hitstun  = a_frame and num_or_nil(a_frame.hitstun) or nil
 
     -- A large on-hit advantage almost always means a knockdown, and a
     -- knockdown's advantage is oki advantage - time before the opponent stands

@@ -42,6 +42,7 @@
 
 local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
 local Canonical       = require("func/ComboExplorer/core/Canonical")
+local Timing          = require("func/ComboExplorer/core/Timing")
 local Provenance      = require("func/ComboExplorer/core/Provenance")
 local JsonIO          = require("func/ComboExplorer/runtime/JsonIO")
 
@@ -207,6 +208,11 @@ function M.start(opts)
         -- one, because a sweep whose trials ran under different setups is not
         -- one dataset.
         stage_cfg = opts.stage_cfg,
+        -- For Timing. The buffer is unverified, and the sweep is allowed to use
+        -- the guess for the same reason the calibration sweep is: it is testing
+        -- the window, not trusting it.
+        buffer_ticks = opts.buffer_ticks,
+        hold_ticks = opts.hold_ticks,
         canonical_report = creport,
         canonical_why = (creport == nil) and tostring(cwhy or "unavailable") or nil,
         collector = opts.collector,
@@ -273,6 +279,35 @@ end
 
 -- Driven from Clock.on_frame beside the other machines. Returns whatever the
 -- Injector's tick returned, or nil on a frame where nothing was driven.
+-- The gap this pair is run at, and where it came from.
+--
+-- Separate and public so a caller can see what the sweep would do before it
+-- does it, and so the fallback is visible rather than a number appearing from
+-- nowhere.
+function M.delay_for(p, r)
+    r = r or run or {}
+    local a = { startup = p.a_startup, active = p.a_active, recovery = p.a_recovery,
+                hitstop = p.a_hitstop, hitstun = p.a_hitstun }
+    local b = { startup = p.b_startup }
+    local w, missing = Timing.window(a, b, {
+        hold_ticks = r.hold_ticks or 3,
+        buffer_ticks = r.buffer_ticks,
+    })
+    if w then return w.latest, { predicted = true, window = w } end
+
+    -- No window. The pair still runs, at whatever the operator set, and the row
+    -- says the gap was NOT predicted - a negative measured at an unpredicted
+    -- gap is not evidence that the pair does not link.
+    -- What it actually saw, not only what it wanted. "missing: a.recovery" and
+    -- "missing: nothing, and still no window" send an operator to different
+    -- places, and the first run of this printed "no reason given" - which sent
+    -- me guessing at the code instead of reading the data.
+    local saw = ("startup=%s active=%s recovery=%s hitstop=%s b=%s buffer=%s"):format(
+        tostring(p.a_startup), tostring(p.a_active), tostring(p.a_recovery),
+        tostring(p.a_hitstop), tostring(p.b_startup), tostring(r.buffer_ticks))
+    return r.delay, { predicted = false, missing = missing, saw = saw }
+end
+
 function M.tick()
     if not run or run.done then return nil end
     local inj = run.injector
@@ -292,6 +327,24 @@ function M.tick()
         return nil
     end
 
+    -- WHEN to press the second move, from the frames the worklist now carries.
+    --
+    -- This used to be run.delay for every pair - 4, because that is the panel's
+    -- default and nothing else was available. At gap 4 the second input lands
+    -- inside the first move's animation: a cancel window. Measured on build
+    -- 24176760, one real pair's LINK window was gap 40..44, and the sweep's 202
+    -- rows found 8 links, all of them Super Arts, which are the only thing that
+    -- connects out of a cancel window (#46).
+    --
+    -- `latest` rather than the middle of the window: it is the gap at which A
+    -- has just become free, which is the one the frame data states directly.
+    -- The earlier end depends on the input buffer, which is unverified.
+    -- gap_why, not `why`: this function already has a `why` from
+    -- ResultCollector.claim below, and naming this one the same shadowed it.
+    -- The claim's why is nil on success, so every predicted gap was counted as
+    -- a fallback while the predicted delay was being used - the sweep said
+    -- "0 predicted" and pressed at 69 anyway.
+    local delay, gap_why = M.delay_for(p, run)
     local key = pair_key(p)
     -- ResultCollector.delay_list accepts a number or a list, so whichever form
     -- the caller gave is handed through unchanged. Reading `run.delay` alone
@@ -299,7 +352,7 @@ function M.tick()
     -- claim was refused, and the pair counted as skipped.
     local spec_for_claim = {
         edge_id = key, attempt = (run.attempts[key] or 0) + 1,
-        delay = run.delays or run.delay,
+        delay = run.delays or delay,
     }
     -- Skipping is the collector's decision, not this file's: it is the one that
     -- read the previous run's file and knows what is already answered.
@@ -310,6 +363,17 @@ function M.tick()
         return nil
     end
 
+    if gap_why and gap_why.predicted then
+        run.predicted = (run.predicted or 0) + 1
+    else
+        run.unpredicted = (run.unpredicted or 0) + 1
+        -- WHICH field was missing, kept for the panel. "0 predicted" with no
+        -- reason is a number an operator can only guess at, and guessing at it
+        -- is what this whole suite is built to avoid.
+        run.unpredicted_why = ((gap_why and gap_why.missing
+            and table.concat(gap_why.missing, ", ")) or "nothing named")
+            .. "  |  " .. tostring(gap_why and gap_why.saw)
+    end
     run.attempts[key] = (run.attempts[key] or 0) + 1
     run.current = p
     run.current_key = key
@@ -318,7 +382,7 @@ function M.tick()
         provenance = run.provenance,
         allow_injection = run.allow_injection,
         route = route_for(p),
-        delay = run.delay,
+        delay = delay,
         delays = run.delays,
         expected = { [1] = { p.a_id }, [2] = { p.b_id } },
         edge_id = key,
@@ -418,6 +482,12 @@ function M.progress()
         canonical = run.canonical_report
             and Canonical.summary(run.canonical_report) or nil,
         canonical_why = run.canonical_why,
+        -- How many gaps came from the frame data and how many fell back.
+        -- A run that is mostly fallback is a run measuring the wrong
+        -- thing, and it should be visible while it happens.
+        predicted = run.predicted or 0,
+        unpredicted = run.unpredicted or 0,
+        unpredicted_why = run.unpredicted_why,
     }
 end
 

@@ -62,6 +62,7 @@ local SUITES = {
     "tests.lua.test_calibration",
     "tests.lua.test_canonical",
     "tests.lua.test_route",
+    "tests.lua.test_timing",
     "tests.lua.test_padwatch",
     "tests.lua.test_routerun",
     "tests.lua.test_calibrationfsm",

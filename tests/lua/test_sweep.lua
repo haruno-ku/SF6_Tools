@@ -388,4 +388,48 @@ do
     t.is_nil(Sweep.progress(), "and there is nothing to report")
 end
 
+
+-- =========================================================
+t.group("the gap comes from the frame data, not from a default")
+
+-- #46, measured on build 24176760. Every pair used to run at the panel's
+-- delay of 4, because that was all there was. At gap 4 the second input lands
+-- inside the first move's animation - a cancel window - and the 202 rows that
+-- produced found 8 links, ALL of them Super Arts, which are the only thing
+-- that connects out of one. One real pair's link window was gap 40..44.
+
+local Sweep2 = require("func/ComboExplorer/runtime/Sweep")
+
+do
+    -- The numbers are the measured pair: Zangief 6HP into 3MP.
+    local p = { a_startup = 14, a_active = "5", a_recovery = 15, a_hitstop = 13,
+                a_hitstun = 28, b_startup = 7 }
+    local delay, why = Sweep2.delay_for(p, { hold_ticks = 3, buffer_ticks = 4, delay = 4 })
+    t.eq(delay, 44, "the gap is where A has just become free - measured, 44 linked")
+    t.eq(why.predicted, true, "and the row can say it was predicted")
+    t.ok(why.window ~= nil, "carrying the window it came from")
+end
+
+do
+    -- A pair the frame data is short on still runs, at whatever the operator
+    -- set - and says the gap was NOT predicted. A negative measured at an
+    -- unpredicted gap is not evidence that the pair does not link, and a row
+    -- that cannot say which it was is not readable later.
+    local p = { a_startup = 14, b_startup = 7 }
+    local delay, why = Sweep2.delay_for(p, { hold_ticks = 3, buffer_ticks = 4, delay = 4 })
+    t.eq(delay, 4, "it falls back to the operator's delay")
+    t.eq(why.predicted, false, "and says so")
+    t.ok(#why.missing > 0, "naming what the frame data was missing")
+end
+
+do
+    -- No buffer measured: there is no window, and the fallback is the same.
+    -- The buffer is unverified and this is the one place that would quietly
+    -- turn it into a number.
+    local p = { a_startup = 14, a_active = "5", a_recovery = 15, a_hitstop = 13,
+                a_hitstun = 28, b_startup = 7 }
+    local _, why = Sweep2.delay_for(p, { hold_ticks = 3, delay = 4 })
+    t.eq(why.predicted, false, "no buffer, no prediction")
+end
+
 return t.finish()

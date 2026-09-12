@@ -1541,7 +1541,17 @@ local function draw_sweep()
                         collector = collector,
                         provenance = reg,
                         allow_injection = Config.data.allow_injection,
+                        -- The fallback for pairs whose frame data is short.
+                        -- Every other pair now gets its gap from the frames the
+                        -- worklist carries; see Sweep.delay_for and #46.
                         delay = trial.delay,
+                        -- The two numbers Timing needs that only this machine
+                        -- has. The buffer is unverified and the sweep uses the
+                        -- guess on purpose - it is testing the window, not
+                        -- trusting it, the same licence the calibration sweep
+                        -- has.
+                        buffer_ticks = Provenance.provisional(reg, "input_buffer_ticks"),
+                        hold_ticks = 3,
                         stage_cfg = STAGE_CFG,
                         sink = { path = log_path,
                                  dirs = { "ComboExplorer_data", "ComboExplorer_data/trials" } },
@@ -1559,6 +1569,18 @@ local function draw_sweep()
            p.done and UIKit.COLORS.Green or UIKit.COLORS.Cyan)
         -- Why the total is smaller than the file's. Without this line a
         -- canonicalised list reads as a truncated one.
+        -- Where the gaps came from. A run that is mostly fallback is measuring
+        -- at a gap nothing predicted, and that has to be visible WHILE it
+        -- happens rather than found in the rows afterwards.
+        if (p.predicted or 0) + (p.unpredicted or 0) > 0 then
+            kv("gap from frame data", ("%d predicted / %d fell back to %d ticks")
+               :format(p.predicted or 0, p.unpredicted or 0, trial.delay),
+               (p.unpredicted or 0) == 0 and UIKit.COLORS.Green or UIKit.COLORS.Orange)
+            if p.unpredicted_why then
+                imgui.text_colored("    missing: " .. tostring(p.unpredicted_why),
+                                   UIKit.COLORS.Orange)
+            end
+        end
         if p.canonical then
             imgui.text_colored("  " .. p.canonical, UIKit.COLORS.Cyan)
         elseif p.canonical_why then

@@ -271,6 +271,28 @@ if opt.worklist then
             b_id = e.to.action_id, b_method = e.to.input_method,
             b_notation = e.to.notation,
             confidence = e.confidence,
+            -- The FRAMES, not only the rank computed from them.
+            --
+            -- This file used to write `confidence` alone, so the machine
+            -- running the game knew which pairs were worth trying and nothing
+            -- about WHEN to press the second one - and the sweep fell back to a
+            -- fixed delay of 4 for all of them. Measured on build 24176760, the
+            -- link window for one real pair was gap 40..44; at 4 the second
+            -- input lands inside the first move's animation, which is a cancel
+            -- window. 202 rows were spent that way (#46).
+            --
+            -- Carried as the frames rather than as a computed gap, because the
+            -- gap depends on numbers only the machine has: how long an input is
+            -- held, and the input buffer. core/Timing.lua does that arithmetic
+            -- there.
+            a_startup = e.basis and e.basis.from_startup or nil,
+            a_active = e.basis and e.basis.from_active or nil,
+            a_recovery = e.basis and e.basis.from_recovery or nil,
+            a_hitstop = e.basis and e.basis.from_hitstop or nil,
+            a_hitstun = e.basis and e.basis.from_hitstun or nil,
+            a_on_hit = e.basis and e.basis.from_on_hit or nil,
+            b_startup = e.basis and e.basis.to_startup or nil,
+            margin_frames = e.basis and e.basis.margin_frames or nil,
             -- Carried because the runtime refuses a derivation as move A, and
             -- finding that out per pair at run time would be a refusal per pair
             -- rather than a filter.
