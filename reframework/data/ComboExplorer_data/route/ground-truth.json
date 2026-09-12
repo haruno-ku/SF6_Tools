@@ -1,0 +1,12 @@
+{
+  "schema": "ce.route.v1",
+  "id": "zangief-assist-ground-truth",
+  "character": "Zangief",
+  "control_scheme": "modern",
+  "note": "Named by the operator (#48) as a combo they know connects: assist heavy into forward-medium into down-special. Run to find out whether this pipeline can see a LINK at all - #12's first 202 rows found 8 and every one was a Super Art, which connects from a cancel window rather than a link window. If no gap links this, every negative in that file is unexplained.",
+  "steps": [
+    { "action_id": 660, "input_method": "simple", "notation": "AUTO + 强" },
+    { "action_id": 655, "input_method": "manual", "notation": "3 + 中" },
+    { "action_id": 900, "input_method": "simple", "notation": "2 + SP" }
+  ]
+}

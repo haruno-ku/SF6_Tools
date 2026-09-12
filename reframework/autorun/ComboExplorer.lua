@@ -56,6 +56,8 @@ local CatalogLocator = require("func/ComboExplorer/runtime/CatalogLocator")
 local StageControl = require("func/ComboExplorer/runtime/StageControl")
 local Injector = require("func/ComboExplorer/runtime/Injector")
 local Sweep = require("func/ComboExplorer/runtime/Sweep")
+local Route = require("func/ComboExplorer/core/Route")
+local RouteRun = require("func/ComboExplorer/runtime/RouteRun")
 local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
 
 local VERSION = "0.3.0-diagnostics"
@@ -147,6 +149,10 @@ i18n.register("combo_explorer", {
                     .. "Load the catalog in PROBE D first.",
         trial_run    = "RUN ONE TRIAL",
         trial_next   = "NEXT PAIR",
+        hdr_route    = "ROUTE: A COMBO SOMEBODY KNOWS CONNECTS",
+        route_help   = "Runs one hand-written route at EVERY combination of gaps and says whether any of them linked. This is the check the sweep cannot do for itself: if a combo a human knows connects never comes back as a link, every negative the sweep recorded is unexplained.",
+        route_load   = "LOAD ROUTE",
+        route_run    = "RUN EVERY GAP",
         hdr_sweep    = "SWEEP",
         sweep_help   = "Runs the whole worklist for this character unattended. Start it and "
                     .. "leave it: it resumes where a previous run stopped, retries what came "
@@ -343,6 +349,8 @@ local stage = { last_status = nil, last_result = nil }
 -- from the catalog means the pair is always one the catalog says is reachable.
 local trial = { pair = 1, delay = 4, last_status = nil, last_result = nil }
 local sweep = { last_status = nil, last_result = nil }
+local route = { path = "ComboExplorer_data/route/ground-truth.json",
+                built = nil, report = nil, status = nil }
 
 -- WHERE THE FIGHTERS STAND FOR A TRIAL  (measured 2026-09-12, build 24176760)
 --
@@ -435,7 +443,15 @@ Clock.on_frame(function(frame)
     -- The sweep drives the injector itself, so it is ticked INSTEAD of the
     -- injector rather than beside it. Ticking both would advance one trial
     -- twice per frame.
-    if Sweep.running() then
+    -- Same rule as the sweep below: a driver that owns the injector is ticked
+    -- INSTEAD of it.
+    if RouteRun.running() then
+        RouteRun.tick()
+        local rp = RouteRun.progress()
+        if rp and rp.done then
+            route.status = tostring(RouteRun.verdict())
+        end
+    elseif Sweep.running() then
         Sweep.tick()
         local sp = Sweep.progress()
         if sp and sp.done then
@@ -1319,6 +1335,107 @@ local function draw_trial()
     end
 end
 
+-- One route somebody wrote down, at every gap.
+local function draw_route()
+    imgui.text_colored(T("route_help"), UIKit.COLORS.Grey)
+    kv("file", route.path)
+
+    if UIKit.styled_button(T("route_load") .. "##ce_route_load", THEME.neutral,
+                           UIKit.COLORS.White) then
+        route.built, route.report, route.status = nil, nil, nil
+        local doc = JsonIO.load(route.path)
+        if type(doc) ~= "table" then
+            route.status = "no route at " .. route.path
+        else
+            -- Checked against the catalog the GAME loaded, not the name in the
+            -- file: a route written for one character run against another
+            -- presses that character's action ids under this one's name.
+            local built, rep = Route.build(doc, probe_d.catalog)
+            if not built then
+                route.status = tostring(rep)
+            else
+                route.built, route.report = built, rep
+                route.status = ("%d step(s)%s"):format(#built.steps,
+                    probe_d.catalog and "" or " - NOT checked against a catalog, "
+                    .. "because none is loaded")
+            end
+        end
+    end
+
+    if route.built then
+        for _, st in ipairs(route.built.steps) do
+            imgui.text_colored(("  %d. %s  (%d, %s)"):format(
+                st.index, st.notation, st.action_id, st.input_method), UIKit.COLORS.White)
+        end
+        for _, pr in ipairs((route.report or {}).problems or {}) do
+            imgui.text_colored("  " .. tostring(pr.reason), UIKit.COLORS.Orange)
+        end
+    end
+
+    if RouteRun.running() then
+        if UIKit.styled_button(T("stop") .. "##ce_route", THEME.stop, UIKit.COLORS.White) then
+            RouteRun.stop()
+            Injector.stop()
+            route.status = "stopped by the operator"
+        end
+    elseif route.built then
+        if UIKit.styled_button(T("route_run") .. "##ce_route", THEME.go, UIKit.COLORS.White) then
+            local log_path = ("ComboExplorer_data/trials/%s.jsonl"):format(
+                tostring(route.built.id):gsub("[^%w_-]", ""))
+            local collector, cerr = ResultCollector.new({
+                append = function(line)
+                    return JsonIO.append(log_path, line,
+                                         { "ComboExplorer_data", "ComboExplorer_data/trials" })
+                end,
+                encode = JsonIO.encode_line,
+                decode = JsonIO.decode_line,
+                identity = {
+                    calibration_id = reg.calibration_id,
+                    game_patch = reg.game_patch or Config.data.game_patch or "unknown",
+                    conditions = Injector.conditions_for(STAGE_CFG),
+                },
+            })
+            if not collector then
+                route.status = "collector refused: " .. tostring(cerr)
+            else
+                local ok, err = RouteRun.start({
+                    route = route.built,
+                    collector = collector,
+                    provenance = reg,
+                    allow_injection = Config.data.allow_injection,
+                    stage_cfg = STAGE_CFG,
+                    sink = { path = log_path,
+                             dirs = { "ComboExplorer_data", "ComboExplorer_data/trials" } },
+                })
+                route.status = ok and ("running, writing to " .. log_path)
+                    or ("could not start: " .. tostring(err))
+            end
+        end
+    end
+
+    local p = RouteRun.progress()
+    if p then
+        kv("gap combination", ("%d / %d"):format(p.index, p.total),
+           p.done and UIKit.COLORS.Green or UIKit.COLORS.Cyan)
+        if p.grid_note then
+            imgui.text_colored("  " .. p.grid_note, UIKit.COLORS.Orange)
+        end
+        if p.current then kv("trying gaps", p.current) end
+        kv("finished", tostring(p.finished))
+        for v, n in pairs(p.by_verdict or {}) do
+            kv("  " .. tostring(v), tostring(n),
+               v == "link" and UIKit.COLORS.Green or UIKit.COLORS.Grey)
+        end
+        if p.problems > 0 then kv("problems", tostring(p.problems), UIKit.COLORS.Orange) end
+        -- The one sentence #48 is asking for.
+        imgui.text_colored("  " .. tostring(RouteRun.verdict()),
+                           p.links > 0 and UIKit.COLORS.Green
+                           or (p.done and UIKit.COLORS.Red or UIKit.COLORS.Yellow))
+    end
+
+    if route.status then imgui.text_colored("  " .. route.status, UIKit.COLORS.Cyan) end
+end
+
 -- The whole worklist for this character, unattended.
 local function draw_sweep()
     imgui.text_colored(T("sweep_help"), UIKit.COLORS.Grey)
@@ -1560,6 +1677,7 @@ re.on_draw_ui(function()
     if UIKit.styled_header(T("hdr_stage"), THEME.hdr) then draw_stage_reset() end
     if UIKit.styled_header(T("hdr_calib"), THEME.hdr) then draw_calibration() end
     if UIKit.styled_header(T("hdr_trial"), THEME.hdr) then draw_trial() end
+    if UIKit.styled_header(T("hdr_route"), THEME.hdr) then draw_route() end
     if UIKit.styled_header(T("hdr_sweep"), THEME.hdr) then draw_sweep() end
 
     imgui.tree_pop()
