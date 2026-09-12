@@ -141,6 +141,53 @@ do
          "and the file's own text survives - it is what gets compiled")
 end
 
+
+-- --- a list per gap -----------------------------------------------------------
+
+t.group("once a gap is answered, it is not searched again")
+
+-- Measured on build 24176760: A -> B linked at gap 40 and 44 and nowhere else
+-- in 4..72. The three-move run has no business trying gap 1 at 2 after that -
+-- and the three-move grid is 144 trials where the two-move one was 18.
+
+do
+    local g = Route.delay_grid(2, { { 40, 44 }, { 2, 4, 6 } })
+    t.eq(#g, 6, "two values for one gap and three for the other is six, not nine")
+    local firsts = {}
+    for _, row in ipairs(g) do firsts[row[1]] = true end
+    t.ok(firsts[40] and firsts[44], "the first gap only takes its own list")
+    t.is_nil(firsts[2], "and never the second's values")
+end
+
+do
+    -- A short list is an error, not a silent fallback. "gap 2 was swept over
+    -- the default range" is not something a reader should have to infer from a
+    -- count.
+    local g, why = Route.delay_grid(2, { { 40 } })
+    t.eq(#g, 0, "one list for two gaps is refused")
+    t.ok(tostring(why):find("2 gap") ~= nil, "naming both counts: " .. tostring(why))
+end
+
+do
+    local g, why = Route.delay_grid(2, { { 40 }, {} })
+    t.eq(#g, 0, "an empty list for one gap is refused")
+    t.ok(tostring(why):find("gap 2") ~= nil, "naming which: " .. tostring(why))
+end
+
+do
+    -- The flat form still means "this list for every gap".
+    local g = Route.delay_grid(2, { 2, 4 })
+    t.eq(#g, 4, "a plain list is used for both")
+end
+
+do
+    -- And the cap counts the per-gap sizes, not one list squared.
+    local _, note = Route.delay_grid(2, { { 1, 2, 3 }, { 1, 2, 3, 4 } }, 5)
+    t.ok(note ~= nil, "the cap is reported")
+    t.ok(tostring(note):find("12") ~= nil,
+         "against the real total of 3x4: " .. tostring(note))
+end
+
 -- --- the delay grid -----------------------------------------------------------
 
 t.group("the gaps are a grid, not a list walked in step")

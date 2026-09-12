@@ -1,0 +1,12 @@
+{
+  "schema": "ce.route.v1",
+  "id": "zangief-assist-ab",
+  "character": "Zangief",
+  "control_scheme": "modern",
+  "note": "The first half of #48's route, on its own. The three-step run came back 'move B never appeared and no other action followed A' at all 144 gap combinations in 2..28 - A came out and hit, and then nothing. Two gaps searched together cannot say WHICH of them is wrong, and a three-move grid costs 144 trials to answer a question about one gap. So this asks the first gap by itself, over a range wide enough to clear a heavy's recovery: at gap 28 the second input still lands 31 ticks after the first began, and a heavy's animation is longer than that.",
+  "delays": [4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72],
+  "steps": [
+    { "action_id": 660, "input_method": "simple", "notation": "AUTO + 强" },
+    { "action_id": 655, "input_method": "manual", "notation": "3 + 中" }
+  ]
+}

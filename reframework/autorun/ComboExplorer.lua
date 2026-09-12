@@ -349,8 +349,17 @@ local stage = { last_status = nil, last_result = nil }
 -- from the catalog means the pair is always one the catalog says is reachable.
 local trial = { pair = 1, delay = 4, last_status = nil, last_result = nil }
 local sweep = { last_status = nil, last_result = nil }
-local route = { path = "ComboExplorer_data/route/ground-truth.json",
-                built = nil, report = nil, status = nil }
+-- The routes on disk, cycled through by a button rather than typed: the panel
+-- has no text input, and a run has to be able to ask about one gap at a time.
+-- Measured why: the three-step route came back "move B never appeared" at all
+-- 144 combinations, and two gaps searched together cannot say which of them is
+-- wrong.
+local ROUTE_FILES = {
+    "ComboExplorer_data/route/ground-truth-ab.json",
+    "ComboExplorer_data/route/ground-truth.json",
+}
+local route = { which = 1, built = nil, report = nil, status = nil }
+route.path = ROUTE_FILES[1]
 
 -- WHERE THE FIGHTERS STAND FOR A TRIAL  (measured 2026-09-12, build 24176760)
 --
@@ -1340,6 +1349,12 @@ local function draw_route()
     imgui.text_colored(T("route_help"), UIKit.COLORS.Grey)
     kv("file", route.path)
 
+    if UIKit.styled_button("NEXT FILE##ce_route_next", THEME.neutral, UIKit.COLORS.White) then
+        route.which = (route.which % #ROUTE_FILES) + 1
+        route.path = ROUTE_FILES[route.which]
+        route.built, route.report, route.status = nil, nil, nil
+    end
+    imgui.same_line()
     if UIKit.styled_button(T("route_load") .. "##ce_route_load", THEME.neutral,
                            UIKit.COLORS.White) then
         route.built, route.report, route.status = nil, nil, nil
@@ -1400,6 +1415,11 @@ local function draw_route()
             else
                 local ok, err = RouteRun.start({
                     route = route.built,
+                    catalog = probe_d.catalog,
+                    -- The file's own list when it has one. A route that names a
+                    -- range is a route whose author knew something about the
+                    -- moves in it, and the default range is only a default.
+                    delays = route.built.delays,
                     collector = collector,
                     provenance = reg,
                     allow_injection = Config.data.allow_injection,

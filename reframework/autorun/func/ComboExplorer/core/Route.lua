@@ -158,10 +158,34 @@ end
 -- with four moves would otherwise be a night on its own. The cap is reported,
 -- not silently applied - a truncated grid that says nothing reads as a
 -- completed search.
+-- `delays` is either one list used for every gap, or a LIST PER GAP.
+--
+-- Per-gap because the gaps are not the same question and, once one of them is
+-- answered, searching it again is the expensive half of the run. Measured on
+-- build 24176760: A -> B linked at gap 40 and 44 and nowhere else in 4..72, so
+-- the three-move run has no business trying gap 1 at 2 any more - and the
+-- three-move grid is 144 trials where the two-move one was 18.
 function M.delay_grid(n_gaps, delays, max)
     delays = delays or M.DEFAULT_DELAYS
     max = max or 400
     if type(n_gaps) ~= "number" or n_gaps < 1 then return {}, "no gaps" end
+
+    -- A list of lists: one per gap, in order. A short list is an error rather
+    -- than a silent fallback - "gap 2 was swept over the default range" is not
+    -- something a reader should have to infer from a count.
+    local per_gap = nil
+    if type(delays[1]) == "table" then
+        if #delays ~= n_gaps then
+            return {}, ("this route has %d gap(s) and the file names %d list(s) of delays")
+                :format(n_gaps, #delays)
+        end
+        per_gap = delays
+        for i, list in ipairs(per_gap) do
+            if type(list) ~= "table" or #list == 0 then
+                return {}, ("the delay list for gap %d is empty"):format(i)
+            end
+        end
+    end
 
     local out = {}
     local truncated = false
@@ -175,7 +199,7 @@ function M.delay_grid(n_gaps, delays, max)
             out[#out + 1] = row
             return
         end
-        for _, d in ipairs(delays) do
+        for _, d in ipairs(per_gap and per_gap[depth] or delays) do
             acc[depth] = d
             recurse(depth + 1, acc)
             if truncated then return end
@@ -184,7 +208,9 @@ function M.delay_grid(n_gaps, delays, max)
     recurse(1, {})
 
     local total = 1
-    for _ = 1, n_gaps do total = total * #delays end
+    for i = 1, n_gaps do
+        total = total * #(per_gap and per_gap[i] or delays)
+    end
     if truncated then
         return out, ("%d combination(s) of %d were not tried - the grid is %d "
             .. "gaps of %d values and the cap is %d")

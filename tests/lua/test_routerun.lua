@@ -173,6 +173,64 @@ do
     RR.stop()
 end
 
+
+-- --- the whole notation group is what was asked for ---------------------------
+
+t.group("a step expects every id its notation names")
+
+-- Measured on build 24176760: the route named 900 for "2 + SP" and the game
+-- produced 903, which is the SAME notation in the same catalog - one of the
+-- thirteen ambiguous groups Probe D counts. Nineteen of thirty trials came back
+-- "saw action id(s) 903 instead" on a combo that had in fact connected.
+
+do
+    RR.stop()
+    -- A catalog where one notation names two ids, which is the shape that
+    -- caused it.
+    local cat = { groups = {
+        g1 = { notation = "AUTO + 强", action_ids = { 660 } },
+        g2 = { notation = "3 + 中", action_ids = { 655 } },
+        g3 = { notation = "2 + SP", action_ids = { 900, 903 } },
+    } }
+    local inj = injector({})
+    RR.start({ route = ROUTE, collector = collector(), injector = inj,
+               catalog = cat, delays = { 4 } })
+    drive(inj, 1)
+
+    local exp = inj.started[1].expected
+    t.eq(#exp[3], 2, "the step that named 900 expects both ids of its group")
+    local ids = {}
+    for _, id in ipairs(exp[3]) do ids[id] = true end
+    t.ok(ids[900] and ids[903], "900 and 903 - the catalog says they are one notation")
+    t.eq(#exp[1], 1, "a group with one id still expects one")
+    RR.stop()
+end
+
+do
+    -- No catalog: the file's id is all there is. That is the honest fallback,
+    -- not a reason to refuse - a run can start before a battle resolves one.
+    RR.stop()
+    local inj = injector({})
+    RR.start({ route = ROUTE, collector = collector(), injector = inj, delays = { 4 } })
+    drive(inj, 1)
+    t.eq(#inj.started[1].expected[3], 1, "one id, the one the file named")
+    t.eq(inj.started[1].expected[3][1], 900, "unchanged")
+    RR.stop()
+end
+
+do
+    -- An id the catalog does not have keeps the file's own. Route.build already
+    -- refuses that case with a catalog present; this is the belt.
+    RR.stop()
+    local cat = { groups = { g = { notation = "x", action_ids = { 1 } } } }
+    local inj = injector({})
+    RR.start({ route = ROUTE, collector = collector(), injector = inj,
+               catalog = cat, delays = { 4 } })
+    drive(inj, 1)
+    t.eq(inj.started[1].expected[1][1], 660, "the step keeps what the file said")
+    RR.stop()
+end
+
 -- --- retries -------------------------------------------------------------------
 
 t.group("a trial that measured nothing has not tried its combination")

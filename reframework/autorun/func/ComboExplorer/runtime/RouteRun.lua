@@ -83,6 +83,9 @@ function M.start(opts)
     run = {
         injector = opts.injector or default_injector(),
         route = route,
+        -- For expected_for. Absent is a real case - a run before a battle
+        -- resolves the catalog - and costs the group expansion, not the run.
+        catalog = opts.catalog,
         grid = grid,
         -- Carried, not swallowed. A capped grid that says nothing reads as a
         -- completed search.
@@ -123,9 +126,37 @@ M.key_for = key_for
 -- The route is what the operator said they wanted pressed, so it is also what
 -- must come out. Building this anywhere else would be a second statement of the
 -- same intent, free to disagree with the first.
-local function expected_for(route)
+--
+-- WHY THE WHOLE NOTATION GROUP, NOT THE ONE ID THE FILE NAMES
+--
+-- Measured on build 24176760. The three-move route named 900 for "2 + SP" and
+-- the game produced 903 - which is the SAME notation in the same catalog, one
+-- of the thirteen ambiguous groups Probe D counts. Nineteen of thirty trials
+-- came back "move B never appeared; saw action id(s) 903 instead" on a combo
+-- that had in fact connected.
+--
+-- action_id_canonical resolves that group to 900, and it is not wrong: it
+-- measured what the button produces from a STANDING character. Which member of
+-- a group comes out mid-combo is a different question and nobody has measured
+-- it. Accepting the group is what the operator meant - they wrote a notation,
+-- and the catalog says these ids are that notation - and it does not pretend
+-- the narrower question has been answered.
+--
+-- Without a catalog the file's id is all there is, which is the honest fallback
+-- rather than a reason to refuse.
+local function expected_for(route, catalog)
     local out = {}
-    for i, s in ipairs(route.steps) do out[i] = { s.action_id } end
+    for i, s in ipairs(route.steps) do
+        local ids = { s.action_id }
+        if catalog then
+            local g = Route.find(catalog, s.action_id)
+            if g and type(g.action_ids) == "table" and #g.action_ids > 0 then
+                ids = {}
+                for _, id in ipairs(g.action_ids) do ids[#ids + 1] = id end
+            end
+        end
+        out[i] = ids
+    end
     return out
 end
 M.expected_for = expected_for
@@ -141,7 +172,7 @@ local function start_one(delays)
         allow_injection = run.allow_injection,
         route = run.route,
         delays = delays,
-        expected = expected_for(run.route),
+        expected = expected_for(run.route, run.catalog),
         edge_id = ("%s@%s"):format(tostring(run.route.id), key),
         attempt = run.attempts[key],
         stage_cfg = run.stage_cfg,

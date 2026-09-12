@@ -3,10 +3,45 @@
   "id": "zangief-assist-ground-truth",
   "character": "Zangief",
   "control_scheme": "modern",
-  "note": "Named by the operator (#48) as a combo they know connects: assist heavy into forward-medium into down-special. Run to find out whether this pipeline can see a LINK at all - #12's first 202 rows found 8 and every one was a Super Art, which connects from a cancel window rather than a link window. If no gap links this, every negative in that file is unexplained.",
+  "note": "Named by the operator (#48) as a combo they know connects. The first two steps were measured on their own first: A -> B links at gap 40 and 44 and nowhere else in 4..72 - earlier than 40 the second input is eaten by the heavy's recovery, at 48 it whiffs, and past 52 the combo counter has already reset. So gap 1 is pinned to what was measured and only gap 2 is searched: 144 trials become 30, and a gap 1 that is known wrong is not tried again.",
   "steps": [
-    { "action_id": 660, "input_method": "simple", "notation": "AUTO + 强" },
-    { "action_id": 655, "input_method": "manual", "notation": "3 + 中" },
-    { "action_id": 900, "input_method": "simple", "notation": "2 + SP" }
+    {
+      "action_id": 660,
+      "input_method": "simple",
+      "notation": "AUTO + 强"
+    },
+    {
+      "action_id": 655,
+      "input_method": "manual",
+      "notation": "3 + 中"
+    },
+    {
+      "action_id": 900,
+      "input_method": "simple",
+      "notation": "2 + SP"
+    }
+  ],
+  "delays": [
+    [
+      40,
+      44
+    ],
+    [
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      14,
+      16,
+      20,
+      24,
+      28,
+      32,
+      36,
+      40,
+      44
+    ]
   ]
 }
