@@ -58,6 +58,9 @@ M.PHASE = {
     BUTTON_BITS  = "button_bits",   -- #7
     DIRECTION    = "direction",     -- #8
     ACTION_SWEEP = "action_sweep",  -- #9
+    -- A button that has no single-button notation anywhere in the catalog, held
+    -- TOGETHER with one that does. See paired_button_groups.
+    PAIRED_BUTTON = "paired_button",
 }
 
 -- The plan says three frames, single bit, from neutral. Kept here rather than
@@ -360,6 +363,67 @@ local function single_button_groups(catalog)
     return by_button
 end
 
+-- Groups whose notation is exactly TWO buttons and no direction.
+--
+-- WHY THIS EXISTS
+--
+-- conclude_button_bits reads a bit's identity off a single-button notation that
+-- contains the action the bit produced. AUTO has no single-button notation on
+-- any shipped catalog - it only ever appears as "AUTO + <strength>" - so it can
+-- never be witnessed that way however perfectly the sweep runs. Measured on
+-- build 24176760: modern_button_bits came back partial with AUTO unwitnessed,
+-- and every route needing it was refused by name (22 of 378 worklist pairs, 11
+-- catalog rows, and the whole of assist-started combos).
+--
+-- But "AUTO + 弱" IS a notation, and 弱 is a button the single-bit phase does
+-- witness. So hold a candidate bit together with the bit that phase derived for
+-- the partner, and see whether the action that comes out belongs to the pair's
+-- group. That is the same rule as the single-button path - membership of the
+-- group the notation names - applied to a notation with two names in it.
+--
+-- Returned keyed by the pair, sorted so "AUTO + L" and "L + AUTO" are one key.
+local function paired_button_groups(catalog)
+    local by_pair = {}
+    for _, g in pairs(catalog.groups or {}) do
+        local parsed = InputMask.parse(g.notation)
+        if parsed and not parsed.followup and not parsed.air and not parsed.any_button
+            and parsed.dirs == "" and #parsed.buttons == 2 then
+            local a, b = parsed.buttons[1], parsed.buttons[2]
+            if a > b then a, b = b, a end
+            local key = a .. "+" .. b
+            local e = by_pair[key]
+            if not e then
+                e = { buttons = { a, b }, ids = {}, notations = {} }
+                by_pair[key] = e
+            end
+            for _, id in ipairs(g.action_ids or {}) do e.ids[id] = true end
+            e.notations[#e.notations + 1] = g.notation
+        end
+    end
+    return by_pair
+end
+
+-- For a button with no single-button notation, the pair that can witness it:
+-- one whose OTHER button does have a single-button notation, so the single-bit
+-- phase will have derived a bit for it.
+--
+-- Returns the pair entry and the partner's name, or nil when this catalog
+-- cannot witness the button at all - which is a real answer and the reason the
+-- caller must not guess.
+local function witnessing_pair(catalog, button, singles)
+    local best, partner = nil, nil
+    for _, e in pairs(paired_button_groups(catalog)) do
+        local a, b = e.buttons[1], e.buttons[2]
+        local other = (a == button) and b or ((b == button) and a or nil)
+        if other and singles[other] then
+            -- Deterministic: the plan has to be the same list on two runs, or a
+            -- resumed sweep is a different experiment.
+            if best == nil or other < partner then best, partner = e, other end
+        end
+    end
+    return best, partner
+end
+
 -- The ordered list of inputs to write. Each step is a plain record; the runtime
 -- shim reads `mask`, holds it for `hold_ticks`, releases, and reports back.
 function M.plan(session)
@@ -412,6 +476,50 @@ function M.plan(session)
             purpose = ("hold bit 0x%X alone and record what came out"):format(bit),
             tests = { "modern_button_bits" },
         }
+    end
+
+    -- #47 - the buttons a single bit can never witness, held with one it can.
+    --
+    -- Emitted for EVERY button bit rather than only the provisional guess for
+    -- the button, because the question is which bit is AUTO and sweeping by the
+    -- guess would assume the answer - the same reason the phase above sweeps
+    -- bits and not names. The partner's bit comes from the provisional map,
+    -- which is the bootstrap this whole sweep already runs on; conclude checks
+    -- that the single-bit phase derived the SAME bit for that partner before it
+    -- believes any of this, so a wrong guess costs the evidence rather than
+    -- producing a wrong answer.
+    do
+        local singles = single_button_groups(session.catalog)
+        local provisional = Provenance.provisional(session.provenance, "modern_button_bits") or {}
+        for _, name in ipairs(sorted_keys(provisional)) do
+            if not singles[name] then
+                local pair, partner = witnessing_pair(session.catalog, name, singles)
+                local partner_bit = pair and provisional[partner] or nil
+                if pair and type(partner_bit) == "number" then
+                    for _, bit in ipairs(bits) do
+                        -- Pressing the partner's own bit twice is the partner
+                        -- alone, which the phase above already answered.
+                        if bit ~= partner_bit then
+                            add {
+                                phase = M.PHASE.PAIRED_BUTTON,
+                                mask = bit | partner_bit,
+                                bit = bit,
+                                button = name,
+                                partner = partner,
+                                partner_bit = partner_bit,
+                                pair_notations = pair.notations,
+                                mirror = false,
+                                hold_ticks = session.hold_ticks,
+                                purpose = ("hold bit 0x%X with %s's 0x%X and see whether "
+                                    .. "%s + %s came out"):format(bit, partner, partner_bit,
+                                                                  name, partner),
+                                tests = { "modern_button_bits" },
+                            }
+                        end
+                    end
+                end
+            end
+        end
     end
 
     -- #8 - each direction bit alone, on BOTH sides. One side cannot answer the
@@ -679,6 +787,69 @@ local function conclude_button_bits(session, steps)
     -- What matters instead is that the operator can SEE the cost, so each
     -- entry carries how many probeable rows it takes out. One row is a
     -- rounding error; 599 means the sweep was bad and should be re-run.
+    -- #47 - the paired phase, read only after the single-bit phase has settled,
+    -- because it is built on top of it.
+    --
+    -- A paired step held `bit | partner_bit`, where partner_bit came from the
+    -- PROVISIONAL map at plan time. That guess is only allowed to stand if the
+    -- single-bit phase derived the same bit for the same partner; otherwise the
+    -- step pressed something other than what its purpose says and its evidence
+    -- is thrown away rather than reinterpreted.
+    local by_pair = paired_button_groups(session.catalog)
+    for _, s in ipairs(steps) do
+        if s.phase == M.PHASE.PAIRED_BUTTON then
+            local obs = session.observations[s.id]
+            local a, b = s.button, s.partner
+            if a > b then a, b = b, a end
+            local pair = by_pair[a .. "+" .. b]
+            if not obs then
+                problems[#problems + 1] = { bit = s.bit, button = s.button, reason = "not run" }
+            elseif derived[s.partner] ~= s.partner_bit then
+                problems[#problems + 1] = {
+                    bit = s.bit, button = s.button,
+                    reason = ("the partner %s was not derived as the 0x%X this step held, "
+                        .. "so what it pressed is not what it says"):format(
+                        tostring(s.partner), s.partner_bit),
+                }
+            elseif derived[s.button] ~= nil then
+                -- Already answered by an earlier paired step. Not a problem -
+                -- the sweep tries every bit on purpose - but a SECOND bit
+                -- producing the pair would be, and that is checked below.
+                if derived[s.button] ~= s.bit and pair and pair.ids[obs.action_id] then
+                    problems[#problems + 1] = {
+                        bit = s.bit, button = s.button, action_id = obs.action_id,
+                        reason = "two bits produced the same pair",
+                        other_bit = derived[s.button],
+                    }
+                end
+            elseif session.neutral_action_id ~= nil
+                and obs.action_id == session.neutral_action_id then
+                -- Silent. Most bits in this phase are expected to produce
+                -- nothing or something else; only the one that produces the
+                -- pair is evidence, and a problem entry per bit would bury it.
+                local _ = nil
+            elseif pair and pair.ids[obs.action_id] then
+                -- The bit is not free if the single-bit phase already gave it a
+                -- name. Pressing M + L produces "L + M", which is a real pair
+                -- and would otherwise be read as "M is AUTO".
+                local taken = nil
+                for name, bit in pairs(derived) do
+                    if bit == s.bit then taken = name break end
+                end
+                if taken then
+                    problems[#problems + 1] = {
+                        bit = s.bit, button = s.button, action_id = obs.action_id,
+                        reason = ("the bit that produced %s + %s is already %s"):format(
+                            s.button, s.partner, taken),
+                    }
+                else
+                    derived[s.button] = s.bit
+                    saw_any = true
+                end
+            end
+        end
+    end
+
     local provisional = Provenance.provisional(reg, "modern_button_bits") or {}
     local unwitnessed = {}
     for _, name in ipairs(sorted_keys(provisional)) do
@@ -687,7 +858,11 @@ local function conclude_button_bits(session, steps)
                 button = name,
                 why = by_button[name]
                     and "the sweep pressed every bit and none produced it"
-                    or "this catalog has no single-button notation for it",
+                    or (witnessing_pair(session.catalog, name, by_button)
+                        and "this catalog has no single-button notation for it, and no "
+                            .. "bit held with a partner produced the pair either"
+                        or "this catalog has no single-button notation for it, and no "
+                            .. "two-button notation whose other button has one"),
                 probeable_rows = M.rows_needing(session.catalog, name),
             }
         end
@@ -842,7 +1017,18 @@ function M.conclude(session)
 
     local bits, bit_problems, bit_err, unwitnessed = conclude_button_bits(session, steps)
     if bits then
-        local note = ("derived from %d single-bit step(s)"):format(#steps)
+        -- Counted by phase rather than as #steps, which is every step in the
+        -- plan - direction and action sweep included - and read as though the
+        -- button map came from all of them.
+        local n_single, n_paired = 0, 0
+        for _, s in ipairs(steps) do
+            if s.phase == M.PHASE.BUTTON_BITS then n_single = n_single + 1
+            elseif s.phase == M.PHASE.PAIRED_BUTTON then n_paired = n_paired + 1 end
+        end
+        local note = ("derived from %d single-bit step(s)"):format(n_single)
+        if n_paired > 0 then
+            note = note .. (" and %d paired step(s)"):format(n_paired)
+        end
         -- Named in the note rather than left to be noticed by whoever later
         -- asks the profile to press one of them, and carrying what each one
         -- costs. The map genuinely does not contain these; the reader needs to

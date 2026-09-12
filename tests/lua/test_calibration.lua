@@ -920,6 +920,155 @@ do
     end
 end
 
+
+-- =========================================================
+t.group("the buttons a single bit can never witness")
+
+-- #47, measured on build 24176760. conclude_button_bits reads a bit's identity
+-- off a SINGLE-button notation containing the action the bit produced. AUTO has
+-- no single-button notation on any shipped catalog - only "AUTO + <strength>" -
+-- so it was reported unwitnessed on every possible run, and every route needing
+-- it was refused by name: 22 of 378 worklist pairs, and the whole of
+-- assist-started combos.
+--
+-- "AUTO + 弱" IS a notation, and 弱 the single-bit phase does witness. So hold a
+-- candidate bit with the partner's bit and ask the same question of the pair's
+-- group.
+
+-- The action id the fixture's "AUTO + 弱" group carries, found the way the
+-- module finds it rather than typed in - a hard-coded id here would pass with
+-- the catalog lookup removed.
+local function pair_action_id(cat, a, b)
+    for _, g in pairs(cat.groups or {}) do
+        local parsed = InputMask.parse(g.notation)
+        if parsed and parsed.dirs == "" and #parsed.buttons == 2 then
+            local x, y = parsed.buttons[1], parsed.buttons[2]
+            if (x == a and y == b) or (x == b and y == a) then
+                return (g.action_ids or {})[1], g.notation
+            end
+        end
+    end
+end
+
+do
+    local s = new_session()
+    local steps = Calibration.plan(s)
+
+    local paired = {}
+    for _, st in ipairs(steps) do
+        if st.phase == "paired_button" then paired[#paired + 1] = st end
+    end
+    t.ok(#paired > 0, "the plan presses the bits it cannot otherwise witness")
+
+    local buttons, partner_bits = {}, {}
+    for _, st in ipairs(paired) do
+        buttons[st.button] = true
+        partner_bits[st.partner_bit] = true
+        t.eq(st.mask, st.bit | st.partner_bit, "each step holds the two bits together")
+        t.ok(st.bit ~= st.partner_bit, "and never the partner's bit twice")
+        t.eq(st.mirror, false, "buttons carry no side, so nothing is mirrored")
+    end
+    t.ok(buttons.AUTO, "AUTO is one of them")
+    t.is_nil(buttons.L, "a button with its own single-button notation is not")
+
+    -- Every bit but the partner's, because WHICH bit is AUTO is the question.
+    -- Sweeping only the guess would assume the answer, which is the same
+    -- mistake the single-bit phase is written to avoid.
+    local n_bits = 0
+    for _, st in ipairs(steps) do if st.phase == "button_bits" then n_bits = n_bits + 1 end end
+    local auto_steps = 0
+    for _, st in ipairs(paired) do if st.button == "AUTO" then auto_steps = auto_steps + 1 end end
+    t.eq(auto_steps, n_bits - 1, "one step per bit, minus the partner's own")
+end
+
+-- The happy path: the bit the guess named produces the pair, and AUTO settles.
+do
+    local s = new_session()
+    local steps = Calibration.plan(s)
+    local witnessable = derivable_buttons(s.catalog)
+    local provisional = Provenance.provisional(s.provenance, "modern_button_bits")
+    local name_of = {}
+    for name, bit in pairs(provisional) do name_of[bit] = name end
+    Calibration.observe(s, steps[1].id, { action_id = 1 })
+    for _, st in ipairs(steps) do
+        if st.phase == "button_bits" then
+            local name = name_of[st.bit]
+            Calibration.observe(s, st.id, { action_id = (name and witnessable[name]) or 1 })
+        elseif st.phase == "paired_button" then
+            -- The partner is read off the STEP, not assumed. The planner picks
+            -- it by name order among the pairs whose other button has a
+            -- single-button notation, and asserting "AUTO + 弱" here passed only
+            -- because of which letter sorts first - a test that would go green
+            -- against a planner pairing with something else entirely.
+            local pair_id = pair_action_id(s.catalog, st.button, st.partner)
+            -- Only the bit the guess calls AUTO produces the pair. Every other
+            -- bit held with the partner produces nothing this catalog names.
+            local produced = (st.bit == provisional.AUTO) and pair_id or 1
+            t.ok(produced ~= nil, "the planner picked a pair the catalog has: "
+                 .. st.button .. " + " .. st.partner)
+            Calibration.observe(s, st.id, { action_id = produced })
+        end
+    end
+
+    local rep = Calibration.conclude(s)
+    local v = rep.values.modern_button_bits
+    t.ok(v ~= nil, "the entry settles")
+    t.eq(v.value.AUTO, provisional.AUTO, "AUTO takes the bit that produced AUTO + 弱")
+    t.eq(v.value.L, provisional.L, "and the single-bit findings are untouched")
+    t.ok(tostring(v.note):find("paired step") ~= nil,
+         "the note says the map came from two phases, not one: " .. tostring(v.note))
+    t.is_nil((function()
+        for _, u in ipairs(v.unwitnessed or {}) do
+            if u.button == "AUTO" then return true end
+        end
+    end)(), "and AUTO is no longer reported as unwitnessed")
+end
+
+-- The refusals. Each of these would produce a WRONG bit rather than a missing
+-- one, and a wrong bit presses the wrong button on every trial afterwards.
+do
+    -- A bit the single-bit phase already named. Holding M with L produces
+    -- "L + M", a real two-button group - and read carelessly that says M is
+    -- AUTO.
+    local s = new_session()
+    local steps = Calibration.plan(s)
+    local witnessable = derivable_buttons(s.catalog)
+    local provisional = Provenance.provisional(s.provenance, "modern_button_bits")
+    local name_of = {}
+    for name, bit in pairs(provisional) do name_of[bit] = name end
+    Calibration.observe(s, steps[1].id, { action_id = 1 })
+    for _, st in ipairs(steps) do
+        if st.phase == "button_bits" then
+            local name = name_of[st.bit]
+            Calibration.observe(s, st.id, { action_id = (name and witnessable[name]) or 1 })
+        elseif st.phase == "paired_button" then
+            -- M's bit is the one that "produces the pair" here. It must not win.
+            local pair_id = pair_action_id(s.catalog, st.button, st.partner)
+            local produced = (st.bit == provisional.M) and pair_id or 1
+            Calibration.observe(s, st.id, { action_id = produced })
+        end
+    end
+
+    local rep = Calibration.conclude(s)
+    local v = rep.values.modern_button_bits
+    t.ok(v ~= nil, "the entry still settles")
+    t.is_nil(v.value.AUTO, "AUTO is NOT taken from a bit that is already M")
+    t.eq(v.value.M, provisional.M, "and M keeps its own bit")
+end
+
+do
+    -- No catalog groups at all: nothing to witness with, and the reason has to
+    -- distinguish "no pair exists" from "the pair was pressed and never came
+    -- out". They send an operator to different places.
+    local cat = fresh_catalog()
+    cat.groups = {}
+    local s = Calibration.new({ catalog = cat })
+    local steps = Calibration.plan(s)
+    local n = 0
+    for _, st in ipairs(steps) do if st.phase == "paired_button" then n = n + 1 end end
+    t.eq(n, 0, "a catalog with no two-button notation is not swept for one")
+end
+
 -- =========================================================
 t.group("a new profile does not drop what the machine already knew")
 
