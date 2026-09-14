@@ -217,6 +217,181 @@ end
 t.eq(claimed_damage, 0, "and nothing claims a damage figure it does not have")
 t.ok(unknown_counted, "the missing data is counted on the route rather than assumed away")
 
+-- --- the Drive budget ----------------------------------------------------------
+
+t.group("the Drive budget counts spend from the source and from a rush")
+
+-- A hand-built world, so the numbers are the test's own: two normals that
+-- build Drive, two OD specials the source prices at -20000, one move with no
+-- drive figure at all, and edges between them - one of them a Drive Rush
+-- Cancel carrying the rush's cost the way the generator's contract says.
+local DFD = FrameData.index({ moves = {
+    { numpad = "5LP",   drive_gain = 500,    damage = 300,  super_gain_on_hit = 300 },
+    { numpad = "5MP",   drive_gain = 1000,   damage = 600,  super_gain_on_hit = 300 },
+    { numpad = "236PP", drive_gain = -20000, damage = 1200, super_gain_on_hit = 500 },
+    { numpad = "623PP", drive_gain = -20000, damage = 1400, super_gain_on_hit = 500 },
+    { numpad = "5HP",   drive_gain = nil,    damage = 800,  super_gain_on_hit = 300 },
+} })
+
+local function dnode(id, classic, category)
+    return { action_id = id, input_method = "manual", notation = "N" .. id,
+             classic = classic, category = category or "normal",
+             canonical_status = "verified" }
+end
+local N_LP, N_MP = dnode(1, "5LP"), dnode(2, "5MP")
+local N_OD1, N_OD2 = dnode(3, "236PP", "od_special"), dnode(4, "623PP", "od_special")
+local N_HP = dnode(5, "5HP")
+
+local function dedge(a, b, over)
+    local e = {
+        id = ("%d:manual->%d:manual"):format(a.action_id, b.action_id),
+        from = a, to = b, reasons = { "chain_cancel" }, confidence = "medium",
+        requires_runtime_validation = {}, provenance = Schema.provenance({}),
+    }
+    for k, v in pairs(over or {}) do e[k] = v end
+    return Schema.new(Schema.KIND.EDGE, e)
+end
+local function drc_edge(a, b, cost)
+    return dedge(a, b, {
+        id = ("%d:manual->drc->%d:manual"):format(a.action_id, b.action_id),
+        via = "drive_rush_cancel", reasons = { "drive_rush_cancel" },
+        basis = { drive_cost = cost },
+    })
+end
+
+local function only(result, id)
+    for _, route in ipairs(result.routes) do if route.id == id then return route end end
+    return nil
+end
+
+t.eq(RS.DEFAULTS.max_drive_spend, 60000,
+     "the default budget is the whole gauge as the runtime reads it")
+
+do
+    -- LP > OD1 : 20000 from the source's negative gain.
+    -- LP > drc > MP : the rush's 30000, and MP builds rather than spends.
+    -- MP > drc > OD2 : 30000 + 20000 = 50000.
+    local dg = GraphStore.build({
+        dedge(N_LP, N_OD1),
+        dedge(N_LP, N_MP),
+        drc_edge(N_LP, N_MP, 30000),
+        drc_edge(N_MP, N_OD2, 30000),
+    }, IDENTITY)
+    local res = RS.search(dg, { frame_idx = DFD, max_steps = 3, max_od_steps = 2,
+                                beam_width = 100, max_routes = 100 })
+
+    local od = only(res, "1:manual>3:manual")
+    t.ok(od ~= nil, "a route into an OD special is found")
+    t.eq(od.basis.predicted_drive_spend, 20000, "its spend is the OD move's -20000, as spend")
+    t.eq(od.basis.drive_spend_unknown_steps, 0, "with nothing unknown")
+    t.eq(#od.steps, 2, "a route with no rush has one step per move, as before")
+
+    local direct = only(res, "1:manual>2:manual")
+    local rush = only(res, "1:manual>drc>2:manual")
+    t.ok(direct ~= nil and rush ~= nil, "the direct route and the DRC route are both found")
+    t.ok(direct.id ~= rush.id, "under different ids")
+    t.ok(direct.shape_key ~= rush.shape_key, "and different shapes, so collapsing cannot fold them")
+    t.eq(direct.basis.predicted_drive_spend, 0, "a normal that builds Drive spends none")
+    t.eq(rush.basis.predicted_drive_spend, 30000, "the rush's drive_cost is spent")
+    t.eq(rush.basis.drive_rush_cancels, 1, "and the rush is counted")
+
+    -- The shape the runner receives: the same three steps Sweep builds.
+    t.eq(#rush.steps, 3, "the DRC route carries three steps")
+    t.eq(rush.length, 2, "while its length is still two moves")
+    t.eq(rush.steps[1].action_id, 1, "A first")
+    t.eq(rush.steps[2].kind, "drive_rush_cancel", "then the rush")
+    t.is_nil(rush.steps[2].action_id, "which names no action id")
+    t.is_nil(rush.steps[2].notation, "and no notation")
+    t.eq(rush.steps[2].index, 2, "numbered as the compiler numbers steps")
+    t.eq(rush.steps[2].drive_cost, 30000, "carrying its cost")
+    t.eq(rush.steps[2].via_edge, "1:manual->drc->2:manual", "and the edge it came from")
+    t.eq(rush.steps[3].action_id, 2, "then B")
+    t.eq(rush.steps[3].index, 3, "at index 3")
+    t.is_nil(rush.steps[2].delay_ticks, "and no step carries an invented delay")
+    local ok, problems = Schema.validate(Schema.KIND.ROUTE, rush)
+    t.ok(ok, "the DRC route validates as ce.route.v1"
+         .. (problems and problems[1] and (" (" .. problems[1].field .. ")") or ""))
+
+    local SC = require("func/ComboExplorer/core/SequenceCompiler")
+    local found = SC.unplayable(rush)
+    t.eq(found[1] and found[1].kind, SC.UNPLAYABLE.DRIVE_RUSH,
+         "and the compiler refuses it as a drive rush, the way the sweep does")
+
+    local stacked = only(res, "1:manual>2:manual>drc>4:manual")
+    t.ok(stacked ~= nil, "a rush into an OD special is within a 60000 budget")
+    t.eq(stacked.basis.predicted_drive_spend, 50000, "at 30000 for the rush plus 20000 for OD")
+    -- Two rushes and an OD special is 80000: over a full gauge.
+    t.is_nil(only(res, "1:manual>drc>2:manual>drc>4:manual"),
+             "two rushes then an OD special (80000) is over a full gauge")
+    t.eq(res.stats.pruned.max_drive_spend, 1, "and that one drop is counted")
+
+    local tight = RS.search(dg, { frame_idx = DFD, max_steps = 3, max_od_steps = 2,
+                                  beam_width = 100, max_routes = 100,
+                                  max_drive_spend = 40000 })
+    t.is_nil(only(tight, "1:manual>2:manual>drc>4:manual"),
+             "under a 40000 budget the 50000 route is dropped")
+    t.ok(only(tight, "1:manual>drc>2:manual") ~= nil, "while the 30000 one survives")
+    -- MP > drc > OD2 from MP (50000), LP > MP > drc > OD2 (50000), and the
+    -- two-rush route (80000).
+    t.eq(tight.stats.pruned.max_drive_spend, 3, "and every drop is counted like any other cap")
+
+    local none = RS.search(dg, { frame_idx = DFD, max_steps = 3, max_od_steps = 2,
+                                 beam_width = 100, max_routes = 100, max_drive_spend = 0 })
+    t.ok(only(none, "1:manual>2:manual") ~= nil, "a zero budget keeps a route that spends nothing")
+    t.is_nil(only(none, "1:manual>3:manual"), "and drops one that spends")
+    t.ok((none.stats.pruned.max_drive_spend or 0) >= 3, "counting every one of them")
+end
+
+t.group("a missing Drive figure never prunes")
+
+do
+    -- HP has no drive_gain in the source; the second rush carries no cost.
+    local dg = GraphStore.build({
+        dedge(N_LP, N_HP),
+        drc_edge(N_HP, N_MP, nil),
+        drc_edge(N_LP, N_OD1, nil),
+    }, IDENTITY)
+    local res = RS.search(dg, { frame_idx = DFD, max_steps = 3,
+                                beam_width = 100, max_routes = 100, max_drive_spend = 0 })
+
+    local hp = only(res, "1:manual>5:manual")
+    t.ok(hp ~= nil, "a move with no drive figure survives a zero budget")
+    t.eq(hp.basis.drive_spend_unknown_steps, 1, "counted as unknown")
+    t.eq(hp.basis.predicted_drive_spend, 0, "and adding nothing to the known spend")
+
+    local costless = only(res, "1:manual>5:manual>drc>2:manual")
+    t.ok(costless ~= nil, "a DRC edge with no drive_cost survives a zero budget")
+    t.eq(costless.basis.drive_spend_unknown_steps, 2, "and is counted as unknown too")
+    local recorded = false
+    for _, u in ipairs(costless.requires_runtime_validation) do
+        if u == "drive_rush_cancel_drive_cost" then recorded = true end
+    end
+    t.ok(recorded, "with the gap recorded on the route")
+
+    -- The rush's cost is unknown, but the OD move after it is not: the known
+    -- part still prunes.
+    t.is_nil(only(res, "1:manual>drc>3:manual"),
+             "a known spend beside an unknown one is still judged on what is known")
+    t.eq(res.stats.pruned.max_drive_spend, 1, "and only that one was dropped")
+
+    local negative = GraphStore.build({ drc_edge(N_LP, N_MP, -30000) }, IDENTITY)
+    local nres = RS.search(negative, { frame_idx = DFD, max_steps = 2, max_drive_spend = 0 })
+    local nr = only(nres, "1:manual>drc>2:manual")
+    t.ok(nr ~= nil, "a negative drive_cost is not flipped into a spend")
+    t.eq(nr.basis.drive_spend_unknown_steps, 1, "it is read as no figure")
+end
+
+t.group("the Drive budget does not bind on the real graph")
+
+do
+    local plain = search({ max_steps = 4, beam_width = 4000, max_routes = 20000 })
+    t.is_nil(plain.stats.pruned.max_drive_spend,
+             "with one OD step per route, no Zangief route is near a full gauge")
+    local off = search({ max_steps = 4, beam_width = 4000, max_routes = 20000,
+                         max_drive_spend = math.huge })
+    t.eq(#plain.routes, #off.routes, "so the route count is the same with the budget lifted")
+end
+
 -- --- no silent caps ----------------------------------------------------------
 
 t.group("caps are reported")

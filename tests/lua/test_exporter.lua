@@ -193,6 +193,33 @@ t.is_nil(rdoc.routes[1].offline_score.damage, "which carries no measured-soundin
 local step = rdoc.routes[1].steps[1]
 t.is_nil(step.delay_ticks, "and no step carries a delay, because none has been measured")
 
+t.group("a route through a Drive Rush Cancel exports with its rush step")
+
+do
+    -- Built by hand: the generator's DRC edges are another change's to make.
+    local function n(id, notation)
+        return { action_id = id, input_method = "manual", notation = notation,
+                 classic = "LP", category = "normal", canonical_status = "verified" }
+    end
+    local drc = Schema.new(Schema.KIND.EDGE, {
+        id = "1:manual->drc->2:manual", via = "drive_rush_cancel",
+        from = n(1, "2 + \228\184\173"), to = n(2, "\229\188\186"),
+        reasons = { "drive_rush_cancel" }, confidence = "low",
+        basis = { drive_cost = 30000 },
+        requires_runtime_validation = {}, provenance = PROV,
+    })
+    local dg = GraphStore.build({ drc }, { character = "zangief", game_patch = "p" })
+    local dr = Scoring.apply(RouteSearch.search(dg, { character = "zangief",
+        control_scheme = "modern", max_steps = 2, provenance = PROV }).routes)
+    local ddoc, drej = Exporter.routes(dr, OPTS)
+    t.ok(ddoc ~= nil, "the document builds")
+    t.eq(#ddoc.routes, 1, "with the DRC route in it")
+    t.eq(#drej, 0, "and nothing rejected")
+    t.eq(ddoc.routes[1].steps[2].kind, "drive_rush_cancel", "carrying the rush as its own step")
+    t.is_nil(ddoc.routes[1].steps[2].action_id, "a step with no action id")
+    t.eq(ddoc.routes[1].offline_score.route_length, 2, "scored as two moves")
+end
+
 -- --- both at once ------------------------------------------------------------
 
 t.group("the pair of documents")

@@ -114,10 +114,47 @@ t.ok(partial_route.offline_score.predicted_damage_bound_reason:find("neither") ~
 t.is_nil(s.predicted_damage_is_upper_bound,
      "and the old unconditional flag is gone, not left alongside the honest one")
 
--- Drive spend is genuinely absent from the source, and is left absent.
-t.is_nil(s.predicted_drive_spend, "drive spend is not invented")
-t.eq(s.drive_spend_known, false, "and is marked unknown rather than zero")
-t.ok(s.od_steps ~= nil, "with the OD step count standing in for it")
+-- Drive spend is what the source says a move costs - a negative drive_gain -
+-- and it is only called known when every move in the route had a figure.
+local od_known, drive_gap
+for _, r in ipairs(routes) do
+    local sc = r.offline_score
+    if sc.od_steps > 0 and sc.drive_spend_known then od_known = od_known or r end
+    if (r.basis.drive_spend_unknown_steps or 0) > 0 then drive_gap = drive_gap or r end
+end
+t.ok(od_known ~= nil, "a route with an OD move and a drive figure on every step exists")
+t.ok(od_known.offline_score.predicted_drive_spend >= 20000,
+     "and its spend is the OD move's negative gain in the source ("
+     .. tostring(od_known and od_known.offline_score.predicted_drive_spend) .. ")")
+t.ok(drive_gap ~= nil, "a route with a move the source has no drive figure for exists")
+t.is_nil(drive_gap.offline_score.predicted_drive_spend,
+         "and its spend is not given - a floor under that name would read as the price")
+t.eq(drive_gap.offline_score.drive_spend_known, false, "it is marked unknown rather than zero")
+t.ok(s.od_steps ~= nil, "with the OD step count standing beside it either way")
+
+-- A Drive Rush Cancel step is not a move. Built by hand in the shape
+-- RouteSearch emits: A, the rush, B.
+do
+    local drc = Scoring.score({
+        steps = {
+            { index = 1, action_id = 1, input_method = "manual", notation = "2 + \228\184\173" },
+            { index = 2, kind = "drive_rush_cancel", drive_cost = 30000 },
+            { index = 3, action_id = 2, input_method = "manual", notation = "\229\188\186" },
+        },
+        basis = { predicted_damage_sum = 1500, damage_known_steps = 2,
+                  predicted_drive_spend = 30000, drive_spend_unknown_steps = 0 },
+    })
+    t.eq(drc.route_length, 2, "a DRC route is two moves long, not three")
+    t.eq(drc.steps_with_unparseable_notation, 0,
+         "the rush is not counted as a move whose notation could not be read")
+    t.eq(drc.input_method_counts.manual, 2, "nor as a manual press")
+    t.eq(drc.predicted_damage_complete, true,
+         "so the damage sum over both moves is still complete")
+    t.eq(drc.drive_rush_cancel_steps, 1, "the rush is counted apart")
+    t.eq(drc.predicted_drive_spend, 30000, "its cost is in the route's spend")
+    t.eq(drc.drive_spend_known, true, "which is known when nothing lacked a figure")
+    t.eq(drc.input_method_switches, 0, "and it does not break up the moves around it")
+end
 
 -- Super spend, unlike drive, is in the data - as a negative gain.
 local with_super

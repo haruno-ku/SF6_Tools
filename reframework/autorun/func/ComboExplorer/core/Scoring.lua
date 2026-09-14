@@ -102,25 +102,40 @@ function M.score(route, opts)
     local methods = { manual = 0, simple = 0, assist = 0 }
     local switches, repeats = 0, 0
 
-    for i, s in ipairs(route.steps) do
-        local shape = M.step_inputs(s.notation or s.classic or "")
-        if shape then
-            input_count = input_count + shape.total
-            motion_total = motion_total + shape.motion_length
-            hardest = math.max(hardest, shape.motion_length)
+    -- Moves only. A step with a `kind` - today only a Drive Rush Cancel - is
+    -- something done between two moves, with no notation and no action id.
+    -- Scored as a move it would be an unparseable step, a "manual" press, and
+    -- one more step than the damage sum was taken over, which would mark every
+    -- DRC route's damage incomplete for a reason that has nothing to do with
+    -- damage. Its input is not counted in execution_cost either: which input
+    -- a rush is on this build is exactly what is unmeasured (see
+    -- SequenceCompiler), so it is counted apart and left for a reader to weigh.
+    local n, rushes = 0, 0
+    local prev = nil
+    for _, s in ipairs(route.steps) do
+        if s.kind ~= nil then
+            if s.kind == "drive_rush_cancel" then rushes = rushes + 1 end
         else
-            unparseable = unparseable + 1
-        end
+            n = n + 1
+            local shape = M.step_inputs(s.notation or s.classic or "")
+            if shape then
+                input_count = input_count + shape.total
+                motion_total = motion_total + shape.motion_length
+                hardest = math.max(hardest, shape.motion_length)
+            else
+                unparseable = unparseable + 1
+            end
 
-        local m = s.input_method or "manual"
-        methods[m] = (methods[m] or 0) + 1
-        if i > 1 then
-            if (route.steps[i - 1].input_method or "manual") ~= m then switches = switches + 1 end
-            if route.steps[i - 1].action_id == s.action_id then repeats = repeats + 1 end
+            local m = s.input_method or "manual"
+            methods[m] = (methods[m] or 0) + 1
+            if prev then
+                if (prev.input_method or "manual") ~= m then switches = switches + 1 end
+                if prev.action_id == s.action_id then repeats = repeats + 1 end
+            end
+            prev = s
         end
     end
 
-    local n = #route.steps
     local basis = route.basis or {}
 
     -- The frame-table sum, and everything needed to read it honestly. Combo
@@ -165,11 +180,19 @@ function M.score(route, opts)
         -- which is the only spend figure the data actually contains.
         predicted_super_spend = (basis.predicted_super_gain ~= nil
             and basis.predicted_super_gain < 0) and -basis.predicted_super_gain or 0,
-        -- The drive cost of an OD move is in no frame table. Left nil rather
-        -- than filled with a plausible 3000, and the OD step count stands in
-        -- for it so a resource-free ranking still works.
-        predicted_drive_spend = nil,
-        drive_spend_known = false,
+        -- What RouteSearch added up from the source: every negative
+        -- drive_gain as spend, plus each Drive Rush Cancel's drive_cost. Known
+        -- only when nothing in the route lacked a figure - a move with no
+        -- drive_gain or a rush with no cost makes the sum a floor, and a floor
+        -- under this name would read as the price. So it is nil then, never a
+        -- plausible number, and the OD step count still stands beside it so a
+        -- resource-free ranking works either way.
+        predicted_drive_spend = (basis.predicted_drive_spend ~= nil
+            and basis.drive_spend_unknown_steps == 0) and basis.predicted_drive_spend or nil,
+        drive_spend_known = (basis.predicted_drive_spend ~= nil
+            and basis.drive_spend_unknown_steps == 0),
+        drive_spend_unknown_steps = basis.drive_spend_unknown_steps,
+        drive_rush_cancel_steps = rushes,
         od_steps = basis.od_steps or 0,
         super_steps = basis.super_steps or 0,
 

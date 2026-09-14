@@ -52,6 +52,19 @@ M.DEFAULTS = {
     max_routes           = 500,   -- total emitted
     max_od_steps         = 1,     -- OD moves per route
     max_super_steps      = 1,     -- super arts per route
+    -- Drive a route may spend, in the gauge's own units. A search bound like
+    -- the others - a route over it is one this run did not look at, not one
+    -- the game refuses - but the number is not picked from nothing: it is the
+    -- whole gauge as this project already reads it. GameAdapter.drive returns
+    -- the raw focus_new field, the pinned full gauge the stage control and
+    -- RunnerFsm's gauge evidence are tested against is 60000
+    -- (tests/lua/test_runnerfsm.lua), the upstream recorder's scene_state
+    -- stores a full starting Drive as 60000 (docs/COMBO_JSON_SPEC.md §3c), and
+    -- the frame source prices moves on the same scale: OD specials at
+    -- drive_gain -20000, a Drive Rush Cancel at -30000. Six bars of 10000.
+    -- Nothing here has measured it on this build; it is a ceiling on what a
+    -- route could spend from a full gauge, which is all a bound needs to be.
+    max_drive_spend      = 60000,
     min_confidence       = nil,   -- nil = take everything, including low
     allow_context_dependent = true,
     -- The catalog cannot say which action id a given input produces when
@@ -91,7 +104,32 @@ local function facts_for(node, frame_idx)
     f.known.damage = f.damage ~= nil
     f.known.drive = f.drive_gain ~= nil
     f.known.super = f.super_gain ~= nil
+    -- The source records Drive as gain, and a negative gain is the cost of
+    -- using the move (FrameData.drive_gain) - an OD special is -20000. A move
+    -- that builds Drive spends none of it; nil stays nil, because a move with
+    -- no figure has not been shown to be free.
+    if f.drive_gain ~= nil then f.drive_spend = math.max(0, -f.drive_gain) end
     return f
+end
+
+-- --- per-edge facts ----------------------------------------------------------
+
+M.VIA_DRIVE_RUSH = "drive_rush_cancel"
+
+-- What travelling this edge costs in Drive, over and above the two moves.
+-- Only a Drive Rush Cancel edge costs anything: the rush is a thing the player
+-- does between the moves, and its price rides on the edge as basis.drive_cost.
+--
+-- Returns is_drc, cost. cost is nil on a DRC edge that did not carry one -
+-- which is an unknown, not a free rush, and the budget treats it that way.
+-- The contract is a positive cost. A negative one is somebody's drive_gain
+-- copied across unconverted, and flipping its sign here would be guessing what
+-- they meant, so it is read as no figure at all.
+local function edge_drive(edge)
+    if type(edge) ~= "table" or edge.via ~= M.VIA_DRIVE_RUSH then return false, 0 end
+    local cost = type(edge.basis) == "table" and tonumber(edge.basis.drive_cost) or nil
+    if cost ~= nil and cost < 0 then cost = nil end
+    return true, cost
 end
 
 -- --- the running state of a partial route ------------------------------------
@@ -107,6 +145,15 @@ local function new_partial(node, facts)
             damage_known_steps = facts.known.damage and 1 or 0,
             predicted_drive_gain = facts.drive_gain or 0,
             drive_known_steps = facts.known.drive and 1 or 0,
+            -- The KNOWN part of what the route spends. Kept apart from the gain
+            -- sum rather than derived from it, because a route that builds 20000
+            -- with one move and spends 20000 on the next has a net gain of zero
+            -- and still needed 20000 in the gauge to do it.
+            predicted_drive_spend = facts.drive_spend or 0,
+            -- Moves with no drive figure, plus DRC edges with no drive_cost.
+            -- Neither prunes; both are why a spend total may be a floor.
+            drive_spend_unknown_steps = facts.known.drive and 0 or 1,
+            drive_rush_cancels = 0,
             predicted_super_gain = facts.super_gain or 0,
             super_known_steps = facts.known.super and 1 or 0,
             od_steps = facts.is_od and 1 or 0,
@@ -177,14 +224,31 @@ local function why_not(p, edge, node, facts, cfg)
         return "context_dependent_excluded"
     end
 
-    -- Resource budgets. These count steps rather than gauge units, because the
-    -- gauge cost of an OD move appears in no frame table - counting a thing that
-    -- is actually there beats inventing a number for a thing that is not.
+    -- Resource budgets. These two count steps rather than gauge units, because
+    -- no spend field exists in the frame table - counting a thing that is
+    -- actually there beats inventing a number for a thing that is not. The
+    -- Drive budget below works in gauge units, from the negative drive_gain
+    -- the source does carry, and only on the moves that carry one.
     if facts.is_od and p.resources.od_steps >= cfg.max_od_steps then
         return "max_od_steps"
     end
     if facts.is_super and p.resources.super_steps >= cfg.max_super_steps then
         return "max_super_steps"
+    end
+
+    -- The Drive budget, on what is KNOWN only. A move with no drive figure
+    -- and a DRC edge with no drive_cost add nothing here, so they can never
+    -- be the reason a route is dropped (see the header: a missing value never
+    -- prunes). The route may therefore survive while really being over; it
+    -- carries the unknown count so a reader can see that.
+    --
+    -- Checked last, so a route an older bound already stops is still counted
+    -- under that bound, and every count that existed before this one reads
+    -- the same.
+    if cfg.max_drive_spend ~= nil then
+        local _, cost = edge_drive(edge)
+        local spend = p.resources.predicted_drive_spend + (facts.drive_spend or 0) + (cost or 0)
+        if spend > cfg.max_drive_spend then return "max_drive_spend" end
     end
 
     return nil
@@ -202,6 +266,22 @@ local function extend(p, edge, node, facts)
     if facts.known.damage then r.damage_known_steps = r.damage_known_steps + 1 end
     r.predicted_drive_gain = r.predicted_drive_gain + (facts.drive_gain or 0)
     if facts.known.drive then r.drive_known_steps = r.drive_known_steps + 1 end
+    r.predicted_drive_spend = r.predicted_drive_spend + (facts.drive_spend or 0)
+    if not facts.known.drive then
+        r.drive_spend_unknown_steps = r.drive_spend_unknown_steps + 1
+    end
+    local is_drc, rush_cost = edge_drive(edge)
+    if is_drc then
+        r.drive_rush_cancels = r.drive_rush_cancels + 1
+        if rush_cost ~= nil then
+            r.predicted_drive_spend = r.predicted_drive_spend + rush_cost
+        else
+            r.drive_spend_unknown_steps = r.drive_spend_unknown_steps + 1
+            note_unknown(q, "drive_rush_cancel_drive_cost",
+                "a Drive Rush Cancel edge in this route carries no drive_cost, so the "
+                .. "route's Drive spend is a floor and the budget could not judge it")
+        end
+    end
     r.predicted_super_gain = r.predicted_super_gain + (facts.super_gain or 0)
     if facts.known.super then r.super_known_steps = r.super_known_steps + 1 end
     if facts.is_od then r.od_steps = r.od_steps + 1 end
@@ -248,10 +328,21 @@ end
 
 -- --- building the record -----------------------------------------------------
 
-local function route_id(nodes)
+-- Both keys take the edges as well as the nodes, because A > B and A > DRC > B
+-- are the same two moves and not the same route. Keyed on nodes alone they
+-- shared an id, and with collapse_canonical_variants on, the second would have
+-- been folded into the first as "same buttons, different action id" - which is
+-- exactly what it is not. A route with no DRC edge is spelled as it always was.
+local function drc_before(edges, i)
+    return i > 1 and edges ~= nil and edges[i - 1] ~= nil
+        and edges[i - 1].via == M.VIA_DRIVE_RUSH
+end
+
+local function route_id(nodes, edges)
     local parts = {}
     for i, n in ipairs(nodes) do
-        parts[i] = ("%d:%s"):format(n.action_id, n.input_method)
+        if drc_before(edges, i) then parts[#parts + 1] = "drc" end
+        parts[#parts + 1] = ("%d:%s"):format(n.action_id, n.input_method)
     end
     return table.concat(parts, ">")
 end
@@ -259,21 +350,47 @@ end
 -- What the player actually does, with the action ids left out. Two routes with
 -- the same shape key are the same buttons in the same order; which action id
 -- each produces is the unresolved-canonical question.
-local function shape_key(nodes)
+local function shape_key(nodes, edges)
     local parts = {}
     for i, n in ipairs(nodes) do
-        parts[i] = ("%s|%s"):format(tostring(n.notation or n.classic), n.input_method)
+        if drc_before(edges, i) then parts[#parts + 1] = "drc" end
+        parts[#parts + 1] = ("%s|%s"):format(tostring(n.notation or n.classic), n.input_method)
     end
     return table.concat(parts, ">")
 end
 
 
+-- A DRC edge becomes a step of its own.
+--
+-- The runner receives a route as a list of things to do, and between A and B on
+-- a DRC edge there is a thing to do: the rush. So the step list carries
+-- `{ kind = "drive_rush_cancel" }` between the two moves - the same three-step
+-- shape Sweep builds for a -drc worklist pair - and SequenceCompiler refuses
+-- that step by name. Leaving it out would hand the runner A > B, which compiles,
+-- presses B out of A's recovery, and records the answer to a different question
+-- under this route's id.
+--
+-- `length` stays the number of MOVES, as it is everywhere a bound or a report
+-- reads it; `#steps` is one more per rush. `index` is the position in steps, as
+-- SequenceCompiler numbers them, so the compiler's "step 2" is this step 2.
 local function to_route(p, cfg, provenance)
     local steps = {}
     for i, n in ipairs(p.nodes) do
         local via = (i > 1) and p.edges[i - 1] or nil
-        steps[i] = {
-            index = i,
+        if drc_before(p.edges, i) then
+            local _, cost = edge_drive(via)
+            steps[#steps + 1] = {
+                index = #steps + 1,
+                kind = M.VIA_DRIVE_RUSH,
+                via_edge = via.id,
+                edge_reasons = via.reasons,
+                edge_confidence = via.confidence,
+                drive_cost = cost,
+                delay_ticks = nil,
+            }
+        end
+        steps[#steps + 1] = {
+            index = #steps + 1,
             action_id = n.action_id,
             input_method = n.input_method,
             notation = n.notation,
@@ -293,14 +410,14 @@ local function to_route(p, cfg, provenance)
     for i, e in ipairs(p.edges) do edge_ids[i] = e.id end
 
     return Schema.new(Schema.KIND.ROUTE, {
-        id = route_id(p.nodes),
+        id = route_id(p.nodes, p.edges),
         character = cfg.character,
         control_scheme = cfg.control_scheme,
         position = cfg.position,
         counter = cfg.counter,
         steps = steps,
         edge_ids = edge_ids,
-        shape_key = shape_key(p.nodes),
+        shape_key = shape_key(p.nodes, p.edges),
         length = #p.nodes,
         min_confidence = Schema.confidence_by_rank(p.min_confidence_rank)
             or Schema.CONFIDENCE.LOW,
@@ -317,6 +434,13 @@ local function to_route(p, cfg, provenance)
             drive_known_steps = p.resources.drive_known_steps,
             predicted_super_gain = p.resources.predicted_super_gain,
             super_known_steps = p.resources.super_known_steps,
+            -- The known spend, and how many things in the route had no figure
+            -- to add to it. Zero unknowns makes the spend a total; anything
+            -- else makes it a floor, and Scoring only calls it known in the
+            -- first case.
+            predicted_drive_spend = p.resources.predicted_drive_spend,
+            drive_spend_unknown_steps = p.resources.drive_spend_unknown_steps,
+            drive_rush_cancels = p.resources.drive_rush_cancels,
             od_steps = p.resources.od_steps,
             super_steps = p.resources.super_steps,
             steps_with_missing_data = p.resources.unknown_steps,
@@ -353,7 +477,7 @@ function M.search(g, opts)
     for _, k in ipairs({ "max_steps", "min_steps", "max_repeat_per_action",
                          "max_consecutive_repeat", "max_repeat_per_edge", "beam_width",
                          "max_routes", "max_od_steps", "max_super_steps",
-                         "collapse_canonical_variants" }) do
+                         "max_drive_spend", "collapse_canonical_variants" }) do
         if opts[k] ~= nil then cfg[k] = opts[k] end
     end
     for _, k in ipairs({ "character", "control_scheme", "position", "counter" }) do
@@ -404,8 +528,16 @@ function M.search(g, opts)
                      notation = node.notation, classic = node.classic,
                      category = node.category, canonical_status = node.canonical_status,
                      key = key }
-            frontier[#frontier + 1] = new_partial(node, facts(node, key))
-            stats.starts = stats.starts + 1
+            local f = facts(node, key)
+            -- An opener that on its own spends more than the budget. why_not
+            -- only sees extensions, so the one-move case is asked here, on the
+            -- same known-only terms.
+            if cfg.max_drive_spend ~= nil and (f.drive_spend or 0) > cfg.max_drive_spend then
+                prune("max_drive_spend")
+            else
+                frontier[#frontier + 1] = new_partial(node, f)
+                stats.starts = stats.starts + 1
+            end
         end
     end
 
@@ -445,7 +577,7 @@ function M.search(g, opts)
         if #next_frontier > cfg.beam_width then
             local scored = {}
             for i, p in ipairs(next_frontier) do
-                scored[i] = { p = p, s = rank(p), id = route_id(p.nodes) }
+                scored[i] = { p = p, s = rank(p), id = route_id(p.nodes, p.edges) }
             end
             table.sort(scored, function(a, b)
                 if a.s ~= b.s then return a.s > b.s end
