@@ -429,8 +429,10 @@ function M.tick()
         -- Catalog.group_ids: 105 of this sweep's 216 rows came back "saw action
         -- id(s) N instead" on the OTHER member of the same group.
         expected = {
-            [1] = Catalog.group_ids(run.catalog, p.a_id),
-            [2] = Catalog.group_ids(run.catalog, p.b_id),
+            [1] = Catalog.group_ids(run.catalog, p.a_id,
+                { input_method = p.a_method, notation = p.a_notation }),
+            [2] = Catalog.group_ids(run.catalog, p.b_id,
+                { input_method = p.b_method, notation = p.b_notation }),
         },
         edge_id = key,
         attempt = run.attempts[key],

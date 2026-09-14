@@ -152,7 +152,8 @@ local function expected_for(route, catalog)
         -- as this notation" is two chances to answer it differently, and the
         -- answer is the difference between a combo that connected and a row
         -- that says it did not.
-        out[i] = Catalog.group_ids(catalog, s.action_id)
+        out[i] = Catalog.group_ids(catalog, s.action_id,
+            { input_method = s.input_method, notation = s.notation })
     end
     return out
 end

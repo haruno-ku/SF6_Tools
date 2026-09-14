@@ -455,14 +455,17 @@ do
     local cat = (Catalog.build(RAW))
     -- Found from the catalog rather than typed: a hard-coded pair would pass
     -- with the lookup removed.
-    local multi_id, multi_n
+    local multi_id, multi_n, multi_g
     for _, g in pairs(cat.groups or {}) do
-        if #(g.action_ids or {}) > 1 then multi_id = g.action_ids[1]; multi_n = #g.action_ids end
+        if #(g.action_ids or {}) > 1 then
+            multi_id, multi_n, multi_g = g.action_ids[1], #g.action_ids, g
+        end
         if multi_id then break end
     end
     t.ok(multi_id ~= nil, "this catalog has a notation with more than one id")
 
-    local ids = Catalog.group_ids(cat, multi_id)
+    local ids = Catalog.group_ids(cat, multi_id,
+        { input_method = multi_g and multi_g.input_method, notation = multi_g and multi_g.notation })
     t.eq(#ids, multi_n, "asking about one of them returns all of them")
     local seen = {}
     for _, id in ipairs(ids) do seen[id] = true end
@@ -477,6 +480,36 @@ do
     local ids = Catalog.group_ids(cat, 999999)
     t.eq(#ids, 1, "an unknown id is one id")
     t.eq(ids[1], 999999, "itself")
+end
+
+t.group("an id in more than one group")
+
+do
+    -- Built by hand so the shape is certain: 901 is alone as the assist input
+    -- and shares a group with 1497 as the manual one - the Zangief catalog's
+    -- own case. The old lookup returned whichever group pairs() met first,
+    -- which differs between Lua processes.
+    local cat = { groups = {
+        ["simple|2 + AUTO + SP"] = { action_ids = { 901 } },
+        ["manual|X"] = { action_ids = { 1497, 901 } },
+        ["assist|2 + AUTO + SP"] = { action_ids = { 901 } },
+    } }
+
+    t.eq_list(Catalog.group_ids(cat, 901, { input_method = "simple", notation = "2 + AUTO + SP" }),
+        { 901 }, "the group named by what is pressed is the answer")
+    t.eq_list(Catalog.group_ids(cat, 901, { input_method = "manual", notation = "X" }),
+        { 1497, 901 }, "including when it is the larger one")
+    t.eq_list(Catalog.group_ids(cat, 901), { 901, 1497 },
+        "without saying how, every group it is in, merged and sorted")
+    t.eq_list(Catalog.group_ids(cat, 901, { input_method = "manual", notation = "nope" }),
+        { 901, 1497 }, "and a group that does not hold the id is not trusted over that")
+
+    local same = true
+    local first = table.concat(Catalog.group_ids(cat, 901), ",")
+    for _ = 1, 20 do
+        if table.concat(Catalog.group_ids(cat, 901), ",") ~= first then same = false end
+    end
+    t.ok(same, "the same answer every time")
 end
 
 do

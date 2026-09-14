@@ -624,20 +624,54 @@ end
 -- An id the catalog does not have comes back as itself: the caller asked about
 -- something, and answering with an empty list would turn "unknown" into
 -- "expects nothing", which matches everything.
-function M.group_ids(catalog, action_id)
+--
+-- WHICH GROUP, WHEN AN ID IS IN MORE THAN ONE
+--
+-- An id is in one group per way of pressing it, and the groups are not the same
+-- size: on Zangief 901 is [901] as "2 + AUTO + SP" and [901, 1497] as
+-- "弱 + 中 + 强". This used to return whichever group pairs() reached first, and
+-- pairs() over string keys is ordered differently from one Lua process to the
+-- next - so which ids a trial accepted could change between two sessions on the
+-- same build, with nothing in the record to say so. A test caught it failing
+-- one run in five.
+--
+-- `how` is { input_method, notation }: what the caller is actually pressing,
+-- which names exactly one group. Without it, or when that group does not hold
+-- the id, the answer is every group the id is in, merged and sorted - wider
+-- than any one of them, but the same answer every time.
+function M.group_ids(catalog, action_id, how)
     if type(catalog) ~= "table" or type(action_id) ~= "number" then
         return { action_id }
     end
-    for _, g in pairs(catalog.groups or {}) do
+    local groups = catalog.groups or {}
+
+    local function holds(g)
         for _, id in ipairs(g.action_ids or {}) do
-            if id == action_id then
-                local out = {}
-                for _, other in ipairs(g.action_ids) do out[#out + 1] = other end
-                return out
+            if id == action_id then return true end
+        end
+        return false
+    end
+
+    if type(how) == "table" and how.input_method ~= nil and how.notation ~= nil then
+        local g = groups[tostring(how.input_method) .. "|" .. tostring(how.notation)]
+        if g and holds(g) then
+            local out = {}
+            for _, id in ipairs(g.action_ids) do out[#out + 1] = id end
+            return out
+        end
+    end
+
+    local seen, out = {}, {}
+    for _, g in pairs(groups) do
+        if holds(g) then
+            for _, id in ipairs(g.action_ids) do
+                if not seen[id] then seen[id] = true; out[#out + 1] = id end
             end
         end
     end
-    return { action_id }
+    if #out == 0 then return { action_id } end
+    table.sort(out)
+    return out
 end
 
 return M
