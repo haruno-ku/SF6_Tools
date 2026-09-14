@@ -16,10 +16,195 @@
   "bcm_sha256": "09e9334a458b4e7073d13c5a0e25255d2b35b0cb71ccdccbd67c8774b62d4053",
   "character": "Zangief",
   "control_scheme": "modern",
-  "count": 19,
+  "count": 17,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-14T11:18:35Z",
+  "generated_at": "2026-09-14T11:23:31Z",
   "pairs": [
+    {
+      "a_active": "7(5)",
+      "a_hitstop": 13,
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "a_on_hit": 28,
+      "a_recovery": 25,
+      "a_startup": 22,
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "b_startup": 10,
+      "confidence": "low",
+      "known_status": "pending",
+      "margin_frames": 18,
+      "needed_by_ranks": [
+        1,
+        12
+      ]
+    },
+    {
+      "a_active": "9",
+      "a_hitstop": 13,
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 强",
+      "a_on_hit": 20,
+      "a_recovery": 35,
+      "a_startup": 11,
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "b_startup": 10,
+      "confidence": "low",
+      "known_status": "pending",
+      "margin_frames": 10,
+      "needed_by_ranks": [
+        2,
+        18
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 14,
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "a_on_hit": 36,
+      "a_recovery": 27,
+      "a_startup": 12,
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "b_startup": 10,
+      "confidence": "low",
+      "known_status": "pending",
+      "margin_frames": 26,
+      "needed_by_ranks": [
+        3,
+        19
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 14,
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "a_on_hit": 36,
+      "a_recovery": 27,
+      "a_startup": 12,
+      "b_id": 1206,
+      "b_method": "manual",
+      "b_notation": "236236 + 中",
+      "b_startup": 18,
+      "confidence": "medium",
+      "known_status": "rejected",
+      "margin_frames": 18,
+      "needed_by_ranks": [
+        4
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 11,
+      "a_hitstun": 23,
+      "a_id": 655,
+      "a_method": "manual",
+      "a_notation": "3 + 中",
+      "a_on_hit": -1,
+      "a_recovery": 21,
+      "a_startup": 7,
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "b_startup": 10,
+      "confidence": "low",
+      "known_status": "pending",
+      "margin_frames": -11,
+      "needed_by_ranks": [
+        5
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 11,
+      "a_hitstun": 22,
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "a_on_hit": 3,
+      "a_recovery": 16,
+      "a_startup": 8,
+      "b_id": 918,
+      "b_method": "manual",
+      "b_notation": "63214 + THROW",
+      "b_startup": 10,
+      "confidence": "low",
+      "known_status": "pending",
+      "margin_frames": -7,
+      "needed_by_ranks": [
+        7
+      ]
+    },
+    {
+      "a_active": "7(5)",
+      "a_hitstop": 13,
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "a_on_hit": 28,
+      "a_recovery": 25,
+      "a_startup": 22,
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "b_startup": 10,
+      "confidence": "low",
+      "known_status": "pending",
+      "margin_frames": 18,
+      "needed_by_ranks": [
+        9
+      ]
+    },
+    {
+      "a_active": "7(5)",
+      "a_hitstop": 13,
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "a_on_hit": 28,
+      "a_recovery": 25,
+      "a_startup": 22,
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "b_startup": 10,
+      "confidence": "low",
+      "known_status": "pending",
+      "margin_frames": 18,
+      "needed_by_ranks": [
+        10
+      ]
+    },
+    {
+      "a_active": "7(5)",
+      "a_hitstop": 13,
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "a_on_hit": 28,
+      "a_recovery": 25,
+      "a_startup": 22,
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "b_startup": 6,
+      "confidence": "low",
+      "known_status": "pending",
+      "margin_frames": 22,
+      "needed_by_ranks": [
+        11
+      ]
+    },
     {
       "a_active": "3",
       "a_hitstop": 9,
@@ -41,72 +226,87 @@
       "known_status": "pending",
       "margin_frames": -18,
       "needed_by_ranks": [
-        1,
-        2,
-        3
+        12
       ]
     },
     {
-      "a_active": "7(5)",
+      "a_active": "9",
       "a_hitstop": 13,
-      "a_id": 662,
+      "a_id": 623,
       "a_method": "manual",
-      "a_notation": "6 + 强",
-      "a_on_hit": 28,
-      "a_recovery": 25,
-      "a_startup": 22,
-      "b_id": 918,
-      "b_method": "manual",
-      "b_notation": "63214 + THROW",
-      "b_startup": 10,
-      "confidence": "low",
-      "known_status": "pending",
-      "margin_frames": 18,
-      "needed_by_ranks": [
-        1,
-        11
-      ]
-    },
-    {
-      "a_active": "7(5)",
-      "a_hitstop": 13,
-      "a_id": 662,
-      "a_method": "manual",
-      "a_notation": "6 + 强",
-      "a_on_hit": 28,
-      "a_recovery": 25,
-      "a_startup": 22,
+      "a_notation": "2 + 强",
+      "a_on_hit": 20,
+      "a_recovery": 35,
+      "a_startup": 11,
       "b_id": 918,
       "b_method": "simple",
       "b_notation": "4 + SP",
       "b_startup": 10,
       "confidence": "low",
       "known_status": "pending",
-      "margin_frames": 18,
+      "margin_frames": 10,
       "needed_by_ranks": [
-        2,
-        12
+        13
       ]
     },
     {
-      "a_active": "7(5)",
+      "a_active": "9",
       "a_hitstop": 13,
-      "a_id": 662,
+      "a_id": 623,
       "a_method": "manual",
-      "a_notation": "6 + 强",
-      "a_on_hit": 28,
-      "a_recovery": 25,
-      "a_startup": 22,
+      "a_notation": "2 + 强",
+      "a_on_hit": 20,
+      "a_recovery": 35,
+      "a_startup": 11,
       "b_id": 924,
       "b_method": "simple",
       "b_notation": "4 + AUTO + SP",
       "b_startup": 10,
       "confidence": "low",
       "known_status": "pending",
-      "margin_frames": 18,
+      "margin_frames": 10,
       "needed_by_ranks": [
-        3,
-        13
+        14
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 14,
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "a_on_hit": 36,
+      "a_recovery": 27,
+      "a_startup": 12,
+      "b_id": 918,
+      "b_method": "simple",
+      "b_notation": "4 + SP",
+      "b_startup": 10,
+      "confidence": "low",
+      "known_status": "pending",
+      "margin_frames": 26,
+      "needed_by_ranks": [
+        15
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 14,
+      "a_id": 633,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "a_on_hit": 36,
+      "a_recovery": 27,
+      "a_startup": 12,
+      "b_id": 924,
+      "b_method": "simple",
+      "b_notation": "4 + AUTO + SP",
+      "b_startup": 10,
+      "confidence": "low",
+      "known_status": "pending",
+      "margin_frames": 26,
+      "needed_by_ranks": [
+        16
       ]
     },
     {
@@ -130,69 +330,7 @@
       "known_status": "pending",
       "margin_frames": -7,
       "needed_by_ranks": [
-        4,
-        5,
-        6
-      ]
-    },
-    {
-      "a_active": "9",
-      "a_hitstop": 13,
-      "a_id": 623,
-      "a_method": "manual",
-      "a_notation": "2 + 强",
-      "a_on_hit": 20,
-      "a_recovery": 35,
-      "a_startup": 11,
-      "b_id": 918,
-      "b_method": "manual",
-      "b_notation": "63214 + THROW",
-      "b_startup": 10,
-      "confidence": "low",
-      "known_status": "pending",
-      "margin_frames": 10,
-      "needed_by_ranks": [
-        4
-      ]
-    },
-    {
-      "a_active": "9",
-      "a_hitstop": 13,
-      "a_id": 623,
-      "a_method": "manual",
-      "a_notation": "2 + 强",
-      "a_on_hit": 20,
-      "a_recovery": 35,
-      "a_startup": 11,
-      "b_id": 918,
-      "b_method": "simple",
-      "b_notation": "4 + SP",
-      "b_startup": 10,
-      "confidence": "low",
-      "known_status": "pending",
-      "margin_frames": 10,
-      "needed_by_ranks": [
-        5
-      ]
-    },
-    {
-      "a_active": "9",
-      "a_hitstop": 13,
-      "a_id": 623,
-      "a_method": "manual",
-      "a_notation": "2 + 强",
-      "a_on_hit": 20,
-      "a_recovery": 35,
-      "a_startup": 11,
-      "b_id": 924,
-      "b_method": "simple",
-      "b_notation": "4 + AUTO + SP",
-      "b_startup": 10,
-      "confidence": "low",
-      "known_status": "pending",
-      "margin_frames": 10,
-      "needed_by_ranks": [
-        6
+        18
       ]
     },
     {
@@ -216,226 +354,25 @@
       "known_status": "pending",
       "margin_frames": -8,
       "needed_by_ranks": [
-        7,
-        8,
-        9,
-        10
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 14,
-      "a_id": 633,
-      "a_method": "manual",
-      "a_notation": "3 + 强",
-      "a_on_hit": 36,
-      "a_recovery": 27,
-      "a_startup": 12,
-      "b_id": 918,
-      "b_method": "manual",
-      "b_notation": "63214 + THROW",
-      "b_startup": 10,
-      "confidence": "low",
-      "known_status": "pending",
-      "margin_frames": 26,
-      "needed_by_ranks": [
-        7
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 14,
-      "a_id": 633,
-      "a_method": "manual",
-      "a_notation": "3 + 强",
-      "a_on_hit": 36,
-      "a_recovery": 27,
-      "a_startup": 12,
-      "b_id": 918,
-      "b_method": "simple",
-      "b_notation": "4 + SP",
-      "b_startup": 10,
-      "confidence": "low",
-      "known_status": "pending",
-      "margin_frames": 26,
-      "needed_by_ranks": [
-        8
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 14,
-      "a_id": 633,
-      "a_method": "manual",
-      "a_notation": "3 + 强",
-      "a_on_hit": 36,
-      "a_recovery": 27,
-      "a_startup": 12,
-      "b_id": 924,
-      "b_method": "simple",
-      "b_notation": "4 + AUTO + SP",
-      "b_startup": 10,
-      "confidence": "low",
-      "known_status": "pending",
-      "margin_frames": 26,
-      "needed_by_ranks": [
-        9
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 9,
-      "a_hitstun": 16,
-      "a_id": 601,
-      "a_method": "manual",
-      "a_notation": "弱",
-      "a_on_hit": 4,
-      "a_recovery": 9,
-      "a_startup": 7,
-      "b_id": 655,
-      "b_method": "manual",
-      "b_notation": "3 + 中",
-      "b_startup": 7,
-      "confidence": "medium",
-      "known_as": [
-        "611:manual->655:manual"
-      ],
-      "known_status": "pending",
-      "margin_frames": -3,
-      "needed_by_ranks": [
-        14,
-        15,
-        16,
-        17,
-        18
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 11,
-      "a_hitstun": 23,
-      "a_id": 655,
-      "a_method": "manual",
-      "a_notation": "3 + 中",
-      "a_on_hit": -1,
-      "a_recovery": 21,
-      "a_startup": 7,
-      "b_id": 918,
-      "b_method": "manual",
-      "b_notation": "63214 + THROW",
-      "b_startup": 10,
-      "confidence": "low",
-      "known_status": "pending",
-      "margin_frames": -11,
-      "needed_by_ranks": [
-        14
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 11,
-      "a_hitstun": 23,
-      "a_id": 655,
-      "a_method": "manual",
-      "a_notation": "3 + 中",
-      "a_on_hit": -1,
-      "a_recovery": 21,
-      "a_startup": 7,
-      "b_id": 918,
-      "b_method": "simple",
-      "b_notation": "4 + SP",
-      "b_startup": 10,
-      "confidence": "low",
-      "known_status": "pending",
-      "margin_frames": -11,
-      "needed_by_ranks": [
-        15
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 11,
-      "a_hitstun": 23,
-      "a_id": 655,
-      "a_method": "manual",
-      "a_notation": "3 + 中",
-      "a_on_hit": -1,
-      "a_recovery": 21,
-      "a_startup": 7,
-      "b_id": 924,
-      "b_method": "simple",
-      "b_notation": "4 + AUTO + SP",
-      "b_startup": 10,
-      "confidence": "low",
-      "known_status": "pending",
-      "margin_frames": -11,
-      "needed_by_ranks": [
-        16
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 9,
-      "a_hitstun": 16,
-      "a_id": 601,
-      "a_method": "manual",
-      "a_notation": "弱",
-      "a_on_hit": 4,
-      "a_recovery": 9,
-      "a_startup": 7,
-      "b_id": 621,
-      "b_method": "manual",
-      "b_notation": "2 + 中",
-      "b_startup": 8,
-      "confidence": "medium",
-      "known_as": [
-        "611:manual->621:manual"
-      ],
-      "known_status": "pending",
-      "margin_frames": -4,
-      "needed_by_ranks": [
-        19,
-        20
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 11,
-      "a_hitstun": 22,
-      "a_id": 621,
-      "a_method": "manual",
-      "a_notation": "2 + 中",
-      "a_on_hit": 3,
-      "a_recovery": 16,
-      "a_startup": 8,
-      "b_id": 918,
-      "b_method": "manual",
-      "b_notation": "63214 + THROW",
-      "b_startup": 10,
-      "confidence": "low",
-      "known_status": "pending",
-      "margin_frames": -7,
-      "needed_by_ranks": [
         19
       ]
     },
     {
-      "a_active": "3",
-      "a_hitstop": 11,
-      "a_hitstun": 22,
-      "a_id": 621,
+      "a_active": "9",
+      "a_hitstop": 13,
+      "a_id": 623,
       "a_method": "manual",
-      "a_notation": "2 + 中",
-      "a_on_hit": 3,
-      "a_recovery": 16,
-      "a_startup": 8,
-      "b_id": 918,
-      "b_method": "simple",
-      "b_notation": "4 + SP",
-      "b_startup": 10,
+      "a_notation": "2 + 强",
+      "a_on_hit": 20,
+      "a_recovery": 35,
+      "a_startup": 11,
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "b_startup": 6,
       "confidence": "low",
       "known_status": "pending",
-      "margin_frames": -7,
+      "margin_frames": 14,
       "needed_by_ranks": [
         20
       ]
@@ -445,13 +382,12 @@
     "conditions": {},
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-14T11:18:35Z",
+    "generated_at": "2026-09-14T11:23:31Z",
     "include_verified": false,
     "name": "max-damage",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
     "sort": "scaled_damage",
-    "sort_fallback": true,
-    "sort_field": "predicted_damage",
+    "sort_field": "predicted_damage_scaled",
     "top": 20
   },
   "schema": "ce.worklist.v1"

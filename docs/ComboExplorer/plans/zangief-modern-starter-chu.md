@@ -1,6 +1,6 @@
 # Route plan - Zangief / modern - starter-chu
 
-Generated 2026-09-14T11:18:42Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-14T11:23:39Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -8,7 +8,7 @@ game say whether these routes connect.
 
 ## Conditions
 
-- `starter_button` = `中`
+- `starter_button` = `M`
 - sort: `scaled_damage`, top 20
 - search: explore.lua's settings (normal,command_normal -> normal,command_normal,special,od_special,super, manual -> manual,simple, max 3 moves, beam 4000, collapse true)
 - Drive Rush Cancel edges in the search: no (pass --drive-rush to route through them)
@@ -19,9 +19,9 @@ game say whether these routes connect.
 
 ## Damage figure
 
-**Scaled damage is not available in this build of Scoring.** no route carries offline_score.predicted_damage_scaled, so the routes are ordered on the unscaled predicted_damage instead.
-The `dmg scaled` column is empty for that reason. Rerun this plan once
-`offline_score.predicted_damage_scaled` exists and the order will follow it.
+Ordered on `offline_score.predicted_damage_scaled`, the combo-scaled prediction.
+
+1 route(s) carry no value on that field and are ranked after the rest, not removed.
 
 Unscaled damage is a frame-table sum: an upper bound for ordering when complete,
 never a damage figure.
@@ -32,30 +32,32 @@ never a damage figure.
 
 | condition | value | before | removed | after | kept on a gap |
 |---|---|---:|---:|---:|---:|
-| starter_button | 中 | 917 | 878 | 39 | 0 |
+| starter_button | M | 917 | 878 | 39 | 0 |
 
 - routes satisfying every condition: 39
 - of those, through a pair the logs rejected: 21 (ranked after the clean ones)
 - in this plan (top 20): 20
 
-### Moved below the top 20 by a rejected pair: 12
+### Moved below the top 20 by a rejected pair: 14
 
 The sort alone would have put these in the plan. They are not deleted - they
 rank after every clean route, and `--no-demote-rejected` puts them back. Some
 rejections in the logs come from experiments later found broken (#46, #49).
 
-- sort #3 2 + 中 → 720 + 强 - rejected: 621:manual->1218:manual
+- sort #3 3 + 中 → 2 + SP + 强 - rejected: 655:manual->1218:simple
 - sort #4 2 + 中 → 2 + SP + 强 - rejected: 621:manual->1218:simple
-- sort #5 3 + 中 → SP + 强 - rejected: 655:manual->1195:simple
-- sort #6 3 + 中 → 236236 + 弱 - rejected: 655:manual->1200:manual
-- sort #7 2 + 中 → SP + 强 - rejected: 621:manual->1195:simple
-- sort #8 2 + 中 → 236236 + 弱 - rejected: 621:manual->1200:manual
-- sort #9 3 + 中 → AUTO + SP - rejected: 655:manual->945:simple
-- sort #10 2 + 中 → AUTO + SP - rejected: 621:manual->945:simple
-- sort #11 3 + 中 → 360 + 强 - rejected: 655:manual->940:manual
-- sort #12 3 + 中 → SP - rejected: 655:manual->940:simple
-- sort #13 2 + 中 → 360 + 强 - rejected: 621:manual->940:manual
-- sort #14 2 + 中 → SP - rejected: 621:manual->940:simple
+- sort #5 3 + 中 → 236236 + 弱 - rejected: 655:manual->1200:manual
+- sort #6 2 + 中 → 236236 + 弱 - rejected: 621:manual->1200:manual
+- sort #7 3 + 中 → 360 + 强 - rejected: 655:manual->940:manual
+- sort #8 2 + 中 → 360 + 强 - rejected: 621:manual->940:manual
+- sort #13 3 + 中 → 360 + 中 - rejected: 655:manual->935:manual
+- sort #14 2 + 中 → 360 + 中 - rejected: 621:manual->935:manual
+- sort #15 3 + 中 → SP + 强 - rejected: 655:manual->1195:simple
+- sort #16 3 + 中 → AUTO + SP - rejected: 655:manual->945:simple
+- sort #17 2 + 中 → SP + 强 - rejected: 621:manual->1195:simple
+- sort #18 3 + 中 → SP - rejected: 655:manual->940:simple
+- sort #19 2 + 中 → AUTO + SP - rejected: 621:manual->945:simple
+- sort #20 3 + 中 → 63214 + 强 - rejected: 655:manual->1010:manual
 
 ## Routes
 
@@ -64,26 +66,26 @@ rejected pair were moved behind the clean ones.
 
 | # | sort | route (Modern) | classic | dmg scaled | dmg unscaled | gauge | cost | conf | status |
 |---:|---:|---|---|---:|---:|---|---:|---|---|
-| 1 | 15 | 3 + 中 → 63214 + THROW | 3+MP → 63214+LK+MK | - | 4000 | drive 20000 | 8.0 | low | 0/1 pairs verified |
-| 2 | 16 | 3 + 中 → 4 + SP | 3+MP → 63214+LK+MK | - | 4000 | drive 20000 | 6.0 | low | 0/1 pairs verified |
-| 3 | 17 | 3 + 中 → 4 + AUTO + SP | 3+MP → 63214+KK | - | 4000 | OD 1, drive 20000 | 6.5 | low | 0/1 pairs verified |
-| 4 | 18 | 3 + 中 → 236236 + 中 | 3+MP → 236236+P | - | 3960 | SA 1, drive >=0 (1 unknown) | 8.9 | high | confirmed combo |
-| 5 | 19 | 3 + 中 → 4 + SP + 强 | 3+MP → 236236+P | - | 3960 | SA 1, drive >=0 (1 unknown) | 6.5 | high | confirmed combo |
-| 6 | 20 | 2 + 中 → 63214 + THROW | 2+MP → 63214+LK+MK | - | 3900 | drive 20000 | 8.0 | low | 0/1 pairs verified |
-| 7 | 21 | 2 + 中 → 4 + SP | 2+MP → 63214+LK+MK | - | 3900 | drive 20000 | 6.0 | low | 0/1 pairs verified |
-| 8 | 22 | 2 + 中 → 4 + AUTO + SP | 2+MP → 63214+KK | - | 3900 | OD 1, drive 20000 | 6.5 | low | 0/1 pairs verified |
-| 9 | 23 | 2 + 中 → 236236 + 中 | 2+MP → 236236+P | - | 3860 | SA 1, drive >=0 (1 unknown) | 8.9 | high | confirmed combo |
-| 10 | 24 | 2 + 中 → 4 + SP + 强 | 2+MP → 236236+P | - | 3860 | SA 1, drive >=0 (1 unknown) | 6.5 | high | confirmed combo |
-| 11 | 31 | 3 + 中 → 22 + 强 | 3+MP → 22+HK | - | 3200 | drive 0 | 5.3 | low | 0/1 pairs verified |
-| 12 | 33 | 3 + 中 → 强 | 3+MP → HP | - | 1800 | drive 0 | 3.5 | low | 0/1 pairs verified |
-| 13 | 34 | 中 → 强 | MP → HP | - | 1700 | drive 0 | 3.0 | low | 0/1 pairs verified |
-| 14 | 35 | 2 + 中 → 强 | 2+MP → HP | - | 1700 | drive 0 | 3.5 | low | 0/1 pairs verified |
-| 15 | 36 | 6 + 中 → 强 | 6+MK → HP | - | 1700 | drive 0 | 3.5 | low | 0/1 pairs verified |
-| 16 | 37 | 3 + 中 → 22 + 中 | 3+MP → 22+MK | - | 1300 | drive 0 | 5.3 | high | 0/1 pairs verified |
-| 17 | 38 | 2 + 中 → 22 + 中 | 2+MP → 22+MK | - | 1200 | drive 0 | 5.3 | high | 0/1 pairs verified |
+| 1 | 9 | 3 + 中 → 63214 + THROW | 3+MP → 63214+LK+MK | 4000 | 4000 | drive 20000 | 8.0 | low | 0/1 pairs verified |
+| 2 | 10 | 3 + 中 → 236236 + 中 | 3+MP → 236236+P | 3960 | 3960 | SA 1, drive >=0 (1 unknown) | 8.9 | high | confirmed combo |
+| 3 | 11 | 2 + 中 → 63214 + THROW | 2+MP → 63214+LK+MK | 3900 | 3900 | drive 20000 | 8.0 | low | 0/1 pairs verified |
+| 4 | 12 | 2 + 中 → 236236 + 中 | 2+MP → 236236+P | 3860 | 3860 | SA 1, drive >=0 (1 unknown) | 8.9 | high | confirmed combo |
+| 5 | 21 | 3 + 中 → 4 + SP | 3+MP → 63214+LK+MK | 3360 | 4000 | drive 20000 | 6.0 | low | 0/1 pairs verified |
+| 6 | 22 | 3 + 中 → 4 + AUTO + SP | 3+MP → 63214+KK | 3360 | 4000 | OD 1, drive 20000 | 6.5 | low | 0/1 pairs verified |
+| 7 | 24 | 3 + 中 → 4 + SP + 强 | 3+MP → 236236+P | 3328 | 3960 | SA 1, drive >=0 (1 unknown) | 6.5 | high | confirmed combo |
+| 8 | 27 | 2 + 中 → 4 + SP | 2+MP → 63214+LK+MK | 3260 | 3900 | drive 20000 | 6.0 | low | 0/1 pairs verified |
+| 9 | 28 | 2 + 中 → 4 + AUTO + SP | 2+MP → 63214+KK | 3260 | 3900 | OD 1, drive 20000 | 6.5 | low | 0/1 pairs verified |
+| 10 | 29 | 2 + 中 → 4 + SP + 强 | 2+MP → 236236+P | 3228 | 3860 | SA 1, drive >=0 (1 unknown) | 6.5 | high | confirmed combo |
+| 11 | 31 | 3 + 中 → 22 + 强 | 3+MP → 22+HK | 3200 | 3200 | drive 0 | 5.3 | low | 0/1 pairs verified |
+| 12 | 33 | 3 + 中 → 强 | 3+MP → HP | 1800 | 1800 | drive 0 | 3.5 | low | 0/1 pairs verified |
+| 13 | 34 | 中 → 强 | MP → HP | 1700 | 1700 | drive 0 | 3.0 | low | 0/1 pairs verified |
+| 14 | 35 | 2 + 中 → 强 | 2+MP → HP | 1700 | 1700 | drive 0 | 3.5 | low | 0/1 pairs verified |
+| 15 | 36 | 6 + 中 → 强 | 6+MK → HP | 1700 | 1700 | drive 0 | 3.5 | low | 0/1 pairs verified |
+| 16 | 37 | 3 + 中 → 22 + 中 | 3+MP → 22+MK | 1300 | 1300 | drive 0 | 5.3 | high | 0/1 pairs verified |
+| 17 | 38 | 2 + 中 → 22 + 中 | 2+MP → 22+MK | 1200 | 1200 | drive 0 | 5.3 | high | 0/1 pairs verified |
 | 18 | 39 | 中 → > 中 | MP → >MP | - | 700 (incomplete) | drive >=0 (1 unknown) | 3.0 | medium | 0/1 pairs verified |
-| 19 | 1 | 3 + 中 → 720 + 强 | 3+MP → 720+P | - | 5600 | SA 1, drive >=0 (1 unknown) | 13.4 | low | 0/1 pairs verified; REJECTED pair: 655:manual->1218:manual |
-| 20 | 2 | 3 + 中 → 2 + SP + 强 | 3+MP → 720+P | - | 5600 | SA 1, drive >=0 (1 unknown) | 6.5 | low | 0/1 pairs verified; REJECTED pair: 655:manual->1218:simple |
+| 19 | 1 | 3 + 中 → 720 + 强 | 3+MP → 720+P | 5600 | 5600 | SA 1, drive >=0 (1 unknown) | 13.4 | low | 0/1 pairs verified; REJECTED pair: 655:manual->1218:manual |
+| 20 | 2 | 2 + 中 → 720 + 强 | 2+MP → 720+P | 5500 | 5500 | SA 1, drive >=0 (1 unknown) | 13.4 | low | 0/1 pairs verified; REJECTED pair: 621:manual->1218:manual |
 
 ## Pairs to sweep: 16
 
@@ -98,11 +100,11 @@ them (#49), so a plan that needs one needs a route run or a compiler change.
 | # | pair | key | needed by | logs say | press | confidence | margin |
 |---:|---|---|---|---|---|---|---:|
 | 1 | 3 + 中 → 63214 + THROW | `655:manual->918:manual` | 1 | pending | single | low | -11 |
-| 2 | 3 + 中 → 4 + SP | `655:manual->918:simple` | 2 | pending | single | low | -11 |
-| 3 | 3 + 中 → 4 + AUTO + SP | `655:manual->924:simple` | 3 | pending | single | low | -11 |
-| 4 | 2 + 中 → 63214 + THROW | `621:manual->918:manual` | 6 | pending | single | low | -7 |
-| 5 | 2 + 中 → 4 + SP | `621:manual->918:simple` | 7 | pending | single | low | -7 |
-| 6 | 2 + 中 → 4 + AUTO + SP | `621:manual->924:simple` | 8 | pending | single | low | -7 |
+| 2 | 2 + 中 → 63214 + THROW | `621:manual->918:manual` | 3 | pending | single | low | -7 |
+| 3 | 3 + 中 → 4 + SP | `655:manual->918:simple` | 5 | pending | single | low | -11 |
+| 4 | 3 + 中 → 4 + AUTO + SP | `655:manual->924:simple` | 6 | pending | single | low | -11 |
+| 5 | 2 + 中 → 4 + SP | `621:manual->918:simple` | 8 | pending | single | low | -7 |
+| 6 | 2 + 中 → 4 + AUTO + SP | `621:manual->924:simple` | 9 | pending | single | low | -7 |
 | 7 | 3 + 中 → 22 + 强 | `655:manual->785:manual` | 11 | pending | repeat | low | -7 |
 | 8 | 3 + 中 → 强 | `655:manual->637:manual` | 12 | pending | single | low | - |
 | 9 | 中 → 强 | `604:manual->637:manual` | 13 | pending | single | low | - |
@@ -112,7 +114,7 @@ them (#49), so a plan that needs one needs a route run or a compiler change.
 | 13 | 2 + 中 → 22 + 中 | `621:manual->678:manual` | 17 | pending | repeat | high | -6 |
 | 14 | 中 → > 中 | `604:manual->605:manual` | 18 | pending | followup | medium | -7 |
 | 15 | 3 + 中 → 720 + 强 | `655:manual->1218:manual` | 19 | rejected | single | low | -7 |
-| 16 | 3 + 中 → 2 + SP + 强 | `655:manual->1218:simple` | 20 | rejected | single | low | -7 |
+| 16 | 2 + 中 → 720 + 强 | `621:manual->1218:manual` | 20 | rejected | single | low | -3 |
 
 **4 of these the sweep cannot press as written.**
 
@@ -125,15 +127,15 @@ come out of (#49). These pairs are asked again, after the clean routes' pairs
 when demotion is on.
 
 - `655:manual->1218:manual`: rejected (ESF_006-20260911T180157Z: 0/1 linked); rejected (ESF_006-20260912T074740Z: 0/2 linked)
-- `655:manual->1218:simple`: rejected (ESF_006-20260911T180157Z: 0/1 linked); rejected (ESF_006-20260912T074740Z: 0/2 linked)
+- `621:manual->1218:manual`: rejected (ESF_006-20260911T180157Z: 0/1 linked); rejected (ESF_006-20260912T074740Z: 0/2 linked)
 
 ## Already known: 4
 
 Left out of the worklist (pass --include-verified to keep verified pairs).
 
-- `655:manual->1206:manual` (3 + 中 → 236236 + 中): verified by the game, needed by 4
-- `655:manual->1206:simple` (3 + 中 → 4 + SP + 强): verified by the game, needed by 5
-- `621:manual->1206:manual` (2 + 中 → 236236 + 中): verified by the game, needed by 9
+- `655:manual->1206:manual` (3 + 中 → 236236 + 中): verified by the game, needed by 2
+- `621:manual->1206:manual` (2 + 中 → 236236 + 中): verified by the game, needed by 4
+- `655:manual->1206:simple` (3 + 中 → 4 + SP + 强): verified by the game, needed by 7
 - `621:manual->1206:simple` (2 + 中 → 4 + SP + 强): verified by the game, needed by 10
 
 ## Where the known statuses come from
@@ -160,5 +162,5 @@ To sweep this plan, put the plan's worklist in its place on the game machine
 
 ## Written
 
-- reframework/data/ComboExplorer_data/worklist/zangief-modern-plan-starter-chu.json  (16 pairs, 8961 bytes)
+- reframework/data/ComboExplorer_data/worklist/zangief-modern-plan-starter-chu.json  (16 pairs, 8935 bytes)
 - docs/ComboExplorer/plans/zangief-modern-starter-chu.md
