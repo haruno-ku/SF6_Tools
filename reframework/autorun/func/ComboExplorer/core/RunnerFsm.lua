@@ -587,6 +587,7 @@ function Runner:record_spec()
         -- in a recording, the frame locates it in the engine's own time.
         started_at_frame = spec.frame,
         notes = spec.notes,
+        timing = spec.timing,
     }
 end
 

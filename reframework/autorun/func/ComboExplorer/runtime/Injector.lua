@@ -350,6 +350,8 @@ function M.start(opts)
         judge_gap = opts.judge_gap,
         attempt = opts.attempt or 1,
         subject = opts.subject,
+        -- Which timing chose the gap (runtime/Sweep.lua plan_for), carried to the row.
+        timing = opts.timing,
         edge_id = opts.edge_id,
         route_id = opts.route_id,
         provenance = opts.trial_provenance,

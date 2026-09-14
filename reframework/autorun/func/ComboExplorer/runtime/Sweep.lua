@@ -519,6 +519,9 @@ function M.start(opts)
         max_start_failures = opts.max_start_failures or M.DEFAULT_MAX_START_FAILURES,
 
         index = 1,              -- where in worklist.pairs we are
+        front = {},             -- pairs with another gap to try, taken first
+        plans = {},             -- key -> { steps, next }: see M.plan_for
+        by_prediction = {},     -- trials started, by which timing chose the gap
         requeued = {},          -- pairs asking for another go, taken after the list
         attempts = {},          -- key -> how many times it has been tried
         started = 0,
@@ -541,13 +544,23 @@ function M.running() return run ~= nil end
 -- The next pair to try, or nil when there is nothing left. Requeued pairs come
 -- AFTER the whole list rather than immediately: whatever made one inconclusive
 -- is more likely to have passed by the time the list has been round once.
+--
+-- A pair with more gaps still to try comes back FIRST, before the list moves
+-- on: the gaps of one pair are one question (see M.plan_for), and a pair that
+-- has answered it at its first gap does not come back at all.
+--
+-- The second value says where the pair came from. A pair taken fresh from the
+-- list starts its plan from the beginning; one from `front` or `requeued` picks
+-- its plan up where it was left.
 local function next_pair()
+    local f = table.remove(run.front, 1)
+    if f ~= nil then return f, "front" end
     local p = run.worklist.pairs[run.index]
     if p ~= nil then
         run.index = run.index + 1
-        return p
+        return p, "list"
     end
-    return table.remove(run.requeued, 1)
+    return table.remove(run.requeued, 1), "requeued"
 end
 
 local function route_for(p)
@@ -563,16 +576,139 @@ end
 -- Separate and public so a caller can see what the sweep would do before it
 -- does it, and so the fallback is visible rather than a number appearing from
 -- nowhere.
+--
+-- The first gap of M.plan_for, kept under its old name and shape because the
+-- panel and the tests read it.
 function M.delay_for(p, r)
+    local steps = M.plan_for(p, r)
+    return steps[1].delay, steps[1].why
+end
+
+-- How a pair's B has to be pressed, and where that word came from.
+--
+-- The worklist says it as `mechanism` (CandidateGenerator.mechanism). A
+-- worklist written before that field existed does not, and one thing about it
+-- can still be read without guessing: a KNOWN negative margin keeps frame_link
+-- off an edge's reasons, so a pair that is in the list with one is there for a
+-- cancel and nothing else. Anything else unlabelled is timed as a link, as
+-- every pair was before, and says it was not told.
+function M.mechanism_of(p)
+    if type(p.mechanism) == "string" then return p.mechanism, "worklist" end
+    if type(p.margin_frames) == "number" and p.margin_frames < 0 then
+        return "cancel", "inferred: a known negative margin rules out frame_link"
+    end
+    return "unknown", "the worklist does not say"
+end
+
+-- Every gap this pair is to be run at, in order, each with the reason for it.
+--
+-- WHY A PAIR CAN HAVE MORE THAN ONE GAP NOW
+--
+-- A link has one gap the frame data states directly: A has just become free.
+-- A cancel does not. Its window opens when A hits, which the frame data does
+-- give, and ends at a point the frame data does not carry and nobody has
+-- measured - so it is searched over Timing.cancel_window's grid rather than
+-- pressed once at a number that would look like a prediction.
+--
+-- WHICH TIMING, FOR WHICH PAIR
+--
+--   cancel : the cancel grid alone. A link timing on a pair with no link
+--            margin presses after A has recovered, where no cancel exists -
+--            which is how the first framedata sweep ran every one of them.
+--   both   : the cancel grid FIRST, then the link gap. In the committed rows
+--            a cancelled B came out at the end of A's hitstop wherever in the
+--            hitstop it was pressed, while a link has one gap and a few ticks
+--            of buffer; and an on-hit advantage big enough to link is as often
+--            a knockdown. The cheaper, sturdier question goes first, and the
+--            link is still asked if it says no.
+--   link, unknown : the link gap, as before.
+--
+-- The plan stops at the first gap that links (M.finish_trial), so a pair that
+-- answers early costs one trial.
+--
+-- Each step's `why` carries `predicted` as before, plus `timing`: the compact
+-- record that travels onto the trial row, so a negative can be read later as
+-- "measured at a cancel timing" or "measured at a link timing".
+function M.plan_for(p, r)
     r = r or run or {}
+    local hold = r.hold_ticks or 3
+    local mechanism, mech_source = M.mechanism_of(p)
+
+    -- B's motion before its button. See Timing's header for the rows that
+    -- showed the model was pressing a 720 ten ticks late.
+    local lead = Timing.motion_ticks(p.b_notation)
+    local lead_known = lead ~= nil
+    if lead == nil then lead = 0 end
+
     local a = { startup = p.a_startup, active = p.a_active, recovery = p.a_recovery,
                 hitstop = p.a_hitstop, hitstun = p.a_hitstun }
     local b = { startup = p.b_startup }
-    local w, missing = Timing.window(a, b, {
-        hold_ticks = r.hold_ticks or 3,
-        buffer_ticks = r.buffer_ticks,
-    })
-    if w then return w.latest, { predicted = true, window = w } end
+
+    local function timing(prediction, extra)
+        local t = { mechanism = mechanism, mechanism_source = mech_source,
+                    prediction = prediction, b_motion_ticks = lead,
+                    b_motion_known = lead_known }
+        for k, v in pairs(extra or {}) do t[k] = v end
+        return t
+    end
+
+    local steps = {}
+    local missing_all = {}
+
+    if mechanism == "cancel" or mechanism == "both" then
+        local cw, cmissing = Timing.cancel_window(a, b, { hold_ticks = hold,
+                                                         b_motion_ticks = lead })
+        if cw then
+            for i, g in ipairs(cw.gaps) do
+                steps[#steps + 1] = {
+                    delay = g,
+                    why = { predicted = true, prediction = "cancel", window = cw,
+                            timing = timing("cancel", {
+                                point = i, points = #cw.gaps,
+                                appears_at = cw.basis.appears_at,
+                                in_hitstop = cw.basis.in_hitstop,
+                                bound_at = cw.basis.bound_at,
+                                bound_status = cw.basis.bound_status,
+                                late_at_zero = cw.late_at_zero,
+                                past_bound_at_zero = cw.past_bound_at_zero,
+                            }) },
+                }
+            end
+        else
+            for _, m in ipairs(cmissing or {}) do missing_all[#missing_all + 1] = m end
+        end
+    end
+
+    if mechanism ~= "cancel" then
+        local w, missing = Timing.window(a, b, {
+            hold_ticks = hold,
+            buffer_ticks = r.buffer_ticks,
+            b_motion_ticks = lead,
+        })
+        if w then
+            local dup = false
+            for _, s in ipairs(steps) do if s.delay == w.latest then dup = true end end
+            if not dup then
+                steps[#steps + 1] = {
+                    delay = w.latest,
+                    why = { predicted = true, prediction = "link", window = w,
+                            timing = timing("link", { earliest = w.earliest,
+                                                      latest = w.latest,
+                                                      whiff_after = w.whiff_after,
+                                                      free_at = w.basis.free_at }) },
+                }
+            end
+        else
+            for _, m in ipairs(missing or {}) do missing_all[#missing_all + 1] = m end
+        end
+    end
+
+    -- A route with several gaps is run at the operator's list, which
+    -- SequenceCompiler prefers over any one delay; a grid over the one delay
+    -- it ignores would be the same trial run again under different keys.
+    if type(r.delays) == "table" and #steps > 1 then steps = { steps[1] } end
+
+    if #steps > 0 then return steps end
 
     -- No window. The pair still runs, at whatever the operator set, and the row
     -- says the gap was NOT predicted - a negative measured at an unpredicted
@@ -584,7 +720,11 @@ function M.delay_for(p, r)
     local saw = ("startup=%s active=%s recovery=%s hitstop=%s b=%s buffer=%s"):format(
         tostring(p.a_startup), tostring(p.a_active), tostring(p.a_recovery),
         tostring(p.a_hitstop), tostring(p.b_startup), tostring(r.buffer_ticks))
-    return r.delay, { predicted = false, missing = missing, saw = saw }
+    return { {
+        delay = r.delay,
+        why = { predicted = false, missing = missing_all, saw = saw,
+                timing = timing("none", { missing = missing_all }) },
+    } }
 end
 
 function M.tick()
@@ -599,7 +739,7 @@ function M.tick()
     end
 
     -- Otherwise start the next one.
-    local p = next_pair()
+    local p, from = next_pair()
     if p == nil then
         run.done = true
         run.stopped_because = "the worklist is finished"
@@ -623,14 +763,28 @@ function M.tick()
     -- The claim's why is nil on success, so every predicted gap was counted as
     -- a fallback while the predicted delay was being used - the sweep said
     -- "0 predicted" and pressed at 69 anyway.
-    local delay, gap_why = M.delay_for(p, run)
+    --
+    -- A pair's gaps are a plan now (M.plan_for): one gap for a link, a grid for
+    -- a cancel. A pair fresh from the list gets a fresh plan; one coming back
+    -- for its next gap, or for a retry, carries on where it was.
     local key = pair_key(p)
+    local plan = run.plans[key]
+    if plan == nil or from == "list" then
+        plan = { steps = M.plan_for(p, run), next = 1 }
+        run.plans[key] = plan
+    end
+    local step = plan.steps[plan.next]
+    if step == nil then return nil end
+    local delay, gap_why = step.delay, step.why
+    -- Attempts are counted per gap. The same pair at another gap is not a
+    -- second attempt at the same trial, and the collector keys it apart anyway.
+    local akey = ("%s@%s"):format(key, tostring(delay))
     -- ResultCollector.delay_list accepts a number or a list, so whichever form
     -- the caller gave is handed through unchanged. Reading `run.delay` alone
     -- here was the bug: with a list supplied, this key was built from nil, the
     -- claim was refused, and the pair counted as skipped.
     local spec_for_claim = {
-        edge_id = key, attempt = (run.attempts[key] or 0) + 1,
+        edge_id = key, attempt = (run.attempts[akey] or 0) + 1,
         delay = run.delays or delay,
     }
     -- Skipping is the collector's decision, not this file's: it is the one that
@@ -639,6 +793,14 @@ function M.tick()
     if not may then
         run.skipped = run.skipped + 1
         run.last_skip = ("%s: %s"):format(key, tostring(why))
+        -- A gap answered in an earlier session. If it linked, the question
+        -- this plan asks is answered; otherwise the next gap is still open.
+        local prior = nil
+        local rkey = ResultCollector.key(spec_for_claim)
+        if rkey and run.collector.resume and run.collector.resume.done then
+            prior = run.collector.resume.done[rkey]
+        end
+        M._advance(p, plan, prior ~= nil and prior.verdict == "link")
         return nil
     end
 
@@ -653,9 +815,13 @@ function M.tick()
             and table.concat(gap_why.missing, ", ")) or "nothing named")
             .. "  |  " .. tostring(gap_why and gap_why.saw)
     end
-    run.attempts[key] = (run.attempts[key] or 0) + 1
+    local prediction = gap_why and gap_why.timing and gap_why.timing.prediction or "none"
+    run.by_prediction[prediction] = (run.by_prediction[prediction] or 0) + 1
+    run.attempts[akey] = (run.attempts[akey] or 0) + 1
     run.current = p
     run.current_key = key
+    run.current_akey = akey
+    run.current_plan = plan
 
     local ok, err = inj.start({
         provenance = run.provenance,
@@ -673,7 +839,11 @@ function M.tick()
                 { input_method = p.b_method, notation = p.b_notation }),
         },
         edge_id = key,
-        attempt = run.attempts[key],
+        attempt = run.attempts[akey],
+        -- Which timing this gap came from - cancel grid, link, or none - onto
+        -- the row. A negative at a link gap on a cancel-only pair says nothing
+        -- about the cancel, and a reader can only tell if the row says so.
+        timing = gap_why and gap_why.timing or nil,
         -- The collector, as the sink. The Injector writes the row on the tick
         -- the verdict exists and finish_trial only reads whether it landed:
         -- one writer, so one row per trial.
@@ -696,6 +866,8 @@ function M.tick()
             run.stopped_because = ("%d trials in a row would not start - last reason: %s")
                 :format(run.consecutive_start_failures, tostring(err))
         end
+        -- The rest of the plan goes with it, as the pair always did.
+        run.current, run.current_key, run.current_akey, run.current_plan = nil, nil, nil, nil
         return nil
     end
 
@@ -730,21 +902,40 @@ function M.finish_trial()
     -- is the runner's own word for it - a stage that failed to reset, a gate
     -- that shut mid-trial - and it is deliberately not re-derived here.
     local trial = result and result.trial
+    local akey = run.current_akey or key
     if trial and trial.retryable and run.current then
-        if (run.attempts[key] or 0) < run.max_attempts then
+        if (run.attempts[akey] or 0) < run.max_attempts then
+            -- The same gap again: the plan does not move on for a trial that
+            -- answered nothing.
             run.requeued[#run.requeued + 1] = run.current
         else
             run.problems[#run.problems + 1] = {
                 pair = key,
                 reason = ("gave up after %d attempts"):format(run.max_attempts),
             }
+            if run.current_plan then M._advance(run.current, run.current_plan, false) end
         end
+    elseif run.current and run.current_plan then
+        -- The plan's second decision: a gap that linked answers the pair, and
+        -- anything else leaves the next gap to be tried.
+        M._advance(run.current, run.current_plan, trial ~= nil and trial.verdict == "link")
     end
 
     run.finished = run.finished + 1
-    run.current, run.current_key = nil, nil
+    run.current, run.current_key, run.current_akey, run.current_plan = nil, nil, nil, nil
     inj.stop()
     return true
+end
+
+-- Moves a pair's plan to its next gap and, if there is one, puts the pair at
+-- the front of the queue for it. A gap that linked ends the plan. Exposed with
+-- an underscore for the tick above and for tests, not as an API.
+function M._advance(p, plan, answered)
+    if not run or type(plan) ~= "table" then return end
+    plan.next = answered and (#plan.steps + 1) or (plan.next + 1)
+    if plan.steps[plan.next] ~= nil then
+        run.front[#run.front + 1] = p
+    end
 end
 
 -- --- readouts ----------------------------------------------------------------
@@ -777,6 +968,10 @@ function M.progress()
         -- thing, and it should be visible while it happens.
         predicted = run.predicted or 0,
         unpredicted = run.unpredicted or 0,
+        -- The same trials split by WHICH prediction: link, cancel or none.
+        by_prediction = run.by_prediction,
+        -- Gaps still queued for pairs part-way through their plan.
+        pending_gaps = #run.front,
         unpredicted_why = run.unpredicted_why,
         -- Not tried, and why. Counted apart from `skipped`, which is pairs
         -- already answered: these were never going to produce an answer.

@@ -504,6 +504,7 @@ function M.trial(spec)
         -- a recording, the frame in the engine's own time.
         started_at_frame = spec.started_at_frame,
         notes = spec.notes,
+        timing = spec.timing,
     })
 
     -- Through the schema's own machine rather than by assignment, so the

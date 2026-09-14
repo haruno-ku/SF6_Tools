@@ -256,6 +256,7 @@ function M.worklist_item(e)
         a_on_hit = b.from_on_hit,
         b_startup = b.to_startup,
         margin_frames = b.margin_frames,
+        mechanism = CG.mechanism(e),
         context_dependent = e.context_dependent or nil,
         context_known = e.context_known or nil,
     }

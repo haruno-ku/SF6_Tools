@@ -828,4 +828,17 @@ do
     end
 end
 
+t.group("how a pair has to be pressed, from its reasons")
+
+t.eq(CG.mechanism({ reasons = { "frame_link" } }), "link", "a margin alone is a link")
+t.eq(CG.mechanism({ reasons = { "super_cancel" } }), "cancel", "a cancel alone is a cancel")
+t.eq(CG.mechanism({ reasons = { "chain_cancel" } }), "cancel", "a chain is a cancel")
+t.eq(CG.mechanism({ reasons = { "target_combo" } }), "cancel", "and so is a target combo")
+t.eq(CG.mechanism({ reasons = { "frame_link", "special_cancel" } }), "both", "both is both")
+t.eq(CG.mechanism({ reasons = { "frame_data_incomplete", "super_cancel" } }), "both",
+     "an unexamined link beside a cancel is not ruled out")
+t.eq(CG.mechanism({ reasons = { "frame_data_incomplete" } }), "unknown", "nothing either way")
+t.eq(CG.mechanism(nil), "unknown", "and no edge at all")
+t.eq(CG.mechanism({ "frame_link" }), "link", "a bare reason list is read too")
+
 return t.finish()

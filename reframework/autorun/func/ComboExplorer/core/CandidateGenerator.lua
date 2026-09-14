@@ -163,6 +163,40 @@ function M.is_drive_rush(record)
     return type(record) == "table" and record.via == M.VIA_DRIVE_RUSH
 end
 
+-- HOW a plain edge would have to be pressed, in one word, from its reasons.
+--
+--   "link"   : B after A has recovered - the only reason is frame_link
+--   "cancel" : B during A's hit - a chain, special, super or target-combo
+--              cancel, and no link margin (a known negative margin is what
+--              keeps frame_link off the list)
+--   "both"   : a link margin AND a named cancel, so either timing may work
+--   "unknown": nothing either way - frame_data_incomplete alone
+--
+-- frame_data_incomplete beside a cancel counts as both: the link was not
+-- refuted, it was not examined. Carried into the worklist because the sweep
+-- has to press a cancel at a completely different time from a link, and before
+-- this the worklist said neither - so every pair was timed as a link, cancels
+-- included (runtime/Sweep.lua, core/Timing.lua).
+M.MECHANISM = { LINK = "link", CANCEL = "cancel", BOTH = "both", UNKNOWN = "unknown" }
+
+local CANCEL_REASONS = {
+    chain_cancel = true, special_cancel = true, super_cancel = true, target_combo = true,
+}
+
+function M.mechanism(edge)
+    local reasons = type(edge) == "table" and (edge.reasons or edge) or {}
+    local link, cancel, open = false, false, false
+    for _, r in ipairs(reasons) do
+        if r == M.REASON.FRAME_LINK then link = true
+        elseif r == M.REASON.FRAME_DATA_INCOMPLETE then open = true
+        elseif CANCEL_REASONS[r] then cancel = true end
+    end
+    if cancel and (link or open) then return M.MECHANISM.BOTH end
+    if cancel then return M.MECHANISM.CANCEL end
+    if link then return M.MECHANISM.LINK end
+    return M.MECHANISM.UNKNOWN
+end
+
 local U = Schema.RUNTIME_UNKNOWNS
 -- The producer names the vocabulary it produces, so a typo here is a nil index
 -- rather than a string nobody validates.

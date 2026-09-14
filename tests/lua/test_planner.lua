@@ -415,6 +415,10 @@ t.eq(item.margin_frames, 0, "a plain record carries the margin")
 t.eq(item.a_hitstun, 16, "and A's frames")
 t.eq(item.context_known, true, "and the parent vouch (#49)")
 t.is_nil(item.via, "and no via")
+t.eq(item.mechanism, "unknown", "and how B is pressed, from the reasons (none on this edge)")
+plain.reasons = { "frame_link", "super_cancel" }
+t.eq(Pipeline.worklist_item(plain).mechanism, "both", "a link margin and a cancel is both")
+plain.reasons = nil
 item = Pipeline.worklist_item(rushed)
 t.eq(item.via, "drive_rush_cancel", "a DRC record carries via")
 t.eq(item.drc_margin_frames, 4, "and the DRC margin")

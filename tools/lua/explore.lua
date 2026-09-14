@@ -392,6 +392,11 @@ if opt.worklist then
             a_on_hit = e.basis and e.basis.from_on_hit or nil,
             b_startup = e.basis and e.basis.to_startup or nil,
             margin_frames = e.basis and e.basis.margin_frames or nil,
+            -- link / cancel / both / unknown, from the edge's reasons. The
+            -- sweep presses a cancel during A's hit and a link after A
+            -- recovers; without this it could only tell them apart by
+            -- guessing from the margin (core/Timing.lua, runtime/Sweep.lua).
+            mechanism = CG.mechanism(e),
             -- Carried because the runtime refuses a derivation as move A, and
             -- finding that out per pair at run time would be a refusal per pair
             -- rather than a filter.

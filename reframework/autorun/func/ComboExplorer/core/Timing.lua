@@ -1,5 +1,5 @@
 -- =========================================================
--- ComboExplorer/core/Timing.lua - which gap a link needs, from the frame data.
+-- ComboExplorer/core/Timing.lua - which gap a link or a cancel needs, from the frame data.
 -- =========================================================
 --
 -- WHY THIS EXISTS
@@ -54,8 +54,63 @@
 -- A pair whose frame data is missing a field gets no window and says which
 -- field was missing, rather than falling back to a number that would look like
 -- a prediction.
+--
+-- B'S MOTION COMES BEFORE B'S BUTTON
+--
+-- SequenceCompiler plays a motion one direction per tick and holds the LAST
+-- direction together with the button. So B's button is not at the start of B's
+-- input: it is (#directions - 1) ticks after it. "720" is 63214789624, eleven
+-- directions, so its button lands ten ticks after the gap ends; "360" six,
+-- "236236" five, "63214" four, "236" two, a single direction none.
+--
+-- The window above used to ignore that and put every B's press at hold + gap.
+-- The committed sweep rows show what that did (zangief-modern-framedata.jsonl,
+-- same gap, same A, only B's input method differs):
+--
+--   662 -> 1218  simple "2 + SP + 强" pressed at 85, came out 84
+--                manual "720 + 强"    pressed at 95, came out 94   (+10)
+--   662 -> 1206  simple 85 / manual 90 (+5, 236236)
+--   662 -> 1010  manual 89 (+4, 63214)    662 -> 930  manual 91 (+6, 360)
+--   621 -> 1206  gap 35: simple LINKED at 50, manual came out at 55 and the
+--                combo counter had reset
+--   633 -> 1206  gap 53: simple LINKED at 68, manual at 73 combo_broke
+--
+-- Two pairs where the only difference between a link and a broken combo is the
+-- five ticks of 236236 the model did not count. The directions are read by the
+-- engine while A is still recovering - the same rows at gap 4 play the whole
+-- 720 inside A's animation and the move comes out - so the motion is started
+-- early and the button kept where the model wants it: `b_motion_ticks` is
+-- taken off the gap.
+--
+-- A CANCEL IS A DIFFERENT QUESTION FROM A LINK
+--
+-- A link is pressed after A recovers. A cancel is pressed while A is hitting,
+-- and its B comes out when A's hitstop ends, however early in the hitstop it
+-- was pressed. Every window above is a link window, and the sweep used it for
+-- every pair: a pair whose only reason was a special or super cancel was
+-- pressed after A had recovered, where a cancel cannot happen. See
+-- cancel_window below for the model and the rows it rests on.
+
+local InputMask = require("func/ComboExplorer/core/InputMask")
 
 local M = { name = "ComboExplorer.Timing" }
+
+-- Ticks between the start of a move's input and its button, as SequenceCompiler
+-- lays the input out: one tick per direction, the last one held with the
+-- button. nil when the notation cannot be read - not zero, because a zero would
+-- look like a single-direction move and move the prediction.
+function M.motion_ticks(notation)
+    if type(notation) ~= "string" then return nil end
+    local parsed = InputMask.parse(notation)
+    if not parsed then return nil end
+    local dirs = parsed.dirs or ""
+    if dirs == "" then return 0 end
+    local expanded = InputMask.MOTION_SHORTHAND[dirs] or dirs
+    local n = 0
+    for _ in expanded:gmatch("%d") do n = n + 1 end
+    if n == 0 then return 0 end
+    return n - 1
+end
 
 -- The first frame of `active` when it is a multi-hit string like "2(3)2(4)2".
 --
@@ -84,12 +139,15 @@ end
 -- b : the frame-data record for move B
 -- opts.hold_ticks   : how long each move's input is held (SequenceCompiler)
 -- opts.buffer_ticks : the input buffer, from Provenance
+-- opts.b_motion_ticks : ticks of B's motion before its button (motion_ticks).
+--                     Absent is 0, which is what the model assumed before
 --
 -- Returns a window { earliest, latest, whiff_after, basis } or nil plus the
 -- list of fields that were missing.
 function M.window(a, b, opts)
     opts = opts or {}
     local hold = opts.hold_ticks or 3
+    local lead = opts.b_motion_ticks or 0
     local buffer = opts.buffer_ticks
 
     local missing = {}
@@ -117,12 +175,13 @@ function M.window(a, b, opts)
     if #hard > 0 then return nil, hard end
 
     local free_at = startup + active + recovery + hitstop
-    local latest = free_at - hold
+    -- B's button, not the start of B's input, is what has to land at free_at.
+    local latest = free_at - hold - lead
     local earliest = latest - buffer
 
     local whiff_after = nil
     if hitstun ~= nil and b_start ~= nil then
-        whiff_after = startup + hitstop + hitstun - b_start - hold
+        whiff_after = startup + hitstop + hitstun - b_start - hold - lead
     end
 
     -- The window is what to PRESS at. Clamped at zero because a gap cannot be
@@ -139,6 +198,130 @@ function M.window(a, b, opts)
             startup = startup, active = active, recovery = recovery,
             hitstop = hitstop, hitstun = hitstun, b_startup = b_start,
             free_at = free_at, hold_ticks = hold, buffer_ticks = buffer,
+            b_motion_ticks = lead,
+        },
+    }
+end
+
+-- --- cancels -------------------------------------------------------------------
+--
+-- THE MODEL, AND THE ROWS IT RESTS ON
+--
+-- Same tick basis as window(): offsets from the tick A's input starts, a gap of
+-- g putting B's button at hold + g + b_motion_ticks.
+--
+--   opens_at     = startup - 1           A's first active frame
+--   appears_at   = startup + hitstop     where a cancelled B comes out
+--   in_hitstop   = appears_at - 1        the last press inside A's hitstop
+--
+-- zangief-modern-delay4.jsonl ran every pair at gap 4, which put B's button at
+-- offset 7 for a one-direction B and 17 for a 720. For the four cancelable
+-- starters in it, every B that came out did so at A's first tick plus
+-- startup + hitstop, whether it was pressed at 7 or at 17:
+--
+--   611 5LK  st 7 hs  9  -> B at +16 (pressed 7), 720 pressed 17 came out at +17
+--   617 2LP  st 6 hs  9  -> B at +15 (pressed 7 and 13); 720 pressed 17: NEVER
+--   621 2MP  st 8 hs 11  -> B at +19 (pressed 7 and 17)
+--   655 3MP  st 7 hs 11  -> B at +20 (pressed 7 and 17) - two later than the
+--                            model, and unexplained
+--
+-- So a press from A's first active frame to the end of A's hitstop is taken,
+-- and the one bracket on the END of the window is 5LK taking a press one tick
+-- after appears_at and 2LP refusing one two ticks after it. Two light normals
+-- is not a measurement of cancel windows, and the window's end is not in the
+-- frame data at all. So the end is not predicted; it is searched, a stride at a
+-- time, up to a bound that is named below as what it is.
+--
+-- NO NEGATIVE GAP
+--
+-- SequenceCompiler refuses a delay below zero, and overlapping B's directions
+-- with A's held button would change A's input. The earliest B's button can
+-- land is therefore hold + b_motion_ticks: 13 for a 720 after a 3-tick hold.
+-- For every cancelable Zangief normal above that is still inside A's hitstop,
+-- which is why the gap-4 rows came out; a starter whose hitstop ends before
+-- that gets gap 0 alone and says it was pressed past the searched bound.
+
+-- A search bound, not a value. Provenance style so nobody reads it as the
+-- cancel window, which nobody has measured.
+M.CANCEL_SEARCH = {
+    past_hitstop_ticks = 3,
+    stride_ticks = 2,
+    status = "search_bound",
+    question = "How many ticks after A's hitstop ends is a cancel still accepted?",
+    provisional_source = "NOT MEASURED. zangief-modern-delay4.jsonl brackets two light "
+        .. "normals: 5LK accepted a press one tick past appears_at, 2LP refused one two "
+        .. "ticks past it. 3 searches one tick beyond the refusal in case heavier normals "
+        .. "stay open longer; a stride of 2 keeps a cancel pair to four trials.",
+    if_wrong = "Too small and a normal whose cancel window runs longer is searched only "
+        .. "at its early edge - which is still where a cancel is most likely to come "
+        .. "out. Too large spends trials on presses that land in A's recovery.",
+}
+
+-- a : the frame-data record for move A (startup, hitstop)
+-- b : unused today - a cancelled B comes out when A's hitstop ends, whatever
+--     its own startup - and accepted so the call reads like window()
+-- opts.hold_ticks, opts.b_motion_ticks : as window()
+-- opts.past_hitstop_ticks, opts.stride_ticks : override M.CANCEL_SEARCH
+--
+-- Returns { gaps, earliest, latest, basis, late_at_zero, past_bound_at_zero }
+-- or nil plus the missing fields. `gaps` is the grid to run, every value a
+-- legal delay, never empty.
+function M.cancel_window(a, b, opts)
+    opts = opts or {}
+    local hold = opts.hold_ticks or 3
+    local lead = opts.b_motion_ticks or 0
+    local past = opts.past_hitstop_ticks or M.CANCEL_SEARCH.past_hitstop_ticks
+    local stride = opts.stride_ticks or M.CANCEL_SEARCH.stride_ticks
+    if stride < 1 then stride = 1 end
+
+    local missing = {}
+    local startup = num(a and a.startup)
+    if startup == nil then missing[#missing + 1] = "a.startup" end
+    local hitstop = num(a and a.hitstop)
+    if hitstop == nil then missing[#missing + 1] = "a.hitstop" end
+    if #missing > 0 then return nil, missing end
+
+    local opens_at = startup - 1
+    local appears_at = startup + hitstop
+    local in_hitstop = appears_at - 1
+    local bound_at = appears_at + past
+    local zero_press = hold + lead
+
+    local presses = { opens_at, in_hitstop }
+    local p = appears_at + 1
+    while p <= bound_at do
+        presses[#presses + 1] = p
+        p = p + stride
+    end
+    if presses[#presses] ~= bound_at and bound_at > in_hitstop then
+        presses[#presses + 1] = bound_at
+    end
+
+    local seen, gaps = {}, {}
+    for _, press in ipairs(presses) do
+        local g = press - hold - lead
+        if g < 0 then g = 0 end
+        if not seen[g] then seen[g] = true; gaps[#gaps + 1] = g end
+    end
+    table.sort(gaps)
+
+    return {
+        gaps = gaps,
+        earliest = gaps[1],
+        latest = gaps[#gaps],
+        -- Already past A's hitstop at gap 0: the motion is too long to be
+        -- pressed where the evidence says a cancel is taken.
+        late_at_zero = zero_press > in_hitstop,
+        -- Past even the searched bound at gap 0. The grid is then {0}, the one
+        -- attempt the compiler can make, and a negative there says more about
+        -- the input's length than about the pair.
+        past_bound_at_zero = zero_press > bound_at,
+        basis = {
+            startup = startup, hitstop = hitstop, opens_at = opens_at,
+            appears_at = appears_at, in_hitstop = in_hitstop, bound_at = bound_at,
+            hold_ticks = hold, b_motion_ticks = lead,
+            past_hitstop_ticks = past, stride_ticks = stride,
+            bound_status = M.CANCEL_SEARCH.status,
         },
     }
 end

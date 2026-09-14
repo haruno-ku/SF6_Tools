@@ -37,6 +37,8 @@ local function injector(outcomes)
             state.started[#state.started + 1] = opts.edge_id
             state.delays[#state.delays + 1] = opts.delays
             state.delay[#state.delay + 1] = opts.delay
+            state.timing = state.timing or {}
+            state.timing[#state.started] = opts.timing or false
             state.sinks[#state.sinks + 1] = opts.sink
             cur = plan
             record_error = nil
@@ -65,7 +67,8 @@ local function injector(outcomes)
         result = function()
             return { outcome = cur and cur.outcome,
                      record_error = record_error,
-                     trial = { retryable = cur and cur.retryable or false } }
+                     trial = { retryable = cur and cur.retryable or false,
+                               verdict = cur and (cur.verdict or "link") or nil } }
         end,
         record = function()
             state.recorded = state.recorded + 1
@@ -75,7 +78,7 @@ local function injector(outcomes)
                 edge_id = state.started[#state.started],
                 attempt = 1,
                 verdict = cur and cur.verdict or "link",
-                delay = 4,
+                delay = state.delay[#state.delay] or 4,
                 evidence = { judge_gap = 1 },
                 provenance = { calibration_id = "cal-test", game_patch = "p" },
             }
@@ -644,6 +647,150 @@ do
                 a_hitstun = 28, b_startup = 7 }
     local _, why = Sweep2.delay_for(p, { hold_ticks = 3, delay = 4 })
     t.eq(why.predicted, false, "no buffer, no prediction")
+end
+
+
+t.group("a cancel pair is timed as a cancel, and a link pair's motion is counted")
+
+-- The committed Zangief rows: 5LK / 2LP / 2MP / 3MP into 720 + 强 were pressed
+-- at the LINK gap (after A recovered) in zangief-modern-framedata.jsonl, though
+-- their only reason was a super cancel. At gap 4 the same pairs had put B inside
+-- A's hitstop and the move came out.
+
+local STRONG = "\229\188\186"   -- 强
+local LP2 = { a_id = 617, a_method = "manual", a_notation = "2 + \229\188\177",
+              b_id = 1218, b_method = "manual", b_notation = "720 + " .. STRONG,
+              a_startup = 6, a_active = "2", a_recovery = 8, a_hitstop = 9,
+              a_hitstun = 16, a_on_hit = 6, b_startup = 6 }
+local function with(base, over)
+    local out = {}
+    for k, v in pairs(base) do out[k] = v end
+    for k, v in pairs(over or {}) do out[k] = v end
+    return out
+end
+
+do
+    local steps = Sweep2.plan_for(with(LP2, { mechanism = "cancel", margin_frames = -2 }),
+                                  { hold_ticks = 3, buffer_ticks = 4, delay = 4 })
+    local delays = {}
+    for i, s in ipairs(steps) do
+        delays[i] = s.delay
+        t.eq(s.why.timing.prediction, "cancel", "gap " .. s.delay .. " is a cancel prediction")
+        t.eq(s.why.predicted, true, "and counts as predicted")
+    end
+    t.eq_list(delays, { 0, 1, 3, 5 }, "a cancel-only pair is run over the cancel grid, not at 22")
+    t.eq(steps[1].why.timing.b_motion_ticks, 10, "counting the 720's ten ticks")
+    t.eq(steps[1].why.timing.bound_status, "search_bound", "and naming the bound as a bound")
+    t.eq(steps[1].why.timing.mechanism_source, "worklist", "the mechanism came from the worklist")
+end
+
+do
+    -- A worklist written before `mechanism` existed. A known negative margin
+    -- is what keeps frame_link off an edge, so the pair is a cancel pair.
+    local steps = Sweep2.plan_for(with(LP2, { margin_frames = -8 }),
+                                  { hold_ticks = 3, buffer_ticks = 4, delay = 4 })
+    t.eq(steps[1].why.timing.prediction, "cancel", "a negative margin with no label is a cancel")
+    t.ok(tostring(steps[1].why.timing.mechanism_source):find("inferred") ~= nil,
+         "and says the mechanism was inferred")
+    local m, src = Sweep2.mechanism_of({ margin_frames = 3 })
+    t.eq(m, "unknown", "a non-negative margin with no label is not guessed at")
+    t.ok(tostring(src):find("does not say") ~= nil, tostring(src))
+end
+
+do
+    -- both: the cancel grid first, the link gap last.
+    local steps = Sweep2.plan_for(with(LP2, { mechanism = "both", margin_frames = 0 }),
+                                  { hold_ticks = 3, buffer_ticks = 4, delay = 4 })
+    t.eq(#steps, 5, "four cancel gaps and one link gap")
+    t.eq(steps[5].why.timing.prediction, "link", "the link comes last")
+    -- 6+2+8+9 = 25, less the hold, less the 720's ten ticks.
+    t.eq(steps[5].delay, 12, "at the link gap with the motion counted")
+    t.eq(steps[1].why.timing.prediction, "cancel", "and the cancel first")
+end
+
+do
+    -- link: one gap, the motion counted. 662 (6 + 强) -> 720 + 强 ran at 69 and
+    -- its button landed ten ticks after A was free.
+    local p = { a_startup = 22, a_active = "7(5)", a_recovery = 25, a_hitstop = 13,
+                b_startup = 6, b_notation = "720 + " .. STRONG, mechanism = "link" }
+    local delay, why = Sweep2.delay_for(p, { hold_ticks = 3, buffer_ticks = 4, delay = 4 })
+    t.eq(delay, 59, "a link gap is taken back by the motion: 72 - 3 - 10")
+    t.eq(why.timing.prediction, "link", "and says it is a link prediction")
+    local simple = Sweep2.delay_for(with(p, { b_notation = "2 + SP + " .. STRONG }),
+                                    { hold_ticks = 3, buffer_ticks = 4, delay = 4 })
+    t.eq(simple, 69, "the one-direction spelling is still 69, as it ran")
+end
+
+do
+    -- A cancel pair with no hitstop has no cancel window, and is not quietly
+    -- handed the link gap instead.
+    local p = with(LP2, { mechanism = "cancel" })
+    p.a_hitstop = nil
+    local delay, why = Sweep2.delay_for(p, { hold_ticks = 3, buffer_ticks = 4, delay = 4 })
+    t.eq(delay, 4, "it falls back to the operator's delay")
+    t.eq(why.predicted, false, "unpredicted")
+    t.eq(why.timing.prediction, "none", "and the row will say no prediction was used")
+    t.eq(why.missing[1], "a.hitstop", "naming the field")
+end
+
+do
+    -- In a sweep: the grid is walked in order, the pair stops at the first gap
+    -- that links, and the next pair only starts after it.
+    Sweep.stop()
+    local wl = worklist(2)
+    wl.pairs[1] = with(LP2, { mechanism = "cancel" })
+    wl.pairs[2].a_startup, wl.pairs[2].a_active, wl.pairs[2].a_recovery = 14, "5", 15
+    wl.pairs[2].a_hitstop, wl.pairs[2].b_startup = 13, 7
+    wl.pairs[2].mechanism = "link"
+    local inj = injector({ { verdict = "whiff" }, { verdict = "link" }, { verdict = "whiff" } })
+    local c = collector()
+    local ok, err = Sweep.start({ worklist = wl, collector = c, injector = inj, delay = 4,
+                                  hold_ticks = 3, buffer_ticks = 4, allow_injection = true })
+    t.ok(ok, "starts: " .. tostring(err))
+    drive(50)
+    local r = Sweep.result()
+    t.eq(#inj.log.started, 3, "two gaps of the cancel pair, then the link pair")
+    t.eq_list(inj.log.delay, { 0, 1, 44 }, "gap 0 whiffed, gap 1 linked, and 3 and 5 were not run")
+    t.eq(inj.log.started[1], inj.log.started[2], "the same pair twice")
+    t.eq(inj.log.timing[1].prediction, "cancel", "the injector is told which timing it runs")
+    t.eq(inj.log.timing[3].prediction, "link", "for every trial")
+    t.eq(r.by_prediction.cancel, 2, "counted by prediction")
+    t.eq(r.by_prediction.link, 1, "both kinds")
+    t.eq(r.predicted, 3, "all of them predicted")
+    t.eq(r.finished, 3, "and finished")
+    t.eq(r.done, true, "the sweep ends")
+    t.eq(r.pending_gaps, 0, "with no gap left queued")
+    Sweep.stop()
+end
+
+do
+    -- A retryable trial at a cancel gap comes back at the SAME gap, not the next.
+    Sweep.stop()
+    local wl = worklist(1)
+    wl.pairs[1] = with(LP2, { mechanism = "cancel" })
+    local inj = injector({ { verdict = "whiff" }, { outcome = "stage_failed", retryable = true },
+                           { verdict = "whiff" }, { verdict = "whiff" }, { verdict = "whiff" } })
+    local c = collector()
+    t.ok(Sweep.start({ worklist = wl, collector = c, injector = inj, delay = 4,
+                       hold_ticks = 3, buffer_ticks = 4, allow_injection = true }))
+    drive(50)
+    t.eq_list(inj.log.delay, { 0, 1, 1, 3, 5 }, "gap 1 again after the retry, then the rest")
+    t.eq(Sweep.result().done, true, "and the sweep finishes")
+    Sweep.stop()
+end
+
+do
+    -- The row carries the timing. ResultCollector is the one writer; this is
+    -- what a reader of the log has to go on.
+    local rec, problems = ResultCollector.trial({
+        edge_id = "617:manual->1218:manual", delay = 0, attempt = 1, verdict = "whiff",
+        evidence = { judge_gap = 1 },
+        provenance = { calibration_id = "cal-test", game_patch = "p" },
+        timing = { mechanism = "cancel", prediction = "cancel", point = 1, points = 4 },
+    })
+    t.ok(rec ~= nil, "a trial with timing is a valid trial: "
+        .. tostring(problems and problems[1] and problems[1].problem))
+    t.eq(rec and rec.timing and rec.timing.prediction, "cancel", "and keeps it")
 end
 
 
