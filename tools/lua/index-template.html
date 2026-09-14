@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SF6 Combo Explorer キャラクター一覧</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600&family=IBM+Plex+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Page template for tools/lua/all.lua. The same tokens, faces and light/dark
+   handling as report-template.html, so the index and the pages it links to
+   read as one set. Static: the rows are written in at the markers, no script. */
+:root {
+  --ground: #eef0f4;
+  --surface: #ffffff;
+  --sunk: #e4e7ed;
+  --ink: #151a24;
+  --muted: #5b6474;
+  --rule: #d5dae2;
+  --accent: #2f55d4;
+  --v-link: #11905a;
+  --v-combo_broke: #e0891c;
+  --v-whiff: #c2452f;
+  --v-wrong_move: #bcc2cc;
+  --band-bad: #f6e3dc;
+
+  --f-display: "Chakra Petch", "IBM Plex Sans JP", "Yu Gothic UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans JP", "Yu Gothic UI", "Hiragino Sans", "Microsoft YaHei", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0e1117;
+    --surface: #161a22;
+    --sunk: #1d222c;
+    --ink: #e6e9ef;
+    --muted: #97a0ae;
+    --rule: #2a303b;
+    --accent: #7d97ff;
+    --v-link: #35c27c;
+    --v-combo_broke: #f0a13f;
+    --v-whiff: #e2654e;
+    --v-wrong_move: #4a515d;
+    --band-bad: #3a231d;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0e1117;
+  --surface: #161a22;
+  --sunk: #1d222c;
+  --ink: #e6e9ef;
+  --muted: #97a0ae;
+  --rule: #2a303b;
+  --accent: #7d97ff;
+  --v-link: #35c27c;
+  --v-combo_broke: #f0a13f;
+  --v-whiff: #e2654e;
+  --v-wrong_move: #4a515d;
+  --band-bad: #3a231d;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 14px/1.6 var(--f-body);
+  padding-inline: clamp(16px, 4vw, 48px);
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 1320px; margin: 0 auto; display: grid; gap: 32px; }
+h1, h2 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: .01em; }
+h1 { font-size: clamp(26px, 3.4vw, 38px); line-height: 1.15; }
+h2 { font-size: 21px; }
+p { margin: 0; max-width: 68ch; }
+.mono, code { font-family: var(--f-mono); font-size: .92em; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+header { display: grid; gap: 12px; }
+
+/* --- totals -------------------------------------------------------------- */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+.big { font: 600 30px/1 var(--f-display); }
+.tile .sub { font-size: 12.5px; }
+
+/* --- the table ------------------------------------------------------------ */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+table.chars { border-collapse: collapse; width: 100%; font-size: 13px; }
+.chars th { text-align: left; font: 500 11px/1.2 var(--f-body); color: var(--muted); letter-spacing: .04em; padding: 10px 12px; border-bottom: 1px solid var(--rule); white-space: nowrap; vertical-align: bottom; }
+.chars th.n { text-align: right; }
+.chars td { padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.chars tbody tr:last-child td { border-bottom: 0; }
+.chars tbody tr:hover td { background: color-mix(in srgb, var(--sunk) 45%, transparent); }
+.chars td.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.chars td.n b { font: 600 16px var(--f-display); }
+.chars td small { display: block; font-size: 11px; color: var(--muted); }
+.who { font: 600 16px/1.2 var(--f-display); }
+.who a { color: var(--ink); text-decoration: none; border-bottom: 1.5px solid var(--rule); }
+.who a:hover { color: var(--accent); border-color: var(--accent); }
+.who-cell .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.badge { font: 600 11px/1 var(--f-body); padding: 4px 7px; border-radius: 3px; white-space: nowrap; display: inline-block; }
+.badge.ok { background: var(--v-link); color: var(--surface); }
+.badge.tried { color: var(--v-link); box-shadow: inset 0 0 0 1.5px var(--v-link); }
+.badge.open { color: var(--muted); box-shadow: inset 0 0 0 1px var(--rule); }
+.badge.fail { color: var(--v-whiff); box-shadow: inset 0 0 0 1.5px var(--v-whiff); }
+
+/* high / medium / low: the order the worklist is swept in */
+.conf { display: flex; width: 132px; height: 8px; border-radius: 2px; overflow: hidden; background: var(--sunk); margin-top: 5px; }
+.conf span { display: block; height: 100%; }
+.conf .c-high { background: var(--v-link); }
+.conf .c-medium { background: var(--v-combo_broke); }
+.conf .c-low { background: var(--v-wrong_move); }
+.conf-n { font: 11px/1 var(--f-mono); color: var(--muted); margin-top: 5px; white-space: nowrap; }
+
+.plans { display: grid; gap: 3px; }
+.plan { font: 12px/1.3 var(--f-mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.plan i { font: normal 11px var(--f-body); color: var(--muted); display: inline-block; min-width: 6.5em; }
+
+abbr.cut { text-decoration: none; color: var(--v-combo_broke); font-weight: 600; margin-left: 2px; cursor: help; }
+.notes { margin: 0; padding-left: 16px; font-size: 12px; color: var(--muted); display: grid; gap: 2px; min-width: 220px; max-width: 360px; }
+.notes li::marker { color: var(--v-combo_broke); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 12.5px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+footer { font-size: 12px; color: var(--muted); display: grid; gap: 6px; border-top: 1px solid var(--rule); padding-top: 16px; }
+
+/* Phone width: each character becomes a block of label / value lines. */
+@media (max-width: 760px) {
+  .table-wrap { background: transparent; border: 0; overflow: visible; }
+  table.chars, .chars tbody, .chars tr, .chars td { display: block; width: 100%; }
+  .chars thead { display: none; }
+  .chars tr { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 14px; }
+  .chars tr + tr { margin-top: 10px; }
+  .chars td, .chars td.n { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; text-align: left; padding: 7px 0; border-bottom: 1px solid var(--rule); white-space: normal; }
+  .chars td::before { content: attr(data-label); flex: none; width: 8.5em; font-size: 11px; color: var(--muted); }
+  .chars td.who-cell { display: flex; gap: 10px; }
+  .chars td.who-cell::before { content: none; }
+  .chars tbody tr:last-child td, .chars td:last-child { border-bottom: 0; }
+  .chars tbody tr:hover td { background: none; }
+  .chars td small { display: inline; }
+  .chars td .conf { margin-top: 0; }
+  .plans { flex: 1 1 auto; }
+  .notes { min-width: 0; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SF6 Combo Explorer — Modern</div>
+    <h1>キャラクター一覧</h1>
+    <p>31 キャラクターそれぞれの、スイープに渡すワークリストと候補ルート、そして実機で確かめた結果です。ワークリスト・ルート・プランはフレームデータからの予測で、コンボではありません。「確定」に数えるのはゲームが繋がったと答えたものだけです。</p>
+  </header>
+
+  <section class="tiles" aria-label="合計">
+<!--__TOTALS__-->
+  </section>
+
+  <section style="display:grid;gap:12px" aria-labelledby="h-chars">
+    <h2 id="h-chars">キャラクター</h2>
+    <div class="legend">
+      <span><i style="background:var(--v-link)"></i>high 確度</span>
+      <span><i style="background:var(--v-combo_broke)"></i>medium</span>
+      <span><i style="background:var(--v-wrong_move)"></i>low（数字が足りない候補）</span>
+      <span>1パス = ペア数 × 約3秒</span>
+      <span><b style="color:var(--v-combo_broke)">*</b> ルート探索が上限で打ち切られた</span>
+      <span>名前から接続マップとルート検索へ</span>
+    </div>
+    <div class="table-wrap">
+      <table class="chars">
+        <thead>
+          <tr>
+            <th>キャラ</th>
+            <th>状態</th>
+            <th class="n">ワークリスト</th>
+            <th>確度 high · med · low</th>
+            <th class="n">DRC ペア</th>
+            <th class="n">候補ルート</th>
+            <th>プラン（ペア数）</th>
+            <th class="n">確定 / 試行</th>
+            <th>注意</th>
+          </tr>
+        </thead>
+        <tbody>
+<!--__ROWS__-->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <div>再生成: <code>lua tools/lua/all.lua</code>（一部だけなら <code>--only Ryu,Ken</code>）。数字は <code>docs/ComboExplorer/characters.json</code> にもあります。</div>
+    <div>DRC ペアはスイープがまだ押せないため、別ファイル（<code>worklist/&lt;char&gt;-modern-drc.json</code>）に分けています。Classic はまだありません。</div>
+    <div>ワークリスト・確度・ルートはフレームデータ由来です（CC-BY-SA-4.0、docs/NOTICE.md）。試行結果は Street Fighter 6 上で測ったものです。</div>
+  </footer>
+</div>
+</body>
+</html>

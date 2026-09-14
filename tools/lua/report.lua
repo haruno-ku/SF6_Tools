@@ -5,6 +5,7 @@
 --   lua tools/lua/report.lua [--character Zangief] [--scheme modern]
 --                            [--data reframework/data/ComboExplorer_data]
 --                            [--out docs/ComboExplorer/sweep-report-<char>-<scheme>.html]
+--                            [--no-drive-rush] [--summary <path.json>]
 --
 -- Needs Lua 5.4 and the logs the sweep wrote. No game, no network. The page it
 -- writes is self-contained: open it in a browser, or publish it as it is.
@@ -42,6 +43,7 @@ local opt = Cli.args("report", arg, {
     scheme = "modern",
     data = "reframework/data/ComboExplorer_data",
     template = "tools/lua/report-template.html",
+    drive_rush = true,
 })
 
 local entry, cerr = Characters.resolve(opt.character)
@@ -144,6 +146,8 @@ model.sources = { worklist = wl_path, data = opt.data }
 -- the combo list, and says why the finder is empty.
 local Planner = dofile("tools/lua/planner.lua")
 
+local RouteView = dofile("tools/lua/routeview.lua")
+
 local function route_finder()
     local Pipeline = dofile("tools/lua/pipeline.lua")
     local ConfirmedEdge = require("func/ComboExplorer/core/ConfirmedEdge")
@@ -152,9 +156,12 @@ local function route_finder()
     local ctx, lerr = Pipeline.load({ character = entry.catalog, scheme = opt.scheme })
     if not ctx then return nil, lerr end
     if not ctx.idx then return nil, ctx.warnings[1] end
-    local gen, gerr = Pipeline.generate(ctx, {})
+    -- Generated once, with the Drive Rush Cancel edges. The plain edges are the
+    -- same either way (explore.lua's --drive-rush promise), and a plain search
+    -- only ever reads the plain ones.
+    local gen, gerr = Pipeline.generate(ctx, { drive_rush = opt.drive_rush ~= false })
     if not gen then return nil, gerr end
-    local all = Pipeline.search(ctx, {})
+    local all, found = Pipeline.search(ctx, {})
 
     -- The same folding plan.lua does, so a status here is the status there.
     local records = {}
@@ -172,9 +179,6 @@ local function route_finder()
     end
     local known = Planner.known_from(edges, model.combos, notation_of)
 
-    local ranked, rinfo = Planner.rank(all, "scaled_damage")
-    local anns = Planner.annotate(nil, ranked, known).routes
-
     local function verdict(r, cond)
         local kept, rep = Planner.filter({ r }, cond)
         if not kept or #kept == 0 then return "remove" end
@@ -182,55 +186,99 @@ local function route_finder()
     end
 
     local rows, starters, seen_starter = {}, {}, {}
-    for i, r in ipairs(ranked) do
-        local s = r.offline_score or {}
-        local moves = Planner.moves(r)
-        local modern, classic_names, methods, drc_after = {}, {}, {}, {}
-        local mi = 0
-        for _, st in ipairs(r.steps or {}) do
-            if st.kind == "drive_rush_cancel" then
-                drc_after[#drc_after + 1] = mi
-            elseif st.kind == nil then
-                mi = mi + 1
-                modern[mi] = st.notation
-                classic_names[mi] = st.classic or classic[st.action_id]
-                methods[mi] = st.input_method
+
+    local function add_rows(ranked)
+        local anns = Planner.annotate(nil, ranked, known).routes
+        for i, r in ipairs(ranked) do
+            local s = r.offline_score or {}
+            local moves = Planner.moves(r)
+            local modern, classic_names, drc_after = {}, {}, {}
+            local mi = 0
+            for _, st in ipairs(r.steps or {}) do
+                if st.kind == "drive_rush_cancel" then
+                    drc_after[#drc_after + 1] = mi
+                elseif st.kind == nil then
+                    mi = mi + 1
+                    modern[mi] = st.notation
+                    classic_names[mi] = st.classic or classic[st.action_id]
+                end
             end
-        end
-        local first = moves[1] or {}
-        local parsed = InputMask.parse(first.notation or "")
-        if first.notation and not seen_starter[first.notation] then
-            seen_starter[first.notation] = true
-            starters[#starters + 1] = first.notation
-        end
+            local first = moves[1] or {}
+            local parsed = InputMask.parse(first.notation or "")
+            if first.notation and not seen_starter[first.notation] then
+                seen_starter[first.notation] = true
+                starters[#starters + 1] = first.notation
+            end
 
-        local a = anns[i]
-        local pairs_out = {}
-        for pi, p in ipairs(Planner.route_pairs(r)) do
-            local press = SweepReport.press_kind(p.b.notation)
-            local press_a = SweepReport.press_kind(p.a.notation)
-            if press == "single" and press_a ~= "single" and pi == 1 then press = press_a end
-            pairs_out[pi] = { k = p.key, st = a.pair_statuses[pi], press = press,
-                              drc = p.drc or nil }
-        end
+            local a = anns[i]
+            local pairs_out = {}
+            for pi, p in ipairs(Planner.route_pairs(r)) do
+                local press = SweepReport.press_kind(p.b.notation)
+                local press_a = SweepReport.press_kind(p.a.notation)
+                if press == "single" and press_a ~= "single" and pi == 1 then press = press_a end
+                -- A pair through a rush keys as "A->drc->B", planner.lua's key,
+                -- which is the key a DRC trial would be recorded under.
+                pairs_out[pi] = { k = p.key, st = a.pair_statuses[pi], press = press,
+                                  drc = p.drc or nil }
+            end
 
-        rows[i] = {
-            id = r.id, m = modern, c = classic_names, drc_after = drc_after,
-            sd = s.predicted_damage_scaled, d = s.predicted_damage,
-            dc = s.predicted_damage_complete, len = s.route_length,
-            od = s.od_steps, sa = s.super_steps, drc = s.drive_rush_cancel_steps,
-            spend = s.predicted_drive_spend, cost = s.execution_cost,
-            conf = s.theoretical_confidence, methods = methods,
-            starter = { n = first.notation, b = parsed and parsed.buttons or {},
-                        neutral = parsed and parsed.dirs == "" or false },
-            no_gauge = verdict(r, { no_gauge = true }),
-            no_super = verdict(r, { no_super = true }),
-            pairs = pairs_out, rej = a.has_rejected_pair or nil,
-            confirmed = a.confirmed or nil, combo = a.combo_status,
-        }
+            rows[#rows + 1] = {
+                m = modern, c = classic_names, drc_after = drc_after,
+                sd = s.predicted_damage_scaled, d = s.predicted_damage,
+                dc = s.predicted_damage_complete,
+                od = s.od_steps, sa = s.super_steps, drc = s.drive_rush_cancel_steps,
+                cost = s.execution_cost,
+                starter = { n = first.notation, b = parsed and parsed.buttons or {} },
+                no_gauge = verdict(r, { no_gauge = true }),
+                no_super = verdict(r, { no_super = true }),
+                pairs = pairs_out, rej = a.has_rejected_pair or nil,
+                confirmed = a.confirmed or nil, combo = a.combo_status,
+            }
+        end
     end
+
+    local ranked, rinfo = Planner.rank(all, "scaled_damage")
+    add_rows(ranked)
+    local plain_total = #rows
+
+    -- Drive Rush Cancel routes, as extra rows.
+    --
+    -- A second search over plain and DRC edges together - the one plan.lua runs
+    -- with --drive-rush - keeping only its routes that actually go through a
+    -- rush. Its plain routes are not taken: they are a beam-trimmed subset of
+    -- the search above (Zangief: 742 of 917), and two different lists of the
+    -- same routes on one page would disagree about which exist. The rush routes
+    -- ride behind the plain ones, ranked among themselves, and the page shows
+    -- them only when its DRC box is ticked.
+    --
+    -- Measured before choosing this over a separate route set: the second search
+    -- costs about twice the first (Guile, the slowest, 11s) and adds 500-1500
+    -- rows, which packed come to less than the per-pair grid a page with no logs
+    -- no longer embeds.
+    local drc_info
+    if opt.drive_rush ~= false then
+        local ok, droutes, dfound = pcall(Pipeline.search, ctx, { drive_rush = true })
+        if ok then
+            local only = {}
+            for _, r in ipairs(droutes) do
+                if ((r.offline_score or {}).drive_rush_cancel_steps or 0) > 0 then
+                    only[#only + 1] = r
+                end
+            end
+            add_rows((Planner.rank(only, "scaled_damage")))
+            drc_info = { total = #only, edges = #(ctx.drc_edges or {}),
+                         complete = dfound.stats.complete }
+        else
+            drc_info = { error = tostring(droutes) }
+        end
+    end
+
+    local packed = RouteView.compact(rows)
     return {
-        rows = rows, starters = starters, total = #rows,
+        moves = packed.moves, pairs = packed.pairs, rows = packed.rows,
+        starters = starters, total = plain_total,
+        complete = found.stats.complete,
+        drc = drc_info,
         sort_field = rinfo.field, sort_fallback = rinfo.fallback or nil,
         scaling_model = ranked[1] and ranked[1].offline_score
             and ranked[1].offline_score.scaling_model or nil,
@@ -242,6 +290,19 @@ if ok_rf and finder then
     model.routes_view = finder
 else
     model.routes_view_error = tostring(ok_rf and ferr or finder)
+end
+
+-- --- what a page with no trials does not need --------------------------------
+--
+-- The grid draws one cell per worklist pair and colours it from a log. With no
+-- pair log there is nothing to colour, and a grid of 2,800 empty cells says
+-- less than one sentence does, so the page collapses the map to that sentence
+-- and the per-pair table is not embedded: for Guile it was 505KB of a 1.1MB
+-- page. What the sentence needs - the pair count, the starters and targets,
+-- what can be pressed - stays.
+if #model.pair_logs == 0 then
+    model.pairs_omitted = true
+    model.pairs = json.EMPTY_OBJECT
 end
 
 local template = read(opt.template)
@@ -357,6 +418,44 @@ end
 for _, l in ipairs(model.route_logs) do
     rep:say("route log  %-36s %4d rows  link %d", l.name, l.counts.rows, l.counts.verdicts.link or 0)
 end
+local rv = model.routes_view
+if rv then
+    rep:say("route finder     %d routes%s", rv.total,
+        rv.drc and (rv.drc.error and ("  (DRC search failed: " .. rv.drc.error .. ")")
+            or ("  + %d through a Drive Rush Cancel"):format(rv.drc.total)) or "")
+else
+    rep:say("route finder     none: %s", tostring(model.routes_view_error))
+end
 rep:say("")
 rep:say("written: %s (%d bytes)", opt.out, #page)
 rep:say("written: %s", combos_path)
+
+-- --- the batch's numbers ------------------------------------------------------
+--
+-- tools/lua/all.lua runs this for every character and builds the index page
+-- from what each run says here, rather than by reading the page back.
+if opt.summary then
+    local trials, bad_lines = 0, 0
+    for _, l in ipairs(logs) do
+        trials = trials + #l.records
+        bad_lines = bad_lines + (l.bad_lines or 0)
+    end
+    local summary = {
+        schema = "ce.report_summary.v1",
+        character = entry.catalog, control_scheme = opt.scheme,
+        page = opt.out, page_bytes = #page, combos_md = combos_path,
+        worklist_pairs = model.worklist.count,
+        press = model.press,
+        logs = #logs, pair_logs = #model.pair_logs, route_logs = #model.route_logs,
+        trials = trials, unreadable_lines = bad_lines,
+        combos_confirmed = #confirmed, combos_once = #once,
+        pairs_embedded = not model.pairs_omitted,
+        routes = rv and rv.total or nil,
+        routes_complete = rv and rv.complete,
+        routes_drc = rv and rv.drc and rv.drc.total or nil,
+        drc_error = rv and rv.drc and rv.drc.error or nil,
+        finder_error = model.routes_view_error,
+    }
+    local n, serr = json.save_file(opt.summary, summary, { indent = "  " })
+    if not n then Cli.die("report", ("could not write %s: %s"):format(opt.summary, tostring(serr))) end
+end

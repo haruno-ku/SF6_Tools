@@ -314,6 +314,21 @@ It runs the modules that ship into the game, under the stock interpreter, rather
 than a second implementation in Node — so what it produces comes from the same
 code the runner will use.
 
+**`all.lua`** runs everything for every character: explore (`--worklist
+--drive-rush`), the three plan presets (max-damage, no-gauge, starter-chu) and
+the sweep report page, then writes [`index.html`](index.html),
+[`characters.md`](characters.md), `characters.json` and the pair-count table in
+the runbook.
+
+```bash
+lua tools/lua/all.lua                 # all 31, 4 processes, about 7 minutes
+lua tools/lua/all.lua --only Ryu,Ken  # just these; the index keeps the rest
+lua tools/lua/all.lua --index-only    # rebuild the index from characters.json
+```
+
+A character that fails is reported and the run carries on; step logs are in
+`candidates/_batch/logs/`. Modern only — Classic is future work.
+
 **Regenerating the frame data** (needs `external-data/`, which is not committed):
 
 ```bash

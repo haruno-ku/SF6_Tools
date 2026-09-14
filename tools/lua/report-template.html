@@ -84,6 +84,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
@@ -103,6 +104,11 @@ p { margin: 0; max-width: 68ch; }
 .num { font-variant-numeric: tabular-nums; }
 .eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .muted { color: var(--muted); }
+.eyebrow a.back { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); }
+.eyebrow a.back:hover { color: var(--accent); border-color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.untried-note { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 20px; display: grid; gap: 10px; }
+.untried-note .big small { margin-left: 6px; }
 button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* --- header --------------------------------------------------------- */
@@ -264,7 +270,7 @@ table.rt { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 
 <body>
 <div class="wrap">
   <header>
-    <div class="eyebrow">SF6 Combo Explorer — 実機スイープの記録</div>
+    <div class="eyebrow"><a class="back" href="index.html">SF6 Combo Explorer</a> — 実機スイープの記録</div>
     <h1 id="h1">接続マップ</h1>
     <p>「繋がったコンボ」と結果のマップは、ゲームが実際に答えたことだけです。「ルート検索」はフレーム表からの予測で、確かめる順番を決めるためのものです。</p>
     <div class="meta" id="meta"></div>
@@ -289,6 +295,7 @@ table.rt { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 
       </label>
       <label class="check" for="rf-nogauge"><input type="checkbox" id="rf-nogauge"> ノーゲージ</label>
       <label class="check" for="rf-nosuper"><input type="checkbox" id="rf-nosuper"> SA なし</label>
+      <label class="check" for="rf-drc" id="rf-drc-label"><input type="checkbox" id="rf-drc"> DRC を含める</label>
       <label for="rf-rej">繋がらなかったペアを含むルート
         <select id="rf-rej">
           <option value="demote">後ろに回す</option>
@@ -317,18 +324,18 @@ table.rt { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 
     <p class="muted" style="font-size:12.5px" id="finder-note"></p>
   </section>
 
-  <section class="summary" aria-label="概要">
+  <section class="summary" id="summary" aria-label="概要">
     <div class="panel" id="sum-log"></div>
     <div class="panel" id="sum-press"></div>
   </section>
 
   <section style="display:grid;gap:12px" aria-labelledby="h-logs">
     <h2 id="h-logs">ペア総当たり</h2>
-    <p class="muted">マスは1つのログの中で、そのペアの試行が何を返したかを表します。ログは実験の順に並んでいて、後のログは前のログで見えたことを受けて取り直したものです。</p>
+    <p class="muted" id="logs-intro">マスは1つのログの中で、そのペアの試行が何を返したかを表します。ログは実験の順に並んでいて、後のログは前のログで見えたことを受けて取り直したものです。</p>
     <div class="logs" id="logs" role="group" aria-label="表示するログ"></div>
   </section>
 
-  <section class="board">
+  <section class="board" id="board">
     <div>
       <div class="scroller"><table class="grid" id="grid"></table></div>
       <div class="gridnote" id="gridnote"></div>
@@ -412,7 +419,13 @@ function renderCombos() {
   const confirmed = combos.filter(c => c.status === "confirmed").length;
   $("combo-rule").textContent = `確定 ${confirmed} 件 · 1回だけ ${combos.length - confirmed} 件 — 2回以上の試行で繋がったものを確定としています`;
   list.replaceChildren();
-  if (!combos.length) { list.append(el("li", { class: "empty", text: "繋がった試行はまだありません。" })); return; }
+  if (!combos.length) {
+    const noLogs = !MODEL.pair_logs.length && !MODEL.route_logs.length;
+    list.append(el("li", { class: "empty", text: noLogs
+      ? `${MODEL.character} はまだ実機で1回も試行していません（試行ログ 0 本）。ここに載るのはゲームが「繋がった」と答えたものだけなので、今は空です。下のルート検索は予測で、どのペアから確かめるかを選ぶためのものです。`
+      : "繋がった試行はまだありません。" }));
+    return;
+  }
   for (const c of combos) {
     const first = c.inputs[0] || c.steps.map(s => String(s.id));
     const chain = el("div", { class: "chain" });
@@ -446,7 +459,27 @@ function renderCombos() {
 const PAIR_LABEL = { verified: "繋がった", rejected: "繋がらなかった", pending: "未回答", untested: "未試行" };
 const BTN_JA = { L: "弱", M: "中", H: "强" };
 const BTN_CLI = { L: "L", M: "M", H: "H" };
-const finder = { starter: "", nogauge: false, nosuper: false, rej: "demote", sort: "sd", top: 20 };
+const finder = { starter: "", nogauge: false, nosuper: false, drc: false, rej: "demote", sort: "sd", top: 20 };
+const VERDICT_NAME = { k: "keep", f: "flag", r: "remove" };
+
+// report.lua packs the rows (tools/lua/routeview.lua): moves and pairs are
+// written once and a row names them by index. This is routeview.expand, and it
+// runs before anything reads a row. `i` is the rank, the sort's tie-break.
+function hydrateRoutes(rv) {
+  if (!rv || !rv.moves) return;
+  rv.rows = rv.rows.map((r, i) => {
+    const first = rv.moves[r.m[0]] || {};
+    return {
+      i, m: r.m.map(j => rv.moves[j].n), c: r.m.map(j => rv.moves[j].c ?? null),
+      drc_after: r.da || [], sd: r.sd, d: r.d, dc: r.dc !== false,
+      od: r.od || 0, sa: r.sa || 0, drc: r.drc || 0, cost: r.ct != null ? r.ct / 10 : null,
+      starter: { n: first.n, b: first.b || [] },
+      no_gauge: VERDICT_NAME[r.ng], no_super: VERDICT_NAME[r.ns],
+      pairs: (r.p || []).map(j => { const p = rv.pairs[j]; return { k: p.k, st: p.st || "untested", press: p.press || "single", drc: p.drc === true }; }),
+      rej: r.rej === true, confirmed: r.cf === true, combo: r.cb || null,
+    };
+  });
+}
 
 function setupFinder() {
   const rv = MODEL.routes_view;
@@ -454,6 +487,14 @@ function setupFinder() {
   if (!rv) {
     box.replaceChildren(el("p", { class: "muted", text: `ルート検索はこのレポートでは使えません（${MODEL.routes_view_error || "ルートがありません"}）。` }));
     return false;
+  }
+  hydrateRoutes(rv);
+  const drcBox = $("rf-drc");
+  if (!rv.drc || rv.drc.error || !rv.drc.total) {
+    drcBox.disabled = true;
+    $("rf-drc-label").title = !rv.drc ? "このページは DRC なしで書き出されました（report.lua --no-drive-rush）"
+      : rv.drc.error ? `DRC を含む探索に失敗しました: ${rv.drc.error}` : "DRC を通るルートは見つかりませんでした";
+    $("rf-drc-label").classList.add("muted");
   }
   const sel = $("rf-starter");
   sel.append(el("option", { value: "", text: "すべて" }));
@@ -469,6 +510,7 @@ function setupFinder() {
   bind("rf-starter", "starter", v => v);
   bind("rf-nogauge", "nogauge", v => v);
   bind("rf-nosuper", "nosuper", v => v);
+  bind("rf-drc", "drc", v => v);
   bind("rf-rej", "rej", v => v);
   bind("rf-sort", "sort", v => v);
   bind("rf-top", "top", v => Number(v));
@@ -478,6 +520,9 @@ function setupFinder() {
 function finderRows() {
   const rv = MODEL.routes_view;
   let rows = rv.rows.filter(r => {
+    // Routes through a Drive Rush Cancel come from a second search and are
+    // only in play when the box is ticked.
+    if (!finder.drc && r.drc) return false;
     if (finder.starter.startsWith("b:") && !(r.starter.b || []).includes(finder.starter.slice(2))) return false;
     if (finder.starter.startsWith("n:") && r.starter.n !== finder.starter.slice(2)) return false;
     // The verdicts come from tools/lua/planner.lua, computed when the page was written.
@@ -488,7 +533,7 @@ function finderRows() {
   });
   const key = finder.sort;
   const val = r => key === "cost" ? -(r.cost ?? Infinity) : (r[key] ?? -Infinity);
-  rows.sort((a, b) => (val(b) - val(a)) || String(a.id).localeCompare(String(b.id)));
+  rows.sort((a, b) => (val(b) - val(a)) || (a.i - b.i));
   if (finder.rej === "demote") {
     rows = [...rows.filter(r => !r.rej || r.confirmed), ...rows.filter(r => r.rej && !r.confirmed)];
   }
@@ -508,8 +553,10 @@ function renderFinder() {
   const needed = [...need.values()].filter(e => e.open);
   const unpressable = needed.filter(e => e.p.press && e.p.press !== "single").length;
   const rejected = needed.filter(e => e.p.st === "rejected").length;
+  const rv = MODEL.routes_view;
+  const pool = rv.total + (finder.drc && rv.drc && rv.drc.total ? rv.drc.total : 0);
   $("finder-summary").replaceChildren(
-    el("span", {}, el("b", { text: String(all.length) }), `件が条件に合う（全 ${MODEL.routes_view.total} 件）`),
+    el("span", {}, el("b", { text: String(all.length) }), `件が条件に合う（全 ${pool} 件${finder.drc && rv.drc && rv.drc.total ? `、うち DRC 経由 ${rv.drc.total}` : ""}）`),
     el("span", {}, el("b", { text: String(shown.length) }), "件を表示"),
     el("span", {}, el("b", { text: String(needed.length) }), `ペアを確かめれば表示中のルートに答えが出る（うち繋がらなかったペアの再確認 ${rejected}、押せない ${unpressable}）`),
   );
@@ -519,6 +566,7 @@ function renderFinder() {
   if (finder.starter.startsWith("n:")) args.push(`--starter-notation "${finder.starter.slice(2)}"`);
   if (finder.nogauge) args.push("--no-gauge");
   if (finder.nosuper) args.push("--no-super");
+  if (finder.drc) args.push("--drive-rush");
   if (finder.rej === "keep") args.push("--no-demote-rejected");
   args.push(`--sort ${finder.sort === "sd" ? "scaled_damage" : finder.sort === "d" ? "damage" : "simple"}`);
   args.push(`--top ${finder.top || all.length}`);
@@ -554,7 +602,7 @@ function renderFinder() {
     const pc = el("div", { class: "chips" });
     for (const p of r.pairs) {
       const bad = p.press && p.press !== "single";
-      pc.append(el("span", { class: `pchip ${p.st}${bad ? " bad" : ""}`, title: `${p.k}\n${PAIR_LABEL[p.st] || p.st}${bad ? "\n今のコンパイラでは押せない入力を含む (#49)" : ""}`, text: PAIR_LABEL[p.st] || p.st }));
+      pc.append(el("span", { class: `pchip ${p.st}${bad ? " bad" : ""}`, title: `${p.k}\n${PAIR_LABEL[p.st] || p.st}${bad ? "\n今のコンパイラでは押せない入力を含む (#49)" : ""}${p.drc ? "\nDRC 経由のペア。スイープはまだ DRC を押せないので、ワークリストに入っても試行されません" : ""}`, text: `${p.drc ? "DRC " : ""}${PAIR_LABEL[p.st] || p.st}` }));
     }
 
     const dmg = el("td", { class: "dmg" },
@@ -568,7 +616,10 @@ function renderFinder() {
   const sm = MODEL.routes_view.scaling_model;
   $("finder-note").textContent = "予測ダメージ（補正後）は公開情報の補正ルールによる未実測のモデルで、並べ替えにだけ使います"
     + (sm && sm.not_modelled ? `（未反映: ${sm.not_modelled.length} 項目。即時補正・カウンターなど）` : "")
-    + "。ペアの色は既存ログの結果です。斜線は今のコンパイラでは押せない入力を含むペア。絞り込みの判定は plan.lua と同じもので、ワークリストは上のコマンドで書き出します。";
+    + "。ペアの色は既存ログの結果です。斜線は今のコンパイラでは押せない入力を含むペア。絞り込みの判定は plan.lua と同じもので、ワークリストは上のコマンドで書き出します。"
+    + (rv.drc && rv.drc.total
+      ? `「DRC を含める」で足されるのは、DRC の辺も入れた2回目の探索（plan.lua --drive-rush と同じ）のうち、DRC を1回以上通る ${rv.drc.total} 件です。ノーゲージは DRC を含むルートを除きます。スイープはまだ DRC を押せません。`
+      : "");
 }
 
 /* --- summaries --------------------------------------------------- */
@@ -606,10 +657,11 @@ function renderPressSummary() {
     el("div", { class: "big" }, String(bad), el("small", { text: `/ ${total} ペアは試行前から出せない` })),
   );
   const stack = el("div", { class: "stack", role: "img", "aria-label": `押せる ${p.single}、同じ方向の連続 ${p.repeat}、派生 ${p.followup}` });
+  const pct = n => total ? n / total * 100 : 0;
   stack.append(
-    el("span", { style: `width:${p.single / total * 100}%;background:var(--v-link)` }),
-    el("span", { style: `width:${p.repeat / total * 100}%;background:var(--v-whiff)` }),
-    el("span", { style: `width:${p.followup / total * 100}%;background:var(--v-blocked)` }),
+    el("span", { style: `width:${pct(p.single)}%;background:var(--v-link)` }),
+    el("span", { style: `width:${pct(p.repeat)}%;background:var(--v-whiff)` }),
+    el("span", { style: `width:${pct(p.followup)}%;background:var(--v-blocked)` }),
   );
   box.append(stack);
   const keys = el("div", { class: "keys" });
@@ -626,6 +678,23 @@ function renderPressSummary() {
 function renderLogs() {
   const box = $("logs");
   box.replaceChildren();
+  if (!MODEL.pair_logs.length) {
+    $("summary").hidden = true;
+    $("logs-intro").hidden = true;
+    // Nothing to colour, so no grid: a map of every pair, all untried, says
+    // less than this does. report.lua leaves the per-pair table out of such a
+    // page (MODEL.pairs_omitted) for the same reason.
+    const w = MODEL.worklist.count, p = MODEL.press, bad = p.repeat + p.followup + (p.unreadable || 0);
+    const lc = String(MODEL.character || "").toLowerCase();
+    box.replaceChildren(el("div", { class: "untried-note" },
+      el("div", { class: "eyebrow", text: "未試行" }),
+      el("div", { class: "big" }, String(w), el("small", { text: `ペアがワークリストにあり、まだどれも試していません` })),
+      el("p", { text: `始動技 ${MODEL.starters.length} × 対象技 ${MODEL.targets.length} のうち、フレームデータが繋がりうると言った組み合わせです。確度の高い順に並んでいるので、途中で止めても意味のあるペアから答えが出ます。${bad ? `うち ${bad} ペアは今のコンパイラでは押せない入力を含みます (#49)。` : ""}` }),
+      el("p", { class: "muted", style: "font-size:13px" }, "実機で: パネル → SWEEP → START SWEEP（",
+        el("code", { text: `worklist/${lc}-${MODEL.control_scheme}.json` }),
+        "）。ログが増えたら report.lua を再実行すると、ここが結果のマップになります。")));
+    return;
+  }
   MODEL.pair_logs.forEach((l, i) => {
     const b = el("button", { type: "button", id: `log-${i}`, "aria-pressed": String(i === state.log) },
       el("span", { class: "name", text: l.name }),
@@ -648,6 +717,7 @@ function firstInteresting() {
 }
 
 function renderGrid() {
+  if (!MODEL.pair_logs.length) { $("board").hidden = true; return; }
   const log = MODEL.pair_logs[state.log];
   const cells = obj(log && log.cells);
   const table = $("grid");

@@ -80,6 +80,8 @@ local SUITES = {
     "tests.lua.test_injector",
     "tests.lua.test_sweep",
     "tests.lua.test_planner",
+    "tests.lua.test_routeview",
+    "tests.lua.test_batch",
 }
 
 local total_passed, total_failed = 0, 0
