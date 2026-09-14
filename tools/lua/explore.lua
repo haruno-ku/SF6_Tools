@@ -297,13 +297,28 @@ if opt.worklist then
             -- finding that out per pair at run time would be a refusal per pair
             -- rather than a filter.
             context_dependent = e.context_dependent or nil,
+            -- Whether the frame source names move A as the parent of the
+            -- follow-up B. Written only when it does, because the runtime reads
+            -- it as a vouch: runtime/Sweep.lua hands it to
+            -- SequenceCompiler.unplayable, and a follow-up pair without it is set
+            -- aside before the first trial rather than pressed after a move it may
+            -- not come out of (#49). Absent means nobody vouched, never "no".
+            context_known = e.context_known or nil,
         }
     end
     table.sort(items, function(x, y)
         local rx, ry = RANK[x.confidence] or 0, RANK[y.confidence] or 0
         if rx ~= ry then return rx > ry end
         if x.a_id ~= y.a_id then return x.a_id < y.a_id end
-        return x.b_id < y.b_id
+        if x.b_id ~= y.b_id then return x.b_id < y.b_id end
+        -- A total order, not a convenience. table.sort is not stable, and the
+        -- same move pressed by hand and by the assist button is two pairs with
+        -- one (confidence, a_id, b_id): with only those three keys, removing 54
+        -- follow-up pairs reshuffled 54 unrelated manual/simple neighbours, and a
+        -- regenerated worklist could not be diffed against the old one without
+        -- a script that forgave it.
+        if x.a_method ~= y.a_method then return tostring(x.a_method) < tostring(y.a_method) end
+        return tostring(x.b_method) < tostring(y.b_method)
     end)
 
     local wl_dir = "reframework/data/ComboExplorer_data/worklist"
@@ -492,7 +507,7 @@ for _, k in ipairs({ "high", "medium", "low" }) do
     say("  %-24s %d", k, gen.stats.by_confidence[k] or 0)
 end
 say("")
-say("excluded because the numbers said no:")
+say("excluded because the data said no:")
 keys = {}
 for k in pairs(gen.stats.by_exclusion) do keys[#keys + 1] = k end
 table.sort(keys)
@@ -501,6 +516,23 @@ say("")
 say("Nothing was excluded for missing data. A gap in the source is recorded as")
 say("an unknown and the pair stays a candidate; only a KNOWN negative margin")
 say("excludes, and the margin is kept with it.")
+-- Printed whenever the reason fired, because it is the one exclusion that is not
+-- a number and a reader holding the sentence above would otherwise take it for a
+-- gap. It is structure the source states: a derivation is spelled only as a chain
+-- from its parent, so after any other move it does not exist.
+local not_parent = gen.stats.by_exclusion[CG.EXCLUDED.FOLLOWUP_NOT_AFTER_PARENT]
+if not_parent then
+    say("")
+    say("%s is not a gap either. The frame source spells", CG.EXCLUDED.FOLLOWUP_NOT_AFTER_PARENT)
+    say("a follow-up only as a chain from the move it comes out of (\"5MP~MP\"), so")
+    say("these %d pairs put a follow-up after a move the source says it does not", not_parent)
+    say("follow. A follow-up whose parent the source never names stays a candidate.")
+end
+if (gen.stats.followup_edges or 0) > 0 then
+    say("")
+    say("- follow-up edges         %d  (parent named by the frame data: %d)",
+        gen.stats.followup_edges, gen.stats.followup_parent_named or 0)
+end
 say("")
 
 say("## Route candidates")

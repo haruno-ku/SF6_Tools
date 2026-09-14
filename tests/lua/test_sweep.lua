@@ -553,4 +553,39 @@ do
     Sweep.stop()
 end
 
+t.group("a follow-up pair whose parent the frame data names is played, not set aside")
+
+do
+    -- explore.lua writes context_known = true on exactly the follow-up pairs
+    -- whose parent the frame source names - Zangief's MP into ">MP", because
+    -- the source spells that move "5MP~MP". The sweep has to take that as the
+    -- vouch SequenceCompiler.unplayable asks for, or the only two follow-up
+    -- pairs that are real get set aside with the 54 that are not.
+    Sweep.stop()
+    local MID = "\228\184\173"   -- 中
+    local wl = worklist(3)
+    wl.pairs[1].a_notation, wl.pairs[1].b_notation = MID, "> " .. MID
+    wl.pairs[1].context_dependent, wl.pairs[1].context_known = true, true
+    -- The same follow-up without the vouch: still set aside.
+    wl.pairs[2].a_notation, wl.pairs[2].b_notation = "2 + " .. MID, "> " .. MID
+    wl.pairs[2].context_dependent = true
+    -- Anything other than true is not a vouch, however truthy.
+    wl.pairs[3].a_notation, wl.pairs[3].b_notation = "2 + " .. MID, "> " .. MID
+    wl.pairs[3].context_dependent, wl.pairs[3].context_known = true, "true"
+    local inj = injector({})
+    local c = collector()
+    local ok, err = Sweep.start({ worklist = wl, collector = c, injector = inj,
+                                  delay = 4, allow_injection = true })
+    t.ok(ok, "the sweep starts: " .. tostring(err))
+    drive(50)
+
+    local r = Sweep.result()
+    t.eq(r.unplayable, 2, "only the two pairs nobody vouched for are set aside")
+    t.eq(r.unplayable_by_kind.followup_context, 2, "both as follow-ups without context")
+    t.eq(r.total, 1, "leaving the vouched pair in the list")
+    t.eq(#inj.log.started, 1, "and it is the one that is pressed")
+    t.eq(inj.log.started[1], "601:manual->701:manual", "the parent-confirmed pair ran")
+    Sweep.stop()
+end
+
 return t.finish()

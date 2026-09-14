@@ -426,6 +426,80 @@ function M.lookup(idx, classic, opts)
                   reason = "no frame data for this notation" }
 end
 
+-- --- which move a derivation comes out of ------------------------------------
+
+-- Every parent the source names for one derivation, as { parent, key } pairs:
+-- `parent` is the source's spelling of the move before it, `key` the record
+-- that says so. Empty when the source names none.
+--
+-- The source never spells a derivation on its own - it is always "5MP~MP", the
+-- move before it and then this one - so the set of records ending in "~MP" IS
+-- the source's statement of what ">MP" can follow. That is a reading, not an
+-- inference: the chain is the only form the move takes in the data.
+--
+-- Built from the same candidate keys the DERIVATION join uses, so the two can
+-- never disagree: a parent this returns is exactly an `after` that lookup
+-- would join through. A distance suffix on the whole record ("... (Close)") is
+-- dropped before the split, the same way the PREFIX fallback tolerates one.
+--
+-- A three-link chain reads correctly without special handling: "5MP~MP~MP"
+-- ends in "~MP" and names "5MP~MP" as a parent, which is true - the third chop
+-- comes out of the second.
+function M.derivation_parents(idx, classic)
+    local out = {}
+    if type(idx) ~= "table" or type(idx.keys) ~= "table" then return out end
+    if type(classic) ~= "string" or classic == "" then return out end
+
+    local child = classic:gsub("^%s*>%s*", "")
+    local child_keys = M.candidate_keys(child)
+    local seen = {}
+    for _, k in ipairs(idx.keys) do
+        local base = k:gsub("%s+%b()$", "")
+        for _, ck in ipairs(child_keys) do
+            local tail = "~" .. ck.key
+            if #base > #tail and base:sub(-#tail) == tail then
+                local parent = base:sub(1, #base - #tail)
+                if not seen[parent] then
+                    seen[parent] = true
+                    out[#out + 1] = { parent = parent, key = k }
+                end
+            end
+        end
+    end
+    return out
+end
+
+-- Does the source name `after` as a parent of `classic`? Three answers, and the
+-- third is the one that matters most:
+--
+--   true, parents, hit  - it does; `hit` is the { parent, key } that says so
+--   false, parents      - it names parents for this move, and `after` is not
+--                         one of them
+--   nil, parents        - it cannot say: the source names no parent for this
+--                         move at all, or there is no `after` to check
+--
+-- false and nil are not the same thing and no caller may treat them alike.
+-- false is a statement the source makes: this derivation comes out of 5MP and
+-- not out of anything else, so after 2LP it does not exist. nil is silence -
+-- no chain for this move anywhere in the data - and silence is not grounds to
+-- decide anything; see the header of CandidateGenerator.
+--
+-- `parents`, when given, is this move's derivation_parents already computed -
+-- the scan is over every key in the index and the answer depends on the
+-- derivation alone, so a caller asking about many As passes it back in.
+function M.names_parent(idx, classic, after, parents)
+    parents = parents or M.derivation_parents(idx, classic)
+    if #parents == 0 then return nil, parents end
+    if type(after) ~= "string" or after == "" then return nil, parents end
+
+    local mine = {}
+    for _, pk in ipairs(M.candidate_keys(after)) do mine[pk.key] = true end
+    for _, p in ipairs(parents) do
+        if mine[p.parent] then return true, parents, p end
+    end
+    return false, parents
+end
+
 -- --- normalised access -------------------------------------------------------
 
 -- The frame source records a value it does not have as null rather than

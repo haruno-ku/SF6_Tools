@@ -175,7 +175,8 @@ local function measure(entry)
     -- This used to compare each exclusion reason against "frame_data_incomplete"
     -- and count the matches. That string is a REASON - why a pair IS a candidate
     -- - and can never appear in by_exclusion, whose whole vocabulary is
-    -- frame_margin_negative / no_mechanism_found / self_pair_without_chain. So
+    -- frame_margin_negative / no_mechanism_found / self_pair_without_chain /
+    -- followup_after_a_move_not_its_parent. So
     -- the count was zero by construction and would have stayed zero however
     -- badly the rule was broken. A metric that cannot fail reports success, which
     -- is worse than no metric.
@@ -198,6 +199,14 @@ local function measure(entry)
             -- that excludes a self-pair on an UNKNOWN chain property. `false`
             -- means stated; nil means nobody knew.
             justified = (x.chain_property == false)
+        elseif x.reason == "followup_after_a_move_not_its_parent" then
+            -- The records, not the sentence, for the same reason. This
+            -- exclusion is only legitimate when the source NAMED the
+            -- follow-up's parents and A was not one - a follow-up whose parent
+            -- nobody names must stay a candidate. So the evidence is the list
+            -- of chains that name them; an empty list would be silence
+            -- dressed up as a statement.
+            justified = type(x.parent_records) == "table" and #x.parent_records > 0
         else
             justified = false      -- no_mechanism_found carries no evidence by design
         end
@@ -292,14 +301,16 @@ say("**%d** of %d pair exclusions, across all %d characters.",
     total_missing_data_exclusions, total_excluded, #rows)
 say("")
 say("Measured by asking each excluded pair whether it carries the thing that")
-say("decided it - the margin, or the source's own statement that the move does")
-say("not chain. An exclusion with neither was decided by something nobody wrote")
-say("down, and missing information is the only candidate for that.")
+say("decided it - the margin, the source's own statement that the move does")
+say("not chain, or the chains that name a follow-up's parent. An exclusion with")
+say("none of them was decided by something nobody wrote down, and missing")
+say("information is the only candidate for that.")
 say("")
 if total_missing_data_exclusions == 0 then
     say("Which is the answer it has to be. A gap in the frame source is recorded as")
-    say("an unknown and the pair stays a candidate; only a KNOWN negative margin")
-    say("excludes, and it excludes with the number attached.")
+    say("an unknown and the pair stays a candidate; only something the source")
+    say("states - a negative margin, a move that does not chain, a follow-up's")
+    say("parent - excludes, and it excludes with that statement attached.")
 else
     say("Which is wrong. Information the source does not carry has become a")
     say("negative answer somewhere, and that is the one failure this project is")

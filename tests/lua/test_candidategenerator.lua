@@ -337,7 +337,11 @@ do
     end
 
     t.ok(#knows > 0, "some derivation edges know move B's startup (" .. #knows .. ")")
-    t.ok(#blind > 0, "and some still do not, which is the honest half (" .. #blind .. ")")
+    -- There used to be a second half here: 54 derivation edges that did not
+    -- know, all of them a follow-up after a move that is not its parent. Those
+    -- are no longer edges (see the group below), so every derivation edge left
+    -- is one whose parent the source names - and so knows its numbers.
+    t.eq(#blind, 0, "and none is left blind, because the blind ones were not pairs")
 
     -- Not just "some": the ones that know are exactly the ones whose parent the
     -- source actually chains from. Zangief's source carries "5MP~MP" and no
@@ -349,11 +353,100 @@ do
         t.eq(e.to.classic, ">MP", ("%s ends on the derivation the chain names"):format(e.id))
     end
 
-    -- And the edges that do not know are not claiming to. A derivation whose
-    -- chain the source does not carry stays an unknown, never an exclusion.
-    for _, e in ipairs(blind) do
-        t.eq(e.status, "theoretical", ("%s is still a candidate"):format(e.id))
+end
+
+-- --- a follow-up only after its own parent ------------------------------------
+
+t.group("a follow-up is paired only with the move the frame data names as its parent")
+
+-- Zangief's four derivations are ">MP" (605, 606) and ">MK" (679, 680). The
+-- source spells them "5MP~MP" and "22MK~MK", so their parents are MP and 22+MK,
+-- and of the fourteen Modern ground normals only MP (604) is one - 22+MK is
+-- not a starter. 14 starters x 4 follow-ups is 56 pairs; 2 are real.
+
+do
+    local r = CG.generate(cat, idx, { from = GROUND, include_followups = true })
+    local fups = {}
+    for _, e in ipairs(r.candidates) do
+        if e.context_dependent then fups[#fups + 1] = e end
     end
+    t.eq(#fups, 2, "two follow-up edges survive, out of 56 crossings")
+    local ids = {}
+    for _, e in ipairs(fups) do ids[e.id] = e end
+    t.ok(ids["604:manual->605:manual"] ~= nil, "MP into >MP (605)")
+    t.ok(ids["604:manual->606:manual"] ~= nil, "MP into >MP (606), which the data cannot tell apart")
+    for _, e in ipairs(fups) do
+        t.eq(e.context_known, true, e.id .. " says its context is known")
+        t.eq(e.context_dependent, true, e.id .. " is still context-dependent")
+        t.eq(e.basis.parent_record, "5MP~MP", e.id .. " names the record that vouches for it")
+        t.ok(Schema.validate(Schema.KIND.EDGE, e), e.id .. " validates")
+    end
+    t.eq(r.stats.followup_edges, 2, "stats count the follow-up edges")
+    t.eq(r.stats.followup_parent_named, 2, "and how many of them the source vouches for")
+
+    -- Not dropped: excluded, by name, and counted.
+    local reason = CG.EXCLUDED.FOLLOWUP_NOT_AFTER_PARENT
+    t.eq(reason, "followup_after_a_move_not_its_parent", "the reason has a stable name")
+    t.eq(r.stats.by_exclusion[reason], 54, "the other 54 are counted under it")
+    local listed, sample = 0, nil
+    for _, x in ipairs(r.excluded) do
+        if x.reason == reason then
+            listed = listed + 1
+            sample = sample or x
+        end
+    end
+    t.eq(listed, 54, "and each is in the excluded list, not silently gone")
+    t.ok(sample and sample.from ~= 604, "none of them starts from the parent")
+    t.ok(type(sample.parent_records) == "table" and #sample.parent_records > 0,
+         "each carries the source records that name the real parent")
+
+    -- Nothing else moved: the non-follow-up half is the run without follow-ups.
+    local plain = CG.generate(cat, idx, { from = GROUND, include_followups = false })
+    t.eq(#r.candidates - 2, #plain.candidates, "every other candidate is unchanged in number")
+    t.eq(r.stats.by_exclusion.frame_margin_negative, plain.stats.by_exclusion.frame_margin_negative,
+         "and the margin exclusions are the same ones")
+    t.is_nil(plain.stats.by_exclusion[reason], "without follow-ups the reason never fires")
+end
+
+t.group("a follow-up whose parent nobody names is still a candidate")
+
+-- The rule this module is built on, held at the edge of the new one. Silence
+-- about a follow-up's parent is not a statement that A is not it.
+
+do
+    -- The same source with every chain removed: the follow-ups now have no
+    -- parent named anywhere.
+    local raw = dofile("data/frame-data/zangief.lua")
+    local moves = {}
+    for _, mv in ipairs(raw.moves) do
+        if not tostring(mv.numpad):find("~", 1, true) then moves[#moves + 1] = mv end
+    end
+    local no_chains = FrameData.index({ _meta = raw._meta, moves = moves })
+    local r = CG.generate(cat, no_chains, { from = GROUND, include_followups = true })
+    local fups, vouched = 0, 0
+    for _, e in ipairs(r.candidates) do
+        if e.context_dependent then
+            fups = fups + 1
+            if e.context_known ~= nil then vouched = vouched + 1 end
+        end
+    end
+    t.eq(fups, 56, "all 56 crossings stay candidates when the source names no parent")
+    t.eq(vouched, 0, "and none of them claims a known context")
+    t.is_nil(r.stats.by_exclusion[CG.EXCLUDED.FOLLOWUP_NOT_AFTER_PARENT],
+             "nothing is excluded as not-the-parent on silence")
+
+    -- And with no frame data at all, the same.
+    local blind_fu = CG.generate(cat, nil, { from = GROUND, include_followups = true })
+    local n = 0
+    for _, e in ipairs(blind_fu.candidates) do
+        if e.context_dependent then
+            n = n + 1
+            t.is_nil(e.context_known, e.id .. " vouches for nothing without frame data")
+        end
+    end
+    t.eq(n, 56, "with no frame data every follow-up crossing is still a candidate")
+    t.is_nil(blind_fu.stats.by_exclusion[CG.EXCLUDED.FOLLOWUP_NOT_AFTER_PARENT],
+             "and none is excluded as not-the-parent")
 end
 
 do

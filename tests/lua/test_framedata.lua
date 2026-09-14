@@ -303,6 +303,47 @@ do
     t.is_nil(rec, "a parent the source never chains this move from stays unmatched")
 end
 
+t.group("which parents the source names for a derivation")
+
+-- The source's chains are its statement of what a derivation comes out of.
+-- CandidateGenerator excludes a follow-up after a move that is not among them,
+-- so the three answers - yes, no, and cannot say - have to stay distinct.
+do
+    local parents = FD.derivation_parents(idx, ">MP")
+    local named = {}
+    for _, p in ipairs(parents) do named[p.parent] = p.key end
+    t.eq(named["5MP"], "5MP~MP", "\">MP\" names 5MP as a parent, through the record 5MP~MP")
+    t.eq(named["5MP~MP"], "5MP~MP~MP", "and the second chop as the third one's parent")
+
+    local yes, _, hit = FD.names_parent(idx, ">MP", "MP")
+    t.eq(yes, true, "MP is a parent of >MP - through the same ladder that makes MP 5MP")
+    t.eq(hit and hit.key, "5MP~MP", "and the answer carries the record that says so")
+
+    local no, listed = FD.names_parent(idx, ">MP", "2+LP")
+    t.eq(no, false, "2+LP is not: the source names parents, and it is not one of them")
+    t.ok(#listed > 0, "with the parents it does name")
+
+    t.eq((FD.names_parent(idx, ">MK", "22+MK")), true, ">MK after 22+MK is the chain 22MK~MK")
+
+    -- Agreement with the join. A parent names_parent accepts is an `after` the
+    -- lookup can follow, and one it refuses is one the lookup cannot.
+    t.ok(FD.lookup(idx, ">MP", { after = "MP" }) ~= nil, "the lookup agrees on the yes")
+    t.is_nil(FD.lookup(idx, ">MP", { after = "2+LP" }), "and on the no")
+
+    -- Silence is not a no.
+    local silent, none = FD.names_parent(idx, ">LK", "MP")
+    t.is_nil(silent, "a derivation the source has no chain for cannot be ruled out")
+    t.eq(#none, 0, "because no parent is named for it at all")
+    t.is_nil((FD.names_parent(idx, ">MP", nil)), "and with no first move to check, neither can one")
+    t.is_nil((FD.names_parent(nil, ">MP", "MP")), "nor with no frame data")
+
+    -- A distance suffix on the chain is not part of the parent's name.
+    local suffixed = FD.index({ moves = { { numpad = "236LP~6P (Close)" } } })
+    local s_yes, _, s_hit = FD.names_parent(suffixed, "6+P", "236+LP")
+    t.eq(s_yes, true, "a suffixed chain still names its parent")
+    t.eq(s_hit and s_hit.key, "236LP~6P (Close)", "and reports the record as spelled")
+end
+
 do
     -- Ordering. A row whose own spelling is in the source must keep its own
     -- record even when a parent is supplied, or every edge would rewrite the

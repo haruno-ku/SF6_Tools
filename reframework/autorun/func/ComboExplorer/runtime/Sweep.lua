@@ -244,11 +244,19 @@ function M.start(opts)
     -- write (#49). Set aside, they are listed with their reason, so the pair
     -- count on the panel says why it is smaller than the file.
     --
-    -- context_known is false: a worklist crosses every starter with every
-    -- target, so nothing vouches that a follow-up comes after its own move.
+    -- context_known comes from the pair, and only the pair. The worklist used
+    -- to cross every starter with every follow-up, so nothing vouched that a
+    -- follow-up came after its own move and this was hard-coded false. Now
+    -- explore.lua writes context_known = true on exactly the pairs whose parent
+    -- the frame source names ("5MP~MP" makes MP the parent of ">MP"), and
+    -- CandidateGenerator no longer produces a follow-up after a move the source
+    -- says it does not come out of. A follow-up whose parent nobody names still
+    -- arrives without the field and is still set aside here - absent is not a
+    -- vouch, and `== true` keeps a stray string from becoming one.
     local playable, unplayable = {}, {}
     for _, p in ipairs(worklist.pairs or {}) do
-        local found = SequenceCompiler.unplayable(pair_route(worklist, p), { context_known = false })
+        local found = SequenceCompiler.unplayable(pair_route(worklist, p),
+                                                  { context_known = p.context_known == true })
         if #found == 0 then
             playable[#playable + 1] = p
         else

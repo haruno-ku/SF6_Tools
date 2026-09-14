@@ -30,6 +30,34 @@
 -- the only way the derivation is ever reachable. So a standalone move whose
 -- frame data says it cancels into a target combo gets edges to the follow-ups,
 -- marked context_dependent.
+--
+-- A FOLLOW-UP AFTER A MOVE THAT IS NOT ITS PARENT IS NOT A PAIR
+--
+-- Every starter used to be crossed with every follow-up: 14 starters and 4
+-- derivations made 56 of Zangief's 378 worklist pairs, and 54 of them were
+-- ">MP" after 2LP, ">MK" after 6HP - sequences that cannot exist, because a
+-- derivation is only ever produced out of the one move it belongs to. The
+-- sweep set them aside before the first trial (#49), which kept them from
+-- writing false rows but left them in the list, counted as pairs.
+--
+-- The frame source settles this, and it settles it by statement rather than by
+-- silence. It never spells a derivation on its own - ">MP" is only ever
+-- "5MP~MP" - so the records ending in "~MP" are the source saying what ">MP"
+-- comes out of (FrameData.names_parent). When they name a parent and A is not
+-- it, that is known structure, in the same class as a negative margin: the pair
+-- is excluded under its own reason, with the parents the source named, and
+-- counted.
+--
+-- It is NOT an exclusion for missing information, and the difference is kept
+-- exact. When the source names no parent for a follow-up at all - no chain for
+-- that move anywhere in the data, or no frame data loaded - nothing is known
+-- about what it follows, and every such pair stays a candidate exactly as
+-- before. Only the sweep then sets it aside, for want of anyone vouching for
+-- the context.
+--
+-- An edge whose parent the source DOES name carries context_known = true.
+-- That is the vouching SequenceCompiler.unplayable asks for: the worklist
+-- carries it, and the sweep plays the pair instead of setting it aside.
 
 local Schema = require("func/ComboExplorer/core/Schema")
 local FrameData = require("func/ComboExplorer/core/FrameData")
@@ -52,6 +80,10 @@ M.EXCLUDED = {
     NEGATIVE_MARGIN = "frame_margin_negative",
     NO_REASON       = "no_mechanism_found",
     SELF_NOT_CHAINABLE = "self_pair_without_chain",
+    -- A derivation after a move the frame source says it does not come out of.
+    -- Structure, not a gap: see "A FOLLOW-UP AFTER A MOVE THAT IS NOT ITS
+    -- PARENT" above for why this is not an exclusion for missing information.
+    FOLLOWUP_NOT_AFTER_PARENT = "followup_after_a_move_not_its_parent",
 }
 
 local U = Schema.RUNTIME_UNKNOWNS
@@ -275,7 +307,10 @@ function M.generate(catalog, frame_idx, opts)
 
     local candidates, excluded = {}, {}
     local stats = { pairs_considered = 0, by_reason = {}, by_confidence = {},
-                    by_exclusion = {}, followup_edges = 0 }
+                    by_exclusion = {}, followup_edges = 0,
+                    -- Of followup_edges, how many the source vouches for. The
+                    -- rest are follow-ups whose parent it never names.
+                    followup_parent_named = 0 }
 
     -- Cached as a pair. The match info is not decoration: it is how the join
     -- says it had to guess, and dropping it here is what let an arbitrarily
@@ -314,8 +349,53 @@ function M.generate(catalog, frame_idx, opts)
         return hit.rec ~= false and hit.rec or nil, hit.info
     end
 
+    -- Per follow-up row, not per pair: which parents the source names depends
+    -- on B alone, and the scan is over every key in the index.
+    local parents_of = {}
+
     local function consider(a_row, b_row, context_dependent)
         stats.pairs_considered = stats.pairs_considered + 1
+
+        -- Before any arithmetic, because none applies: a derivation after a
+        -- move that is not its parent is not a slow link or a short one, it is
+        -- a sequence that cannot be produced. See the header.
+        --
+        -- Three outcomes, and only one excludes. `false` is the source naming
+        -- this follow-up's parents and A not being among them. `nil` - no
+        -- parent named anywhere, or no frame data at all - is silence, and the
+        -- pair goes on to be judged exactly as it always was.
+        local context_known = nil
+        local parent_hit = nil
+        if context_dependent and frame_idx then
+            local parents = parents_of[b_row]
+            if parents == nil then
+                parents = FrameData.derivation_parents(frame_idx, b_row.classic)
+                parents_of[b_row] = parents
+            end
+            local named, _, hit = FrameData.names_parent(frame_idx, b_row.classic,
+                                                         a_row.classic, parents)
+            if named == false then
+                local spelled = {}
+                for _, p in ipairs(parents) do spelled[#spelled + 1] = p.key end
+                excluded[#excluded + 1] = {
+                    from = a_row.action_id, to = b_row.action_id,
+                    from_notation = a_row.notation, to_notation = b_row.notation,
+                    reason = M.EXCLUDED.FOLLOWUP_NOT_AFTER_PARENT,
+                    -- The records that decided it, verbatim. A reader checking
+                    -- the exclusion looks these up in the source and finds the
+                    -- chains; a sentence would have to be taken on trust.
+                    parent_records = spelled,
+                    evidence = "the frame source spells this follow-up only as a chain from "
+                        .. "its parent, and none of those chains starts with the first move",
+                }
+                stats.by_exclusion[M.EXCLUDED.FOLLOWUP_NOT_AFTER_PARENT] =
+                    (stats.by_exclusion[M.EXCLUDED.FOLLOWUP_NOT_AFTER_PARENT] or 0) + 1
+                return
+            elseif named == true then
+                context_known = true
+                parent_hit = hit
+            end
+        end
 
         -- A is produced from neutral, so it has no parent to be read against.
         -- B does: in this edge, A is what it comes out of.
@@ -405,6 +485,10 @@ function M.generate(catalog, frame_idx, opts)
             basis = a.basis,
             confidence = confidence_of(a),
             context_dependent = context_dependent or false,
+            -- True only when the frame source names A as B's parent. Absent
+            -- otherwise, including on a follow-up whose parent nobody names:
+            -- absent is "nobody vouched", which is what the sweep needs to hear.
+            context_known = context_known,
             requires_runtime_validation = {},
             unknown_detail = {},
             provenance = provenance,
@@ -463,6 +547,11 @@ function M.generate(catalog, frame_idx, opts)
             add_unknown(edge, U.CANCEL_WINDOW,
                 "a target-combo derivation only exists inside its own sequence")
         end
+        if parent_hit then
+            -- Kept with the edge so "context_known" can be checked against the
+            -- record that earned it rather than taken as a flag.
+            edge.basis.parent_record = parent_hit.key
+        end
 
         candidates[#candidates + 1] = edge
         for _, r in ipairs(a.reasons) do
@@ -470,6 +559,7 @@ function M.generate(catalog, frame_idx, opts)
         end
         stats.by_confidence[edge.confidence] = (stats.by_confidence[edge.confidence] or 0) + 1
         if context_dependent then stats.followup_edges = stats.followup_edges + 1 end
+        if context_known then stats.followup_parent_named = stats.followup_parent_named + 1 end
     end
 
     for _, a_row in ipairs(from_rows) do
