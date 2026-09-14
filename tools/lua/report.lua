@@ -127,6 +127,123 @@ local model = SweepReport.build(worklist, logs, routes, classic)
 model.generated_at = os.date("!%Y-%m-%dT%H:%M:%SZ")
 model.sources = { worklist = wl_path, data = opt.data }
 
+-- --- the route finder -----------------------------------------------------------
+--
+-- Every candidate route explore.lua finds, with what the logs say about each of
+-- its pairs, so the page can narrow them by condition - a starter, no gauge -
+-- and show which pairs are still unanswered for the routes that are left.
+--
+-- The page filters; it does not decide. Every verdict a condition needs is
+-- computed here by tools/lua/planner.lua's own filters and shipped as a value,
+-- so "no gauge" on the page is exactly plan.lua's --no-gauge, including the
+-- routes it keeps on a gap. The page is for looking; plan.lua writes the
+-- worklist, and the page prints the command that would.
+--
+-- Optional. The route search needs the frame data under data/, which the page
+-- can live without: a report run where it is missing still draws the map and
+-- the combo list, and says why the finder is empty.
+local Planner = dofile("tools/lua/planner.lua")
+
+local function route_finder()
+    local Pipeline = dofile("tools/lua/pipeline.lua")
+    local ConfirmedEdge = require("func/ComboExplorer/core/ConfirmedEdge")
+    local InputMask = require("func/ComboExplorer/core/InputMask")
+
+    local ctx, lerr = Pipeline.load({ character = entry.catalog, scheme = opt.scheme })
+    if not ctx then return nil, lerr end
+    if not ctx.idx then return nil, ctx.warnings[1] end
+    local gen, gerr = Pipeline.generate(ctx, {})
+    if not gen then return nil, gerr end
+    local all = Pipeline.search(ctx, {})
+
+    -- The same folding plan.lua does, so a status here is the status there.
+    local records = {}
+    for _, log in ipairs(logs) do
+        for _, rec in ipairs(log.records) do
+            if rec.control_scheme == nil or rec.control_scheme == opt.scheme then
+                records[#records + 1] = rec
+            end
+        end
+    end
+    local edges = ConfirmedEdge.from_trials(records)
+    local notation_of = {}
+    for _, row in ipairs(ctx.cat.rows) do
+        notation_of[("%s:%s"):format(row.action_id, row.input_method)] = row.notation
+    end
+    local known = Planner.known_from(edges, model.combos, notation_of)
+
+    local ranked, rinfo = Planner.rank(all, "scaled_damage")
+    local anns = Planner.annotate(nil, ranked, known).routes
+
+    local function verdict(r, cond)
+        local kept, rep = Planner.filter({ r }, cond)
+        if not kept or #kept == 0 then return "remove" end
+        return next(rep.flags) and "flag" or "keep"
+    end
+
+    local rows, starters, seen_starter = {}, {}, {}
+    for i, r in ipairs(ranked) do
+        local s = r.offline_score or {}
+        local moves = Planner.moves(r)
+        local modern, classic_names, methods, drc_after = {}, {}, {}, {}
+        local mi = 0
+        for _, st in ipairs(r.steps or {}) do
+            if st.kind == "drive_rush_cancel" then
+                drc_after[#drc_after + 1] = mi
+            elseif st.kind == nil then
+                mi = mi + 1
+                modern[mi] = st.notation
+                classic_names[mi] = st.classic or classic[st.action_id]
+                methods[mi] = st.input_method
+            end
+        end
+        local first = moves[1] or {}
+        local parsed = InputMask.parse(first.notation or "")
+        if first.notation and not seen_starter[first.notation] then
+            seen_starter[first.notation] = true
+            starters[#starters + 1] = first.notation
+        end
+
+        local a = anns[i]
+        local pairs_out = {}
+        for pi, p in ipairs(Planner.route_pairs(r)) do
+            local press = SweepReport.press_kind(p.b.notation)
+            local press_a = SweepReport.press_kind(p.a.notation)
+            if press == "single" and press_a ~= "single" and pi == 1 then press = press_a end
+            pairs_out[pi] = { k = p.key, st = a.pair_statuses[pi], press = press,
+                              drc = p.drc or nil }
+        end
+
+        rows[i] = {
+            id = r.id, m = modern, c = classic_names, drc_after = drc_after,
+            sd = s.predicted_damage_scaled, d = s.predicted_damage,
+            dc = s.predicted_damage_complete, len = s.route_length,
+            od = s.od_steps, sa = s.super_steps, drc = s.drive_rush_cancel_steps,
+            spend = s.predicted_drive_spend, cost = s.execution_cost,
+            conf = s.theoretical_confidence, methods = methods,
+            starter = { n = first.notation, b = parsed and parsed.buttons or {},
+                        neutral = parsed and parsed.dirs == "" or false },
+            no_gauge = verdict(r, { no_gauge = true }),
+            no_super = verdict(r, { no_super = true }),
+            pairs = pairs_out, rej = a.has_rejected_pair or nil,
+            confirmed = a.confirmed or nil, combo = a.combo_status,
+        }
+    end
+    return {
+        rows = rows, starters = starters, total = #rows,
+        sort_field = rinfo.field, sort_fallback = rinfo.fallback or nil,
+        scaling_model = ranked[1] and ranked[1].offline_score
+            and ranked[1].offline_score.scaling_model or nil,
+    }
+end
+
+local ok_rf, finder, ferr = pcall(route_finder)
+if ok_rf and finder then
+    model.routes_view = finder
+else
+    model.routes_view_error = tostring(ok_rf and ferr or finder)
+end
+
 local template = read(opt.template)
 if not template then Cli.die("report", "no page template at " .. opt.template) end
 

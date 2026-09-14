@@ -214,6 +214,42 @@ footer { font-size: 12px; color: var(--muted); display: grid; gap: 6px; border-t
 .combo .stats .dmg { font-size: 12px; color: var(--v-combo_broke); }
 .empty { padding: 20px; color: var(--muted); }
 
+/* --- route finder -------------------------------------------------- */
+.finder-controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: end; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; }
+.finder-controls label { display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
+.finder-controls label.check { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink); padding-bottom: 6px; }
+.finder-controls select { font: inherit; font-size: 13px; color: var(--ink); background: var(--ground); border: 1px solid var(--rule); border-radius: 4px; padding: 5px 8px; }
+.finder-controls input[type="checkbox"] { accent-color: var(--accent); width: 15px; height: 15px; }
+.finder-controls select:focus-visible, .finder-controls input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.finder-summary { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 13px; }
+.finder-summary b { font-family: var(--f-display); font-size: 18px; font-variant-numeric: tabular-nums; margin-right: 3px; }
+.cmd { font: 12px/1.5 var(--f-mono); background: var(--sunk); padding: 8px 10px; border-radius: 4px; overflow-x: auto; white-space: pre; }
+.routes-table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+table.rt { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13px; }
+.rt th { text-align: left; font: 500 11px/1 var(--f-body); color: var(--muted); letter-spacing: .04em; padding: 10px 12px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.rt td { padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.rt tr:last-child td { border-bottom: 0; }
+.rt .rank { font: 500 12px var(--f-mono); color: var(--muted); width: 1%; }
+.rt .chain { font-size: 15px; }
+.rt .classic { font: 12px var(--f-mono); color: var(--muted); margin-top: 2px; }
+.rt .dmg { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rt .dmg b { font: 600 16px var(--f-display); }
+.rt .dmg small { display: block; font-size: 11px; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip { font: 500 11px/1 var(--f-mono); padding: 3px 6px; border-radius: 3px; background: var(--sunk); white-space: nowrap; }
+.chip.gauge { color: var(--v-combo_broke); box-shadow: inset 0 0 0 1px var(--v-combo_broke); background: transparent; }
+.pchip { position: relative; font: 500 11px/1 var(--f-mono); padding: 3px 6px; border-radius: 3px; color: var(--surface); white-space: nowrap; }
+.pchip.verified { background: var(--v-link); }
+.pchip.rejected { background: var(--v-whiff); }
+.pchip.pending { background: var(--v-a_failed); }
+.pchip.untested { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--rule); }
+.pchip.bad { background-image: repeating-linear-gradient(135deg, var(--hatch) 0 1.5px, transparent 1.5px 5px); text-shadow: 0 0 2px var(--ink); }
+.badge { font: 600 11px/1 var(--f-body); padding: 4px 7px; border-radius: 3px; white-space: nowrap; display: inline-block; }
+.badge.confirmed { background: var(--v-link); color: var(--surface); }
+.badge.rej { color: var(--v-whiff); box-shadow: inset 0 0 0 1.5px var(--v-whiff); }
+.badge.open { color: var(--muted); box-shadow: inset 0 0 0 1px var(--rule); }
+.badge.flag { color: var(--v-combo_broke); box-shadow: inset 0 0 0 1px var(--v-combo_broke); margin-top: 4px; }
+
 @media (max-width: 640px) {
   .combo { grid-template-columns: minmax(0, 1fr); }
   .combo .stats { text-align: left; grid-auto-flow: column; justify-content: start; align-items: baseline; gap: 12px; }
@@ -230,7 +266,7 @@ footer { font-size: 12px; color: var(--muted); display: grid; gap: 6px; border-t
   <header>
     <div class="eyebrow">SF6 Combo Explorer — 実機スイープの記録</div>
     <h1 id="h1">接続マップ</h1>
-    <p>ここにあるのは、ゲームが実際に答えたことだけです。フレーム表からの予測は1つも含みません。</p>
+    <p>「繋がったコンボ」と結果のマップは、ゲームが実際に答えたことだけです。「ルート検索」はフレーム表からの予測で、確かめる順番を決めるためのものです。</p>
     <div class="meta" id="meta"></div>
   </header>
 
@@ -240,6 +276,45 @@ footer { font-size: 12px; color: var(--muted); display: grid; gap: 6px; border-t
       <span class="rule" id="combo-rule"></span>
     </div>
     <ol class="combo-list" id="combos"></ol>
+  </section>
+
+  <section style="display:grid;gap:12px" aria-labelledby="h-finder">
+    <div class="combos-head">
+      <h2 id="h-finder">ルート検索</h2>
+      <span class="rule">候補ルートを条件で絞り込み、確かめるのに必要なペアを出します。すべて予測で、コンボではありません。</span>
+    </div>
+    <div class="finder-controls" id="finder-controls">
+      <label for="rf-starter">始動技
+        <select id="rf-starter"></select>
+      </label>
+      <label class="check" for="rf-nogauge"><input type="checkbox" id="rf-nogauge"> ノーゲージ</label>
+      <label class="check" for="rf-nosuper"><input type="checkbox" id="rf-nosuper"> SA なし</label>
+      <label for="rf-rej">繋がらなかったペアを含むルート
+        <select id="rf-rej">
+          <option value="demote">後ろに回す</option>
+          <option value="hide">隠す</option>
+          <option value="keep">そのまま</option>
+        </select>
+      </label>
+      <label for="rf-sort">並べ替え
+        <select id="rf-sort">
+          <option value="sd">予測ダメージ（補正後）</option>
+          <option value="d">予測ダメージ（単純合計）</option>
+          <option value="cost">入力の少なさ</option>
+        </select>
+      </label>
+      <label for="rf-top">表示件数
+        <select id="rf-top">
+          <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="0">すべて</option>
+        </select>
+      </label>
+    </div>
+    <div class="finder-summary" id="finder-summary"></div>
+    <div class="cmd" id="finder-cmd"></div>
+    <div class="routes-table-wrap"><table class="rt" id="finder-table"></table></div>
+    <p class="muted" style="font-size:12.5px" id="finder-note"></p>
   </section>
 
   <section class="summary" aria-label="概要">
@@ -365,6 +440,135 @@ function renderCombos() {
       el("div", { class: `status ${c.status}`, text: c.status === "confirmed" ? "確定" : "1回だけ" }),
       moves, stats));
   }
+}
+
+/* --- route finder ------------------------------------------------ */
+const PAIR_LABEL = { verified: "繋がった", rejected: "繋がらなかった", pending: "未回答", untested: "未試行" };
+const BTN_JA = { L: "弱", M: "中", H: "强" };
+const BTN_CLI = { L: "L", M: "M", H: "H" };
+const finder = { starter: "", nogauge: false, nosuper: false, rej: "demote", sort: "sd", top: 20 };
+
+function setupFinder() {
+  const rv = MODEL.routes_view;
+  const box = $("finder-controls");
+  if (!rv) {
+    box.replaceChildren(el("p", { class: "muted", text: `ルート検索はこのレポートでは使えません（${MODEL.routes_view_error || "ルートがありません"}）。` }));
+    return false;
+  }
+  const sel = $("rf-starter");
+  sel.append(el("option", { value: "", text: "すべて" }));
+  const og1 = el("optgroup", { label: "ボタン（方向問わず）" });
+  for (const b of ["L", "M", "H"]) og1.append(el("option", { value: `b:${b}`, text: `${BTN_JA[b]} 系` }));
+  const og2 = el("optgroup", { label: "技" });
+  for (const n of rv.starters) og2.append(el("option", { value: `n:${n}`, text: n }));
+  sel.append(og1, og2);
+  const bind = (id, key, conv) => $(id).addEventListener("change", e => {
+    finder[key] = conv(e.target.type === "checkbox" ? e.target.checked : e.target.value);
+    renderFinder();
+  });
+  bind("rf-starter", "starter", v => v);
+  bind("rf-nogauge", "nogauge", v => v);
+  bind("rf-nosuper", "nosuper", v => v);
+  bind("rf-rej", "rej", v => v);
+  bind("rf-sort", "sort", v => v);
+  bind("rf-top", "top", v => Number(v));
+  return true;
+}
+
+function finderRows() {
+  const rv = MODEL.routes_view;
+  let rows = rv.rows.filter(r => {
+    if (finder.starter.startsWith("b:") && !(r.starter.b || []).includes(finder.starter.slice(2))) return false;
+    if (finder.starter.startsWith("n:") && r.starter.n !== finder.starter.slice(2)) return false;
+    // The verdicts come from tools/lua/planner.lua, computed when the page was written.
+    if (finder.nogauge && r.no_gauge === "remove") return false;
+    if (finder.nosuper && r.no_super === "remove") return false;
+    if (finder.rej === "hide" && r.rej && !r.confirmed) return false;
+    return true;
+  });
+  const key = finder.sort;
+  const val = r => key === "cost" ? -(r.cost ?? Infinity) : (r[key] ?? -Infinity);
+  rows.sort((a, b) => (val(b) - val(a)) || String(a.id).localeCompare(String(b.id)));
+  if (finder.rej === "demote") {
+    rows = [...rows.filter(r => !r.rej || r.confirmed), ...rows.filter(r => r.rej && !r.confirmed)];
+  }
+  return rows;
+}
+
+function renderFinder() {
+  const all = finderRows();
+  const shown = finder.top ? all.slice(0, finder.top) : all;
+  const need = new Map();
+  for (const r of shown) for (const p of r.pairs) {
+    if (p.st === "verified") continue;
+    const e = need.get(p.k) || { p, open: false };
+    if (!r.confirmed) e.open = true;
+    need.set(p.k, e);
+  }
+  const needed = [...need.values()].filter(e => e.open);
+  const unpressable = needed.filter(e => e.p.press && e.p.press !== "single").length;
+  const rejected = needed.filter(e => e.p.st === "rejected").length;
+  $("finder-summary").replaceChildren(
+    el("span", {}, el("b", { text: String(all.length) }), `件が条件に合う（全 ${MODEL.routes_view.total} 件）`),
+    el("span", {}, el("b", { text: String(shown.length) }), "件を表示"),
+    el("span", {}, el("b", { text: String(needed.length) }), `ペアを確かめれば表示中のルートに答えが出る（うち繋がらなかったペアの再確認 ${rejected}、押せない ${unpressable}）`),
+  );
+
+  const args = ["lua tools/lua/plan.lua", `--character ${MODEL.character}`];
+  if (finder.starter.startsWith("b:")) args.push(`--starter-button ${BTN_CLI[finder.starter.slice(2)]}`);
+  if (finder.starter.startsWith("n:")) args.push(`--starter-notation "${finder.starter.slice(2)}"`);
+  if (finder.nogauge) args.push("--no-gauge");
+  if (finder.nosuper) args.push("--no-super");
+  if (finder.rej === "keep") args.push("--no-demote-rejected");
+  args.push(`--sort ${finder.sort === "sd" ? "scaled_damage" : finder.sort === "d" ? "damage" : "simple"}`);
+  args.push(`--top ${finder.top || all.length}`);
+  $("finder-cmd").textContent = `# この条件のワークリストを書き出す\n${args.join(" ")}`;
+
+  const table = $("finder-table");
+  table.replaceChildren(el("thead", {}, el("tr", {},
+    el("th", { text: "#" }), el("th", { text: "ルート" }), el("th", { text: "状態" }),
+    el("th", { text: "ゲージ" }), el("th", { text: "ペア（ログの結果）" }),
+    el("th", { style: "text-align:right", text: "予測ダメージ" }))));
+  const body = el("tbody");
+  shown.forEach((r, i) => {
+    const chain = el("div", { class: "chain" });
+    r.m.forEach((n, j) => {
+      if (j) chain.append(el("span", { class: "arrow", text: (r.drc_after || []).includes(j) ? " →DRC→ " : " → " }));
+      chain.append(n);
+    });
+    const route = el("td", {}, chain);
+    if (r.c && r.c.some(Boolean)) route.append(el("div", { class: "classic", text: r.c.map(x => x || "?").join(" → ") }));
+
+    const state = el("td", {});
+    if (r.confirmed) state.append(el("span", { class: "badge confirmed", text: "確定コンボ" }));
+    else if (r.rej) state.append(el("span", { class: "badge rej", text: "繋がらなかったペアあり" }));
+    else state.append(el("span", { class: "badge open", text: "未確認" }));
+    if (finder.nogauge && r.no_gauge === "flag") state.append(el("div", {}, el("span", { class: "badge flag", title: "ドライブ消費が分からない技を含むため、ノーゲージとは言い切れず残しています", text: "ゲージ不明" })));
+
+    const gauge = el("td", {}, el("div", { class: "chips" },
+      r.sa ? el("span", { class: "chip gauge", text: "SA" }) : null,
+      r.od ? el("span", { class: "chip gauge", text: "OD" }) : null,
+      r.drc ? el("span", { class: "chip gauge", text: "DRC" }) : null,
+      (!r.sa && !r.od && !r.drc) ? el("span", { class: "chip", text: "なし" }) : null));
+
+    const pc = el("div", { class: "chips" });
+    for (const p of r.pairs) {
+      const bad = p.press && p.press !== "single";
+      pc.append(el("span", { class: `pchip ${p.st}${bad ? " bad" : ""}`, title: `${p.k}\n${PAIR_LABEL[p.st] || p.st}${bad ? "\n今のコンパイラでは押せない入力を含む (#49)" : ""}`, text: PAIR_LABEL[p.st] || p.st }));
+    }
+
+    const dmg = el("td", { class: "dmg" },
+      el("b", { text: r.sd != null ? String(Math.round(r.sd)) : "—" }),
+      el("small", { text: `単純合計 ${r.d != null ? r.d : "—"}${r.dc === false ? "（不完全）" : ""}` }));
+
+    body.append(el("tr", {}, el("td", { class: "rank", text: String(i + 1) }), route, state, gauge, el("td", {}, pc), dmg));
+  });
+  table.append(body);
+
+  const sm = MODEL.routes_view.scaling_model;
+  $("finder-note").textContent = "予測ダメージ（補正後）は公開情報の補正ルールによる未実測のモデルで、並べ替えにだけ使います"
+    + (sm && sm.not_modelled ? `（未反映: ${sm.not_modelled.length} 項目。即時補正・カウンターなど）` : "")
+    + "。ペアの色は既存ログの結果です。斜線は今のコンパイラでは押せない入力を含むペア。絞り込みの判定は plan.lua と同じもので、ワークリストは上のコマンドで書き出します。";
 }
 
 /* --- summaries --------------------------------------------------- */
@@ -618,6 +822,7 @@ function renderAll() {
 
 renderHeader();
 renderCombos();
+if (setupFinder()) renderFinder();
 renderPressSummary();
 state.cell = firstInteresting();
 renderAll();
