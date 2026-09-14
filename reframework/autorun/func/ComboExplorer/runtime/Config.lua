@@ -102,10 +102,55 @@ end
 
 -- --- artifacts ---------------------------------------------------------------
 
-local function stamp()
-    local ok, s = pcall(os.date, "!%Y%m%dT%H%M%SZ")
+-- os.date through pcall, because a host that does not hand this Lua state an os
+-- table must lose the ordering, not the write. The lookup of `os.date` is inside
+-- the protected call too: `pcall(os.date, ...)` evaluates os.date BEFORE pcall
+-- is entered, so with no os table at all it threw instead of degrading, which
+-- is the one host this was written for. Returns nil rather than a placeholder
+-- so the caller decides what an absent clock means for the field it is filling.
+function M.utc(fmt)
+    local ok, s = pcall(function() return os.date(fmt) end)
     if ok and type(s) == "string" then return s end
-    return "unstamped"
+    return nil
+end
+
+local function stamp()
+    return M.utc("!%Y%m%dT%H%M%SZ") or "unstamped"
+end
+
+-- Record names already handed out in this session, as a set of full paths
+-- without the extension.
+--
+-- A stamp on its own does not make a name unique. It has one-second
+-- resolution, and on a host with no os.date every stamp is the same word - so
+-- two writes land on one file, and the record the older one was written to
+-- keep is gone. That is #39 for the calibration profile and #42 for the
+-- diagnostics; this is the one answer to both.
+--
+-- THE LIMIT: session state cannot see files written before this load. A record
+-- written in the previous session under the same second - or, on a host with
+-- no clock, under "unstamped" at any time at all - is still replaced by the
+-- first write of this one. Closing that needs a directory listing, and fs.glob
+-- is not something every host has (see JsonIO.can_glob). What this does cover
+-- is the case within one session: press WRITE, keep going, press it again.
+local handed_out = {}
+
+-- A record path of the form <dir>/<base>-<stamp>.json that nothing earlier in
+-- this session was given. The first use of a name takes it as-is so the common
+-- case reads cleanly; a repeat gets -2, -3, and so on.
+--
+-- The loop, rather than a counter per stamped name, is because a suffixed name
+-- is itself a name: base "x" at stamp S with -2 appended must not be handed out
+-- again to anything else that happens to spell "x-S-2".
+function M.record_path(dir, base)
+    local stem = ("%s/%s-%s"):format(tostring(dir), tostring(base), stamp())
+    local name, n = stem, 1
+    while handed_out[name] do
+        n = n + 1
+        name = ("%s-%d"):format(stem, n)
+    end
+    handed_out[name] = true
+    return name .. ".json"
 end
 
 -- Every artifact carries the context needed to attribute it, because the person
@@ -145,13 +190,18 @@ end
 -- The timestamped copy is the record: a re-run after a patch must not silently
 -- destroy the sample that led to a decision. The latest copy is the convenience,
 -- so the path in a README stays true.
+--
+-- The record name comes from M.record_path and not from the stamp alone. The
+-- stamp is to the second, so two WRITE presses inside one second - or every
+-- press, on a host with no clock - took the same name and the second replaced
+-- the first: exactly the silent loss the record copy exists to prevent (#42).
 function M.write_diag(name, payload, ctx)
     if not M.data.write_diag_files then return nil, "diagnostic writing is off" end
 
     local doc = { header = M.header(ctx), body = payload }
     local dirs = { M.DIR, M.DIAG_DIR }
 
-    local stamped = ("%s/%s-%s.json"):format(M.DIAG_DIR, tostring(name), stamp())
+    local stamped = M.record_path(M.DIAG_DIR, tostring(name))
     local latest  = ("%s/%s-latest.json"):format(M.DIAG_DIR, tostring(name))
 
     local ok_stamped, err_stamped = M.io.dump(stamped, doc, dirs)

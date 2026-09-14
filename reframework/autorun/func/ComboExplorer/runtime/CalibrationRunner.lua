@@ -66,6 +66,7 @@ local function adapter()
     return _adapter
 end
 local JsonIO      = require("func/ComboExplorer/runtime/JsonIO")
+local Config      = require("func/ComboExplorer/runtime/Config")
 local CatalogLocator = require("func/ComboExplorer/runtime/CatalogLocator")
 
 local M = { name = "ComboExplorer.CalibrationRunner" }
@@ -368,36 +369,12 @@ function M.report()
     return Calibration.conclude(run.session)
 end
 
--- os.date the way Config.stamp() takes it: through pcall, because a host that
--- does not hand this Lua state an os table must lose the ordering, not the
--- write. Returns nil rather than a placeholder so the caller decides what an
--- absent clock means for the field it is filling.
-local function utc(fmt)
-    local ok, s = pcall(os.date, fmt)
-    if ok and type(s) == "string" then return s end
-    return nil
-end
-
--- Record copies already written in this session, keyed by the name they would
--- have taken.
---
--- A stamp on its own does not make the name unique. It has one-second
--- resolution, and on a host with no os.date every stamp is the same word - so
--- two writes would land on one file again, which is the whole of #39. Session
--- state cannot see files written before this load, but it does cover the case
--- within one session: press WRITE PROFILE, keep sweeping, press it again.
-local record_names = {}
-
--- Builds the record path, disambiguating against what this session already
--- wrote. First use of a name takes it as-is so the common case reads cleanly;
--- a repeat gets -2, -3, and so on.
-local function record_path(dir, base)
-    local name = ("%s/%s-%s"):format(dir, base, utc("!%Y%m%dT%H%M%SZ") or "unstamped")
-    local used = record_names[name]
-    record_names[name] = (used or 0) + 1
-    if used then name = ("%s-%d"):format(name, used + 1) end
-    return name .. ".json"
-end
+-- The clock and the record name are Config's (Config.utc, Config.record_path).
+-- This file had its own copy of both, written for #39; Config.write_diag had
+-- the same problem and not the fix (#42). Two copies of "a name nobody else
+-- was given" would also be two session tables, and a diagnostic and a profile
+-- that happened to share a directory could then be handed the same name.
+local utc = Config.utc
 
 -- Writes two copies under calibration/: a stamped record named
 -- <Character>-<scheme>-<patch>-<stamp>.json, and latest.json, the file
@@ -458,7 +435,7 @@ function M.write_values(identity, blocks)
     local base = ("%s-%s-%s"):format(char,
         tostring(identity.control_scheme or "modern"), tostring(identity.game_patch))
 
-    local path = record_path(dir, base)
+    local path = Config.record_path(dir, base)
     local ok, werr = JsonIO.dump(path, doc, dirs)
     -- Refusing to go on rather than write_diag's "try both". latest.json is live
     -- configuration, not a report: if the disk is turning writes away, the

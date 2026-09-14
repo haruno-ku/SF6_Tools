@@ -247,6 +247,112 @@ do
     reset_data()
 end
 
+-- --- the record copy is not overwritten ---------------------------------------
+
+t.group("two writes in one second keep two records (#42)")
+
+-- Runs fn with os swapped for `replacement` (nil for a host with no os table at
+-- all), and puts it back whatever fn does.
+local function with_os(replacement, fn)
+    local saved = os
+    _G.os = replacement
+    local ok, err = pcall(fn)
+    _G.os = saved
+    if not ok then error(err, 0) end
+end
+
+local function stamped_paths(seen)
+    local out = {}
+    for _, d in ipairs(seen.dumped) do
+        if not d.path:find("latest", 1, true) then out[#out + 1] = d.path end
+    end
+    return out
+end
+
+do
+    -- A frozen clock is the same second on purpose: that is the case the stamp
+    -- alone cannot tell apart, and a real clock would make this test pass only
+    -- when it happened to straddle a second boundary.
+    reset_data()
+    local io_, seen = fake_io()
+    local frozen = setmetatable({ date = function() return "20260914T120000Z" end },
+                                { __index = os })
+    with_os(frozen, function()
+        with_io(io_, function()
+            local a = Config.write_diag("probe_same_second", { n = 1 }, {})
+            local b = Config.write_diag("probe_same_second", { n = 2 }, {})
+            t.ok(a ~= nil and b ~= nil, "both writes report a path")
+            t.ok(a ~= b, ("and not the same one: %s vs %s"):format(tostring(a), tostring(b)))
+        end)
+    end)
+    local recs = stamped_paths(seen)
+    t.eq(#recs, 2, "two record copies were written")
+    t.ok(recs[1] ~= recs[2], "to two different files: " .. tostring(recs[2]))
+    t.ok(recs[1]:find("20260914T120000Z", 1, true) ~= nil,
+         "the first keeps the plain stamped name: " .. tostring(recs[1]))
+    t.ok(recs[2]:find("20260914T120000Z-2.json", 1, true) ~= nil,
+         "and the second is told apart by a suffix: " .. tostring(recs[2]))
+    t.eq(seen.dumped[1].tbl.body.n, 1, "the first record still holds the first sample")
+end
+
+do
+    -- os.date failing: every stamp is "unstamped", so without the session table
+    -- every write on this host would have replaced the one before.
+    reset_data()
+    local io_, seen = fake_io()
+    local broken = setmetatable({ date = function() error("no clock here") end },
+                                { __index = os })
+    with_os(broken, function()
+        with_io(io_, function()
+            Config.write_diag("probe_no_clock", {}, {})
+            Config.write_diag("probe_no_clock", {}, {})
+            Config.write_diag("probe_no_clock", {}, {})
+        end)
+    end)
+    local recs = stamped_paths(seen)
+    t.eq(#recs, 3, "three record copies on a host whose os.date fails")
+    t.ok(recs[1]:find("unstamped", 1, true) ~= nil, "named unstamped: " .. tostring(recs[1]))
+    t.ok(recs[1] ~= recs[2] and recs[2] ~= recs[3] and recs[1] ~= recs[3],
+         ("and all three distinct: %s, %s, %s"):format(recs[1], recs[2], recs[3]))
+end
+
+do
+    -- No os table at all. `pcall(os.date, ...)` indexed os before pcall was
+    -- entered, so this host - the one "unstamped" was written for - threw.
+    reset_data()
+    local io_, seen = fake_io()
+    local ok, err = pcall(with_os, nil, function()
+        with_io(io_, function()
+            Config.write_diag("probe_no_os", {}, {})
+            Config.write_diag("probe_no_os", {}, {})
+        end)
+    end)
+    t.eq(ok, true, "a host with no os table writes rather than throwing: " .. tostring(err))
+    local recs = stamped_paths(seen)
+    t.eq(#recs, 2, "both records reach the disk")
+    t.ok(#recs == 2 and recs[1] ~= recs[2],
+         ("under different names: %s vs %s"):format(tostring(recs[1]), tostring(recs[2])))
+    local v = "not called"
+    with_os(nil, function() v = Config.utc("%Y") end)
+    t.is_nil(v, "and Config.utc answers nil there rather than a placeholder")
+end
+
+do
+    -- A suffixed name is itself a name. A later stem that happens to spell it
+    -- must not be handed the same file.
+    local stamp_now = "S"
+    local clock = setmetatable({ date = function() return stamp_now end }, { __index = os })
+    with_os(clock, function()
+        local a = Config.record_path("d", "x")
+        local b = Config.record_path("d", "x")
+        t.eq(a, "d/x-S.json", "the first use of a name takes it as-is")
+        t.eq(b, "d/x-S-2.json", "a repeat is suffixed")
+        stamp_now = "S-2"
+        local c = Config.record_path("d", "x")
+        t.ok(c ~= b, "and a stem that spells an already suffixed name is moved on: " .. c)
+    end)
+end
+
 -- --- the debounce ------------------------------------------------------------
 
 t.group("saving is debounced, and does eventually happen")
