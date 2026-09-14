@@ -258,9 +258,9 @@ local function with_fake_dump(opts, fn)
     local saved = JsonIO.dump
     JsonIO.dump = function(path, tbl, dirs)
         seen[#seen + 1] = { path = path, tbl = tbl, dirs = dirs }
-        if opts.fail_record and not tostring(path):find("latest.json", 1, true) then
-            return false, "disk is full"
-        end
+        local is_latest = tostring(path):find("latest.json", 1, true) ~= nil
+        if opts.fail_record and not is_latest then return false, "disk is full" end
+        if opts.fail_latest and is_latest then return false, "latest.json is locked" end
         return true
     end
     local ok, err = pcall(fn, seen)
@@ -334,6 +334,99 @@ do
     end)
     t.eq(#seen, 1, "and latest.json was left alone rather than truncated")
 
+    CalRunner.stop({ force = true })
+end
+
+-- --- one return contract ------------------------------------------------------
+
+t.group("write_profile answers path, err, rep on every branch (#43)")
+
+do
+    -- Success: the second value is nil, not the report. It used to be the
+    -- report here and a string on failure, so a caller logging it
+    -- unconditionally printed "table: 0x..." on exactly the branch that worked.
+    local run, err = start({ identity = identity() })
+    t.ok(run ~= nil, tostring(err))
+    with_fake_dump(nil, function()
+        local n = select("#", CalRunner.write_profile(identity(), VALUES))
+        t.eq(n, 3, "three values come back")
+        local path, werr, rep = CalRunner.write_profile(identity(), VALUES)
+        t.eq(type(path), "string", "success: a path")
+        t.is_nil(werr, "and no error - the only branch where err is nil")
+        t.eq(type(rep), "table", "and the report, in its own position")
+        t.ok(type(rep) == "table" and type(rep.values) == "table",
+             "which is Calibration.conclude's shape")
+    end)
+    CalRunner.stop({ force = true })
+end
+
+do
+    -- Every failure: err is a string, whichever branch produced it.
+    CalRunner.stop({ force = true })
+    local path, werr, rep = CalRunner.write_profile(identity(), VALUES)
+    t.is_nil(path, "nothing running: no path")
+    t.eq(type(werr), "string", "a string reason")
+    t.is_nil(rep, "and no report, because there is no run to conclude")
+
+    local run, serr = start({ identity = identity() })
+    t.ok(run ~= nil, tostring(serr))
+    with_fake_dump({ fail_record = true }, function()
+        local p2, e2, r2 = CalRunner.write_profile(identity(), VALUES)
+        t.is_nil(p2, "record refused: no path")
+        t.eq(type(e2), "string", "the reason is a string, not a table")
+        t.eq(type(r2), "table", "and the report still comes back in third place")
+    end)
+
+    -- A document Calibration.document refuses is a failure of the same shape.
+    with_fake_dump(nil, function()
+        local p3, e3 = CalRunner.write_profile({ game_patch = "24176760" }, nil)
+        t.is_nil(p3, "an identity with no calibration_id writes nothing")
+        t.eq(type(e3), "string", "and says why in a string: " .. tostring(e3))
+    end)
+    CalRunner.stop({ force = true })
+end
+
+t.group("a latest.json that did not land is not reported as success (#43)")
+
+do
+    -- The record lands, latest.json does not. Before, this returned the record's
+    -- path and nothing else, and the next startup loaded the previous profile -
+    -- a calibration the operator believed was replaced.
+    local run, err = start({ identity = identity() })
+    t.ok(run ~= nil, tostring(err))
+    local seen = with_fake_dump({ fail_latest = true }, function()
+        local path, werr, rep = CalRunner.write_profile(identity(), VALUES)
+        t.eq(type(path), "string", "the record is on disk, so its path comes back")
+        t.eq(type(werr), "string", "AND an error beside it, so it cannot read as success")
+        t.ok(tostring(werr):find("latest.json", 1, true) ~= nil,
+             "naming the file that did not land: " .. tostring(werr))
+        t.ok(tostring(werr):find("locked", 1, true) ~= nil,
+             "carrying the disk's own reason")
+        t.ok(tostring(werr):find(tostring(path), 1, true) ~= nil,
+             "and where the record is, so it can be copied over by hand")
+        t.eq(type(rep), "table", "with the report still in third place")
+    end)
+    t.eq(#seen, 2, "both copies were attempted")
+
+    -- write_values, the pad measurement's route, answers the same way.
+    with_fake_dump({ fail_latest = true }, function()
+        local path, werr = CalRunner.write_values(
+            { calibration_id = "pad-1", game_patch = "24176760", character = "Zangief",
+              ac_sha256 = "a", bcm_sha256 = "b" }, { VALUES })
+        t.eq(type(path), "string", "write_values: the record's path")
+        t.ok(tostring(werr):find("latest.json", 1, true) ~= nil,
+             "and the latest.json failure beside it: " .. tostring(werr))
+    end)
+    with_fake_dump(nil, function()
+        local path, werr = CalRunner.write_values(
+            { calibration_id = "pad-1", game_patch = "24176760", character = "Zangief",
+              ac_sha256 = "a", bcm_sha256 = "b" }, { VALUES })
+        t.eq(type(path), "string", "write_values success: a path")
+        t.is_nil(werr, "and no error")
+    end)
+
+    -- A record that landed still counts as written for stop(): the observations
+    -- are on disk, only the convenience copy is stale.
     CalRunner.stop({ force = true })
 end
 

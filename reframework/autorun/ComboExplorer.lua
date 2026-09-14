@@ -908,10 +908,16 @@ local function draw_calibration()
     end
     imgui.same_line()
     if UIKit.styled_button(T("calib_write") .. "##ce_cal_write", THEME.neutral, UIKit.COLORS.White) then
+        -- err decides, not path: a path WITH an error is a record on disk
+        -- beside a latest.json that did not land, and startup would load the
+        -- old profile. See CalibrationRunner.write_profile.
         local path, err = CalRunner.write_profile(calibration_identity(),
                                                   probe_values_now())
-        calib.last_status = path and (T("wrote") .. " " .. path)
-            or (T("write_failed") .. ": " .. tostring(err))
+        if not err then
+            calib.last_status = T("wrote") .. " " .. path
+        else
+            calib.last_status = T("write_failed") .. ": " .. err
+        end
     end
 
     local p = CalRunner.progress()
@@ -1011,6 +1017,10 @@ local function draw_pad_watch()
                 identity.bcm_sha256 = probe_d.catalog.bcm_sha256
                 local path, werr = CalRunner.write_values(identity,
                     { Calibration.from_register(reg), values })
+                -- Applied live whenever the record landed: the values are
+                -- measured either way. But a path with an error is a latest.json
+                -- that did not land, so the status says the next startup will
+                -- not have them rather than reading as plain success.
                 if path then
                     local applied = reg:apply_calibration({
                         calibration_id = "pad-" .. tostring(os.date("!%Y%m%dT%H%M%SZ")),
@@ -1019,6 +1029,7 @@ local function draw_pad_watch()
                     })
                     pad.status = ("%d bit(s) derived and written to %s (%d applied live)")
                         :format(n, path, #applied)
+                    if werr then pad.status = pad.status .. " - BUT " .. werr end
                 else
                     pad.status = "could not write the profile: " .. tostring(werr)
                 end

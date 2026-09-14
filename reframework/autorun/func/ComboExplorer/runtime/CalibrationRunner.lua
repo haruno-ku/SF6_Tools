@@ -343,9 +343,12 @@ function M.tick()
             run.auto_write_error = "no identity was given at start, so the finished "
                 .. "profile cannot say which build it describes - press WRITE PROFILE"
         else
+            -- Both kept as they come: err is a string or nil on every branch,
+            -- and a path WITH an error is a record whose latest.json did not
+            -- land, which must stay visible rather than be cleared by the path.
             local path, werr = M.write_profile(run.identity, run.probe_values)
             run.auto_write_path = path
-            run.auto_write_error = path and nil or tostring(werr)
+            run.auto_write_error = werr
         end
     end
 
@@ -392,8 +395,29 @@ local utc = Config.utc
 -- probe_values is the block from Calibration.from_probes, merged in so one file
 -- carries everything measured on this build rather than the register having to
 -- be fed from two places that can disagree about which build they describe.
+--
+-- RETURNS path, err, rep - the same three positions on every branch, each
+-- always of one type:
+--
+--   path : string | nil  the record copy that is on disk, nil when none is
+--   err  : string | nil  nil ONLY when everything landed, record and latest.json
+--   rep  : table  | nil  Calibration.conclude's report, whenever a run existed
+--
+-- So there are three outcomes and a caller tells them apart by both values:
+--
+--   path, nil   written, and startup will load it
+--   nil,  err   nothing written
+--   path, err   the record is on disk but latest.json is NOT - startup will
+--               keep loading the previous profile. This is a failure to report,
+--               not a success with a footnote.
+--
+-- It used to return `nil, werr` on failure and `path, rep` on success, so the
+-- second value was a string on one branch and a table on the other, and the
+-- latest.json write's result was thrown away. A record that landed next to a
+-- stale latest.json looked exactly like success, and the next startup read the
+-- stale file: the same silent mix-up as #39, from the other side (#43).
 function M.write_profile(identity, probe_values)
-    if not run then return nil, "nothing is running" end
+    if not run then return nil, "nothing is running", nil end
     local rep = Calibration.conclude(run.session)
 
     identity = identity or {}
@@ -407,8 +431,7 @@ function M.write_profile(identity, probe_values)
     blocks[#blocks + 1] = rep.values
 
     local path, werr = M.write_values(identity, blocks)
-    if not path then return nil, werr end
-    return path, rep
+    return path, werr, rep
 end
 
 -- The write itself, without a session.
@@ -422,6 +445,10 @@ end
 --
 -- blocks : a list of values blocks, later ones winning, as Calibration.document
 --          takes them.
+--
+-- Returns path, err with the meaning write_profile documents: err is nil only
+-- when both copies landed, and `path, err` together is a record on disk beside
+-- a latest.json that was not replaced.
 function M.write_values(identity, blocks)
     identity = identity or {}
     identity.generated_at = identity.generated_at or utc("!%Y-%m-%dT%H:%M:%SZ")
@@ -441,13 +468,26 @@ function M.write_values(identity, blocks)
     -- configuration, not a report: if the disk is turning writes away, the
     -- previous latest.json is the last profile that loads, and truncating it
     -- would cost the operator a working calibration on top of this sweep.
-    if not ok then return nil, werr end
+    if not ok then return nil, tostring(werr or "write failed") end
 
     -- Written second for that same reason. A path is returned only because the
     -- record above actually landed; reporting one for a file that is not there
     -- would send the operator looking for it.
-    JsonIO.dump(dir .. "/latest.json", doc, dirs)
-    return path
+    --
+    -- And its result is read. It was not: a latest.json that failed to write
+    -- left the previous profile in place, this returned the record's path as if
+    -- all was well, and the next startup loaded the old file - a calibration
+    -- the operator believed was replaced, applied without a word (#43). The path
+    -- still comes back, because the record IS there and the operator can copy
+    -- it over by hand; the error comes back beside it so no caller can read the
+    -- pair as success.
+    local lok, lerr = JsonIO.dump(dir .. "/latest.json", doc, dirs)
+    if not lok then
+        return path, ("the record was written to %s, but %s/latest.json was not (%s) - "
+            .. "startup will keep loading the previous profile until it is")
+            :format(path, dir, tostring(lerr or "write failed"))
+    end
+    return path, nil
 end
 
 return M
