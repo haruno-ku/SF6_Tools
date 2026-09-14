@@ -186,8 +186,53 @@ do
     t.eq(o.expected[2][1], 655, "in order")
     t.eq(o.expected[3][1], 900, "all of them")
     t.ok(o.stage_cfg ~= nil, "and the stage setup is passed through")
-    t.ok(tostring(o.edge_id):find("4/4") ~= nil,
-         "the edge id carries the gaps, so two rows are distinguishable: " .. tostring(o.edge_id))
+    -- #14. This used to be edge_id = "ground-truth@4/4": a fake pair, which
+    -- confirm.lua would have folded into the confirmed list as if it linked.
+    t.eq(o.route_id, "ground-truth", "the trial is about the route, by its own id")
+    t.is_nil(o.edge_id, "and it names no edge, because a route run is not a pair")
+    t.eq_list(o.delays, { 4, 4 }, "the gaps travel as the delays, not inside an id")
+    RR.stop()
+end
+
+t.group("a route row is written with the route as its subject (#14)")
+
+do
+    -- The injector's record is built from what RouteRun handed it, the way
+    -- RunnerFsm.record_spec builds it from the spec, so the row that lands is
+    -- the row the game would write.
+    RR.stop()
+    local lines = {}
+    local json = dofile("tools/lua/json.lua")
+    local c = ResultCollector.new({
+        append = function(line) lines[#lines + 1] = line return true end,
+        encode = json.encode,
+        identity = { calibration_id = "test", game_patch = "test" },
+    })
+    local inj = injector({ ["4/6"] = "link" })
+    inj.record = function()
+        local o = inj.last
+        return { edge_id = o.edge_id, route_id = o.route_id, delays = o.delays,
+                 attempt = o.attempt, verdict = inj.result().trial.verdict,
+                 evidence = { hits_added = 1 } }
+    end
+    RR.start({ route = ROUTE, collector = c, injector = inj, delays = { 4, 6 } })
+    drive(inj, 8)
+
+    t.eq(#lines, 4, "every combination reached the file")
+    local rows, keys = {}, {}
+    for i, l in ipairs(lines) do
+        rows[i] = json.decode(l)
+        keys[ResultCollector.key(rows[i])] = true
+    end
+    t.eq(rows[1].subject_kind, "route", "its subject is a route")
+    t.eq(rows[1].subject_id, "ground-truth", "named by the route's own id")
+    t.eq(rows[1].route_id, "ground-truth", "which route_id spells the same way")
+    t.is_nil(rows[1].edge_id, "with no edge id for anything that folds pairs to pick up")
+    t.ok(keys["route ground-truth @ 4,6 #1"],
+         "the key carries the whole gap vector, so each combination is its own trial")
+    local n = 0
+    for _ in pairs(keys) do n = n + 1 end
+    t.eq(n, 4, "four combinations, four distinct keys")
     RR.stop()
 end
 

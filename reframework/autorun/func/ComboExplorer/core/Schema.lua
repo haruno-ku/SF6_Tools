@@ -322,8 +322,56 @@ VALIDATORS[M.KIND.ROUTE] = function(o, p)
     end
 end
 
+-- A trial is about a SUBJECT, and the subject is either a pair (an edge) or a
+-- named route run at a grid of gaps. It used to require `edge_id`, which left a
+-- route run two ways to be recorded: with `edge_id = false`, which nothing on
+-- the game ever wrote, or as a fake edge whose id was the route's with the gaps
+-- glued on ("zangief-assist-ground-truth@40/2"), which is what RouteRun did for
+-- every committed assist row (#14). The second is the dangerous one - an edge id
+-- is a claim that the row is about a PAIR, and confirm.lua folds every string
+-- edge id it is handed into a confirmed pair.
+--
+-- So the subject is what is required, and `edge_id` / `route_id` become the
+-- per-kind spelling of the same fact. When one is present it has to agree with
+-- the subject, because a record whose two names for its subject disagree is a
+-- record nobody can file.
 VALIDATORS[M.KIND.TRIAL] = function(o, p)
-    require_fields(o, { "id", "edge_id", "status", "verdict", "attempt" }, p)
+    require_fields(o, { "id", "subject_kind", "subject_id", "status", "verdict", "attempt" }, p)
+
+    local kind, sid = o.subject_kind, o.subject_id
+    if kind ~= nil and kind ~= "edge" and kind ~= "route" then
+        err(p, "subject_kind", ("%q is not edge or route"):format(tostring(kind)))
+    end
+    if sid ~= nil and (type(sid) ~= "string" or sid == "") then
+        err(p, "subject_id", "must be a non-empty string")
+    end
+
+    local function named(v) return type(v) == "string" and v ~= "" end
+    if named(o.edge_id) and named(o.route_id) then
+        -- Which one it is about would be a coin flip, and ResultCollector keys
+        -- resume on the answer.
+        err(p, "subject", "a trial names an edge or a route, not both")
+    end
+
+    if kind == "edge" then
+        if o.edge_id ~= nil and o.edge_id ~= sid then
+            err(p, "edge_id", ("says %s, but the subject is edge %s")
+                :format(tostring(o.edge_id), tostring(sid)))
+        end
+        if named(o.route_id) then
+            err(p, "route_id", "an edge trial does not name a route")
+        end
+    elseif kind == "route" then
+        if o.route_id ~= nil and o.route_id ~= sid then
+            err(p, "route_id", ("says %s, but the subject is route %s")
+                :format(tostring(o.route_id), tostring(sid)))
+        end
+        -- `false` is tolerated: it is "known not to be about an edge", which is
+        -- what the collector wrote for route trials before the subject existed.
+        if o.edge_id ~= nil and o.edge_id ~= false then
+            err(p, "edge_id", "a route trial is not about a pair, so it carries no edge id")
+        end
+    end
 end
 
 VALIDATORS[M.KIND.CONFIRMED] = function(o, p)

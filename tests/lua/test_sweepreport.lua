@@ -134,6 +134,46 @@ t.eq_list(r.gap_axes[2], { 2, 4 }, "the second gap's axis")
 t.eq(r.cells["40/2"].verdict, "link", "cells are keyed by their gaps")
 t.eq(r.note, "known", "and the route definition names it")
 
+t.group("a route log written with the route as its subject (#14)")
+
+-- Since #14 a route row carries subject_kind "route" and no edge id at all; the
+-- gaps are only in its delays. The rows above are the legacy spelling, which
+-- every committed assist log uses, and both have to land in the same place.
+local function route_trial(verdict, gaps)
+    return { subject_kind = "route", subject_id = "gt", route_id = "gt",
+             delays = gaps, verdict = verdict, recorded_at = "2026-09-13T12:00:00Z",
+             provenance = { calibration_id = "cal-1" } }
+end
+
+m = R.build(WORKLIST, { { name = "gt-new", records = {
+    route_trial("link", { 40, 2 }),
+    route_trial("link", { 40, 4 }),
+    route_trial("whiff", { 44, 2 }),
+} } }, { gt = { id = "gt", steps = { { action_id = 660, notation = "AUTO + 强" },
+                                     { action_id = 655, notation = "3 + 中" },
+                                     { action_id = 900, notation = "2 + SP" } } } })
+
+t.eq(#m.pair_logs, 0, "a log of new route rows is not a pair log")
+r = m.route_logs[1]
+t.eq(r and r.route_id, "gt", "it is filed under the route its subject names")
+t.eq(r and r.counts.elsewhere, 0, "and no row falls outside it for want of an edge id")
+t.eq_list(r and r.gap_axes[1], { 40, 44 }, "the gaps come from the delays")
+t.eq_list(r and r.gap_axes[2], { 2, 4 }, "for every gap")
+t.eq(r and r.cells["40/4"].verdict, "link", "cells are keyed by those gaps")
+t.eq(m.combos[1] and m.combos[1].key, "660>655>900", "the route's moves make the combo")
+t.eq(m.combos[1] and m.combos[1].status, "confirmed", "linked twice, so confirmed")
+
+do
+    local rid, rgaps = R.route_of(route_trial("link", { 8 }))
+    t.eq(rid, "gt", "route_of reads the subject")
+    t.eq_list(rgaps, { 8 }, "and the delays")
+    rid, rgaps = R.route_of({ edge_id = "gt@40/2", subject_kind = "edge", subject_id = "gt@40/2" })
+    t.eq(rid, "gt", "and falls back to the legacy fake edge")
+    t.eq_list(rgaps, { 40, 2 }, "parsing its gaps when the row has no delays")
+    t.is_nil(R.route_of({ edge_id = "601:manual->940:simple", subject_kind = "edge" }),
+             "a pair is not a route")
+end
+
 t.group("logs in order")
 
 m = R.build(WORKLIST, {

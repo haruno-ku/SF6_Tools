@@ -206,6 +206,60 @@ t.ok(S.validate(S.KIND.COMBO, combo), "a verified combo with a measured damage v
 combo.measured = {}
 t.eq(S.validate(S.KIND.COMBO, combo), false, "without a measured damage it does not")
 
+-- --- a trial names its subject (#14) -----------------------------------------
+
+t.group("a trial is about an edge or a route")
+
+-- Route runs were recorded as fake edges ("<route>@<gaps>") because this
+-- validator required edge_id of every trial. The subject is what is required
+-- now, and edge_id / route_id have to agree with it when they are present.
+-- A key set to nil in a table constructor is not there at all, so removal is
+-- spelled with a marker.
+local NONE = {}
+local function trial(over)
+    local r = S.new(S.KIND.TRIAL, {
+        id = "edge 601:manual->678:manual @ 4 #1", verdict = "a_failed", attempt = 1,
+        subject_kind = "edge", subject_id = "601:manual->678:manual",
+        edge_id = "601:manual->678:manual",
+    })
+    S.transition(r, "runtime_pending")
+    for k, v in pairs(over or {}) do
+        if v == NONE then r[k] = nil else r[k] = v end
+    end
+    return r
+end
+
+t.ok(S.validate(S.KIND.TRIAL, trial()), "an edge trial that names its subject validates")
+t.ok(S.validate(S.KIND.TRIAL, trial({ edge_id = NONE })),
+     "edge_id is optional - the subject already says which pair")
+t.ok(S.validate(S.KIND.TRIAL, trial({ subject_kind = "route", subject_id = "gt",
+                                      edge_id = NONE, route_id = "gt" })),
+     "a route trial with no edge id validates")
+t.ok(S.validate(S.KIND.TRIAL, trial({ subject_kind = "route", subject_id = "gt",
+                                      edge_id = false })),
+     "and one carrying edge_id = false, the old 'known not an edge'")
+
+ok, problems = S.validate(S.KIND.TRIAL, trial({ subject_kind = NONE, subject_id = NONE }))
+t.eq(ok, false, "a trial that does not say what it is about is refused")
+local fields = {}
+for _, p in ipairs(problems) do fields[p.field] = true end
+t.ok(fields.subject_kind and fields.subject_id, "naming both missing fields")
+
+t.eq(S.validate(S.KIND.TRIAL, trial({ subject_kind = "combo" })), false,
+     "a subject is an edge or a route, nothing else")
+t.eq(S.validate(S.KIND.TRIAL, trial({ subject_id = "" })), false,
+     "and it has an id")
+t.eq(S.validate(S.KIND.TRIAL, trial({ edge_id = "601:manual->700:manual" })), false,
+     "an edge id that disagrees with the subject is refused")
+t.eq(S.validate(S.KIND.TRIAL, trial({ route_id = "gt" })), false,
+     "as is a trial that names an edge and a route both")
+t.eq(S.validate(S.KIND.TRIAL, trial({ subject_kind = "route", subject_id = "gt",
+                                      edge_id = "gt@40/2" })), false,
+     "and a route trial dressed as a pair - the fake edge #14 is about")
+t.eq(S.validate(S.KIND.TRIAL, trial({ subject_kind = "route", subject_id = "gt",
+                                      edge_id = NONE, route_id = "other" })), false,
+     "a route id that disagrees with the subject is refused too")
+
 -- --- calibration and diagnostics are records, not claims ---------------------
 
 t.group("calibration and diagnostics")

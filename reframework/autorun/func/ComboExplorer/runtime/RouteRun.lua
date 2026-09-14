@@ -177,7 +177,15 @@ local function start_one(delays)
         route = run.route,
         delays = delays,
         expected = expected_for(run.route, run.catalog),
-        edge_id = ("%s@%s"):format(tostring(run.route.id), key),
+        -- The ROUTE is the subject, and the gaps are the delays beside it.
+        --
+        -- This used to pass edge_id = "<route>@<gaps>", a fake pair, because
+        -- the trial schema required an edge id. Every committed assist row is
+        -- one of those, and confirm.lua would have folded each gap combination
+        -- as if it were a pair that links (#14). The collector keys a route
+        -- trial on the id AND the whole delay vector, so two gap combinations
+        -- are still two trials without the id having to carry them.
+        route_id = run.route.id,
         attempt = run.attempts[key],
         stage_cfg = run.stage_cfg,
         sink = { collector = run.collector },

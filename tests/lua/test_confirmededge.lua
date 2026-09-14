@@ -17,6 +17,10 @@ local Schema = require("func/ComboExplorer/core/Schema")
 
 local EDGE = "601:manual->621:manual"
 
+-- A key set to nil in a table constructor is not there at all, so an override
+-- that removes a field is spelled with this marker.
+local NONE = {}
+
 local function trial(verdict, delay, over)
     local rec = {
         schema = Schema.KIND.TRIAL,
@@ -29,7 +33,9 @@ local function trial(verdict, delay, over)
         recorded_at = "2026-09-11T12:00:00Z",
         provenance = { calibration_id = "cal-test", game_patch = "p" },
     }
-    for k, v in pairs(over or {}) do rec[k] = v end
+    for k, v in pairs(over or {}) do
+        if v == NONE then rec[k] = nil else rec[k] = v end
+    end
     return rec
 end
 
@@ -212,6 +218,73 @@ do
             t.ok(type(e.evidence) == "table", e.edge_id .. " carries its evidence")
         end
     end
+end
+
+-- --- route runs are not pairs (#14) ------------------------------------------------------
+
+t.group("a route run is not folded as a pair")
+
+-- Route runs used to be recorded as fake edges, "<route>@<gaps>", and this
+-- function folds every edge id it is handed. A route that linked at several
+-- gap combinations would have come out as that many verified "pairs".
+do
+    local function route_row(verdict, gaps, over)
+        local o = { edge_id = NONE, delays = gaps, subject_kind = "route",
+                    subject_id = "gt", route_id = "gt" }
+        for k, v in pairs(over or {}) do o[k] = v end
+        return trial(verdict, nil, o)
+    end
+    local recs = {
+        trial("link", 4, { subject_kind = "edge", subject_id = EDGE }),
+        trial("link", 4, { subject_kind = "edge", subject_id = EDGE }),
+        route_row("link", { 40, 2 }),
+        route_row("link", { 40, 4 }),
+        route_row("whiff", { 44, 2 }),
+        -- The committed shape: subject_kind "edge", and an edge id that is a
+        -- route with its gaps appended.
+        route_row("link", { 40, 2 }, { subject_kind = "edge", subject_id = "old@40/2",
+                                       edge_id = "old@40/2", route_id = NONE }),
+        route_row("link", { 40, 4 }, { subject_kind = "edge", subject_id = "old@40/4",
+                                       edge_id = "old@40/4", route_id = NONE }),
+    }
+    local edges, problems, counts = CE.from_trials(recs)
+
+    t.eq(#edges, 1, "the pair is folded and nothing else is")
+    t.eq(edges[1].edge_id, EDGE, "the real pair")
+    t.eq(edges[1].attempts, 2, "with only its own trials in it")
+    t.eq(counts.route_trials, 5, "every route row is counted, so none is silently dropped")
+    t.eq(counts.routes, 2, "across the two routes")
+
+    local by_route = {}
+    for _, p in ipairs(problems) do
+        if p.kind == "route" then by_route[p.route_id] = p end
+    end
+    t.ok(by_route.gt ~= nil, "a route that says it is a route is reported as not folded")
+    t.eq(by_route.gt and by_route.gt.trials, 3, "once, with its row count")
+    t.eq(by_route.gt and by_route.gt.legacy, false, "written under the subject contract")
+    t.ok(by_route.old ~= nil, "a legacy fake edge is recognised as its route")
+    t.eq(by_route.old and by_route.old.trials, 2, "all of its rows")
+    t.eq(by_route.old and by_route.old.legacy, true, "and marked as the old spelling")
+    t.eq(#problems, 2, "one entry per route, not one per row")
+
+    local nope, why = CE.fold({ route_row("link", { 40, 2 }) })
+    t.is_nil(nope, "fold refuses a route row outright")
+    t.ok(tostring(why):find("not a trial of a pair") ~= nil, tostring(why))
+
+    local noid, nwhy = CE.fold({ trial("link", 4, { edge_id = NONE }) })
+    t.is_nil(noid, "a trial that names no subject at all is refused")
+    t.ok(tostring(nwhy):find("does not say what it is about") ~= nil, tostring(nwhy))
+end
+
+do
+    -- Pairs recorded under the subject contract fold by their subject, whether
+    -- or not the optional edge_id is spelled out.
+    local edges = CE.from_trials({
+        trial("link", 4, { subject_kind = "edge", subject_id = EDGE }),
+        trial("link", 4, { subject_kind = "edge", subject_id = EDGE, edge_id = NONE }),
+    })
+    t.eq(#edges, 1, "an edge row without edge_id folds with one that has it")
+    t.eq(edges[1] and edges[1].attempts, 2, "into the same pair")
 end
 
 -- --- one cohort at a time ---------------------------------------------------------------

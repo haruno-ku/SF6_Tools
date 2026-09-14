@@ -42,7 +42,10 @@
 -- sweep skips a trial it never ran, leaving a hole nothing downstream can see.
 -- Too fine a key and it re-runs the hour it already paid for.
 --
--- The key is the subject, the WHOLE delay vector, and the attempt number.
+-- The key is the subject, the WHOLE delay vector, and the attempt number:
+-- "edge 601:manual->678:manual @ 4 #1", "route zangief-assist-ground-truth @
+-- 40,2 #1". The subject's kind is in it, so an edge and a route that happen to
+-- share an id are never the same trial.
 --
 -- The whole vector, because a three-step route at delays {3,5} and the same
 -- route at {4,5} are different programs and neither is an answer about the
@@ -175,9 +178,74 @@ function M.subject(t)
         -- flip in the key is a resume that skips the wrong trials.
         return nil, "a trial names an edge or a route, not both"
     end
+
+    -- A record read back off disk says its subject in so many words. Believed
+    -- when it agrees with edge_id / route_id, refused when it does not: a line
+    -- whose two statements of its subject disagree cannot be keyed without
+    -- picking one, and picking is the coin flip above.
+    --
+    -- For every edge row already on disk this is the same answer the edge_id
+    -- alone gave - subject_kind "edge", subject_id == edge_id - so the key, and
+    -- therefore a resume over the committed logs, does not move.
+    local fk, fid = t.subject_kind, t.subject_id
+    if fk ~= nil or fid ~= nil then
+        if fk ~= "edge" and fk ~= "route" then
+            return nil, "a trial is about an edge or a route"
+        end
+        if type(fid) ~= "string" or fid == "" then
+            return nil, "the subject has no id"
+        end
+        if (fk == "edge" and (route or (edge and edge ~= fid)))
+            or (fk == "route" and (edge or (route and route ~= fid))) then
+            return nil, ("the record says its subject is %s %s, and its %s says otherwise")
+                :format(fk, fid, edge and "edge_id" or "route_id")
+        end
+        return { kind = fk, id = fid }
+    end
+
     if route then return { kind = "route", id = route } end
     if edge then return { kind = "edge", id = edge } end
     return nil, "a trial has to name the edge or the route it is about"
+end
+
+-- --- the rows written before a route could be a subject (#14) ------------------
+
+-- Every route run committed before #14 was recorded as an EDGE whose id was the
+-- route's with its gaps appended: "zangief-assist-ground-truth@40/2". Those rows
+-- carry subject_kind "edge" and are on disk for good, so something has to know
+-- how to read them - and it is here, once, rather than re-parsed separately by
+-- every tool that has to tell a pair from a route.
+--
+-- A pair key is "601:manual->678:manual" and never contains "@", so the two
+-- cannot be confused; the pair-key test is there anyway, because the cost of
+-- being wrong is a real pair silently leaving the confirmed list.
+local PAIR_KEY = "^%d+:[%w_]+%->%d+:[%w_]+$"
+
+-- "zangief-assist-ground-truth@40/2" -> "zangief-assist-ground-truth", { 40, 2 }
+function M.legacy_route(edge_id)
+    if type(edge_id) ~= "string" or edge_id:match(PAIR_KEY) then return nil end
+    local id, tail = edge_id:match("^(.-)@([%d/]+)$")
+    if not id or id == "" then return nil end
+    local gaps = {}
+    for n in tail:gmatch("%d+") do gaps[#gaps + 1] = tonumber(n) end
+    return id, gaps
+end
+
+-- What a record read back off disk is ABOUT, as opposed to what it was keyed
+-- by. M.subject is the key's answer and must not change for a row already
+-- written; this is the reader's answer, which sees through the fake edge.
+--
+-- Returns { kind, id, legacy = true|nil, gaps = {...}|nil }, or nil and why.
+function M.recorded_subject(rec)
+    local s, why = M.subject(rec)
+    if not s then return nil, why end
+    if s.kind == "edge" then
+        local route_id, gaps = M.legacy_route(s.id)
+        if route_id then
+            return { kind = "route", id = route_id, legacy = true, gaps = gaps }
+        end
+    end
+    return s
 end
 
 -- Normalises whatever the caller called the delay into the list the key is
@@ -398,11 +466,13 @@ function M.trial(spec)
 
     if #problems > 0 then return nil, problems end
 
-    -- Schema's TRIAL validator requires edge_id, so a route trial has to say
-    -- something about it. It says `false`: known not to be about an edge, which
-    -- is a different fact from nil, which would mean nobody recorded what this
-    -- trial was about at all.
-    local edge_id, route_id = false, nil
+    -- The subject is the required fact; edge_id and route_id are its per-kind
+    -- spelling, and only the one that applies is written. A route trial used to
+    -- carry `edge_id = false` because Schema required an edge id of everything,
+    -- and RouteRun sidestepped even that by inventing one (#14). Now that the
+    -- schema asks for the subject instead, a route row simply has no edge id -
+    -- which is what stops anything that folds pairs from folding it.
+    local edge_id, route_id = nil, nil
     if subject.kind == "edge" then edge_id = subject.id else route_id = subject.id end
 
     local rec = Schema.new(M.KIND, {

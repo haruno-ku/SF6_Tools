@@ -266,11 +266,64 @@ local route_rec = RC.trial({ route_id = "r1", delays = { 3, 5 }, attempt = 2,
                              verdict = LV.VERDICT.LINK, evidence = EVIDENCE,
                              provenance = PROV })
 t.ok(route_rec ~= nil, "a route trial builds")
-t.eq(route_rec.edge_id, false,
-     "and says it is known not to be about an edge, which nil would leave unsaid")
 t.eq(RC.key(json.decode(RC.line(route_rec, json.encode))),
      RC.key({ route_id = "r1", delays = { 3, 5 }, attempt = 2 }),
      "a route trial keys the same after a round trip through the file")
+t.eq(RC.key(route_rec), "route r1 @ 3,5 #2",
+     "and its key is the route, the whole gap vector and the attempt")
+
+-- --- the subject names what a trial is about (#14) ------------------------------
+
+t.group("the subject names what a trial is about")
+
+-- Route runs used to be written as fake edges ("<route>@<gaps>") because the
+-- schema required an edge id of every trial, and confirm.lua folds every edge
+-- id into a pair. The subject is the required fact now.
+t.eq(route_rec.subject_kind, "route", "a route trial's subject is a route")
+t.eq(route_rec.subject_id, "r1", "named by the route id")
+t.eq(route_rec.route_id, "r1", "which route_id spells the same way")
+t.is_nil(route_rec.edge_id, "and it carries no edge id at all, not even a fake one")
+t.ok(Schema.validate(Schema.KIND.TRIAL, route_rec), "which the schema accepts")
+
+t.eq(rec.subject_kind, "edge", "an edge trial's subject is an edge")
+t.eq(rec.subject_id, rec.edge_id, "and its edge id is its subject id")
+t.is_nil(rec.route_id, "with no route named")
+
+do
+    local s = RC.subject({ subject_kind = "route", subject_id = "r9" })
+    t.eq(s and s.kind, "route", "a record that only says its subject is keyable")
+    local bad, why = RC.subject({ subject_kind = "edge", subject_id = "a",
+                                  edge_id = "b" })
+    t.is_nil(bad, "a record whose subject and edge id disagree is not guessed at")
+    t.ok(tostring(why):find("says otherwise") ~= nil, tostring(why))
+    t.is_nil(RC.subject({ subject_kind = "route", subject_id = "r",
+                          edge_id = "601:manual->678:manual" }),
+             "nor one that calls itself a route and names a pair")
+    t.is_nil(RC.subject({ subject_kind = "combo", subject_id = "r" }),
+             "and the subject is an edge or a route, nothing else")
+end
+
+t.group("the fake edges already on disk are read as routes")
+
+do
+    local id, gaps = RC.legacy_route("zangief-assist-ground-truth@40/2")
+    t.eq(id, "zangief-assist-ground-truth", "the route id is read back out of the fake edge")
+    t.eq_list(gaps, { 40, 2 }, "and the gaps with it")
+    t.is_nil(RC.legacy_route("601:manual->678:manual"), "a pair key is never a route")
+    t.is_nil(RC.legacy_route("@4"), "nor an id with nothing before the gaps")
+
+    local legacy = { schema = Schema.KIND.TRIAL, subject_kind = "edge",
+                     subject_id = "gt@40/2", edge_id = "gt@40/2",
+                     delays = { 40, 2 }, attempt = 1 }
+    local s = RC.recorded_subject(legacy)
+    t.eq(s.kind, "route", "a legacy row is about a route")
+    t.eq(s.id, "gt", "the route")
+    t.eq(s.legacy, true, "and says it was read through the old spelling")
+    t.eq(RC.key(legacy), "edge gt@40/2 @ 40,2 #1",
+         "but its KEY does not move - a key is what is on disk, not what it meant")
+    t.eq(RC.recorded_subject({ edge_id = "601:manual->678:manual" }).kind, "edge",
+         "and a real pair is still a pair")
+end
 
 -- --- a sweep's worth of results ------------------------------------------------
 
@@ -451,6 +504,7 @@ t.eq(bix.counts.trials, 10, "and every result is still read")
 -- is readable, its identity as a trial is not. Counted, reported, and left out
 -- of the index rather than quietly turning into a duplicate later.
 local keyless = json.encode({ schema = Schema.KIND.TRIAL, id = "t1", edge_id = "b1",
+                              subject_kind = "edge", subject_id = "b1",
                               status = Schema.STATUS.RUNTIME_PENDING,
                               runtime_verified = false, attempt = 1,
                               verdict = LV.VERDICT.A_FAILED }) .. "\n"
@@ -733,5 +787,55 @@ t.is_nil(RC.parse("{}", nil), "parsing without a decoder is refused")
 t.is_nil(RC.parse(nil, json.decode), "and parsing something that is not a line")
 t.is_nil(RC.summary(nil), "a summary of nothing is refused")
 t.eq_list(RC.report(nil), {}, "and a report of nothing is empty rather than an error")
+
+-- --- the logs already committed (#14) ------------------------------------------
+
+t.group("a resume over the committed logs still recognises what they ran")
+
+-- The subject became required, so every line already on disk has to still pass
+-- the schema and still key to the same string the sweep computes before a
+-- trial. If either moved, the next resume would re-run the hour those logs cost.
+local function committed(name)
+    local f = io.open("reframework/data/ComboExplorer_data/trials/" .. name, "r")
+    if not f then return nil end
+    local text = f:read("a")
+    f:close()
+    return text
+end
+
+do
+    local text = committed("zangief-modern-delay4.jsonl")
+    t.ok(text ~= nil, "the committed pair log is there to read")
+    local cix = RC.index(text or "", { decode = json.decode })
+    t.eq(cix.counts.lines, 202, "every line of it")
+    t.eq(cix.counts.invalid, 0, "and no line is invalid under the subject-required schema")
+    t.eq(cix.counts.unkeyable, 0, "nor unkeyable")
+    t.eq(cix.counts.trials, 202, "so every trial is still a trial")
+
+    local first = json.decode((text or ""):match("^[^\n]+") or "{}") or {}
+    local c = RC.new({ append = function() return true end, encode = json.encode,
+                       resume = cix })
+    local may, why = RC.claim(c, { edge_id = first.edge_id, delay = first.delay,
+                                   attempt = first.attempt })
+    t.eq(may, false, "a sweep that would run the first committed pair again is told it ran")
+    t.ok(tostring(why):find("already run at line 1") ~= nil, tostring(why))
+    t.eq(RC.key(first), ("edge %s @ %d #%d"):format(tostring(first.edge_id),
+                                                   first.delay or -1, first.attempt or -1),
+         "because the key is the one it always was")
+end
+
+do
+    local text = committed("zangief-assist-ground-truth.jsonl")
+    local gix = RC.index(text or "", { decode = json.decode })
+    t.eq(gix.counts.invalid, 0, "the legacy route rows still validate")
+    t.eq(gix.counts.trials, 30, "all thirty of them")
+    local routes = 0
+    for _, line in ipairs((RC.scan(text or ""))) do
+        local r = json.decode(line)
+        local s = r and RC.recorded_subject(r)
+        if s and s.kind == "route" and s.legacy then routes = routes + 1 end
+    end
+    t.eq(routes, 30, "and every one of them reads as a route, not a pair")
+end
 
 return t.finish()

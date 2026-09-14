@@ -167,6 +167,9 @@ say("")
 say("- source log      %s", opt.trials)
 say("- trials read     %d", counts.trials)
 say("- pairs answered  %d", counts.edges)
+if (counts.route_trials or 0) > 0 then
+    say("- route rows      %d (not pairs - see below)", counts.route_trials)
+end
 say("- experiments     %d", counts.cohorts or 1)
 say("")
 
@@ -240,7 +243,11 @@ table.sort(with_window, function(a, b)
     return a.edge_id < b.edge_id
 end)
 
-if #with_window == 0 then
+if #edges == 0 then
+    -- Not "nothing linked": a log of route rows can be full of links, and none
+    -- of them is a pair.
+    say("No pair was folded, so there is no window to report.")
+elseif #with_window == 0 then
     say("Nothing linked at any delay, so there is no window to report.")
 else
     say("```")
@@ -257,7 +264,35 @@ else
 end
 say("")
 
-if #problems > 0 or #refused > 0 or #bad_lines > 0 then
+-- Route rows arrive in `problems` too, one entry per route, and are split out
+-- here: "this log is a route run" is not the same news as "these records could
+-- not be read", and mixing them would make the second invisible.
+local route_skips, refused_records = {}, 0
+for _, p in ipairs(problems) do
+    if p.kind == "route" then route_skips[#route_skips + 1] = p
+    else refused_records = refused_records + 1 end
+end
+
+if #route_skips > 0 then
+    say("## Route runs, not folded")
+    say("")
+    say("These rows are one named route run across a grid of gaps (#48), not a pair.")
+    say("A route that linked at nineteen gap combinations is one combo, not nineteen")
+    say("pairs, so none of them is in the list above. sweepreport.lua / report.lua is")
+    say("where route runs are drawn.")
+    say("")
+    say("```")
+    say("%-8s %-8s %s", "trials", "legacy", "route")
+    for _, r in ipairs(route_skips) do
+        say("%-8d %-8s %s", r.trials, r.legacy and "yes" or "no", tostring(r.route_id))
+    end
+    say("```")
+    say("")
+    say("`legacy` rows were written before #14, as a fake edge named `<route>@<gaps>`.")
+    say("")
+end
+
+if refused_records > 0 or #refused > 0 or #bad_lines > 0 then
     say("## What could not be read")
     say("")
     say("Nothing is dropped silently. A line that will not decode is a trial that")
@@ -265,7 +300,7 @@ if #problems > 0 or #refused > 0 or #bad_lines > 0 then
     say("")
     say("```")
     say("unreadable lines        %d", #bad_lines)
-    say("records refused          %d", #problems)
+    say("records refused          %d", refused_records)
     say("edges the schema refused %d", #refused)
     say("```")
     for _, r in ipairs(refused) do

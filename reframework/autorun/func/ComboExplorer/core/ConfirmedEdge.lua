@@ -83,15 +83,29 @@ M.DEFAULT_MIN_ATTEMPTS = 2
 -- Goes through ResultCollector.classify rather than testing the verdict string,
 -- so a verdict added upstream and not taught to that module is refused here too
 -- instead of being absorbed as whatever this file's else-branch happens to be.
+--
+-- The third return is the pair it is about. It is read through
+-- ResultCollector.recorded_subject rather than straight off edge_id, because
+-- the subject is what the record says it is about, and because that is the one
+-- place the fake edges RouteRun used to write are recognised for what they are
+-- (#14). A route row comes back as nil, a reason, nil, and its route subject.
 local function meaning_of(rec)
     if type(rec) ~= "table" then return nil, "not a record" end
     if rec.schema ~= Schema.KIND.TRIAL then
         return nil, ("not a trial record (schema %s)"):format(tostring(rec.schema))
     end
-    if type(rec.edge_id) ~= "string" or rec.edge_id == "" then
-        return nil, "a trial with no edge_id says nothing about any pair"
+    local subject, why = ResultCollector.recorded_subject(rec)
+    if not subject then
+        return nil, ("a trial that does not say what it is about says nothing about "
+            .. "any pair: %s"):format(tostring(why))
     end
-    return ResultCollector.classify(rec.verdict)
+    if subject.kind ~= "edge" then
+        return nil, ("a trial of route %s is not a trial of a pair"):format(subject.id),
+            nil, subject
+    end
+    local m, cwhy = ResultCollector.classify(rec.verdict)
+    if not m then return nil, cwhy end
+    return m, nil, subject.id
 end
 
 local function delay_key(rec)
@@ -144,7 +158,7 @@ function M.fold(trials, opts)
     if type(trials) ~= "table" or #trials == 0 then return nil, "no trials" end
 
     local min_attempts = opts.min_attempts or M.DEFAULT_MIN_ATTEMPTS
-    local edge_id = trials[1].edge_id
+    local _, _, edge_id = meaning_of(trials[1])
     local cohort_key = ResultCollector.cohort_key(trials[1])
 
     local attempts, successes, negatives, unanswered = 0, 0, 0, 0
@@ -154,11 +168,11 @@ function M.fold(trials, opts)
     local provenance = nil
 
     for _, rec in ipairs(trials) do
-        local m, why = meaning_of(rec)
+        local m, why, pair = meaning_of(rec)
         if not m then return nil, why end
-        if rec.edge_id ~= edge_id then
+        if pair ~= edge_id then
             return nil, ("fold was given trials for two different pairs: %s and %s")
-                :format(tostring(edge_id), tostring(rec.edge_id))
+                :format(tostring(edge_id), tostring(pair))
         end
         -- Same refusal, one level up. Two trials of the same pair measured
         -- under different conditions are two results, and a function that
@@ -297,27 +311,56 @@ end
 -- Nothing is dropped silently: a record this cannot read goes to `problems`
 -- with its reason, and a log holding more than one cohort produces more than
 -- one edge per pair rather than one averaged over both.
+--
+-- ROUTE ROWS ARE NOT PAIRS
+--
+-- A route run records one row per gap combination, and before #14 each of those
+-- rows was written as an edge called "<route>@<gaps>". Folded here, a route
+-- that linked at nineteen gap combinations became nineteen verified "pairs",
+-- none of which is a pair, all of which would have gone into the list of pairs
+-- the game says connect.
+--
+-- So route rows - the ones that say so, and the legacy ones whose edge id is a
+-- route with its gaps appended - are skipped. Skipped visibly: counted in
+-- `counts.route_trials`, and listed in `problems` once per route (kind "route",
+-- with its row count) rather than once per row, so a log holding three hundred
+-- route rows says "this route was not folded" once instead of burying every
+-- real problem under it.
 function M.from_trials(records, opts)
     opts = opts or {}
     local groups, order = {}, {}
     local problems = {}
     local cohorts, cohort_order = {}, {}
+    local routes, route_order = {}, {}
+    local route_trials = 0
 
     for i, rec in ipairs(records or {}) do
-        local m, why = meaning_of(rec)
-        if not m then
+        local m, why, pair, route = meaning_of(rec)
+        if route then
+            route_trials = route_trials + 1
+            local r = routes[route.id]
+            if not r then
+                r = { kind = "route", route_id = route.id, trials = 0, record = i,
+                      legacy = route.legacy == true,
+                      reason = ("route %s was run as a route, not as a pair, so its "
+                          .. "rows are not folded into confirmed pairs"):format(route.id) }
+                routes[route.id] = r
+                route_order[#route_order + 1] = r
+            end
+            r.trials = r.trials + 1
+        elseif not m then
             problems[#problems + 1] = { record = i, reason = why }
         else
             -- The pair AND the experiment. Grouping on the pair alone is what
             -- #38 warns about: it averages two experiments into one number with
             -- nothing in the output to say it happened.
             local cohort_key = ResultCollector.cohort_key(rec)
-            local key = rec.edge_id .. "\n" .. cohort_key
+            local key = pair .. "\n" .. cohort_key
             local g = groups[key]
             if not g then
                 g = {}
                 groups[key] = g
-                order[#order + 1] = { key = key, edge_id = rec.edge_id, cohort = cohort_key }
+                order[#order + 1] = { key = key, edge_id = pair, cohort = cohort_key }
             end
             g[#g + 1] = rec
 
@@ -340,6 +383,8 @@ function M.from_trials(records, opts)
     end)
     table.sort(cohort_order, function(a, b) return a.key < b.key end)
 
+    for _, r in ipairs(route_order) do problems[#problems + 1] = r end
+
     local edges = {}
     for _, g in ipairs(order) do
         local edge, why = M.fold(groups[g.key], opts)
@@ -353,6 +398,7 @@ function M.from_trials(records, opts)
 
     local counts = { edges = #edges, trials = #(records or {}), problems = #problems,
                      cohorts = #cohort_order,
+                     route_trials = route_trials, routes = #route_order,
                      verified = 0, rejected = 0, pending = 0, stable = 0 }
     for _, e in ipairs(edges) do
         if e.status == Schema.STATUS.VERIFIED then counts.verified = counts.verified + 1

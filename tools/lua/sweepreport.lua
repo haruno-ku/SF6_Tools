@@ -104,13 +104,29 @@ function M.pair_key(p)
 end
 
 -- "zangief-assist-ground-truth@40/2" -> "zangief-assist-ground-truth", {40, 2}
+--
+-- The spelling route runs were recorded under before #14, when a trial had to
+-- name an edge and RouteRun invented one. Every committed assist log is written
+-- that way. The parse lives in ResultCollector so ConfirmedEdge and this page
+-- cannot disagree about which rows are routes.
 function M.route_subject(edge_id)
-    if type(edge_id) ~= "string" then return nil end
-    local id, tail = edge_id:match("^(.-)@([%d/]+)$")
-    if not id or id == "" then return nil end
-    local gaps = {}
-    for n in tail:gmatch("%d+") do gaps[#gaps + 1] = tonumber(n) end
-    return id, gaps
+    return ResultCollector.legacy_route(edge_id)
+end
+
+-- The route a record is about, and its gaps, or nil for anything else. A row
+-- written since #14 says so in subject_kind; an older one is recognised by its
+-- fake edge id. The gaps come from the delays either way when the row has them,
+-- because that is the field the trial actually ran at.
+function M.route_of(rec)
+    local route_id, gaps
+    if rec.subject_kind == "route" then
+        route_id = rec.subject_id or rec.route_id
+    else
+        route_id, gaps = M.route_subject(rec.edge_id or rec.subject_id)
+    end
+    if type(route_id) ~= "string" or route_id == "" then return nil end
+    if type(rec.delays) == "table" and #rec.delays > 0 then gaps = rec.delays end
+    return route_id, gaps or {}
 end
 
 -- --- one trial ----------------------------------------------------------------
@@ -381,14 +397,16 @@ function M.build(worklist, logs, routes, classic)
             end
 
             local key = rec.edge_id or rec.subject_id
-            local route_id, gaps = M.route_subject(key)
-            if model.pairs[key] then
+            -- A route row is checked first: since #14 a route's id is not
+            -- dressed as an edge, and nothing guarantees a route's name could
+            -- never collide with a pair key.
+            local route_id, gaps = M.route_of(rec)
+            if not route_id and model.pairs[key] then
                 pair_cells[key] = pair_cells[key] or new_cell()
                 add_trial(pair_cells[key], rec)
                 note_combo_trial(book, model.pairs[key].steps, rec, log.name,
                     type(rec.delay) == "number" and tostring(rec.delay) or nil)
             elseif route_id then
-                if type(rec.delays) == "table" and #rec.delays > 0 then gaps = rec.delays end
                 local r = route_cells[route_id] or { cells = {}, gaps = {} }
                 route_cells[route_id] = r
                 local gk = table.concat(gaps, "/")
