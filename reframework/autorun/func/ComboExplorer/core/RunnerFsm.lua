@@ -305,6 +305,7 @@ function Runner:begin(spec)
     self.withheld = {}
     -- Damage, measured over the same ticks the verdict watches. See _observe.
     self.damage = DamageTracker.new()
+    self.gauges = nil
     self.verdict_result = nil
     self.outcome = nil
     self.reason = nil
@@ -362,6 +363,20 @@ function Runner:_observe(snap, tick_index)
     -- The whole snapshot, not the copy below with an action id withheld: the
     -- damage readings on that tick are real whichever move caused them.
     self.damage:tick(snap)
+
+    -- The Drive and Super gauges at the first observed tick and the last. #17
+    -- asks what a combo spends and gains, and the target's outcomes carry
+    -- drive_spent / drive_gain / sa_gain - but which of those a change is, and
+    -- in what units, is not decided here. Both ends are kept as read and the
+    -- reader subtracts. A gauge that could not be read stays nil at that end,
+    -- rather than a 0 that would read as an empty bar.
+    local g = self.gauges
+    if g == nil then
+        g = { drive_start = snap.attacker_drive, super_start = snap.attacker_super }
+        self.gauges = g
+    end
+    g.drive_end = snap.attacker_drive
+    g.super_end = snap.attacker_super
 
     local aid = snap.attacker_action_id
     -- Written out rather than as `aid and lookup or nil`: that idiom cannot
@@ -546,6 +561,9 @@ function Runner:record_spec()
     -- them - DamageTracker's header says why. Which to trust is decided from
     -- the samples, not per trial.
     evidence.damage = self.damage and self.damage:result() or nil
+    -- Not pinned during a trial (conditions.resources says so), so the start is
+    -- wherever the reset left the bar, and that is part of the reading.
+    evidence.gauges = self.gauges
 
     local spec = self.spec
     return {

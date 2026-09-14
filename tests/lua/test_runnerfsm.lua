@@ -615,4 +615,31 @@ local blind = play({ at = LINKED })
 t.is_nil(blind:result().record.evidence.damage.combo_damage,
          "a field that never resolved is recorded as unknown, not as 0")
 
+
+t.group("a judged trial carries the gauges at both ends")
+
+-- A spends a Drive bar's worth and B builds meter. The reset leaves the bars
+-- somewhere else, which must not be read as this trial's start.
+local metered = play({ at = function(pt, tick)
+    local over = LINKED(pt, tick)
+    if pt < 1 then
+        over.attacker_drive, over.attacker_super = 1000, 0
+    else
+        over.attacker_drive, over.attacker_super = 60000, 5000
+        if pt >= 8 then over.attacker_drive, over.attacker_super = 50000, 6000 end
+        if pt >= 13 then over.attacker_super = 8000 end
+    end
+    return over
+end })
+local g = metered:result().record.evidence.gauges
+t.ok(g ~= nil, "the evidence carries a gauges block")
+t.eq(g.drive_start, 60000, "Drive as it was when the first input went in, not during the reset")
+t.eq(g.drive_end, 50000, "and at the end of the observation window")
+t.eq(g.super_start, 5000, "Super at the start")
+t.eq(g.super_end, 8000, "and at the end, for the reader to subtract")
+
+local unread = play({ at = LINKED })
+t.is_nil(unread:result().record.evidence.gauges.drive_start,
+         "a gauge that was never read stays unknown, not an empty bar")
+
 return t.finish()
