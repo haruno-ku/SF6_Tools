@@ -444,6 +444,19 @@ function M.trial(spec)
     if want ~= Schema.STATUS.RUNTIME_PENDING then
         ok, why = Schema.transition(rec, want, spec.evidence)
         if not ok then return nil, { { field = "evidence", problem = tostring(why) } } end
+    else
+        -- An unanswered trial keeps what was observed. The transition above
+        -- clears evidence on entering runtime_pending - correctly, for a record
+        -- LEAVING a runtime status, whose old evidence is history - and for a
+        -- trial that goes no further it used to be written without any.
+        --
+        -- That was 688 of the first 1000 rows: every wrong_move, stripped of
+        -- actions_seen, a_hit and the stage, which are exactly what says WHY
+        -- the move did not come out. The reason string survived; the evidence
+        -- behind it did not. runtime_verified stays false - observing is not
+        -- verifying, and Schema does not ask a pending record to have evidence,
+        -- only permits it.
+        rec.evidence = spec.evidence
     end
 
     local valid, vproblems = Schema.validate(M.KIND, rec)

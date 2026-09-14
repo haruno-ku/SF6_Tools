@@ -130,6 +130,18 @@ t.eq(select(3, status_of(LV.VERDICT.A_FAILED)), RC.ANSWERS.UNANSWERED,
 t.eq(select(2, status_of(LV.VERDICT.LINK)), true,
      "a link does carry runtime_verified, having been run on the game")
 
+-- The evidence of an unanswered trial is what says why it answered nothing.
+-- It used to be cleared on the way through runtime_pending and never put back.
+do
+    local wrong = RC.trial(spec_for("e1", 4, 1, LV.VERDICT.WRONG_MOVE))
+    t.eq(wrong.evidence, EVIDENCE, "a wrong_move row keeps what was observed")
+    t.eq(wrong.runtime_verified, false, "without that observation becoming a verification")
+    local ok = Schema.validate(RC.KIND, wrong)
+    t.ok(ok, "and the schema accepts a pending record that carries evidence")
+    local line = RC.line(wrong, json.encode)
+    t.ok(json.decode(line).evidence ~= nil, "and the evidence reaches the line on disk")
+end
+
 local unanswered_as_negative = 0
 for _, verdict in pairs({ LV.VERDICT.A_FAILED, LV.VERDICT.WRONG_MOVE,
                           LV.VERDICT.INCONCLUSIVE }) do
