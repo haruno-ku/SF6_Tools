@@ -98,8 +98,6 @@ M.DEFAULTS = {
 
 -- --- one step ----------------------------------------------------------------
 
--- Compiles a single route step to InputMask's { frames, mask } list, with no
--- lead and no tail: the route owns the gaps between moves.
 -- Why a Drive Rush Cancel step cannot be pressed on this build. One sentence,
 -- shared by unplayable and compile, so the two refusals cannot drift apart. See
 -- the header for each of the three facts.
@@ -110,6 +108,8 @@ M.DRIVE_RUSH_UNMEASURED = "a Drive Rush Cancel cannot be pressed on this build: 
     .. "presses is unmeasured (#49); and which action id a Drive Rush Cancel is "
     .. "(500, 501 or 504) is disputed"
 
+-- Compiles a single route step to InputMask's { frames, mask } list, with no
+-- lead and no tail: the route owns the gaps between moves.
 local function compile_step(step, index, opts)
     if step.kind == M.DRIVE_RUSH_STEP then
         return nil, ("step %d is a Drive Rush Cancel - %s"):format(index, M.DRIVE_RUSH_UNMEASURED)
