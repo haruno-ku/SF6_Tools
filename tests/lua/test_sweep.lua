@@ -170,6 +170,134 @@ do
     t.ok(tostring(wwhy):find("not a worklist") ~= nil, tostring(wwhy))
 end
 
+-- --- which worklist the panel offers ---------------------------------------------
+
+t.group("the SWEEP panel's worklist choice: this character's files, in a fixed order")
+
+do
+    local asked = nil
+    -- Backslashes and a shuffled order, the way a Windows listing might come back.
+    local listing = {
+        "ComboExplorer_data\\worklist\\zangief-modern-plan-starter-chu.json",
+        "ComboExplorer_data\\worklist\\zangief-modern-drc.json",
+        "ComboExplorer_data\\worklist\\ryu-modern.json",
+        "ComboExplorer_data\\worklist\\zangief-classic.json",
+        "ComboExplorer_data\\worklist\\zangief-classic-plan-max-damage.json",
+        "ComboExplorer_data\\worklist\\zangief-modern-plan-max-damage.json",
+        "ComboExplorer_data\\worklist\\zangief-modern.json",
+        "ComboExplorer_data\\worklist\\zangief-modern-old.json",
+        "ComboExplorer_data\\worklist\\zangief-modern.json.bak",
+        "ComboExplorer_data\\worklist\\zangief-modern-plan-.json",
+        "ComboExplorer_data\\worklist\\zangiefx-modern.json",
+        "ComboExplorer_data\\worklist\\zangief-modern-plan-no-gauge.json",
+    }
+    local fs_ = { glob = function(pattern) asked = pattern return listing end }
+    local list, note = Sweep.list_worklists("ComboExplorer_data/worklist", "Zangief", "modern", fs_)
+
+    t.is_nil(note, "a listing that worked carries no note")
+    t.eq(asked, "ComboExplorer_data\\\\worklist\\\\.*json",
+         "the glob has two backslashes per separator at runtime, like CatalogLocator.GLOB")
+    local names = {}
+    for i, e in ipairs(list) do names[i] = e.name end
+    t.eq_list(names, {
+        "zangief-modern.json",
+        "zangief-modern-plan-max-damage.json",
+        "zangief-modern-plan-no-gauge.json",
+        "zangief-modern-plan-starter-chu.json",
+        "zangief-modern-drc.json",
+    }, "all first, plans by name, drc last; other characters, schemes and odd names left out")
+
+    local kinds = {}
+    for i, e in ipairs(list) do kinds[i] = e.kind end
+    t.eq_list(kinds, { "all", "plan", "plan", "plan", "drc" }, "each says its kind")
+    t.eq(list[1].path, "ComboExplorer_data/worklist/zangief-modern.json",
+         "the all-pairs path is spelled exactly as the panel always spelled it")
+    t.eq(list[2].plan_name, "max-damage", "a plan's name is the part after -plan-")
+    t.is_nil(list[1].plan_name, "and only a plan has one")
+    t.ok(list[2].label:find("max-damage", 1, true) ~= nil, "the label names the plan: " .. list[2].label)
+    t.is_nil(list[1].missing, "the all-pairs file was in the listing")
+end
+
+do
+    local only_plan = { "ComboExplorer_data/worklist/zangief-modern-plan-x.json" }
+    local list = Sweep.list_worklists("ComboExplorer_data/worklist", "zangief", "modern",
+                                      { glob = function() return only_plan end })
+    t.eq(#list, 2, "with no all-pairs file the default entry is still offered")
+    t.eq(list[1].kind, "all", "first")
+    t.eq(list[1].missing, true, "and marked missing, so load_worklist gets to say how to make one")
+
+    local none, why = Sweep.list_worklists("ComboExplorer_data/worklist", "zangief", "modern", {})
+    t.eq(#none, 1, "a machine that cannot list still gets today's one file")
+    t.eq(none[1].path, "ComboExplorer_data/worklist/zangief-modern.json", "the same path as before")
+    t.ok(tostring(why):find("fs.glob") ~= nil, "and says why nothing else is offered: " .. tostring(why))
+
+    local boom, bwhy = Sweep.list_worklists("ComboExplorer_data/worklist", "zangief", "modern",
+                                            { glob = function() error("listing exploded") end })
+    t.eq(#boom, 1, "a listing that raises does not take the panel down")
+    t.ok(tostring(bwhy):find("could not list") ~= nil, tostring(bwhy))
+end
+
+t.group("what is in each listed worklist is read once, and a bad file stays listed")
+
+do
+    local reads = {}
+    local docs = {
+        ["d/zangief-modern.json"] = worklist(3),
+        ["d/zangief-modern-plan-no-gauge.json"] = worklist(2, {
+            plan = { name = "no-gauge", conditions = { no_gauge = true, max_drive_bars = 2 },
+                      sort = "scaled_damage", top = 20 } }),
+        ["d/zangief-modern-plan-max-damage.json"] = worklist(1, {
+            plan = { name = "max-damage", conditions = {} } }),
+        ["d/zangief-modern-plan-broken.json"] = nil,                 -- malformed
+        ["d/zangief-modern-plan-route.json"] = { schema = "ce.route.v1" },
+        ["d/zangief-modern-plan-empty.json"] = worklist(0),
+        ["d/zangief-modern-plan-classic.json"] = worklist(1, { control_scheme = "classic" }),
+    }
+    local listing = {}
+    for p in pairs(docs) do listing[#listing + 1] = p end
+    listing[#listing + 1] = "d/zangief-modern-plan-broken.json"
+    listing[#listing + 1] = "d/zangief-modern-plan-raises.json"
+    local io_ = {
+        load = function(path)
+            reads[path] = (reads[path] or 0) + 1
+            if path:find("raises") then error("disk on fire") end
+            return docs[path]
+        end,
+    }
+    local list = Sweep.list_worklists("d", "zangief", "modern",
+                                      { glob = function() return listing end })
+    local by = {}
+    for _, e in ipairs(list) do
+        Sweep.describe_worklist(e, io_)
+        Sweep.describe_worklist(e, io_)       -- a second frame
+        by[e.plan_name or e.kind] = e
+    end
+    t.eq(#list, 8, "every file for this character is listed, readable or not")
+    t.eq(reads["d/zangief-modern.json"], 1, "each file is read once, not per frame")
+    t.eq(by.all.count, 3, "the pair count comes from the file")
+    t.is_nil(by.all.error, "a good file has no error")
+    t.is_nil(by.all.conditions, "the all-pairs list has no conditions line")
+    t.eq(by["no-gauge"].count, 2, "a plan's count")
+    t.eq(by["no-gauge"].conditions, "max_drive_bars=2, no_gauge",
+         "its conditions as one sorted line")
+    t.eq(by["no-gauge"].sort, "scaled_damage", "and what it was ranked by")
+    t.ok(tostring(by["max-damage"].conditions):find("none") ~= nil,
+         "a plan with no conditions says so: " .. tostring(by["max-damage"].conditions))
+    t.ok(tostring(by.broken.error):find("could not be read") ~= nil,
+         "a malformed file is listed with an error: " .. tostring(by.broken.error))
+    t.ok(tostring(by.raises.error):find("disk on fire") ~= nil,
+         "a reader that raises is caught and reported: " .. tostring(by.raises.error))
+    t.ok(tostring(by.route.error):find("not a worklist") ~= nil,
+         "a document that is not a worklist: " .. tostring(by.route.error))
+    t.ok(tostring(by.empty.error):find("no pairs") ~= nil,
+         "an empty worklist: " .. tostring(by.empty.error))
+    t.ok(tostring(by.classic.mismatch):find("classic") ~= nil,
+         "a file whose own scheme disagrees with its name is flagged: "
+         .. tostring(by.classic.mismatch))
+    t.is_nil(by.classic.error, "as a warning, not an error")
+    t.is_nil(by["no-gauge"].mismatch, "and a file that agrees is not")
+end
+
 -- --- the ordinary pass ---------------------------------------------------------
 
 t.group("a whole worklist, unattended")

@@ -154,7 +154,8 @@ i18n.register("combo_explorer", {
         route_load   = "LOAD ROUTE",
         route_run    = "RUN EVERY GAP",
         hdr_sweep    = "SWEEP",
-        sweep_help   = "Runs the whole worklist for this character unattended. Start it and "
+        sweep_help   = "Runs the chosen worklist for this character unattended (all pairs unless "
+                    .. "you pick a plan below). Start it and "
                     .. "leave it: it resumes where a previous run stopped, retries what came "
                     .. "back inconclusive, and stops if nothing is being measured. Run the "
                     .. "calibration first - it refuses until the input map is measured.",
@@ -205,7 +206,7 @@ i18n.register("combo_explorer", {
         trial_run    = "执行一次试行",
         trial_next   = "下一组",
         hdr_sweep    = "全量扫描",
-        sweep_help   = "无人值守地跑完该角色的整个工作清单。可以启动后离开：会从上次中断处继续，"
+        sweep_help   = "无人值守地跑完该角色所选的工作清单（默认是全部组合，可在下方选择计划）。可以启动后离开：会从上次中断处继续，"
                     .. "重试无结论的组合，并在没有任何测量发生时停止。请先完成校准。",
         sweep_start  = "开始扫描",
         no_battle    = "等待对战开始（尚未获取到角色）。",
@@ -348,7 +349,21 @@ local stage = { last_status = nil, last_result = nil }
 -- than a typed action id: the panel has no numeric input widget, and picking
 -- from the catalog means the pair is always one the catalog says is reachable.
 local trial = { pair = 1, delay = 4, last_status = nil, last_result = nil }
-local sweep = { last_status = nil, last_result = nil }
+local sweep = {
+    last_status = nil,
+    last_result = nil,
+    -- Which worklist file START SWEEP runs. See draw_sweep and
+    -- Sweep.list_worklists: the listing is cached per character+scheme
+    -- (wl_key), and the choice is remembered per wl_key for the session.
+    wl_key = nil,
+    worklists = nil,
+    wl_list_note = nil,
+    wl_choice = {},
+    -- The path the running sweep was started with, shown while it runs so a
+    -- changed selection cannot misdescribe it.
+    running_path = nil,
+}
+local WORKLIST_DIR = "ComboExplorer_data/worklist"
 -- The routes on disk, cycled through by a button rather than typed: the panel
 -- has no text input, and a run has to be able to ask about one gap at a time.
 -- Measured why: the three-step route came back "move B never appeared" at all
@@ -1495,14 +1510,105 @@ local function draw_sweep()
 
     local char = character_file_key()
     local scheme = live.p1_control or "modern"
-    local wl_path = char
-        and ("ComboExplorer_data/worklist/%s-%s.json"):format(char:lower(), scheme)
-        or nil
+
+    -- ONE trial log per character and scheme, whichever worklist is chosen.
+    --
+    -- A plan, the DRC list and the all-pairs list are three orders over the
+    -- same questions, not three experiments. A row is keyed by its pair, its
+    -- gaps and its attempt, and resume is scoped by calibration, patch and
+    -- stage conditions (ResultCollector.key / identity_matches) - none of which
+    -- is the file it came from. So a plan run over this log skips every pair
+    -- the full sweep already answered under the same calibration and
+    -- conditions, and the full sweep later skips what the plan answered. That
+    -- is the point: same pair, same setup, already answered.
+    --
+    -- Naming the log after the worklist (<char>-<scheme>-plan-<name>.jsonl)
+    -- would split one experiment across files and re-press answered pairs, so
+    -- the choice below changes wl_path and never log_path. DRC rows cannot
+    -- collide with direct ones either way: their key carries "->drc->" (see
+    -- pair_key in Sweep.lua). The dev tools read every trials/<char>-*.jsonl, so
+    -- nothing downstream depends on which list produced a row.
     local log_path = char
         and ("ComboExplorer_data/trials/%s-%s.jsonl"):format(char:lower(), scheme)
         or nil
 
-    if wl_path then kv("worklist", wl_path) end
+    -- The files on offer, listed once per character+scheme (and on REFRESH),
+    -- never per frame: fs.glob and a read of every list is not a frame's work.
+    local wl_key = char and (char:lower() .. "-" .. scheme) or nil
+    if wl_key ~= sweep.wl_key then
+        sweep.wl_key = wl_key
+        sweep.worklists, sweep.wl_list_note = nil, nil
+        if wl_key then
+            sweep.worklists, sweep.wl_list_note =
+                Sweep.list_worklists(WORKLIST_DIR, char:lower(), scheme)
+            for _, e in ipairs(sweep.worklists) do Sweep.describe_worklist(e) end
+        end
+    end
+
+    -- The chosen entry: remembered per character+scheme for the session, and
+    -- the all-pairs list (always first) when nothing was chosen or the chosen
+    -- file has gone from the listing.
+    local chosen, chosen_idx = nil, 1
+    if sweep.worklists then
+        local want = sweep.wl_choice[wl_key]
+        for i, e in ipairs(sweep.worklists) do
+            if e.path == want then chosen, chosen_idx = e, i end
+        end
+        chosen = chosen or sweep.worklists[1]
+    end
+    local wl_path = chosen and chosen.path or nil
+
+    if Sweep.running() then
+        kv("worklist", tostring(sweep.running_path))
+    elseif sweep.worklists then
+        local labels = {}
+        for i, e in ipairs(sweep.worklists) do
+            local count = e.error and ("! " .. e.error)
+                or (e.count and ("%d pairs"):format(e.count)) or "?"
+            labels[i] = ("%s  (%s)  %s"):format(e.label, count, e.name)
+        end
+        imgui.text("worklist: ")
+        imgui.same_line()
+        imgui.push_item_width(420)
+        local changed, idx = imgui.combo("##ce_sweep_worklist", chosen_idx, labels)
+        imgui.pop_item_width()
+        if changed and sweep.worklists[idx] then
+            chosen = sweep.worklists[idx]
+            wl_path = chosen.path
+            sweep.wl_choice[wl_key] = wl_path
+        end
+        imgui.same_line()
+        if UIKit.styled_button("REFRESH##ce_sweep_wl", THEME.neutral, UIKit.COLORS.White) then
+            sweep.wl_key = nil      -- listed again on the next frame
+        end
+
+        kv("file", wl_path)
+        kv("kind", chosen.kind == "plan" and ("plan  " .. tostring(chosen.plan_name))
+            or chosen.kind, chosen.kind == "all" and UIKit.COLORS.White or UIKit.COLORS.Cyan)
+        if chosen.count then kv("pairs", tostring(chosen.count)) end
+        if chosen.kind == "plan" then
+            kv("conditions", tostring(chosen.conditions or "?"), UIKit.COLORS.Cyan)
+            if chosen.sort then
+                kv("ranked by", ("%s, top %s routes"):format(tostring(chosen.sort),
+                                                           tostring(chosen.top)))
+            end
+        elseif chosen.kind == "drc" then
+            imgui.text_colored("  every pair in this list goes through a Drive Rush Cancel, "
+                .. "which is set aside on this build (#50): it finishes without pressing "
+                .. "anything", UIKit.COLORS.Orange)
+        end
+        if chosen.error then
+            imgui.text_colored("  " .. chosen.name .. ": " .. chosen.error, UIKit.COLORS.Orange)
+        end
+        if chosen.mismatch then
+            imgui.text_colored("  named for " .. wl_key .. ", but " .. chosen.mismatch,
+                               UIKit.COLORS.Orange)
+        end
+        if sweep.wl_list_note then
+            imgui.text_colored("  " .. sweep.wl_list_note, UIKit.COLORS.Grey)
+        end
+    end
+    if log_path then kv("trial log", log_path, UIKit.COLORS.Grey) end
 
     if Sweep.running() then
         if UIKit.styled_button(T("stop") .. "##ce_sweep", THEME.stop, UIKit.COLORS.White) then
@@ -1590,7 +1696,8 @@ local function draw_sweep()
                         -- trial as the sink, and Sweep refuses a second one
                         -- (#45).
                     })
-                    sweep.last_status = ok and "sweep started"
+                    if ok then sweep.running_path = wl_path end
+                    sweep.last_status = ok and ("sweep started: " .. tostring(wl_path))
                         or ("could not start: " .. tostring(err))
                 end
             end

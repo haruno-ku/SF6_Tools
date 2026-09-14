@@ -443,6 +443,42 @@ lua tools/lua/explore.lua --character Zangief --worklist
 > 観測窓は今 **120 tick（2秒）の推測値**です。実機で測って 30 tick に縮めば
 > 1試行1.5秒短縮 = Zangief で9分短くなります。最初のパスがその数字を持ち帰ります。
 
+### どのワークリストを回すか選ぶ 🆕
+
+SWEEP パネルの `worklist:` のドロップダウンで選びます（**既定は全ペア**、今までと同じ）。
+並びは「全ペア → プラン（名前順）→ DRC」。各行に種類・プラン名・ペア数が出ます。
+
+| ファイル（`ComboExplorer_data/worklist/`） | 種類 | 作るもの |
+|---|---|---|
+| `<char>-<scheme>.json` | all | `explore.lua --worklist` |
+| `<char>-<scheme>-plan-<name>.json` | plan | `plan.lua` — 条件を満たすルートに要るペアだけ |
+| `<char>-<scheme>-drc.json` | drc | `explore.lua` — **DRC 未計測なので全部 set aside**（#50）。押さずに終わる |
+
+- プランを選ぶと `conditions:`（例 `no_gauge` / `starter_button=M`）と並べ方が出ます
+- 選択はセッション中キャラ＋スキームごとに覚えています。一覧はキャラが変わった時と
+  **REFRESH** の時だけ読み直します（ゲーム起動中にファイルを足したら REFRESH）
+- これ以外の名前（他キャラ、他スキーム、`-old` などに改名したもの）は出ません
+- 読めないファイルも一覧には残り、理由（`! could not be read` など）が出ます。
+  開始時の拒否（カタログのチェックサム不一致など）は今までどおり
+- ファイル内の character / control_scheme が名前と食い違うと警告が出ます
+
+**試行ログはどれを選んでも `trials/<char>-<scheme>.jsonl` の1本です。** 行のキーは
+ペア・gap・試行回数、再開の範囲はキャリブレーション・パッチ・ステージ条件で、
+どのワークリストから来たかは入っていません。だからプランを回すと全ペアのスイープで
+**同じ条件で答えが出ているペアは飛ばされ**、逆も同じです。DRC ペアはキーに
+`->drc->` が入るので直接ペアと混ざりません。
+
+開発機でプランを作る（例）:
+
+```
+lua tools/lua/plan.lua --character Zangief --no-gauge
+lua tools/lua/plan.lua --character Zangief --starter-button 中 --name starter-chu
+```
+
+`reframework/data/ComboExplorer_data/worklist/zangief-modern-plan-<name>.json` と
+`docs/ComboExplorer/plans/` のレポートが出ます。実機へは `scripts/install-dev.ps1`
+（`reframework/data` を同期する。`worklist/` は除外対象ではない）で送り、パネルで REFRESH。
+
 ### 勝手に止まる条件（全部そう設計してあります）
 
 | | |

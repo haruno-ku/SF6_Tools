@@ -105,6 +105,176 @@ function M.load_worklist(path, io_)
     return doc
 end
 
+-- --- which worklist -------------------------------------------------------------
+
+-- The panel used to know one name: worklist/<char>-<scheme>.json. Two more kinds
+-- now sit beside it, and running one meant renaming files on the game machine:
+--
+--   <char>-<scheme>.json              all    every candidate pair (explore.lua)
+--   <char>-<scheme>-plan-<name>.json  plan   only the pairs the routes meeting a
+--                                            plan's conditions need (plan.lua)
+--   <char>-<scheme>-drc.json          drc    pairs through a Drive Rush Cancel,
+--                                            set aside whole until DRC is
+--                                            measured (#50)
+--
+-- Anything else in the directory - another character, another scheme, a file
+-- somebody renamed to keep aside - is not offered. A name this does not parse is
+-- a name nothing generated, and guessing what it holds is how a sweep ends up
+-- about the wrong moves.
+--
+-- Order: all first, because it is the default and was the only choice before;
+-- plans by name, so the list does not reshuffle between refreshes; drc last,
+-- because running it presses nothing on this build.
+--
+-- `dir` is data-relative with forward slashes ("ComboExplorer_data/worklist").
+-- The path handed back is rebuilt from it and the file's basename rather than
+-- taken from the listing, so it is spelled exactly like the path the panel
+-- always passed to load_worklist, whatever separators fs.glob reports.
+--
+-- fs_ : { glob = function(regex) -> { path, ... } }. JsonIO when nil. Passed by
+-- tests, which is why nothing here names `fs`.
+--
+-- Returns the list, plus a reason when the directory could not be listed. The
+-- all-pairs entry is ALWAYS in the list, first, even when the listing failed or
+-- did not contain it: that is the file the panel has always tried, and its
+-- absence is load_worklist's refusal to make ("no worklist at ... generate one
+-- with explore.lua"), not a silently empty picker.
+M.WORKLIST_KINDS = { all = 1, plan = 2, drc = 3 }
+
+function M.list_worklists(dir, char_lc, scheme, fs_)
+    local glob
+    if fs_ == nil then
+        glob = JsonIO.can_glob() and JsonIO.glob or nil
+    else
+        glob = fs_.glob
+    end
+    dir = tostring(dir or ""):gsub("[/\\]+$", "")
+    char_lc = tostring(char_lc or ""):lower()
+    scheme = tostring(scheme or ""):lower()
+    local stem = char_lc .. "-" .. scheme
+
+    local function entry(base, kind, plan_name)
+        local e = { path = dir .. "/" .. base, name = base, kind = kind, plan_name = plan_name }
+        if kind == "all" then e.label = "all pairs"
+        elseif kind == "drc" then e.label = "drive rush cancel pairs (set aside)"
+        else e.label = "plan: " .. plan_name end
+        return e
+    end
+
+    local all = entry(stem .. ".json", "all")
+    local out = { all }
+
+    if not glob then
+        all.unlisted = true
+        return out, "fs.glob is unavailable, so only the all-pairs worklist can be offered"
+    end
+
+    -- FOUR backslashes in the source is two at runtime is one escaped separator
+    -- in fs.glob's regex. See CatalogLocator.GLOB for the night one backslash
+    -- short cost. gsub's replacement treats only % specially, so this is the
+    -- same two characters per separator.
+    local pattern = dir:gsub("/", "\\\\") .. "\\\\.*json"
+    local ok, files = pcall(glob, pattern)
+    if not ok or type(files) ~= "table" then
+        all.unlisted = true
+        return out, "could not list " .. dir
+    end
+
+    local seen, found_all, plans, drc = {}, false, {}, nil
+    for _, p in ipairs(files) do
+        local base = type(p) == "string" and p:match("([^/\\]+)$") or nil
+        local lower = base and base:lower()
+        -- Plain comparisons, not patterns: a character key could one day carry
+        -- a character that means something to string.match.
+        if lower and not seen[lower] and lower:sub(-5) == ".json"
+            and lower:sub(1, #stem) == stem then
+            seen[lower] = true
+            local rest = lower:sub(#stem + 1, -6)
+            if rest == "" then
+                found_all = true
+                all.path, all.name = dir .. "/" .. base, base
+            elseif rest == "-drc" then
+                drc = entry(base, "drc")
+            elseif rest:sub(1, 6) == "-plan-" and #rest > 6 then
+                plans[#plans + 1] = entry(base, "plan", base:sub(#stem + 7, -6))
+            end
+        end
+    end
+    if not found_all then all.missing = true end
+
+    table.sort(plans, function(a, b) return a.plan_name < b.plan_name end)
+    for _, e in ipairs(plans) do out[#out + 1] = e end
+    if drc then out[#out + 1] = drc end
+    return out
+end
+
+-- A plan's conditions as one line, keys in order so it reads the same each time.
+function M.conditions_line(conditions)
+    if type(conditions) ~= "table" or next(conditions) == nil then
+        return "none - every route, ranked"
+    end
+    local keys = {}
+    for k in pairs(conditions) do keys[#keys + 1] = tostring(k) end
+    table.sort(keys)
+    local parts = {}
+    for i, k in ipairs(keys) do
+        local v = conditions[k]
+        parts[i] = (v == true) and k or (k .. "=" .. tostring(v))
+    end
+    return table.concat(parts, ", ")
+end
+
+-- What is in one listed file: its pair count, and for a plan its conditions.
+-- Read ONCE per entry - the result is kept on it - because the panel draws every
+-- frame and a worklist is 100KB of JSON.
+--
+-- Never raises. A file that will not read, or reads as something other than a
+-- worklist, stays in the list with `error` set: the operator sees it is there
+-- and why it cannot run, rather than it vanishing or the panel dying. Starting
+-- it still goes through load_worklist, which refuses it in its own words.
+--
+-- `mismatch` is a warning, not a refusal: the file's own character or control
+-- scheme disagreeing with its name. The checksum check cannot catch that - one
+-- catalog serves both schemes - and a classic list under a modern name would
+-- sweep inputs the dummy is not set up for.
+function M.describe_worklist(e, io_)
+    if type(e) ~= "table" then return e end
+    if e.described then return e end
+    e.described = true
+    io_ = io_ or JsonIO
+    local ok, doc, why = pcall(io_.load, e.path)
+    if not ok then
+        e.error = "could not be read: " .. tostring(doc)
+        return e
+    end
+    if type(doc) ~= "table" then
+        e.error = e.missing and "not on this machine"
+            or ("could not be read: " .. tostring(why or "missing or malformed"))
+        return e
+    end
+    if doc.schema ~= "ce.worklist.v1" then
+        e.error = ("not a worklist (schema %s)"):format(tostring(doc.schema))
+        return e
+    end
+    e.count = type(doc.pairs) == "table" and #doc.pairs or 0
+    if e.count == 0 then e.error = "has no pairs in it" end
+    local plan = type(doc.plan) == "table" and doc.plan or nil
+    if plan then
+        e.conditions = M.conditions_line(plan.conditions)
+        e.sort = plan.sort
+        e.top = plan.top
+    end
+    local want_char, want_scheme = e.name:lower():match("^([^-]+)-([^-.]+)")
+    local have_char = type(doc.character) == "string" and doc.character:gsub("[^%w_]", ""):lower()
+    local have_scheme = type(doc.control_scheme) == "string" and doc.control_scheme:lower()
+    if (have_char and want_char and have_char ~= want_char)
+        or (have_scheme and want_scheme and have_scheme ~= want_scheme) then
+        e.mismatch = ("the file says %s %s"):format(tostring(doc.character),
+                                                    tostring(doc.control_scheme))
+    end
+    return e
+end
+
 -- The check that keeps a sweep from being about the wrong moves.
 --
 -- `catalog` is the one the game actually loaded. Returns true, or false plus a
