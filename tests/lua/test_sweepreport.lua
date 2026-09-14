@@ -200,6 +200,22 @@ t.eq_list(sa.logs, { "sweep-1", "sweep-2" }, "the logs it linked in are named")
 t.eq(sa.steps[1].classic, "2+LP", "classic notation is attached where the catalog has it")
 t.eq(sa.damage_measured, false, "and damage is said to be unmeasured, not left out")
 
+do
+    local dm = R.build(WL2, { { name = "d", records = {
+        trial("617:manual->1206:manual", "link", { delay = 22,
+            evidence = { damage = { combo_damage = 3200, agree = true } } }),
+        trial("617:manual->1206:simple", "link", { delay = 22,
+            evidence = { damage = { combo_damage = 3300, agree = false } } }),
+        trial("617:manual->1206:simple", "whiff", { delay = 30,
+            evidence = { damage = { combo_damage = 900 } } }),
+    } } }, {})
+    local c = dm.combos[1]
+    t.eq(c.damage_measured, true, "a linked trial that measured damage makes it measured")
+    t.eq(c.damage_min, 3200, "the lowest linked figure")
+    t.eq(c.damage_max, 3300, "the highest - a whiff's damage is not this combo's")
+    t.eq(c.damage_disagreements, 1, "and a disagreement with the health delta is counted")
+end
+
 local once = by_key["621>1206"]
 t.eq(once.status, "once", "one link is listed, but not called confirmed")
 t.eq(once.unanswered, 1, "a trial that answered nothing is counted as unanswered")

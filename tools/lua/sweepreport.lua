@@ -248,6 +248,16 @@ local function note_combo_trial(book, steps, rec, log_name, gap_label)
             c.log_seen[log_name] = true
             c.logs[#c.logs + 1] = log_name
         end
+        -- Damage from the linked trials only, as RunnerFsm measured it. The
+        -- field and the health delta are kept apart, as DamageTracker keeps
+        -- them: which one to trust is decided from samples, not here.
+        local d = rec.evidence and rec.evidence.damage
+        if type(d) == "table" and type(d.combo_damage) == "number" and d.combo_damage > 0 then
+            c.damage_samples = (c.damage_samples or 0) + 1
+            c.damage_min = math.min(c.damage_min or d.combo_damage, d.combo_damage)
+            c.damage_max = math.max(c.damage_max or d.combo_damage, d.combo_damage)
+            if d.agree == false then c.damage_disagreements = (c.damage_disagreements or 0) + 1 end
+        end
         local at = rec.recorded_at
         if type(at) == "string" then
             if not c.first_linked_at or at < c.first_linked_at then c.first_linked_at = at end
@@ -279,10 +289,11 @@ local function finish_combos(book, classic)
             c.status = c.links >= M.CONFIRM_LINKS and M.COMBO.CONFIRMED or M.COMBO.ONCE
             for _, s in ipairs(c.steps) do s.classic = classic and classic[s.id] or nil end
             table.sort(c.linked_gaps, gap_less)
-            -- Nothing measures damage yet. Said as a field rather than left out,
-            -- because ce.verified_combo.v1 requires it and a list that did not
-            -- mention it would read as ready to publish.
-            c.damage_measured = false
+            -- Said as a field rather than left out when nothing measured it,
+            -- because ce.verified_combo.v1 requires damage and a list that did
+            -- not mention it would read as ready to publish. Logs written before
+            -- RunnerFsm recorded damage have none.
+            c.damage_measured = (c.damage_samples or 0) > 0
             list[#list + 1] = c
         end
     end

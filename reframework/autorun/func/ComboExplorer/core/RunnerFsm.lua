@@ -59,6 +59,7 @@
 
 local LinkVerdict = require("func/ComboExplorer/core/LinkVerdict")
 local SequenceCompiler = require("func/ComboExplorer/core/SequenceCompiler")
+local DamageTracker = require("func/ComboExplorer/core/DamageTracker")
 
 local M = { name = "ComboExplorer.RunnerFsm" }
 
@@ -302,6 +303,8 @@ function Runner:begin(spec)
     self.program_tick = 0
     self.observed_ticks = 0
     self.withheld = {}
+    -- Damage, measured over the same ticks the verdict watches. See _observe.
+    self.damage = DamageTracker.new()
     self.verdict_result = nil
     self.outcome = nil
     self.reason = nil
@@ -347,6 +350,18 @@ function Runner:_observe(snap, tick_index)
         self.trial:tick(nil, tick_index)
         return
     end
+
+    -- Every snapshot already carries mComboDamage from both sides and the
+    -- victim's health (GameAdapter.snapshot), and until now nothing kept them:
+    -- a trial could say a combo linked and not what it did. That is the one
+    -- field ce.verified_combo.v1 refuses to go without (#36), so every judged
+    -- trial now carries both measurements, from the first injected tick - after
+    -- the stage has reset, so the health is the reset's and the counter is
+    -- empty - to the end of the observation window.
+    --
+    -- The whole snapshot, not the copy below with an action id withheld: the
+    -- damage readings on that tick are real whichever move caused them.
+    self.damage:tick(snap)
 
     local aid = snap.attacker_action_id
     -- Written out rather than as `aid and lookup or nil`: that idiom cannot
@@ -527,6 +542,10 @@ function Runner:record_spec()
     -- a shared action id, or a boundary that is off by one - and none of those
     -- can be investigated from a row that dropped it.
     evidence.withheld_action_ids = self.withheld
+    -- Both figures and whether they agree, never one number picked between
+    -- them - DamageTracker's header says why. Which to trust is decided from
+    -- the samples, not per trial.
+    evidence.damage = self.damage and self.damage:result() or nil
 
     local spec = self.spec
     return {

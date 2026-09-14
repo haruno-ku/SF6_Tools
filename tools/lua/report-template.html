@@ -358,7 +358,9 @@ function renderCombos() {
     const stats = el("div", { class: "stats" },
       el("div", { class: "links" }, String(c.links), el("small", { text: "回繋がった" })),
       el("div", { class: "breakdown", text: `試行 ${c.attempts} · 否定 ${c.negatives} · 未回答 ${c.unanswered}` }),
-      el("div", { class: "dmg", text: c.damage_measured ? `ダメージ ${c.damage}` : "ダメージ未計測" }));
+      c.damage_measured
+        ? el("div", { class: "breakdown", text: `ダメージ ${c.damage_min === c.damage_max ? c.damage_min : `${c.damage_min}–${c.damage_max}`}${c.damage_disagreements ? `（体力差と不一致 ${c.damage_disagreements}）` : ""}` })
+        : el("div", { class: "dmg", text: "ダメージ未計測" }));
     list.append(el("li", { class: "combo" },
       el("div", { class: `status ${c.status}`, text: c.status === "confirmed" ? "確定" : "1回だけ" }),
       moves, stats));

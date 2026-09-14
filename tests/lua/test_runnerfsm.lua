@@ -577,4 +577,42 @@ do
          "a program that does not mention a tail is not refused for having one")
 end
 
+
+-- --- damage (#36) --------------------------------------------------------------
+
+t.group("a judged trial carries what the combo did")
+
+-- A hits for 500 and B for 1200 more. The field reads cumulative within the
+-- combo here, and the victim's health falls by the same amount.
+local hurt = play({ at = function(pt, tick)
+    local over = LINKED(pt, tick)
+    over.victim_hp = 10000
+    if pt >= 8 then over.combo_damage_attacker, over.victim_hp = 500, 9500 end
+    if pt >= 13 then over.combo_damage_attacker, over.victim_hp = 1700, 8300 end
+    return over
+end })
+local hres = hurt:result()
+t.eq(hres.verdict, LV.VERDICT.LINK, "the trial still answers its question")
+local dmg = hres.record.evidence.damage
+t.ok(dmg ~= nil, "and its evidence carries a damage block")
+t.eq(dmg.combo_damage, 1700, "the combo damage field, as read")
+t.eq(dmg.hp_delta, 1700, "the victim's health, as the second measurement")
+t.eq(dmg.agree, true, "and whether the two agree, so a disagreement is a recorded fact")
+
+-- The reset's own health change is not this combo's damage: measurement starts
+-- on the first injected tick, after the stage said ready.
+local reset_hp = play({ at = function(pt, tick)
+    local over = LINKED(pt, tick)
+    over.victim_hp = (pt < 1) and 4000 or 10000
+    return over
+end })
+t.eq(reset_hp:result().record.evidence.damage.hp_delta, 0,
+     "health that changed during the reset is not counted")
+
+-- Nothing read is nil, not zero. A zero would rank every combo equal and look
+-- healthy doing it.
+local blind = play({ at = LINKED })
+t.is_nil(blind:result().record.evidence.damage.combo_damage,
+         "a field that never resolved is recorded as unknown, not as 0")
+
 return t.finish()

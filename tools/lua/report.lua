@@ -182,9 +182,17 @@ local function combo_rows(list)
         for i, names in ipairs(c.inputs) do inputs[i] = chain(names) end
         -- Unanswered is shown apart from negative: most of it is an earlier
         -- experiment whose inputs never came out, not the combo failing.
-        line("| %s | %s | %d 回 | 試行 %d・否定 %d・未回答 %d | %s | 未計測 |",
+        local damage = "未計測"
+        if c.damage_measured then
+            damage = c.damage_min == c.damage_max and tostring(c.damage_min)
+                or ("%d–%d"):format(c.damage_min, c.damage_max)
+            if (c.damage_disagreements or 0) > 0 then
+                damage = damage .. (" (体力差と不一致 %d)"):format(c.damage_disagreements)
+            end
+        end
+        line("| %s | %s | %d 回 | 試行 %d・否定 %d・未回答 %d | %s | %s |",
             table.concat(inputs, "<br>"), classic_of(c), c.links, c.attempts,
-            c.negatives, c.unanswered, table.concat(c.linked_gaps, ", "))
+            c.negatives, c.unanswered, table.concat(c.linked_gaps, ", "), damage)
     end
 end
 
@@ -195,7 +203,7 @@ line("実機でログが増えたら、同じコマンドで書き直します�
 line("")
 line("- **確定**: %d 回以上の試行で繋がった", SweepReport.CONFIRM_LINKS)
 line("- **1回だけ**: 繋がったのは1回。再試行で確かめるまで確定にしない")
-line("- **ダメージは全件未計測**です。公開用の `ce.verified_combo.v1` は実測ダメージを必須にしています（#17, #36）")
+line("- **ダメージ**は繋がった試行で測った `mComboDamage`。この記録を始める前のログには無く「未計測」になります。公開用の `ce.verified_combo.v1` は実測ダメージを必須にしています（#17, #36）")
 line("")
 line("## 確定 (%d)", #confirmed)
 line("")
