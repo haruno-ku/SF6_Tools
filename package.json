@@ -10,6 +10,7 @@
     "test": "node tools/lua-runner.mjs syntax && node tools/lua-runner.mjs test",
     "test:lua": "node tools/lua-runner.mjs test",
     "lint:lua": "node tools/lua-runner.mjs syntax",
-    "gen:fixtures": "node tools/gen-notation-fixture.mjs Zangief"
+    "gen:fixtures": "node tools/gen-notation-fixture.mjs Zangief",
+    "lab:sql": "node tools/db/lab-import.mjs"
   }
 }

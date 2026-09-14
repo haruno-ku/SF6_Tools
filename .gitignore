@@ -10,3 +10,6 @@ candidates/
 exports/_rejected.jsonl
 node_modules/
 *.log
+# Generated lab import SQL (npm run lab:sql). Regenerable from committed logs,
+# and applied to the database by hand after review - never committed.
+db/out/
