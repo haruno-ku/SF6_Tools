@@ -8,37 +8,37 @@ every edge and every route is a candidate.
 
 ```
 char        rows  start   targ  fups  cvS%  cvT%  cvF%  amb  edges  high   med   low  routes
-Ryu          102     14     52     3   100   100   100   23    590   170   121   299     198
-Luke          93     11     37    16   100   100    69    4    398   136    72   190     253
-Kimberly     123     14     47    11   100    96    45    4    596   243   136   217     169
-ChunLi       109     19     49     3   100   100     0    4    676   364   195   117     209
-Manon        139     13     80     6   100   100   100    8    721   417   166   138      87
-Zangief       88     14     33     4   100   100   100    8    378    88   135   155     179
-JP            93     14     53    11   100   100    27    4    684   343   150   191     190
+Ryu          102     14     52     3   100   100   100   23    551   170   121   260     198
+Luke          93     11     37    16   100   100    69    4    295   136    72    87     220
+Kimberly     123     14     47    11   100    96    45    4    503   243   136   124     169
+ChunLi       109     19     49     3   100   100     0    4    619   364   195    60     209
+Manon        139     13     80     6   100   100   100    8    655   417   166    72      87
+Zangief       88     14     33     4   100   100   100    8    324    88   135   101     170
+JP            93     14     53    11   100   100    27    4    631   343   150   138     190
 Dhalsim      108     18     54     4   100    98     0   12    664   161   109   394     234
-Cammy         93     14     44     1   100   100   100    4    466   187   226    53     233
-Ken          110     11     39    36   100   100    56    6    704   158   100   446     200
-DeeJay       125     44     77    11   100   100    73   70   2027   142   183  1702     177
-Lily         126     13     60     3   100   100    67    8    659   392   134   133     148
+Cammy         93     14     44     1   100   100   100    4    453   187   226    40     233
+Ken          110     11     39    36   100   100    56    6    365   158   100   107     177
+DeeJay       125     44     77    11   100   100    73   70   1572   142   183  1247     177
+Lily         126     13     60     3   100   100    67    8    635   392   134   109     148
 AKI           77     15     41     0   100   100     -    6    330   128    98   104     135
-Rashid       135     14     54    10   100   100    60    6    635   256   144   235     137
+Rashid       135     14     54    10   100   100    60    6    495   256   144    95     137
 Blanka       112     17     44     2   100    98     0   16    565    60    92   413     265
-Juri         182     40    108    12   100   100     8   60   2466   714   254  1498      84
-Marisa        89     12     40    16   100   100    94    6    484   132   116   236     248
-Guile        144     41     94     3    76    86    33   40   2878   302   149  2427     139
-Ed            82     13     41     5   100    98   100    4    396   143   101   152     239
-EHonda       122     13     54    22   100   100    91    4    702   267   111   324     152
-Jamie        171     16     76    16   100   100    50   43   1038   137    91   810     200
-Akuma        116     18     56     4    89    96    75    8    891   270   186   435     233
-Sagat        100     15     47    16   100   100    94    8    646   171   169   306     179
-MBison        94     15     49    11   100   100     0   18    739   149   115   475     175
-Terry         87     12     44     7   100   100    86    8    487   216   113   158     183
+Juri         182     40    108    12   100   100     8   60   2388   714   254  1420      84
+Marisa        89     12     40    16   100   100    94    6    313   132   116    65     200
+Guile        144     41     94     3    76    86    33   40   2797   302   149  2346     139
+Ed            82     13     41     5   100    98   100    4    336   143   101    92     216
+EHonda       122     13     54    22   100   100    91    4    444   267   111    66     152
+Jamie        171     16     76    16   100   100    50   43    824   137    91   596     202
+Akuma        116     18     56     4    89    96    75    8    822   270   186   366     233
+Sagat        100     15     47    16   100   100    94    8    412   171   169    72     179
+MBison        94     15     49    11   100   100     0   18    694   149   115   430     175
+Terry         87     12     44     7   100   100    86    8    409   216   113    80     183
 Mai          137     14     70     0   100   100     -   56    519     0    67   452     102
-Elena        126     23     74     4    74   100   100   18   1176   180   105   891     167
+Elena        126     23     74     4    74   100   100   18   1093   180   105   808     167
 CViper       117     12     43     0   100   100     -    4    295   115   108    72     137
-Alex          96     22     48     8   100   100    12   19    757   147   188   422     159
-Ingrid       158     18     55     3    94    98    67   16    769    78   197   494     276
-Yasmine      138     14     56    38    93   100    89    8   1215    32    61  1122     162
+Alex          96     22     48     8   100   100    12   19    583   147   188   248     159
+Ingrid       158     18     55     3    94    98    67   16    719    78   197   444     276
+Yasmine      138     14     56    38    93   100    89    8    733    32    61   640     219
 ```
 
 - `cvS/cvT/cvF` how many starting moves / target moves / derivations found
@@ -49,21 +49,23 @@ Yasmine      138     14     56    38    93   100    89    8   1215    32    61  
 
 ## Was any PAIR dropped for missing data?
 
-**0** of 12543 pair exclusions, across all 31 characters.
+**0** of 16056 pair exclusions, across all 31 characters.
 
 Measured by asking each excluded pair whether it carries the thing that
-decided it - the margin, or the source's own statement that the move does
-not chain. An exclusion with neither was decided by something nobody wrote
-down, and missing information is the only candidate for that.
+decided it - the margin, the source's own statement that the move does
+not chain, or the chains that name a follow-up's parent. An exclusion with
+none of them was decided by something nobody wrote down, and missing
+information is the only candidate for that.
 
 Which is the answer it has to be. A gap in the frame source is recorded as
-an unknown and the pair stays a candidate; only a KNOWN negative margin
-excludes, and it excludes with the number attached.
+an unknown and the pair stays a candidate; only something the source
+states - a negative margin, a move that does not chain, a follow-up's
+parent - excludes, and it excludes with that statement attached.
 
 ### What the number above does not cover
 
 Pairs, and only pairs. A row that never became half of one is not in the
-12543, and two of the reasons a row is dropped are about this project's
+16056, and two of the reasons a row is dropped are about this project's
 vocabulary rather than about the move:
 
 ```

@@ -24,7 +24,8 @@ not combos that are known to work.
     starters      14 of  14 (100%)
     targets       33 of  33 (100%)
     follow-ups     0 of   4 (  0%)
-    7 matched only by guessing between several source spellings:
+    8 matched only by guessing between several source spellings:
+      22+HK (785) -> 22HK
       63214+LK+MK (918) -> 63214KK (Close)
       63214+LK+MK (918) -> 63214KK (Close)
       63214+KK (924) -> 63214KK (Close)
@@ -52,23 +53,24 @@ not combos that are known to work.
 ## Theoretical edges
 
 - pairs considered        518
-- candidate edges         378
-- excluded                140
+- candidate edges         324
+- excluded                194
 
 by reason:
-  chain_cancel             90
-  frame_data_incomplete    69
+  chain_cancel             70
+  frame_data_incomplete    13
   frame_link               131
   special_cancel           88
   super_cancel             64
-  target_combo             4
+  target_combo             2
 
 by confidence:
-  high                     96
-  medium                   136
-  low                      146
+  high                     88
+  medium                   135
+  low                      101
 
-excluded because the numbers said no:
+excluded because the data said no:
+  followup_after_a_move_not_its_parent 54
   frame_margin_negative    131
   self_pair_without_chain  9
 
@@ -76,15 +78,22 @@ Nothing was excluded for missing data. A gap in the source is recorded as
 an unknown and the pair stays a candidate; only a KNOWN negative margin
 excludes, and the margin is kept with it.
 
+followup_after_a_move_not_its_parent is not a gap either. The frame source spells
+a follow-up only as a chain from the move it comes out of ("5MP~MP"), so
+these 54 pairs put a follow-up after a move the source says it does not
+follow. A follow-up whose parent the source never names stays a candidate.
+
+- follow-up edges         2  (parent named by the frame data: 2)
+
 ## Route candidates
 
-- routes                  971
-- graph nodes             37
-- graph edges             378
-- folded canonical variants 2303  (same buttons, unresolved action id)
+- routes                  917
+- graph nodes             35
+- graph edges             324
+- folded canonical variants 1867  (same buttons, unresolved action id)
 - search complete         true
-  length 2               179
-  length 3               792
+  length 2               170
+  length 3               747
 
 dropped by a search bound (not by the game):
   max_repeat_per_action    5
@@ -112,14 +121,14 @@ upper bound for ordering, never a damage figure.
 #   route                                            dmg~   cost conf   
 1   弱 > 弱                                         800    2.5 medium 
 2   弱 > 中                                        1100    3.0 medium 
-3   弱 > > 中                                       400    3.0 low    
-4   弱 > 强                                        1400    3.0 low    
-5   中 > > 中                                       700    3.0 low    
-6   中 > 强                                        1700    3.0 low    
-7   强 > > 中                                      1000    3.0 low    
-8   弱 > 2 + 弱                                     700    3.5 medium 
-9   弱 > 2 + 中                                    1100    3.5 medium 
-10  弱 > 2 + 强                                    1400    3.5 medium 
+3   弱 > 强                                        1400    3.0 low    
+4   中 > > 中                                       700    3.0 medium 
+5   中 > 强                                        1700    3.0 low    
+6   弱 > 2 + 弱                                     700    3.5 medium 
+7   弱 > 2 + 中                                    1100    3.5 medium 
+8   弱 > 2 + 强                                    1400    3.5 medium 
+9   弱 > 3 + 强                                    1400    3.5 medium 
+10  弱 > 3 + 中                                    1200    3.5 medium 
 
 ## Pareto frontier: 10 routes nothing beats on both damage and inputs
 
@@ -141,7 +150,7 @@ upper bound for ordering, never a damage figure.
 - **cancel_window_conditions**
   the frame source is missing to_startup for this pair
 - **frame_data_variant_ambiguous**
-  the frame source spells this move as several distance variants (63214KK (Close), 63214KK (Far), 63214KK (Mid)) and the join picked 63214KK (Close) by sort order, not by knowing which one applies
+  for the second move, the join took "22HK", whose frame record describes a special, but this row's action id puts it among the throws. The two sources disagree about what move this is, so the numbers may belong to a different one
 - **hitbox_hurtbox**
   which action id this input actually produces is unresolved, so the move being described may not be the move that comes out
 - **juggle_behaviour**
@@ -160,8 +169,8 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/zangief/modern/candidate-edges.json  (497097 bytes)
-- candidates/zangief/modern/candidate-routes.json  (4176700 bytes)
+- candidates/zangief/modern/candidate-edges.json  (482259 bytes)
+- candidates/zangief/modern/candidate-routes.json  (3957458 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

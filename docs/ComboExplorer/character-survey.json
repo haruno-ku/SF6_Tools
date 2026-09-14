@@ -5,16 +5,15 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 170,
-        "low": 299,
+        "low": 260,
         "medium": 121
       },
       "by_reason": {
-        "chain_cancel": 102,
-        "frame_data_incomplete": 39,
+        "chain_cancel": 84,
         "frame_link": 105,
         "special_cancel": 242,
         "super_cancel": 160,
-        "target_combo": 6
+        "target_combo": 3
       },
       "character": "Ryu",
       "cov_followups": {
@@ -188,8 +187,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 590,
-      "excluded": 180,
+      "edges": 551,
+      "excluded": 219,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 1,
@@ -214,16 +213,16 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 136,
-        "low": 190,
+        "low": 87,
         "medium": 72
       },
       "by_reason": {
-        "chain_cancel": 44,
-        "frame_data_incomplete": 158,
+        "chain_cancel": 22,
+        "frame_data_incomplete": 55,
         "frame_link": 40,
         "special_cancel": 138,
         "super_cancel": 56,
-        "target_combo": 64
+        "target_combo": 38
       },
       "character": "Luke",
       "cov_followups": {
@@ -324,8 +323,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 398,
-      "excluded": 185,
+      "edges": 295,
+      "excluded": 288,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 2,
@@ -334,7 +333,7 @@
       "frame_data": "data/frame-data/luke.lua",
       "moves": 72,
       "nodes": 53,
-      "routes": 253,
+      "routes": 220,
       "rows": 93,
       "rows_lost": {
         "any_button": 7,
@@ -350,16 +349,16 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 243,
-        "low": 217,
+        "low": 124,
         "medium": 136
       },
       "by_reason": {
-        "chain_cancel": 138,
-        "frame_data_incomplete": 177,
+        "chain_cancel": 99,
+        "frame_data_incomplete": 84,
         "frame_link": 78,
         "special_cancel": 225,
         "super_cancel": 90,
-        "target_combo": 44
+        "target_combo": 21
       },
       "character": "Kimberly",
       "cov_followups": {
@@ -500,8 +499,8 @@
           }
         ]
       },
-      "edges": 596,
-      "excluded": 216,
+      "edges": 503,
+      "excluded": 309,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 3,
@@ -509,7 +508,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/kimberly.lua",
       "moves": 81,
-      "nodes": 58,
+      "nodes": 54,
       "routes": 169,
       "rows": 123,
       "rows_lost": {
@@ -535,12 +534,11 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 364,
-        "low": 117,
+        "low": 60,
         "medium": 195
       },
       "by_reason": {
         "chain_cancel": 114,
-        "frame_data_incomplete": 57,
         "frame_link": 150,
         "special_cancel": 308,
         "super_cancel": 112
@@ -626,8 +624,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 676,
-      "excluded": 312,
+      "edges": 619,
+      "excluded": 369,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 4,
@@ -635,7 +633,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/chunli.lua",
       "moves": 79,
-      "nodes": 52,
+      "nodes": 49,
       "routes": 209,
       "rows": 109,
       "rows_lost": {
@@ -652,16 +650,15 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 417,
-        "low": 138,
+        "low": 72,
         "medium": 166
       },
       "by_reason": {
-        "chain_cancel": 114,
-        "frame_data_incomplete": 66,
+        "chain_cancel": 78,
         "frame_link": 99,
         "special_cancel": 385,
         "super_cancel": 96,
-        "target_combo": 24
+        "target_combo": 12
       },
       "character": "Manon",
       "cov_followups": {
@@ -745,8 +742,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 721,
-      "excluded": 397,
+      "edges": 655,
+      "excluded": 463,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 5,
@@ -771,16 +768,16 @@
       "band_conflicts": 1,
       "by_confidence": {
         "high": 88,
-        "low": 155,
+        "low": 101,
         "medium": 135
       },
       "by_reason": {
-        "chain_cancel": 90,
-        "frame_data_incomplete": 67,
+        "chain_cancel": 70,
+        "frame_data_incomplete": 13,
         "frame_link": 131,
         "special_cancel": 88,
         "super_cancel": 64,
-        "target_combo": 4
+        "target_combo": 2
       },
       "character": "Zangief",
       "cov_followups": {
@@ -865,8 +862,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 378,
-      "excluded": 140,
+      "edges": 324,
+      "excluded": 194,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 6,
@@ -874,8 +871,8 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/zangief.lua",
       "moves": 67,
-      "nodes": 37,
-      "routes": 179,
+      "nodes": 35,
+      "routes": 170,
       "rows": 88,
       "rows_lost": {
         "any_button": 5,
@@ -891,16 +888,16 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 343,
-        "low": 191,
+        "low": 138,
         "medium": 150
       },
       "by_reason": {
-        "chain_cancel": 108,
-        "frame_data_incomplete": 151,
+        "chain_cancel": 84,
+        "frame_data_incomplete": 98,
         "frame_link": 136,
         "special_cancel": 370,
         "super_cancel": 80,
-        "target_combo": 22
+        "target_combo": 17
       },
       "character": "JP",
       "cov_followups": {
@@ -1023,8 +1020,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 684,
-      "excluded": 212,
+      "edges": 631,
+      "excluded": 265,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 7,
@@ -1032,7 +1029,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/jp.lua",
       "moves": 63,
-      "nodes": 64,
+      "nodes": 63,
       "routes": 190,
       "rows": 93,
       "rows_lost": {
@@ -1238,12 +1235,11 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 187,
-        "low": 53,
+        "low": 40,
         "medium": 226
       },
       "by_reason": {
-        "chain_cancel": 90,
-        "frame_data_incomplete": 13,
+        "chain_cancel": 84,
         "frame_link": 198,
         "special_cancel": 198,
         "super_cancel": 72,
@@ -1307,8 +1303,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 466,
-      "excluded": 164,
+      "edges": 453,
+      "excluded": 177,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 9,
@@ -1333,16 +1329,16 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 158,
-        "low": 446,
+        "low": 107,
         "medium": 100
       },
       "by_reason": {
-        "chain_cancel": 240,
-        "frame_data_incomplete": 394,
+        "chain_cancel": 66,
+        "frame_data_incomplete": 55,
         "frame_link": 77,
-        "special_cancel": 189,
+        "special_cancel": 175,
         "super_cancel": 64,
-        "target_combo": 36
+        "target_combo": 7
       },
       "character": "Ken",
       "cov_followups": {
@@ -1540,8 +1536,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 704,
-      "excluded": 121,
+      "edges": 365,
+      "excluded": 460,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 10,
@@ -1549,14 +1545,14 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/ken.lua",
       "moves": 74,
-      "nodes": 75,
-      "routes": 200,
+      "nodes": 46,
+      "routes": 177,
       "rows": 110,
       "rows_lost": {
         "any_button": 4,
         "unclassified": 2
       },
-      "search_complete": false,
+      "search_complete": true,
       "starters": 11,
       "targets": 39,
       "unmatched": []
@@ -1566,16 +1562,16 @@
       "band_conflicts": 66,
       "by_confidence": {
         "high": 142,
-        "low": 1702,
+        "low": 1247,
         "medium": 183
       },
       "by_reason": {
-        "chain_cancel": 550,
-        "frame_data_incomplete": 543,
+        "chain_cancel": 454,
+        "frame_data_incomplete": 88,
         "frame_link": 419,
         "special_cancel": 525,
         "super_cancel": 176,
-        "target_combo": 132
+        "target_combo": 29
       },
       "character": "DeeJay",
       "cov_followups": {
@@ -2070,8 +2066,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 2027,
-      "excluded": 1845,
+      "edges": 1572,
+      "excluded": 2300,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 11,
@@ -2079,7 +2075,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/deejay.lua",
       "moves": 81,
-      "nodes": 88,
+      "nodes": 82,
       "routes": 177,
       "rows": 125,
       "rows_lost": {
@@ -2096,12 +2092,12 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 392,
-        "low": 133,
+        "low": 109,
         "medium": 134
       },
       "by_reason": {
-        "chain_cancel": 90,
-        "frame_data_incomplete": 37,
+        "chain_cancel": 78,
+        "frame_data_incomplete": 13,
         "frame_link": 178,
         "special_cancel": 370,
         "super_cancel": 110,
@@ -2197,8 +2193,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 659,
-      "excluded": 160,
+      "edges": 635,
+      "excluded": 184,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 12,
@@ -2328,12 +2324,12 @@
       "band_conflicts": 2,
       "by_confidence": {
         "high": 256,
-        "low": 235,
+        "low": 95,
         "medium": 144
       },
       "by_reason": {
-        "chain_cancel": 126,
-        "frame_data_incomplete": 193,
+        "chain_cancel": 84,
+        "frame_data_incomplete": 53,
         "frame_link": 91,
         "special_cancel": 224,
         "super_cancel": 64
@@ -2442,8 +2438,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 635,
-      "excluded": 261,
+      "edges": 495,
+      "excluded": 401,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 14,
@@ -2451,7 +2447,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/rashid.lua",
       "moves": 77,
-      "nodes": 64,
+      "nodes": 54,
       "routes": 137,
       "rows": 135,
       "rows_lost": {
@@ -2664,16 +2660,16 @@
       "band_conflicts": 54,
       "by_confidence": {
         "high": 714,
-        "low": 1498,
+        "low": 1420,
         "medium": 254
       },
       "by_reason": {
-        "chain_cancel": 300,
-        "frame_data_incomplete": 478,
+        "chain_cancel": 290,
+        "frame_data_incomplete": 400,
         "frame_link": 457,
         "special_cancel": 1148,
         "super_cancel": 392,
-        "target_combo": 24
+        "target_combo": 22
       },
       "character": "Juri",
       "cov_followups": {
@@ -3156,8 +3152,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 2466,
-      "excluded": 2334,
+      "edges": 2388,
+      "excluded": 2412,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 16,
@@ -3165,7 +3161,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/juri.lua",
       "moves": 85,
-      "nodes": 120,
+      "nodes": 119,
       "routes": 84,
       "rows": 182,
       "rows_lost": {
@@ -3182,16 +3178,16 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 132,
-        "low": 236,
+        "low": 65,
         "medium": 116
       },
       "by_reason": {
-        "chain_cancel": 81,
-        "frame_data_incomplete": 183,
+        "chain_cancel": 36,
+        "frame_data_incomplete": 12,
         "frame_link": 109,
         "special_cancel": 120,
         "super_cancel": 48,
-        "target_combo": 64
+        "target_combo": 13
       },
       "character": "Marisa",
       "cov_followups": {
@@ -3271,8 +3267,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 484,
-      "excluded": 188,
+      "edges": 313,
+      "excluded": 359,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 17,
@@ -3280,14 +3276,14 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/marisa.lua",
       "moves": 86,
-      "nodes": 56,
-      "routes": 248,
+      "nodes": 47,
+      "routes": 200,
       "rows": 89,
       "rows_lost": {
         "any_button": 3,
         "unclassified": 1
       },
-      "search_complete": false,
+      "search_complete": true,
       "starters": 12,
       "targets": 40,
       "unmatched": []
@@ -3297,16 +3293,16 @@
       "band_conflicts": 32,
       "by_confidence": {
         "high": 302,
-        "low": 2427,
+        "low": 2346,
         "medium": 149
       },
       "by_reason": {
-        "chain_cancel": 423,
-        "frame_data_incomplete": 1465,
+        "chain_cancel": 405,
+        "frame_data_incomplete": 1384,
         "frame_link": 266,
         "special_cancel": 722,
         "super_cancel": 240,
-        "target_combo": 18
+        "target_combo": 7
       },
       "character": "Guile",
       "cov_followups": {
@@ -3800,8 +3796,8 @@
           }
         ]
       },
-      "edges": 2878,
-      "excluded": 1099,
+      "edges": 2797,
+      "excluded": 1180,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 18,
@@ -3809,7 +3805,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/guile.lua",
       "moves": 66,
-      "nodes": 97,
+      "nodes": 96,
       "routes": 139,
       "rows": 144,
       "rows_lost": {
@@ -3919,16 +3915,16 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 143,
-        "low": 152,
+        "low": 92,
         "medium": 101
       },
       "by_reason": {
-        "chain_cancel": 95,
-        "frame_data_incomplete": 124,
+        "chain_cancel": 70,
+        "frame_data_incomplete": 64,
         "frame_link": 59,
         "special_cancel": 102,
         "super_cancel": 60,
-        "target_combo": 15
+        "target_combo": 5
       },
       "character": "Ed",
       "cov_followups": {
@@ -3997,8 +3993,8 @@
           }
         ]
       },
-      "edges": 396,
-      "excluded": 202,
+      "edges": 336,
+      "excluded": 262,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 19,
@@ -4007,7 +4003,7 @@
       "frame_data": "data/frame-data/ed.lua",
       "moves": 65,
       "nodes": 46,
-      "routes": 239,
+      "routes": 216,
       "rows": 82,
       "rows_lost": {
         "any_button": 8,
@@ -4028,16 +4024,16 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 267,
-        "low": 324,
+        "low": 66,
         "medium": 111
       },
       "by_reason": {
-        "chain_cancel": 69,
-        "frame_data_incomplete": 284,
+        "chain_cancel": 45,
+        "frame_data_incomplete": 26,
         "frame_link": 87,
         "special_cancel": 231,
         "super_cancel": 72,
-        "target_combo": 44
+        "target_combo": 6
       },
       "character": "EHonda",
       "cov_followups": {
@@ -4114,8 +4110,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 702,
-      "excluded": 286,
+      "edges": 444,
+      "excluded": 544,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 20,
@@ -4123,7 +4119,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/ehonda.lua",
       "moves": 63,
-      "nodes": 76,
+      "nodes": 58,
       "routes": 152,
       "rows": 122,
       "rows_lost": {
@@ -4140,16 +4136,16 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 137,
-        "low": 810,
+        "low": 596,
         "medium": 91
       },
       "by_reason": {
-        "chain_cancel": 88,
-        "frame_data_incomplete": 552,
+        "chain_cancel": 74,
+        "frame_data_incomplete": 338,
         "frame_link": 165,
         "special_cancel": 231,
         "super_cancel": 88,
-        "target_combo": 16
+        "target_combo": 4
       },
       "character": "Jamie",
       "cov_followups": {
@@ -4516,8 +4512,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 1038,
-      "excluded": 434,
+      "edges": 824,
+      "excluded": 648,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 21,
@@ -4525,8 +4521,8 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/jamie.lua",
       "moves": 89,
-      "nodes": 92,
-      "routes": 200,
+      "nodes": 81,
+      "routes": 202,
       "rows": 171,
       "rows_lost": {
         "any_button": 34,
@@ -4542,16 +4538,16 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 270,
-        "low": 435,
+        "low": 366,
         "medium": 186
       },
       "by_reason": {
-        "chain_cancel": 132,
-        "frame_data_incomplete": 347,
+        "chain_cancel": 108,
+        "frame_data_incomplete": 278,
         "frame_link": 146,
         "special_cancel": 231,
         "super_cancel": 170,
-        "target_combo": 8
+        "target_combo": 3
       },
       "character": "Akuma",
       "cov_followups": {
@@ -4679,8 +4675,8 @@
           }
         ]
       },
-      "edges": 891,
-      "excluded": 189,
+      "edges": 822,
+      "excluded": 258,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 22,
@@ -4688,7 +4684,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/akuma.lua",
       "moves": 89,
-      "nodes": 60,
+      "nodes": 59,
       "routes": 233,
       "rows": 116,
       "rows_lost": {
@@ -4722,16 +4718,15 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 171,
-        "low": 306,
+        "low": 72,
         "medium": 169
       },
       "by_reason": {
-        "chain_cancel": 155,
-        "frame_data_incomplete": 234,
+        "chain_cancel": 75,
         "frame_link": 134,
         "special_cancel": 160,
         "super_cancel": 96,
-        "target_combo": 32
+        "target_combo": 6
       },
       "character": "Sagat",
       "cov_followups": {
@@ -4823,8 +4818,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 646,
-      "excluded": 299,
+      "edges": 412,
+      "excluded": 533,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 25,
@@ -4832,7 +4827,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/sagat.lua",
       "moves": 68,
-      "nodes": 63,
+      "nodes": 50,
       "routes": 179,
       "rows": 100,
       "rows_lost": {
@@ -4849,12 +4844,12 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 149,
-        "low": 475,
+        "low": 430,
         "medium": 115
       },
       "by_reason": {
-        "chain_cancel": 102,
-        "frame_data_incomplete": 287,
+        "chain_cancel": 90,
+        "frame_data_incomplete": 242,
         "frame_link": 73,
         "special_cancel": 189,
         "super_cancel": 130
@@ -5080,8 +5075,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 739,
-      "excluded": 161,
+      "edges": 694,
+      "excluded": 206,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 26,
@@ -5089,7 +5084,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/mbison.lua",
       "moves": 67,
-      "nodes": 60,
+      "nodes": 57,
       "routes": 175,
       "rows": 94,
       "rows_lost": {
@@ -5106,16 +5101,15 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 216,
-        "low": 158,
+        "low": 80,
         "medium": 113
       },
       "by_reason": {
-        "chain_cancel": 114,
-        "frame_data_incomplete": 78,
+        "chain_cancel": 72,
         "frame_link": 79,
         "special_cancel": 180,
         "super_cancel": 108,
-        "target_combo": 14
+        "target_combo": 6
       },
       "character": "Terry",
       "cov_followups": {
@@ -5207,8 +5201,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 487,
-      "excluded": 125,
+      "edges": 409,
+      "excluded": 203,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 27,
@@ -5216,7 +5210,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/terry.lua",
       "moves": 63,
-      "nodes": 51,
+      "nodes": 50,
       "routes": 183,
       "rows": 87,
       "rows_lost": {
@@ -5633,16 +5627,16 @@
       "band_conflicts": 10,
       "by_confidence": {
         "high": 180,
-        "low": 891,
+        "low": 808,
         "medium": 105
       },
       "by_reason": {
-        "chain_cancel": 123,
-        "frame_data_incomplete": 799,
+        "chain_cancel": 111,
+        "frame_data_incomplete": 716,
         "frame_link": 89,
         "special_cancel": 138,
         "super_cancel": 98,
-        "target_combo": 40
+        "target_combo": 9
       },
       "character": "Elena",
       "cov_followups": {
@@ -5840,8 +5834,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 1176,
-      "excluded": 618,
+      "edges": 1093,
+      "excluded": 701,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 29,
@@ -5982,16 +5976,15 @@
       "band_conflicts": 14,
       "by_confidence": {
         "high": 147,
-        "low": 422,
+        "low": 248,
         "medium": 188
       },
       "by_reason": {
-        "chain_cancel": 210,
-        "frame_data_incomplete": 174,
+        "chain_cancel": 154,
         "frame_link": 187,
         "special_cancel": 198,
         "super_cancel": 96,
-        "target_combo": 24
+        "target_combo": 2
       },
       "character": "Alex",
       "cov_followups": {
@@ -6196,8 +6189,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 757,
-      "excluded": 475,
+      "edges": 583,
+      "excluded": 649,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 31,
@@ -6205,7 +6198,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/alex.lua",
       "moves": 71,
-      "nodes": 56,
+      "nodes": 49,
       "routes": 159,
       "rows": 96,
       "rows_lost": {
@@ -6222,16 +6215,16 @@
       "band_conflicts": 8,
       "by_confidence": {
         "high": 78,
-        "low": 494,
+        "low": 444,
         "medium": 197
       },
       "by_reason": {
-        "chain_cancel": 60,
-        "frame_data_incomplete": 335,
+        "chain_cancel": 54,
+        "frame_data_incomplete": 285,
         "frame_link": 284,
         "special_cancel": 140,
         "super_cancel": 36,
-        "target_combo": 6
+        "target_combo": 4
       },
       "character": "Ingrid",
       "cov_followups": {
@@ -6395,8 +6388,8 @@
           }
         ]
       },
-      "edges": 769,
-      "excluded": 275,
+      "edges": 719,
+      "excluded": 325,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 32,
@@ -6404,7 +6397,7 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/ingrid.lua",
       "moves": 86,
-      "nodes": 58,
+      "nodes": 57,
       "routes": 276,
       "rows": 158,
       "rows_lost": {
@@ -6430,16 +6423,16 @@
       "band_conflicts": 0,
       "by_confidence": {
         "high": 32,
-        "low": 1122,
+        "low": 640,
         "medium": 61
       },
       "by_reason": {
-        "chain_cancel": 147,
-        "frame_data_incomplete": 1050,
+        "chain_cancel": 42,
+        "frame_data_incomplete": 568,
         "frame_link": 56,
         "special_cancel": 297,
         "super_cancel": 108,
-        "target_combo": 152
+        "target_combo": 20
       },
       "character": "Yasmine",
       "cov_followups": {
@@ -6763,8 +6756,8 @@
         "unmatched": 0,
         "unmatched_detail": []
       },
-      "edges": 1215,
-      "excluded": 101,
+      "edges": 733,
+      "excluded": 583,
       "excluded_missing_data": 0,
       "excluded_without_evidence": [],
       "fighter_id": 33,
@@ -6772,8 +6765,8 @@
       "frame_commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
       "frame_data": "data/frame-data/yasmine.lua",
       "moves": 66,
-      "nodes": 94,
-      "routes": 162,
+      "nodes": 65,
+      "routes": 219,
       "rows": 138,
       "rows_lost": {
         "any_button": 5,

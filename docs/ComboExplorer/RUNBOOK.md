@@ -422,7 +422,7 @@ lua tools/lua/explore.lua --character Zangief --worklist
 ```
 
 `reframework/data/ComboExplorer_data/worklist/zangief-modern.json` が出ます
-（Zangief で 378ペア / 76KB）。**confidence 順**に並んでいるので、
+（Zangief で 324ペア / 120KB）。**confidence 順**に並んでいるので、
 途中で止めてもフレームデータが何か言えたペアから消化されています。
 
 実機で:
@@ -435,7 +435,7 @@ lua tools/lua/explore.lua --character Zangief --worklist
 
 | キャラ | ペア数 | 1パス |
 |---|---|---|
-| Zangief | 378 | 約20分 |
+| Zangief | 324 | 約16分 |
 | Ryu | 590 | 約30分 |
 | Juri | 2466 | 約2時間 |
 | Guile | 2888 | 約2.4時間 |
