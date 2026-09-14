@@ -373,8 +373,13 @@ end
 -- `length` stays the number of MOVES, as it is everywhere a bound or a report
 -- reads it; `#steps` is one more per rush. `index` is the position in steps, as
 -- SequenceCompiler numbers them, so the compiler's "step 2" is this step 2.
-local function to_route(p, cfg, provenance)
+local function to_route(p, cfg, provenance, facts_of)
     local steps = {}
+    -- One entry per MOVE, in move order: the figures the source gave for it.
+    -- The sums below lose which move contributed what, and a per-move model -
+    -- DamageScaling, which Scoring runs - needs exactly that. Raw source
+    -- values, nil where the source has none; not a score.
+    local move_facts = {}
     for i, n in ipairs(p.nodes) do
         local via = (i > 1) and p.edges[i - 1] or nil
         if drc_before(p.edges, i) then
@@ -389,6 +394,12 @@ local function to_route(p, cfg, provenance)
                 delay_ticks = nil,
             }
         end
+        local f = facts_of and facts_of(n) or nil
+        move_facts[#move_facts + 1] = {
+            step_index = #steps + 1,
+            predicted_damage = f and f.damage or nil,
+            super_gain = f and f.super_gain or nil,
+        }
         steps[#steps + 1] = {
             index = #steps + 1,
             action_id = n.action_id,
@@ -445,6 +456,7 @@ local function to_route(p, cfg, provenance)
             super_steps = p.resources.super_steps,
             steps_with_missing_data = p.resources.unknown_steps,
             steps_with_guessed_frame_join = p.resources.guessed_join_steps or 0,
+            move_frame_facts = move_facts,
         },
         provenance = provenance,
     })
@@ -591,7 +603,9 @@ function M.search(g, opts)
 
         if depth >= cfg.min_steps then
             for _, p in ipairs(next_frontier) do
-                local route = to_route(p, cfg, provenance)
+                local route = to_route(p, cfg, provenance, function(n)
+                    return facts(n, n.key)
+                end)
                 local seen = cfg.collapse_canonical_variants and by_shape[route.shape_key] or nil
                 if seen then
                     -- Same buttons, different action id. Recorded on the route

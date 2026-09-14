@@ -15,6 +15,8 @@
 --                                Modern's own damage reduction is in none of
 --                                them either. The sum below is an upper bound
 --                                for ordering, not a damage figure.
+--                                predicted_damage_scaled is not one either:
+--                                it is a model, see THE SCALED FIGURE.
 --   execution leniency         - how many frames wide the window is can only be
 --                                measured by sweeping it on the real game.
 --   knockdown advantage        - a large on-hit number may be oki advantage
@@ -39,7 +41,19 @@
 -- on both damage and execution cost at once, which is the honest version of
 -- "the good ones".
 
+-- THE SCALED FIGURE
+--
+-- plan-v3-implementation.md says damage scaling is not predicted and has to be
+-- measured. The user decided to rank by a scaling model anyway, because the
+-- unscaled sum over-ranks long routes by a wide margin. So there are two
+-- damage numbers here and they do different jobs: predicted_damage is the
+-- frame-table sum, unchanged; predicted_damage_scaled runs that sum's moves
+-- through core/DamageScaling, a model built from public write-ups that nobody
+-- has checked against this build. It carries `scaling_model` beside it saying
+-- so, is used for ordering only, and is never exported as damage.
+
 local InputMask = require("func/ComboExplorer/core/InputMask")
+local DamageScaling = require("func/ComboExplorer/core/DamageScaling")
 local Schema = require("func/ComboExplorer/core/Schema")
 
 local M = { name = "ComboExplorer.Scoring" }
@@ -87,6 +101,7 @@ end
 
 -- route : a ce.route.v1 from RouteSearch
 -- opts.weights : overrides for M.WEIGHTS
+-- opts.scaling_params : overrides for DamageScaling.PARAMS
 --
 -- Returns the offline_score table. Does not attach it; see M.apply.
 function M.score(route, opts)
@@ -203,6 +218,31 @@ function M.score(route, opts)
             and #route.requires_runtime_validation or 0,
     }
 
+    -- The scaling MODEL (see the header). It needs each move's own figure,
+    -- which RouteSearch writes as basis.move_frame_facts; a route without them
+    -- has no scaled figure rather than a guessed one. Same honesty rule as the
+    -- sum's completeness: one move with no damage and the total is nil.
+    local facts = basis.move_frame_facts
+    if type(facts) == "table" and #facts == n and n > 0 then
+        local scaled = DamageScaling.scale_route(route.steps, facts, opts.scaling_params)
+        score.predicted_damage_scaled = scaled.total
+        local per = {}
+        for i, st in ipairs(scaled.steps) do
+            per[i] = { step_index = st.step_index, damage = st.damage, stage = st.stage,
+                       factor = st.factor, reduction = st.reduction,
+                       drive_rush = st.drive_rush, simple_input = st.simple_input,
+                       sa_level = st.sa_level, sa_minimum_applied = st.sa_minimum_applied }
+        end
+        score.predicted_damage_scaled_steps = per
+        score.predicted_damage_scaled_light_starter = scaled.light_starter
+        score.predicted_damage_scaled_sa_level_unknown_steps = scaled.sa_level_unknown_steps
+    else
+        score.predicted_damage_scaled = nil
+        score.predicted_damage_scaled_steps = nil
+    end
+    score.scaling_model = DamageScaling.model()
+    if opts.scaling_params ~= nil then score.scaling_model.params_overridden = true end
+
     -- Not difficulty. See the header: difficulty needs the measured window.
     score.execution_cost =
         n * w.step
@@ -233,6 +273,8 @@ end
 
 M.AXES = {
     DAMAGE        = "predicted_damage",
+    -- A model's ordering, not a damage figure. See the header.
+    SCALED_DAMAGE = "predicted_damage_scaled",
     SIMPLICITY    = "simplicity",
     CONFIDENCE    = "theoretical_confidence",
     RESOURCE_FREE = "resource_free",
@@ -245,6 +287,8 @@ local function axis_value(r, axis)
     if not s then return -math.huge end
     if axis == M.AXES.DAMAGE then
         return s.predicted_damage or -math.huge
+    elseif axis == M.AXES.SCALED_DAMAGE then
+        return s.predicted_damage_scaled or -math.huge
     elseif axis == M.AXES.SIMPLICITY then
         return -s.execution_cost
     elseif axis == M.AXES.CONFIDENCE then

@@ -241,6 +241,133 @@ local same = true
 for i = 1, 10 do if again[i].id ~= by_damage[i].id then same = false end end
 t.ok(same, "and the ordering is reproducible")
 
+-- --- the scaled figure --------------------------------------------------------
+
+t.group("predicted scaled damage is a labelled model")
+
+local DamageScaling = require("func/ComboExplorer/core/DamageScaling")
+
+-- The existing fields are untouched: the sum is still the unscaled sum.
+t.eq(s.combo_scaling_applied, false, "the unscaled sum still says it is unscaled")
+t.eq(s.predicted_damage, routes[1].basis.predicted_damage_sum, "and is still the frame-table sum")
+
+local sm = s.scaling_model
+t.ok(sm ~= nil, "every score carries the model's description")
+t.eq(sm.id, "sf6-public-scaling-v1", "by id")
+t.eq(sm.verified, false, "saying it is unverified")
+t.ok(type(sm.source) == "table" and #sm.source >= 1, "where it came from")
+t.ok(type(sm.not_modelled) == "table" and #sm.not_modelled >= 1, "and what it leaves out")
+
+local scaled_n, above, incomplete_but_scaled, complete_unscaled, steps_wrong = 0, 0, 0, 0, 0
+local shrunk
+for _, r in ipairs(routes) do
+    local o = r.offline_score
+    if o.predicted_damage_scaled ~= nil then
+        scaled_n = scaled_n + 1
+        if o.predicted_damage_scaled > o.predicted_damage + 1e-9 then above = above + 1 end
+        if not o.predicted_damage_complete then incomplete_but_scaled = incomplete_but_scaled + 1 end
+        if o.route_length >= 3 and o.predicted_damage_scaled < o.predicted_damage then
+            shrunk = shrunk or r
+        end
+    elseif o.predicted_damage_complete then
+        complete_unscaled = complete_unscaled + 1
+    end
+    if #(o.predicted_damage_scaled_steps or {}) ~= o.route_length then steps_wrong = steps_wrong + 1 end
+end
+t.ok(scaled_n > 0, "search routes get a scaled figure (" .. scaled_n .. ")")
+t.eq(above, 0, "and it never exceeds the unscaled sum")
+t.eq(incomplete_but_scaled, 0, "a route with a move lacking damage has no scaled figure")
+t.eq(complete_unscaled, 0, "and a route with every figure always has one")
+t.eq(steps_wrong, 0, "each score lists one scaled step per move")
+t.ok(shrunk ~= nil, "a three-move route is scaled below its sum")
+local st = shrunk.offline_score.predicted_damage_scaled_steps
+t.eq(st[1].stage, 1, "its steps carry the stage")
+t.ok(st[1].damage ~= nil and st[1].factor ~= nil, "the damage and the factor")
+t.ok(st[3].factor < 1, "and the third move's factor is below 1")
+
+-- A hand-built DRC route, so every number is the test's own:
+-- H(1000) > DRC > 6H(1000) > SP super(4800, SA3)
+local H = "\229\188\186"
+local drc_route = Schema.new(Schema.KIND.ROUTE, {
+    id = "hand", provenance = Schema.provenance({}),
+    steps = {
+        { index = 1, action_id = 1, notation = H, category = "normal", input_method = "manual" },
+        { index = 2, kind = "drive_rush_cancel" },
+        { index = 3, action_id = 2, notation = "6 + " .. H, category = "normal", input_method = "manual" },
+        { index = 4, action_id = 3, notation = "2 + SP + " .. H, category = "super", input_method = "simple" },
+    },
+    basis = {
+        predicted_damage_sum = 6800, damage_known_steps = 3,
+        move_frame_facts = {
+            { step_index = 1, predicted_damage = 1000, super_gain = 300 },
+            { step_index = 3, predicted_damage = 1000, super_gain = 300 },
+            { step_index = 4, predicted_damage = 4800, super_gain = -30000 },
+        },
+    },
+})
+local hs = Scoring.score(drc_route)
+local hsteps = hs.predicted_damage_scaled_steps
+t.eq(#hsteps, 3, "the rush is not a scaled step")
+t.eq(hsteps[2].step_index, 3, "the move after the rush keeps its step index")
+t.ok(math.abs(hsteps[2].factor - 0.85) < 1e-9, "and is x0.85 at stage 2")
+-- stage 3: 0.8 * 0.85 * 0.8 = 0.544, above SA3's 0.5
+t.ok(math.abs(hsteps[3].factor - 0.544) < 1e-9, "an SP super after a rush at stage 3 is 0.544")
+t.eq(hsteps[3].sa_level, 3, "read as level 3 from its cost")
+t.ok(math.abs(hs.predicted_damage_scaled - (1000 + 850 + 4800 * 0.544)) < 1e-6,
+     "and the total is exact, unrounded")
+t.eq(hs.predicted_damage, 6800, "while the unscaled sum is untouched")
+
+local no_facts = Scoring.score({ id = "bare", steps = drc_route.steps,
+                                 basis = { predicted_damage_sum = 6800, damage_known_steps = 3 } })
+t.is_nil(no_facts.predicted_damage_scaled, "a route without per-move facts gets no scaled figure")
+t.is_nil(no_facts.predicted_damage_scaled_steps, "nor any steps")
+
+local gap = Scoring.score({ id = "gap", steps = drc_route.steps, basis = {
+    predicted_damage_sum = 5800, damage_known_steps = 2,
+    move_frame_facts = {
+        { predicted_damage = 1000 },
+        { predicted_damage = nil },
+        { predicted_damage = 4800, super_gain = -30000 },
+    },
+} })
+t.is_nil(gap.predicted_damage_scaled, "one move with no damage figure and there is no scaled total")
+t.eq(#gap.predicted_damage_scaled_steps, 3, "though the per-move factors are still shown")
+
+local tuned = Scoring.score(drc_route, { scaling_params = { drive_rush_multiplier = 1 } })
+t.ok(math.abs(tuned.predicted_damage_scaled_steps[2].factor - 1) < 1e-9,
+     "the model's parameters can be overridden per call")
+t.eq(tuned.scaling_model.params_overridden, true, "and the score says they were")
+t.eq(DamageScaling.PARAMS.drive_rush_multiplier, 0.85, "without changing the defaults")
+
+drc_route.offline_score = hs
+local hand_ok = Schema.validate(Schema.KIND.ROUTE, drc_route)
+t.ok(hand_ok, "a route carrying the scaled figure still validates")
+
+t.group("ranking by the scaled figure")
+
+t.eq(Scoring.AXES.SCALED_DAMAGE, "predicted_damage_scaled", "the axis is named for the field")
+t.eq(Scoring.AXES.DAMAGE, "predicted_damage", "and the unscaled axis is unchanged")
+local by_scaled = Scoring.rank(routes, Scoring.AXES.SCALED_DAMAGE)
+local desc, nil_before_value, seen_nil = true, false, false
+for i, r in ipairs(by_scaled) do
+    local v = r.offline_score.predicted_damage_scaled
+    if v == nil then
+        seen_nil = true
+    elseif seen_nil then
+        nil_before_value = true
+    end
+    if i > 1 and v ~= nil then
+        local pv = by_scaled[i - 1].offline_score.predicted_damage_scaled
+        if pv ~= nil and pv < v then desc = false end
+    end
+end
+t.ok(desc, "scaled ranking is descending")
+t.eq(nil_before_value, false, "and routes with no scaled figure sort last")
+local again_scaled = Scoring.rank(routes, Scoring.AXES.SCALED_DAMAGE, 10)
+local same_scaled = true
+for i = 1, 10 do if again_scaled[i].id ~= by_scaled[i].id then same_scaled = false end end
+t.ok(same_scaled, "and is reproducible")
+
 -- --- pareto ------------------------------------------------------------------
 
 t.group("pareto frontier")

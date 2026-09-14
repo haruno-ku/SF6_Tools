@@ -152,6 +152,27 @@ upper bound for ordering, never a damage figure.
 9   2 + 强 > 3 + 强 > 720 + 强                    6800   15.4 low     8
 10  2 + 强 > 3 + 强 > 2 + SP + 强                 6800    8.5 low     8
 
+## Top 10 by predicted scaled damage (model)
+
+A MODEL, NOT A DAMAGE FIGURE. Each move's frame-table damage times a
+per-move factor from public descriptions of SF6 scaling (sf6-public-scaling-v1,
+verified = false): 100/100/80/70.. per move, a light-normal starter
+100/80/70.., floor 10%, x0.85 after a Drive Rush, x0.8 on SP moves, and
+the Super Art minimum. Not modelled: 9 things, listed in
+scaling_model.not_modelled on every route. Used for ordering only.
+
+#   route                                         scaled~     dmg~   cost conf   
+1   3 + 强 > 6 + 强 > 720 + 强                    6140     7100   15.4 low    
+2   6 + 强 > 2 + 强 > 720 + 强                    6140     7100   15.4 low    
+3   6 + 强 > 3 + 强 > 720 + 强                    6140     7100   15.4 low    
+4   6 + 强 > 720 + 强                              6100     6100   13.4 low    
+5   6 + 强 > 3 + 中 > 720 + 强                    5940     6900   15.4 low    
+6   2 + 强 > 3 + 强 > 720 + 强                    5840     6800   15.4 low    
+7   3 + 强 > 2 + 强 > 720 + 强                    5840     6800   15.4 low    
+8   6 + 强 > 2 + 中 > 720 + 强                    5840     6800   15.4 low    
+9   2 + 强 > 720 + 强                              5800     5800   13.4 low    
+10  3 + 强 > 720 + 强                              5800     5800   13.4 low    
+
 ## Top 10 by fewest inputs
 
 #   route                                            dmg~   cost conf   
@@ -205,8 +226,8 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/zangief/modern/candidate-edges.json  (482863 bytes)
-- candidates/zangief/modern/candidate-routes.json  (3958062 bytes)
+- candidates/zangief/modern/candidate-edges.json  (482895 bytes)
+- candidates/zangief/modern/candidate-routes.json  (6514643 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

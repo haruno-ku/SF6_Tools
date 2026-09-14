@@ -49,6 +49,7 @@ local SUITES = {
     "tests.lua.test_graphstore",
     "tests.lua.test_routesearch",
     "tests.lua.test_scoring",
+    "tests.lua.test_damagescaling",
     "tests.lua.test_sequencecompiler",
     "tests.lua.test_exporter",
     "tests.lua.test_resultcollector",

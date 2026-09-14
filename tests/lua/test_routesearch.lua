@@ -320,6 +320,18 @@ do
     local stacked = only(res, "1:manual>2:manual>drc>4:manual")
     t.ok(stacked ~= nil, "a rush into an OD special is within a 60000 budget")
     t.eq(stacked.basis.predicted_drive_spend, 50000, "at 30000 for the rush plus 20000 for OD")
+
+    -- Per-move figures, for a per-move model to work from. One entry per MOVE,
+    -- so the rush step has none, and each names the step it belongs to.
+    local mf = stacked.basis.move_frame_facts
+    t.eq(#mf, 3, "the route carries one frame fact per move, not per step")
+    t.eq(mf[1].predicted_damage, 300, "the first move's own damage figure")
+    t.eq(mf[3].predicted_damage, 1400, "and the last one's, after the rush")
+    t.eq(mf[3].step_index, 4, "which names step 4, past the rush")
+    t.eq(mf[3].super_gain, 500, "with its super gain beside it")
+    local fact_sum = 0
+    for _, f in ipairs(mf) do fact_sum = fact_sum + f.predicted_damage end
+    t.eq(fact_sum, stacked.basis.predicted_damage_sum, "and they add up to the route's own sum")
     -- Two rushes and an OD special is 80000: over a full gauge.
     t.is_nil(only(res, "1:manual>drc>2:manual>drc>4:manual"),
              "two rushes then an OD special (80000) is over a full gauge")

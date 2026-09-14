@@ -31,6 +31,7 @@ local CG        = require("func/ComboExplorer/core/CandidateGenerator")
 local GraphStore = require("func/ComboExplorer/core/GraphStore")
 local RouteSearch = require("func/ComboExplorer/core/RouteSearch")
 local Scoring   = require("func/ComboExplorer/core/Scoring")
+local DamageScaling = require("func/ComboExplorer/core/DamageScaling")
 local Exporter  = require("func/ComboExplorer/core/Exporter")
 local Schema    = require("func/ComboExplorer/core/Schema")
 
@@ -722,6 +723,30 @@ for n, route in ipairs(Scoring.rank(routes, Scoring.AXES.DAMAGE, opt.top)) do
     say("%-3d %-44s %8d %6.1f %-7s %d", n, render(route),
         s.predicted_damage or 0, s.execution_cost, s.theoretical_confidence or "?",
         #(route.requires_runtime_validation or {}))
+end
+say("")
+
+-- The same question under a scaling MODEL (core/DamageScaling). Next to the
+-- unscaled list rather than instead of it, and labelled, because the model is
+-- from public write-ups and has not been checked against this build.
+say("## Top %d by predicted scaled damage (model)", opt.top)
+say("")
+do
+    local model = DamageScaling.model()
+    say("A MODEL, NOT A DAMAGE FIGURE. Each move's frame-table damage times a")
+    say("per-move factor from public descriptions of SF6 scaling (%s,", model.id)
+    say("verified = %s): 100/100/80/70.. per move, a light-normal starter", tostring(model.verified))
+    say("100/80/70.., floor 10%, x0.85 after a Drive Rush, x0.8 on SP moves, and")
+    say("the Super Art minimum. Not modelled: %d things, listed in", #model.not_modelled)
+    say("scaling_model.not_modelled on every route. Used for ordering only.")
+end
+say("")
+say("%-3s %-44s %8s %8s %6s %-7s", "#", "route", "scaled~", "dmg~", "cost", "conf")
+for n, route in ipairs(Scoring.rank(routes, Scoring.AXES.SCALED_DAMAGE, opt.top)) do
+    local s = route.offline_score
+    say("%-3d %-44s %8s %8d %6.1f %-7s", n, render(route),
+        s.predicted_damage_scaled and ("%.0f"):format(s.predicted_damage_scaled) or "-",
+        s.predicted_damage or 0, s.execution_cost, s.theoretical_confidence or "?")
 end
 say("")
 
