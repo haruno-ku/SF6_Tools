@@ -174,6 +174,16 @@ M.RUNTIME_UNKNOWNS = {
     -- no knockdown property at all - so a large on-hit number is a suspicion,
     -- not a fact, and the game has to settle it.
     KNOCKDOWN        = "knockdown_vs_link_advantage",
+    -- A pair joined by a Drive Rush Cancel rests on four things nobody has
+    -- measured on this build, and any one of them can make it unpressable or
+    -- make its frame figure mean something else: how Drive Rush is pressed at
+    -- all (the Modern parry bit has never been witnessed, and 66 needs a
+    -- measured neutral in between), which action id a Drive Rush Cancel is
+    -- (500, 501 and 504 are all claimed by one document or another -
+    -- docs/ComboExplorer/plan-v3-implementation.md), whether the source's
+    -- drc_on_hit already includes the +4 a normal gains after a rush, and
+    -- whether the combo counter survives the rush. The edge carries the detail.
+    DRIVE_RUSH       = "drive_rush_execution",
 }
 
 -- Applies to every candidate, whatever the frame table says. Spacing decides

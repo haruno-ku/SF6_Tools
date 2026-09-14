@@ -659,4 +659,58 @@ do
     t.eq(blind, 0, "and a lookup with no band passed in finds none of them")
 end
 
+-- --- Drive Rush Cancel -------------------------------------------------------
+
+t.group("drive rush cancel figures, and the record itself")
+
+do
+    -- The fixture generator writes drc_on_hit / drc_on_block only when the
+    -- source has a Drive Rush Cancel block, so these two records are the two
+    -- facts CandidateGenerator has to keep apart: 2MP can rush, 5MP is listed
+    -- and cannot.
+    local mp2 = idx.by_key["2MP"]
+    t.eq(FD.drc_on_hit(mp2), 12, "2MP's drc_on_hit is read from its record")
+    t.eq(FD.drc_on_block(mp2), 8, "and its drc_on_block")
+    local mp5 = idx.by_key["5MP"]
+    t.ok(mp5 ~= nil, "5MP has a record")
+    t.is_nil(FD.drc_on_hit(mp5), "which carries no drc_on_hit")
+    t.is_nil(FD.drc_on_block(mp5), "and no drc_on_block")
+    t.is_nil(FD.drc_on_hit(nil), "no record is nil, not zero")
+    t.is_nil(FD.drc_on_block(nil), "on block as well")
+    t.eq(FD.drc_on_hit({ drc_on_hit = "7" }), 7, "a number written as a string is read as one")
+
+    -- The record, by its whole numpad.
+    local drc = FD.drive_rush_cancel(idx)
+    t.ok(drc ~= nil, "the Drive Rush Cancel record is found")
+    t.eq(drc.numpad, "MPMK or 66", "by its source spelling")
+    t.eq(drc.name_en, "Drive Rush Cancel", "and it is the move it says it is")
+    t.eq(FD.startup(drc), 9, "startup 9, from the source")
+    t.eq(drc.recovery, 15, "recovery 15")
+    t.eq(FD.drive_gain(drc), -30000, "and a drive gain of -30000: the cost, recorded as a spend")
+
+    -- The reason it is not found by key: MPMK belongs to Drive Parry first.
+    t.eq(idx.by_key["MPMK"].name_en, "Drive Parry",
+         "the MPMK key is Drive Parry's, which is why the key is not asked")
+    t.ok((idx.duplicates["MPMK"] or 0) >= 2, "and the index records the collision")
+
+    t.eq(#idx.records, #RAW_FRAMES.moves, "the index keeps every record, collisions included")
+
+    -- Absent is nil.
+    local moves = {}
+    for _, mv in ipairs(RAW_FRAMES.moves) do
+        if mv.numpad ~= "MPMK or 66" then moves[#moves + 1] = mv end
+    end
+    local without = FD.index({ _meta = RAW_FRAMES._meta, moves = moves })
+    t.is_nil(FD.drive_rush_cancel(without), "an index with no such record gives nil")
+    t.is_nil(FD.drive_rush_cancel(nil), "no index gives nil")
+
+    -- A hand-built index with no records list still answers, from its keys.
+    local hand = { by_key = { ["66"] = drc, MPMK = idx.by_key["MPMK"] }, keys = { "66", "MPMK" } }
+    t.eq(FD.drive_rush_cancel(hand), drc, "an index without records falls back to its keys")
+
+    -- The comment this replaces said an OD move's drive cost appears nowhere.
+    t.eq(FD.drive_gain(idx.by_key["360+PP"]), -20000,
+         "an OD move's drive cost is in the source, as a negative gain on its own record")
+end
+
 return t.finish()

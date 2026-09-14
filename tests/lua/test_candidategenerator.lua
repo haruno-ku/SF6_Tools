@@ -500,4 +500,332 @@ do
     end
 end
 
+-- --- Drive Rush Cancel ---------------------------------------------------------
+
+local json = dofile("tools/lua/json.lua")
+
+local function drc_split(r)
+    local edges, by_id, excl = {}, {}, {}
+    for _, e in ipairs(r.candidates) do
+        if CG.is_drive_rush(e) then edges[#edges + 1] = e; by_id[e.id] = e end
+    end
+    for _, x in ipairs(r.excluded) do
+        if CG.is_drive_rush(x) then excl[#excl + 1] = x end
+    end
+    return edges, by_id, excl
+end
+
+local function has(list, v)
+    for _, x in ipairs(list or {}) do if x == v then return true end end
+    return false
+end
+
+t.group("drive rush: off by default, and off changes nothing")
+
+do
+    local default = CG.generate(cat, idx, { from = GROUND, include_followups = true })
+    local off = CG.generate(cat, idx, { from = GROUND, include_followups = true,
+                                        include_drive_rush = false })
+    local function fingerprint(r)
+        local rows = {}
+        for _, e in ipairs(r.candidates) do
+            rows[#rows + 1] = { e.id, e.confidence, e.reasons, e.basis }
+        end
+        return json.encode({ rows, r.excluded, r.stats })
+    end
+    t.eq(fingerprint(off), fingerprint(default), "include_drive_rush = false is the default")
+    local any_via, any_drc_stat = false, false
+    for _, e in ipairs(default.candidates) do if e.via ~= nil then any_via = true end end
+    for _, x in ipairs(default.excluded) do if x.via ~= nil then any_via = true end end
+    for k in pairs(default.stats) do if tostring(k):find("^drc_") then any_drc_stat = true end end
+    t.ok(not any_via, "no record carries `via` with the option off")
+    t.ok(not any_drc_stat, "and no drc_ stat exists")
+    t.ok(default.stats.by_reason.drive_rush_cancel == nil,
+         "the reason that could never fire still does not, on a plain edge")
+
+    -- With it on, the plain half is exactly the run with it off.
+    local on = CG.generate(cat, idx, { from = GROUND, include_followups = true,
+                                       include_drive_rush = true })
+    local plain = { candidates = {}, excluded = {}, stats = {} }
+    for _, e in ipairs(on.candidates) do
+        if not CG.is_drive_rush(e) then plain.candidates[#plain.candidates + 1] = e end
+    end
+    for _, x in ipairs(on.excluded) do
+        if not CG.is_drive_rush(x) then plain.excluded[#plain.excluded + 1] = x end
+    end
+    local rows_on, rows_off = {}, {}
+    for _, e in ipairs(plain.candidates) do rows_on[#rows_on + 1] = { e.id, e.confidence, e.reasons, e.basis } end
+    for _, e in ipairs(default.candidates) do rows_off[#rows_off + 1] = { e.id, e.confidence, e.reasons, e.basis } end
+    t.eq(json.encode(rows_on), json.encode(rows_off),
+         "with it on, the plain edges are the same edges in the same order")
+    t.eq(json.encode(plain.excluded), json.encode(default.excluded),
+         "and the plain exclusions are the same")
+    for _, k in ipairs({ "pairs_considered", "candidates", "excluded", "followup_edges" }) do
+        t.eq(on.stats[k], default.stats[k], "stats." .. k .. " still counts the plain edges")
+    end
+    t.eq(json.encode(on.stats.by_reason), json.encode(default.stats.by_reason),
+         "by_reason is unchanged")
+    t.eq(json.encode(on.stats.by_confidence), json.encode(default.stats.by_confidence),
+         "by_confidence is unchanged")
+end
+
+t.group("drive rush: an edge built on drc_on_hit")
+
+local drc_run = CG.generate(cat, idx, { from = GROUND, include_followups = true,
+                                        include_drive_rush = true })
+local drc_edges, drc_by_id, drc_excl = drc_split(drc_run)
+
+do
+    t.ok(#drc_edges > 0, "DRC edges are produced (" .. #drc_edges .. ")")
+
+    -- 2MP (621) is +12 after a Drive Rush Cancel; 5LP (601) starts in 7.
+    local e = drc_by_id["621:manual->drc->601:manual"]
+    t.ok(e ~= nil, "2MP -> DRC -> 5LP is a candidate, under its own id")
+    t.eq(e.via, "drive_rush_cancel", "via names the mechanism")
+    t.eq_list(e.reasons, { "drive_rush_cancel" }, "with the one reason")
+    t.eq(e.basis.from_drc_on_hit, 12, "from_drc_on_hit from the source")
+    t.eq(e.basis.from_drc_on_block, 8, "and from_drc_on_block")
+    t.eq(e.basis.to_startup, 7, "B's startup")
+    t.eq(e.basis.drc_margin_frames, 5, "drc_margin = 12 - 7")
+    t.is_nil(e.basis.margin_frames, "and no plain margin sits beside it to be misread")
+    t.eq(e.basis.drive_cost, 30000, "the drive cost, read from the DRC record's gain")
+    t.eq(e.basis.drc_record.startup, 9, "the DRC record's startup travels with the edge")
+    t.eq(e.basis.drc_record.recovery, 15, "and its recovery")
+    t.eq(e.confidence, "high", "a known margin of 5 is high")
+    t.eq(e.context_dependent, false, "a DRC edge is not a follow-up edge")
+    t.ok(Schema.validate(Schema.KIND.EDGE, e), "it validates as an edge")
+
+    local u = {}
+    for _, x in ipairs(e.requires_runtime_validation) do u[x] = true end
+    t.ok(u.pushback_range and u.modern_specific_scaling and u.actual_input_timing,
+         "it carries the three standing unknowns")
+    t.ok(u[Schema.RUNTIME_UNKNOWNS.DRIVE_RUSH], "and the Drive Rush one")
+    local why = e.unknown_detail[Schema.RUNTIME_UNKNOWNS.DRIVE_RUSH] or ""
+    t.ok(why:find("500", 1, true) and why:find("+4", 1, true) and why:find("combo counter", 1, true)
+         and why:find("66", 1, true),
+         "whose detail names the input, the action id, the +4 and the counter")
+    t.ok(u.cancel_window_conditions, "and the cancel window the source does not give")
+    for _, x in ipairs(e.requires_runtime_validation) do
+        t.ok(type(e.unknown_detail[x]) == "string" and #e.unknown_detail[x] > 0,
+             ("unknown %s says why it applies"):format(x))
+    end
+
+    local bad = 0
+    for _, d in ipairs(drc_edges) do
+        if not Schema.validate(Schema.KIND.EDGE, d) then bad = bad + 1 end
+        if not d.id:find("->drc->", 1, true) then bad = bad + 1 end
+    end
+    t.eq(bad, 0, "every DRC edge validates and is spelled A->drc->B")
+    t.eq(drc_run.stats.drc_edges, #drc_edges, "stats.drc_edges counts them")
+    local sum = 0
+    for _, n in pairs(drc_run.stats.drc_by_confidence) do sum = sum + n end
+    t.eq(sum, #drc_edges, "and drc_by_confidence adds up to them")
+
+    -- A thin margin is medium, not high.
+    local thin = drc_by_id["601:manual->drc->617:manual"]
+    t.ok(thin ~= nil, "5LP -> DRC -> 2LP is a candidate")
+    t.eq(thin.basis.drc_margin_frames, 0, "at a margin of 0 (6 - 6)")
+    t.eq(thin.confidence, "medium", "which is medium")
+end
+
+t.group("drive rush: a known negative margin excludes, with the number")
+
+do
+    -- 5LP is +6 after a rush; 2MP starts in 8.
+    t.is_nil(drc_by_id["601:manual->drc->621:manual"], "5LP -> DRC -> 2MP is not a candidate")
+    local x
+    for _, r in ipairs(drc_excl) do
+        if r.from == 601 and r.to == 621 then x = r end
+    end
+    t.ok(x ~= nil, "it is in the excluded list")
+    t.eq(x.reason, "drc_margin_negative", "under its own reason")
+    t.eq(CG.EXCLUDED.DRC_MARGIN_NEGATIVE, "drc_margin_negative", "which has a stable name")
+    t.eq(x.drc_margin_frames, -2, "carrying the number that decided it")
+    t.eq(x.via, "drive_rush_cancel", "and marked as the rush's")
+    t.ok(drc_run.stats.by_exclusion.drc_margin_negative > 0, "counted in by_exclusion")
+
+    -- The cutoff moves it, as it moves the plain margin.
+    local generous = CG.generate(cat, idx, { from = GROUND, include_followups = false,
+                                             include_drive_rush = true, margin_cutoff = -2 })
+    local _, g_by_id = drc_split(generous)
+    t.ok(g_by_id["601:manual->drc->621:manual"] ~= nil, "a cutoff of -2 admits it")
+end
+
+t.group("drive rush: unknown numbers keep the pair, at low")
+
+do
+    -- 5HP (637) has no startup in the source.
+    local e = drc_by_id["621:manual->drc->637:manual"]
+    t.ok(e ~= nil, "2MP -> DRC -> 5HP survives an unknown startup")
+    t.eq(e.confidence, "low", "at low confidence")
+    t.ok(has(e.reasons, "frame_data_incomplete"), "naming the gap as a reason")
+    t.is_nil(e.basis.drc_margin_frames, "with no margin invented")
+    t.ok((e.unknown_detail.cancel_window_conditions or ""):find("to_startup", 1, true),
+         "and the missing field named")
+end
+
+t.group("drive rush: a record without drc_on_hit is the source saying no")
+
+do
+    -- 5MP (604) has a record and no Drive Rush Cancel in it.
+    local from_604, excl_604 = 0, 0
+    for _, e in ipairs(drc_edges) do if e.from.action_id == 604 then from_604 = from_604 + 1 end end
+    for _, x in ipairs(drc_excl) do if x.from == 604 then excl_604 = excl_604 + 1 end end
+    t.eq(from_604, 0, "5MP starts no DRC edge")
+    t.eq(excl_604, 0, "and is not excluded once per target either")
+    t.ok(drc_run.stats.drc_not_cancelable >= 1, "it is counted once, as a move")
+    local named = false
+    for _, m in ipairs(drc_run.stats.drc_not_cancelable_moves) do
+        if m:find("^604:manual") then named = true end
+    end
+    t.ok(named, "by name")
+    t.eq(drc_run.stats.drc_starters_known + drc_run.stats.drc_starters_unknown
+         + drc_run.stats.drc_not_cancelable, drc_run.stats.from_moves,
+         "every starter is accounted for in exactly one of the three counts")
+    -- 5MP is still a B.
+    t.ok(drc_by_id["621:manual->drc->604:manual"] ~= nil, "5MP can still come out of a rush")
+end
+
+t.group("drive rush: no record for A is not a no")
+
+do
+    -- The same source without 5MP's record: now nothing is known about 5MP,
+    -- and it has to be a DRC candidate again.
+    local raw = dofile("data/frame-data/zangief.lua")
+    local moves = {}
+    for _, mv in ipairs(raw.moves) do
+        if mv.numpad ~= "5MP" then moves[#moves + 1] = mv end
+    end
+    local no_5mp = FrameData.index({ _meta = raw._meta, moves = moves })
+    t.is_nil(FrameData.lookup(no_5mp, "MP"), "5MP has no record in this index")
+    local r = CG.generate(cat, no_5mp, { from = GROUND, include_followups = false,
+                                         include_drive_rush = true })
+    local edges = drc_split(r)
+    local n, low, unknown_named = 0, 0, 0
+    for _, e in ipairs(edges) do
+        if e.from.action_id == 604 then
+            n = n + 1
+            if e.confidence == "low" then low = low + 1 end
+            if (e.unknown_detail.cancel_window_conditions or ""):find("from_drc_on_hit", 1, true) then
+                unknown_named = unknown_named + 1
+            end
+        end
+    end
+    t.ok(n > 0, "5MP starts DRC edges again (" .. n .. ")")
+    t.eq(low, n, "every one of them low")
+    t.eq(unknown_named, n, "each naming from_drc_on_hit as the gap")
+    t.ok(r.stats.drc_starters_unknown >= 1, "and 5MP is counted as unknown, not as cannot")
+
+    -- With no frame data at all, every starter is unknown and nothing is
+    -- excluded on a number.
+    local blind = CG.generate(cat, nil, { from = GROUND, include_followups = false,
+                                          include_drive_rush = true })
+    local b_edges, _, b_excl = drc_split(blind)
+    t.eq(blind.stats.drc_not_cancelable, 0, "without frame data no starter is declared unable")
+    t.eq(#b_excl, 0, "and no DRC pair is excluded")
+    t.eq(#b_edges, blind.stats.from_moves * blind.stats.to_moves, "every crossing is a DRC edge")
+    local not_low, cost = 0, 0
+    for _, e in ipairs(b_edges) do
+        if e.confidence ~= "low" then not_low = not_low + 1 end
+        if e.basis.drive_cost ~= nil then cost = cost + 1 end
+    end
+    t.eq(not_low, 0, "all of them low")
+    t.eq(cost, 0, "and no drive cost is invented without the DRC record")
+    t.eq(blind.stats.drc_record_found, false, "the missing record is said")
+end
+
+t.group("drive rush: a move into itself through a rush")
+
+do
+    -- 2MP does not chain, so 2MP -> 2MP is excluded as a plain pair. Through a
+    -- rush it is +12 into a startup of 8.
+    t.is_nil(by_id["621:manual->621:manual"], "2MP -> 2MP is still not a plain candidate")
+    local e = drc_by_id["621:manual->drc->621:manual"]
+    t.ok(e ~= nil, "2MP -> DRC -> 2MP is a candidate")
+    t.eq(e.basis.drc_margin_frames, 4, "at a margin of 4")
+    t.eq(e.confidence, "high", "and nothing about being a self pair lowers it")
+    local self_excl = 0
+    for _, x in ipairs(drc_excl) do
+        if x.reason == "self_pair_without_chain" then self_excl = self_excl + 1 end
+    end
+    t.eq(self_excl, 0, "no DRC exclusion uses the chain rule")
+end
+
+t.group("drive rush: no follow-up comes out of a rush")
+
+do
+    local reason = CG.EXCLUDED.FOLLOWUP_AFTER_DRIVE_RUSH
+    t.eq(reason, "followup_after_drive_rush", "the reason has a stable name")
+    local into_fu = 0
+    for _, e in ipairs(drc_edges) do
+        if e.to.action_id == 605 or e.to.action_id == 606
+            or e.to.action_id == 679 or e.to.action_id == 680 then into_fu = into_fu + 1 end
+    end
+    t.eq(into_fu, 0, "no DRC edge ends on a follow-up")
+
+    local listed, per_pair, bad = 0, {}, 0
+    for _, x in ipairs(drc_excl) do
+        if x.reason == reason then
+            listed = listed + 1
+            local k = x.from .. ">" .. x.to
+            if per_pair[k] then bad = bad + 1 end
+            per_pair[k] = true
+            if x.to_exclusion ~= "followup" then bad = bad + 1 end
+            if x.from == 604 then bad = bad + 1 end
+        end
+    end
+    local capable = drc_run.stats.drc_starters_known + drc_run.stats.drc_starters_unknown
+    t.eq(listed, capable * 4, ("each starter that could rush, times the 4 follow-ups (%d)"):format(listed))
+    t.eq(drc_run.stats.by_exclusion[reason], listed, "counted in by_exclusion")
+    t.eq(bad, 0, "once per pair, each carrying the catalog's mark, none from a starter that cannot rush")
+
+    -- Every DRC exclusion carries the value that decided it.
+    local undecided = 0
+    for _, x in ipairs(drc_excl) do
+        local justified
+        if x.reason == "drc_margin_negative" then
+            justified = type(x.drc_margin_frames) == "number" and x.drc_margin_frames < 0
+        elseif x.reason == reason then
+            justified = x.to_exclusion == "followup"
+        end
+        if not justified then undecided = undecided + 1 end
+    end
+    t.eq(undecided, 0, "no DRC pair is excluded without what decided it")
+    t.eq(drc_run.stats.drc_excluded, #drc_excl, "stats.drc_excluded counts them")
+    t.ok(CG.DRC_EXCLUSIONS[reason] and CG.DRC_EXCLUSIONS.drc_margin_negative,
+         "and both reasons are named as the rush's")
+end
+
+t.group("drive rush: a guessed record's silence is not the move's")
+
+do
+    -- 785 ("22+HK") joins to a record the two sources disagree about. That
+    -- record has no drc_on_hit - but it may not be this move's record, so its
+    -- silence may not stand in for the move's.
+    local r = CG.generate(cat, idx, {
+        from = { categories = { "normal", "command_normal", "special", "throw" },
+                 input_methods = { "manual" } },
+        to = GROUND, include_followups = false, include_drive_rush = true })
+    local edges = drc_split(r)
+    local from785, low, flagged = 0, 0, 0
+    for _, e in ipairs(edges) do
+        if e.from.action_id == 785 then
+            from785 = from785 + 1
+            if e.confidence == "low" then low = low + 1 end
+            if e.unknown_detail.frame_data_variant_ambiguous then flagged = flagged + 1 end
+        end
+    end
+    local declared = false
+    for _, m in ipairs(r.stats.drc_not_cancelable_moves) do
+        if m:find("^785:") then declared = true end
+    end
+    t.ok(not declared, "785 is not declared unable to rush on a guessed record")
+    if from785 > 0 then
+        t.eq(low, from785, "its DRC edges are low")
+        t.eq(flagged, from785, "and say the join was uncertain")
+    else
+        t.ok(true, "785 is not a starter in this scope")
+    end
+end
+
 return t.finish()

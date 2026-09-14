@@ -207,6 +207,15 @@ local function measure(entry)
             -- of chains that name them; an empty list would be silence
             -- dressed up as a statement.
             justified = type(x.parent_records) == "table" and #x.parent_records > 0
+        elseif x.reason == "drc_margin_negative" then
+            -- The Drive Rush pass is off in this survey, so these never appear
+            -- today. Written anyway, so turning it on cannot quietly count its
+            -- exclusions as decided by nothing: the DRC margin is the number.
+            justified = type(x.drc_margin_frames) == "number"
+        elseif x.reason == "followup_after_drive_rush" then
+            -- The catalog's own mark that B is a derivation, which never comes
+            -- out of a rush.
+            justified = (x.to_exclusion == "followup")
         else
             justified = false      -- no_mechanism_found carries no evidence by design
         end

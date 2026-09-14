@@ -58,6 +58,63 @@
 -- An edge whose parent the source DOES name carries context_known = true.
 -- That is the vouching SequenceCompiler.unplayable asks for: the worklist
 -- carries it, and the sweep plays the pair instead of setting it aside.
+--
+-- DRIVE RUSH CANCEL EDGES: A -> (drive rush) -> B
+--
+-- Off unless opts.include_drive_rush is set, so every existing output is the
+-- same with the option absent. When it is on, a second kind of edge is built
+-- beside the plain ones: A is cancelled into a Drive Rush, and B comes out of
+-- the rush. It is a different mechanism with a different number, so it is a
+-- different edge - id "A->drc->B", `via = "drive_rush_cancel"` - and never a
+-- second reason on the plain A -> B edge. A pair that does not link can be a
+-- fine DRC pair, and a caller that searches routes over plain edges must not
+-- pick up a rush it did not ask for by reading a reason list.
+--
+-- Which As can do it is read from the source, and read with the same care as
+-- everything else here. The fixture generator writes drc_on_hit / drc_on_block
+-- only when the source has a Drive Rush Cancel block for the move. So:
+--
+--   * A's record present with drc_on_hit: a DRC edge, judged on
+--     drc_margin = drc_on_hit - B.startup.
+--   * A's record present with neither field: the source listing the move and
+--     giving it no Drive Rush Cancel. That is a statement - the same class as a
+--     cancel list without "chain" in it - and A gets no DRC pairs. It is
+--     counted ONCE per move in stats.drc_not_cancelable, not once per B as an
+--     exclusion: the source says it once, about the move, and thirty-three
+--     copies of one sentence in the excluded list would bury the exclusions
+--     that are about pairs.
+--   * A's record absent, or joined only by guessing: nothing is known, so every
+--     B is still a DRC candidate at low confidence with the gap named. A
+--     guessed record's silence is not the move's silence, and unlike a margin
+--     exclusion this decision leaves no per-pair record behind to argue with,
+--     so a guess may not make it.
+--
+-- A KNOWN drc_margin below the cutoff excludes, with the number, under its own
+-- reason (drc_margin_negative) - the plain frame_margin_negative is a
+-- different number about a different sequence.
+--
+-- A self pair (5LP -> DRC -> 5LP) is allowed. SELF_NOT_CHAINABLE is a rule
+-- about chaining a move into itself; the rush in between is exactly what lets
+-- the same button come out twice.
+--
+-- A follow-up is never B after a rush. A derivation only comes out of its
+-- parent with nothing in between, and a Drive Rush is in between by
+-- definition, so every (A, follow-up) crossing of an A that could rush is
+-- excluded under followup_after_drive_rush, once per pair, carrying the
+-- catalog's own statement that B is a derivation. Chosen over a bare counter
+-- because it is the precedent FOLLOWUP_NOT_AFTER_PARENT set: a pair that was
+-- considered and ruled out on structure is in the excluded list where a reader
+-- can see it, and it is bounded - starters times follow-ups, 4 follow-ups for
+-- Zangief.
+--
+-- Everything DRC is counted apart from the plain edges: stats.drc_* for edges,
+-- confidence and pairs, so by_reason / by_confidence / pairs_considered /
+-- candidates / excluded still describe the plain edges alone. The two exclusion reasons DO land in
+-- stats.by_exclusion, because every exclusion in the list is counted there -
+-- M.DRC_EXCLUSIONS names them so a reader of by_exclusion can tell them apart.
+--
+-- None of these can be pressed yet. How Drive Rush is input on this build, and
+-- which action id a DRC is, are unmeasured (RUNTIME_UNKNOWNS.DRIVE_RUSH).
 
 local Schema = require("func/ComboExplorer/core/Schema")
 local FrameData = require("func/ComboExplorer/core/FrameData")
@@ -84,7 +141,27 @@ M.EXCLUDED = {
     -- Structure, not a gap: see "A FOLLOW-UP AFTER A MOVE THAT IS NOT ITS
     -- PARENT" above for why this is not an exclusion for missing information.
     FOLLOWUP_NOT_AFTER_PARENT = "followup_after_a_move_not_its_parent",
+    -- A -> DRC -> B where the source's drc_on_hit for A leaves B's startup
+    -- short. The number travels as drc_margin_frames.
+    DRC_MARGIN_NEGATIVE = "drc_margin_negative",
+    -- A -> DRC -> a derivation. See "DRIVE RUSH CANCEL EDGES" above.
+    FOLLOWUP_AFTER_DRIVE_RUSH = "followup_after_drive_rush",
 }
+
+-- The exclusion reasons only the Drive Rush pass produces, so a consumer that
+-- reports plain edges can leave them out of its own by_exclusion table.
+M.DRC_EXCLUSIONS = {
+    [M.EXCLUDED.DRC_MARGIN_NEGATIVE] = true,
+    [M.EXCLUDED.FOLLOWUP_AFTER_DRIVE_RUSH] = true,
+}
+
+-- What a DRC edge and a DRC exclusion carry as `via`.
+M.VIA_DRIVE_RUSH = "drive_rush_cancel"
+
+-- True for an edge or an exclusion the Drive Rush pass produced.
+function M.is_drive_rush(record)
+    return type(record) == "table" and record.via == M.VIA_DRIVE_RUSH
+end
 
 local U = Schema.RUNTIME_UNKNOWNS
 -- The producer names the vocabulary it produces, so a typo here is a nil index
@@ -132,6 +209,12 @@ local function edge_id(a, b)
     return ("%d:%s->%d:%s"):format(a.action_id, a.input_method, b.action_id, b.input_method)
 end
 
+-- Distinct from edge_id on purpose: the same two moves can be a plain edge and
+-- a DRC edge at once, and they are two different sequences.
+local function drc_edge_id(a, b)
+    return ("%d:%s->drc->%d:%s"):format(a.action_id, a.input_method, b.action_id, b.input_method)
+end
+
 -- The frame data stores some numbers as strings. Kept local rather than added
 -- to FrameData's accessor list, because these are carried through as evidence
 -- rather than reasoned about here.
@@ -146,13 +229,12 @@ end
 -- Everything the two frame records say about this pair, without deciding
 -- anything. Kept separate so the reasoning is inspectable and testable on its
 -- own.
-local function assess(a_row, b_row, a_frame, b_frame, opts)
-    local out = {
-        reasons = {},
-        basis = {},
-        unknowns = {},
-    }
-
+--
+-- The numbers about the two moves themselves - what A is and what B needs - are
+-- filled by frames_of_pair, which the Drive Rush pass shares. Only the
+-- judgement differs between a link and a rush; the evidence carried about the
+-- moves must not, or a worklist reader would see two different 5LPs.
+local function frames_of_pair(out, a_frame, b_frame, opts)
     local a_on_hit = FrameData.on_hit(a_frame)
     local b_startup = FrameData.startup(b_frame)
 
@@ -195,6 +277,18 @@ local function assess(a_row, b_row, a_frame, b_frame, opts)
         out.basis.from_is_throw = true
     end
 
+    return a_on_hit, b_startup
+end
+
+local function assess(a_row, b_row, a_frame, b_frame, opts)
+    local out = {
+        reasons = {},
+        basis = {},
+        unknowns = {},
+    }
+
+    local a_on_hit, b_startup = frames_of_pair(out, a_frame, b_frame, opts)
+
     -- 1. A plain link: A recovers with enough advantage for B to start.
     if a_on_hit ~= nil and b_startup ~= nil then
         local margin = a_on_hit - b_startup
@@ -226,9 +320,12 @@ local function assess(a_row, b_row, a_frame, b_frame, opts)
     if is_super(b_row) and cancel("super") == true then
         out.reasons[#out.reasons + 1] = M.REASON.SUPER_CANCEL
     end
-    if cancel("drive_rush") == true then
-        out.reasons[#out.reasons + 1] = M.REASON.DRIVE_RUSH_CANCEL
-    end
+    -- There used to be a `cancel("drive_rush")` check here. It could never
+    -- fire: no source record lists "drive_rush" among its cancels - the source
+    -- says a move can rush by carrying drc_on_hit, not in the cancel list - so
+    -- DRIVE_RUSH_CANCEL was a reason no edge had ever been given. A rush is a
+    -- sequence of its own, with its own number, and is built as its own edge by
+    -- the Drive Rush pass in generate().
     if b_row.followup and cancel("target_combo") == true then
         out.reasons[#out.reasons + 1] = M.REASON.TARGET_COMBO
     end
@@ -274,6 +371,23 @@ local function confidence_of(a)
     return C.LOW
 end
 
+-- The same judgement for a Drive Rush Cancel edge, on the DRC margin. Kept as
+-- its own function rather than a flag on confidence_of because the inputs are
+-- not the same: a DRC edge has no cancel reasons to lean on, and its margin is
+-- a different number that must never be read from margin_frames.
+--
+-- Same spirit, same thresholds: an unknown or a guessed join is low; a known
+-- margin of 3 or more is high unless a suspected knockdown caps it; a known
+-- margin that is thinner than that is medium.
+local function drc_confidence_of(a)
+    if #a.unknowns > 0 then return C.LOW end
+    if a.frame_join_uncertain then return C.LOW end
+    local m = a.basis.drc_margin_frames
+    if m == nil then return C.LOW end
+    if m >= 3 then return a.advantage_may_be_knockdown and C.MEDIUM or C.HIGH end
+    return C.MEDIUM
+end
+
 -- --- generation --------------------------------------------------------------
 
 -- catalog     : from core/Catalog.lua
@@ -281,6 +395,9 @@ end
 --               confidence, and nothing is excluded for lack of numbers)
 -- opts.from / opts.to : row filters, as accepted by Catalog.probeable
 -- opts.include_followups : also emit A -> follow-up edges (default true)
+-- opts.include_drive_rush : also emit A -> DRC -> B edges (default false). They
+--               are appended to `candidates` / `excluded` after every plain
+--               record and carry `via = "drive_rush_cancel"`; see the header.
 --
 -- Returns { candidates, excluded, stats }.
 function M.generate(catalog, frame_idx, opts)
@@ -571,8 +688,235 @@ function M.generate(catalog, frame_idx, opts)
         end
     end
 
-    stats.candidates = #candidates
-    stats.excluded = #excluded
+    -- --- the Drive Rush pass ---------------------------------------------------
+    --
+    -- After the plain loop and appended, so the plain records come out in
+    -- exactly the order they always did and a caller that drops `via` records
+    -- is left with the list it had before the option existed.
+    if opts.include_drive_rush then
+        -- The DRC record, by its whole numpad (FrameData.drive_rush_cancel says
+        -- why not by key). Its drive_gain is the cost: the source records a
+        -- spend as a negative gain, so -(-30000) is 30000, read rather than
+        -- written down here. No record, no cost - nil, not a remembered figure.
+        local drc_rec = frame_idx and FrameData.drive_rush_cancel(frame_idx) or nil
+        local drc_gain = FrameData.drive_gain(drc_rec)
+        local drive_cost = drc_gain and -drc_gain or nil
+        local drc_record = drc_rec and {
+            startup = FrameData.startup(drc_rec),
+            recovery = num_or_nil(drc_rec.recovery),
+        } or nil
+
+        stats.drc_pairs_considered = 0
+        stats.drc_edges = 0
+        stats.drc_excluded = 0
+        stats.drc_by_confidence = {}
+        -- Starters the source gives a drc_on_hit, starters nobody knows about
+        -- (no record, or a guessed one), and starters the source lists without
+        -- one - the last with their notations, because "3 moves cannot" is
+        -- only checkable if it says which three.
+        stats.drc_starters_known = 0
+        stats.drc_starters_unknown = 0
+        stats.drc_not_cancelable = 0
+        stats.drc_not_cancelable_moves = {}
+        stats.drc_record_found = drc_rec ~= nil
+
+        local function drc_exclude(entry, reason)
+            entry.via = M.VIA_DRIVE_RUSH
+            entry.reason = reason
+            excluded[#excluded + 1] = entry
+            stats.by_exclusion[reason] = (stats.by_exclusion[reason] or 0) + 1
+            stats.drc_excluded = stats.drc_excluded + 1
+        end
+
+        local function consider_drc(a_row, b_row, a_frame, a_info)
+            stats.drc_pairs_considered = stats.drc_pairs_considered + 1
+
+            -- B is read on its own, never "after" A. The parent lookup exists
+            -- for a derivation spelled as a chain from the move before it, and
+            -- after a rush the move before B is the rush.
+            local b_frame, b_info = frame_for(b_row)
+
+            local a = { reasons = { M.REASON.DRIVE_RUSH_CANCEL }, basis = {}, unknowns = {} }
+            local _, b_startup = frames_of_pair(a, a_frame, b_frame, opts)
+
+            local drc_hit = FrameData.drc_on_hit(a_frame)
+            a.basis.from_drc_on_hit = drc_hit
+            a.basis.from_drc_on_block = FrameData.drc_on_block(a_frame)
+            a.basis.drive_cost = drive_cost
+            a.basis.drc_record = drc_record
+
+            -- The plain-link knockdown test looks at on_hit. After a rush the
+            -- advantage the reasoning rests on is drc_on_hit, so a large one of
+            -- those is the same suspicion.
+            if drc_hit ~= nil and drc_hit >= (opts.knockdown_suspicion_frames or 18) then
+                a.advantage_may_be_knockdown = true
+                a.basis.from_drc_on_hit_suspected_knockdown = true
+            end
+
+            local a_uncertain = FrameData.uncertain(a_info)
+            local b_uncertain = FrameData.uncertain(b_info)
+            if a_uncertain or b_uncertain then
+                a.frame_join_uncertain = true
+                a.basis.from_frame_key = a_info and a_info.key
+                a.basis.to_frame_key = b_info and b_info.key
+                a.basis.frame_join_guessed = true
+            end
+
+            if drc_hit ~= nil and b_startup ~= nil then
+                local m = drc_hit - b_startup
+                a.basis.drc_margin_frames = m
+                if m < (opts.margin_cutoff or 0) then
+                    -- Known, and it says no. Excluded with the number, like a
+                    -- plain negative margin, under a reason of its own.
+                    drc_exclude({
+                        from = a_row.action_id, to = b_row.action_id,
+                        from_notation = a_row.notation, to_notation = b_row.notation,
+                        drc_margin_frames = m,
+                        basis = a.basis,
+                    }, M.EXCLUDED.DRC_MARGIN_NEGATIVE)
+                    return
+                end
+            else
+                a.reasons[#a.reasons + 1] = M.REASON.FRAME_DATA_INCOMPLETE
+                if drc_hit == nil then a.unknowns[#a.unknowns + 1] = "from_drc_on_hit" end
+                if b_startup == nil then a.unknowns[#a.unknowns + 1] = "to_startup" end
+            end
+
+            local edge = Schema.new(Schema.KIND.EDGE, {
+                id = drc_edge_id(a_row, b_row),
+                via = M.VIA_DRIVE_RUSH,
+                from = { action_id = a_row.action_id, input_method = a_row.input_method,
+                         notation = a_row.notation, classic = a_row.classic,
+                         category = a_row.category,
+                         canonical_status = a_row.canonical_status },
+                to   = { action_id = b_row.action_id, input_method = b_row.input_method,
+                         notation = b_row.notation, classic = b_row.classic,
+                         category = b_row.category,
+                         canonical_status = b_row.canonical_status },
+                reasons = a.reasons,
+                basis = a.basis,
+                confidence = drc_confidence_of(a),
+                context_dependent = false,
+                requires_runtime_validation = {},
+                unknown_detail = {},
+                provenance = provenance,
+            })
+
+            -- The standing three, worded as on a plain edge.
+            add_unknown(edge, U.PUSHBACK_RANGE,
+                "the frame source records pushback as null; whether the two moves are still "
+                .. "in range after the first is only knowable in game")
+            add_unknown(edge, U.PUSHBACK_RANGE,
+                "a Drive Rush closes distance by an amount no frame table records, so the "
+                .. "range B is thrown from is not the range A hit at")
+            add_unknown(edge, U.MODERN_SCALING,
+                "Modern damage and its simple-input reduction appear in no frame table")
+            add_unknown(edge, U.INPUT_TIMING,
+                "the actual input window is what the sweep exists to measure")
+
+            -- What makes this edge a rush, all of it unmeasured.
+            add_unknown(edge, U.DRIVE_RUSH,
+                "how Drive Rush is pressed on this build is unmeasured: the Modern parry "
+                .. "button bit has never been witnessed, and 66 needs a measured neutral "
+                .. "between its two presses")
+            add_unknown(edge, U.DRIVE_RUSH,
+                "which action id a Drive Rush Cancel is on this build is disputed - 500, 501 "
+                .. "and 504 are each claimed (docs/ComboExplorer/plan-v3-implementation.md) "
+                .. "- so a trial cannot yet tell a rush that came out from one that did not")
+            add_unknown(edge, U.DRIVE_RUSH,
+                "whether the source's drc_on_hit already includes the +4 a normal gains "
+                .. "out of a rush is not stated, so drc_margin_frames may be four frames off")
+            add_unknown(edge, U.DRIVE_RUSH,
+                "whether the combo counter survives the rush between the two hits is unmeasured")
+            if drc_rec == nil then
+                add_unknown(edge, U.DRIVE_RUSH,
+                    "the frame source has no Drive Rush Cancel record, so neither the rush's "
+                    .. "drive cost nor its duration is known")
+            end
+
+            add_unknown(edge, U.CANCEL_WINDOW,
+                "the frame source gives the advantage after a Drive Rush Cancel, not the "
+                .. "window in which the first move can be cancelled into the rush")
+            for _, u in ipairs(a.unknowns) do
+                add_unknown(edge, U.CANCEL_WINDOW,
+                    "the frame source is missing " .. u .. " for this pair")
+            end
+            if a_frame and (a_frame.juggle_start or a_frame.juggle_limit) then
+                add_unknown(edge, U.JUGGLE,
+                    "the first move carries juggle state, which decides what may follow")
+            end
+            if a.advantage_may_be_knockdown then
+                add_unknown(edge, U.KNOCKDOWN,
+                    "the first move's advantage is large enough to be a knockdown, and a "
+                    .. "knockdown's advantage is time before the opponent stands up rather "
+                    .. "than time to land another hit; no property in the source distinguishes them")
+            end
+            if a_uncertain then
+                add_unknown(edge, U.FRAME_DATA_AMBIGUOUS,
+                    "for the first move, " .. tostring(FrameData.uncertainty_reason(a_info)))
+            end
+            if b_uncertain then
+                add_unknown(edge, U.FRAME_DATA_AMBIGUOUS,
+                    "for the second move, " .. tostring(FrameData.uncertainty_reason(b_info)))
+            end
+            if a_row.canonical_status ~= "verified" or b_row.canonical_status ~= "verified" then
+                add_unknown(edge, U.HITBOX,
+                    "which action id this input actually produces is unresolved, so the move "
+                    .. "being described may not be the move that comes out")
+            end
+
+            candidates[#candidates + 1] = edge
+            stats.drc_edges = stats.drc_edges + 1
+            stats.drc_by_confidence[edge.confidence] =
+                (stats.drc_by_confidence[edge.confidence] or 0) + 1
+        end
+
+        for _, a_row in ipairs(from_rows) do
+            local a_frame, a_info = frame_for(a_row)
+            -- Both fields absent on a record the join is sure of: the source
+            -- listed the move and gave it no Drive Rush Cancel. drc_on_block
+            -- alone still counts as the source giving it one, with the on-hit
+            -- figure unknown.
+            local stated_no = a_frame ~= nil and not FrameData.uncertain(a_info)
+                and FrameData.drc_on_hit(a_frame) == nil
+                and FrameData.drc_on_block(a_frame) == nil
+            if stated_no then
+                stats.drc_not_cancelable = stats.drc_not_cancelable + 1
+                stats.drc_not_cancelable_moves[#stats.drc_not_cancelable_moves + 1] =
+                    ("%d:%s %s"):format(a_row.action_id, tostring(a_row.input_method),
+                                        tostring(a_row.notation))
+            else
+                if FrameData.drc_on_hit(a_frame) ~= nil and not FrameData.uncertain(a_info) then
+                    stats.drc_starters_known = stats.drc_starters_known + 1
+                else
+                    stats.drc_starters_unknown = stats.drc_starters_unknown + 1
+                end
+                for _, b_row in ipairs(to_rows) do
+                    consider_drc(a_row, b_row, a_frame, a_info)
+                end
+                for _, f_row in ipairs(followups) do
+                    stats.drc_pairs_considered = stats.drc_pairs_considered + 1
+                    drc_exclude({
+                        from = a_row.action_id, to = f_row.action_id,
+                        from_notation = a_row.notation, to_notation = f_row.notation,
+                        -- The value that decided it: the catalog's own mark that B
+                        -- is a derivation, which only ever comes straight out of
+                        -- its parent. Not a frame number, and not a gap.
+                        to_exclusion = f_row.exclusion,
+                        evidence = "a target-combo derivation comes out of its parent with "
+                            .. "nothing in between, and a Drive Rush is in between",
+                    }, M.EXCLUDED.FOLLOWUP_AFTER_DRIVE_RUSH)
+                end
+            end
+        end
+    end
+
+    -- The plain counts, like every other un-prefixed stat. With the Drive Rush
+    -- pass off these are simply the list lengths, as they always were; with it
+    -- on, the lists are longer by drc_edges and drc_excluded, which is where
+    -- those are counted.
+    stats.candidates = #candidates - (stats.drc_edges or 0)
+    stats.excluded = #excluded - (stats.drc_excluded or 0)
     stats.from_moves = #from_rows
     stats.to_moves = #to_rows
 

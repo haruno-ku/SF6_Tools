@@ -73,6 +73,12 @@ while i <= #arg do
     elseif key == "worklist" then
         opt.worklist = true
         i = i + 1
+    elseif key == "drive_rush" then
+        -- Also generate A -> Drive Rush Cancel -> B candidates. They are kept
+        -- out of every document this run already writes and go to their own
+        -- worklist file; see "Drive Rush Cancel candidates" below.
+        opt.drive_rush = true
+        i = i + 1
     else
         local v = arg[i + 1]
         if v == nil then
@@ -177,9 +183,32 @@ local gen = CG.generate(cat, idx, {
     from = from_filter,
     to = to_filter,
     include_followups = true,
+    include_drive_rush = opt.drive_rush == true,
     provenance = provenance,
 })
 if not gen then die("candidate generation produced nothing") end
+
+-- Plain edges and Drive Rush Cancel edges, apart.
+--
+-- Only the plain ones go on into the graph, the route search, the candidate
+-- documents and the main worklist, so a run with --drive-rush writes the same
+-- edges, routes and worklist pairs as a run without it. (The generation stats
+-- copied into the candidate documents do gain the drc_* counts, which is the
+-- one place those documents mention the rush at all.) That is deliberate and for now: route
+-- search over a rush needs a step that is not a move - a drive cost, a node
+-- for the rush itself, and an answer to whether the counter survives it - and
+-- searching routes over DRC edges is a later step. Until then they are pairs,
+-- written to their own worklist.
+local plain_edges, drc_edges = {}, {}
+for _, e in ipairs(gen.candidates) do
+    if CG.is_drive_rush(e) then drc_edges[#drc_edges + 1] = e
+    else plain_edges[#plain_edges + 1] = e end
+end
+local plain_excluded, drc_excluded = {}, {}
+for _, x in ipairs(gen.excluded) do
+    if CG.is_drive_rush(x) then drc_excluded[#drc_excluded + 1] = x
+    else plain_excluded[#plain_excluded + 1] = x end
+end
 
 local identity = {
     character = char_lc,
@@ -187,7 +216,7 @@ local identity = {
     ac_sha256 = meta.ac_sha256,
     bcm_sha256 = meta.bcm_sha256,
 }
-local graph = GraphStore.build(gen.candidates, identity)
+local graph = GraphStore.build(plain_edges, identity)
 
 local found = RouteSearch.search(graph, {
     frame_idx = idx,
@@ -221,7 +250,7 @@ local export_opts = {
               scoring = Scoring.summary(routes) },
 }
 
-local docs, rejected = Exporter.documents({ edges = gen.candidates, routes = routes },
+local docs, rejected = Exporter.documents({ edges = plain_edges, routes = routes },
                                           export_opts)
 if not docs then
     die("export refused: " .. tostring(rejected and rejected.reason))
@@ -261,69 +290,29 @@ end
 -- short has spent its time on the pairs the frame data had something to say
 -- about. The confidence is carried so the runtime can say what it deprioritised
 -- if it stops early, rather than the list arriving pre-sorted and silent.
-if opt.worklist then
-    local RANK = { high = 3, medium = 2, low = 1 }
-    local items = {}
-    for _, e in ipairs(gen.candidates) do
-        items[#items + 1] = {
-            a_id = e.from.action_id, a_method = e.from.input_method,
-            a_notation = e.from.notation,
-            b_id = e.to.action_id, b_method = e.to.input_method,
-            b_notation = e.to.notation,
-            confidence = e.confidence,
-            -- The FRAMES, not only the rank computed from them.
-            --
-            -- This file used to write `confidence` alone, so the machine
-            -- running the game knew which pairs were worth trying and nothing
-            -- about WHEN to press the second one - and the sweep fell back to a
-            -- fixed delay of 4 for all of them. Measured on build 24176760, the
-            -- link window for one real pair was gap 40..44; at 4 the second
-            -- input lands inside the first move's animation, which is a cancel
-            -- window. 202 rows were spent that way (#46).
-            --
-            -- Carried as the frames rather than as a computed gap, because the
-            -- gap depends on numbers only the machine has: how long an input is
-            -- held, and the input buffer. core/Timing.lua does that arithmetic
-            -- there.
-            a_startup = e.basis and e.basis.from_startup or nil,
-            a_active = e.basis and e.basis.from_active or nil,
-            a_recovery = e.basis and e.basis.from_recovery or nil,
-            a_hitstop = e.basis and e.basis.from_hitstop or nil,
-            a_hitstun = e.basis and e.basis.from_hitstun or nil,
-            a_on_hit = e.basis and e.basis.from_on_hit or nil,
-            b_startup = e.basis and e.basis.to_startup or nil,
-            margin_frames = e.basis and e.basis.margin_frames or nil,
-            -- Carried because the runtime refuses a derivation as move A, and
-            -- finding that out per pair at run time would be a refusal per pair
-            -- rather than a filter.
-            context_dependent = e.context_dependent or nil,
-            -- Whether the frame source names move A as the parent of the
-            -- follow-up B. Written only when it does, because the runtime reads
-            -- it as a vouch: runtime/Sweep.lua hands it to
-            -- SequenceCompiler.unplayable, and a follow-up pair without it is set
-            -- aside before the first trial rather than pressed after a move it may
-            -- not come out of (#49). Absent means nobody vouched, never "no".
-            context_known = e.context_known or nil,
-        }
-    end
-    table.sort(items, function(x, y)
-        local rx, ry = RANK[x.confidence] or 0, RANK[y.confidence] or 0
-        if rx ~= ry then return rx > ry end
-        if x.a_id ~= y.a_id then return x.a_id < y.a_id end
-        if x.b_id ~= y.b_id then return x.b_id < y.b_id end
-        -- A total order, not a convenience. table.sort is not stable, and the
-        -- same move pressed by hand and by the assist button is two pairs with
-        -- one (confidence, a_id, b_id): with only those three keys, removing 54
-        -- follow-up pairs reshuffled 54 unrelated manual/simple neighbours, and a
-        -- regenerated worklist could not be diffed against the old one without
-        -- a script that forgave it.
-        if x.a_method ~= y.a_method then return tostring(x.a_method) < tostring(y.a_method) end
-        return tostring(x.b_method) < tostring(y.b_method)
-    end)
+local RANK = { high = 3, medium = 2, low = 1 }
 
-    local wl_dir = "reframework/data/ComboExplorer_data/worklist"
-    mkdir(wl_dir)
-    local wl_path = ("%s/%s-%s.json"):format(wl_dir, char_lc, opt.scheme)
+local function worklist_order(x, y)
+    local rx, ry = RANK[x.confidence] or 0, RANK[y.confidence] or 0
+    if rx ~= ry then return rx > ry end
+    if x.a_id ~= y.a_id then return x.a_id < y.a_id end
+    if x.b_id ~= y.b_id then return x.b_id < y.b_id end
+    -- A total order, not a convenience. table.sort is not stable, and the
+    -- same move pressed by hand and by the assist button is two pairs with
+    -- one (confidence, a_id, b_id): with only those three keys, removing 54
+    -- follow-up pairs reshuffled 54 unrelated manual/simple neighbours, and a
+    -- regenerated worklist could not be diffed against the old one without
+    -- a script that forgave it.
+    if x.a_method ~= y.a_method then return tostring(x.a_method) < tostring(y.a_method) end
+    return tostring(x.b_method) < tostring(y.b_method)
+end
+
+-- One writer for both worklists, so the Drive Rush file cannot drift from the
+-- main one in the parts that matter: the identity hashes, the ordering and the
+-- attribution block.
+local function write_worklist(wl_path, items)
+    table.sort(items, worklist_order)
+
     local wl_doc = {
         schema = "ce.worklist.v1",
         character = opt.character,
@@ -367,6 +356,104 @@ if opt.worklist then
     local n, werr = json.save_file(wl_path, wl_doc)
     if not n then die(("could not write %s: %s"):format(wl_path, tostring(werr))) end
     written[#written + 1] = { path = wl_path, bytes = n }
+end
+
+local WL_DIR = "reframework/data/ComboExplorer_data/worklist"
+
+if opt.worklist then
+    local items = {}
+    for _, e in ipairs(plain_edges) do
+        items[#items + 1] = {
+            a_id = e.from.action_id, a_method = e.from.input_method,
+            a_notation = e.from.notation,
+            b_id = e.to.action_id, b_method = e.to.input_method,
+            b_notation = e.to.notation,
+            confidence = e.confidence,
+            -- The FRAMES, not only the rank computed from them.
+            --
+            -- This file used to write `confidence` alone, so the machine
+            -- running the game knew which pairs were worth trying and nothing
+            -- about WHEN to press the second one - and the sweep fell back to a
+            -- fixed delay of 4 for all of them. Measured on build 24176760, the
+            -- link window for one real pair was gap 40..44; at 4 the second
+            -- input lands inside the first move's animation, which is a cancel
+            -- window. 202 rows were spent that way (#46).
+            --
+            -- Carried as the frames rather than as a computed gap, because the
+            -- gap depends on numbers only the machine has: how long an input is
+            -- held, and the input buffer. core/Timing.lua does that arithmetic
+            -- there.
+            a_startup = e.basis and e.basis.from_startup or nil,
+            a_active = e.basis and e.basis.from_active or nil,
+            a_recovery = e.basis and e.basis.from_recovery or nil,
+            a_hitstop = e.basis and e.basis.from_hitstop or nil,
+            a_hitstun = e.basis and e.basis.from_hitstun or nil,
+            a_on_hit = e.basis and e.basis.from_on_hit or nil,
+            b_startup = e.basis and e.basis.to_startup or nil,
+            margin_frames = e.basis and e.basis.margin_frames or nil,
+            -- Carried because the runtime refuses a derivation as move A, and
+            -- finding that out per pair at run time would be a refusal per pair
+            -- rather than a filter.
+            context_dependent = e.context_dependent or nil,
+            -- Whether the frame source names move A as the parent of the
+            -- follow-up B. Written only when it does, because the runtime reads
+            -- it as a vouch: runtime/Sweep.lua hands it to
+            -- SequenceCompiler.unplayable, and a follow-up pair without it is set
+            -- aside before the first trial rather than pressed after a move it may
+            -- not come out of (#49). Absent means nobody vouched, never "no".
+            context_known = e.context_known or nil,
+        }
+    end
+
+    mkdir(WL_DIR)
+    write_worklist(("%s/%s-%s.json"):format(WL_DIR, char_lc, opt.scheme), items)
+end
+
+-- --- Drive Rush Cancel candidates -------------------------------------------
+--
+-- A -> Drive Rush Cancel -> B, in a file of its own beside the main worklist:
+-- worklist/<char>-<scheme>-drc.json. Same schema, same identity hashes, same
+-- attribution, same total order - but a different file, for two reasons.
+--
+-- The sweep reads worklist/<char>-<scheme>.json by that exact name, and it
+-- cannot press any of these yet: how Drive Rush is input on this build, and
+-- which action id a DRC is, have never been measured. A pair in the main file
+-- is a pair the sweep will try, so a rush has no business being there until
+-- the runtime can do one.
+--
+-- And the main file must not move. Written apart, a --drive-rush run leaves it
+-- byte-identical except for generated_at, so the diff of a regenerated worklist
+-- still means what it meant.
+--
+-- The per-pair fields are the main file's, less the plain margin - a DRC pair
+-- has no use for margin_frames, and two margins side by side is an invitation
+-- to read the wrong one - plus the rush's own: A's drc_on_hit, the DRC margin
+-- computed from it, and the drive cost read from the source's DRC record.
+if opt.worklist and opt.drive_rush then
+    local items = {}
+    for _, e in ipairs(drc_edges) do
+        local b = e.basis or {}
+        items[#items + 1] = {
+            a_id = e.from.action_id, a_method = e.from.input_method,
+            a_notation = e.from.notation,
+            b_id = e.to.action_id, b_method = e.to.input_method,
+            b_notation = e.to.notation,
+            confidence = e.confidence,
+            via = e.via,
+            a_startup = b.from_startup,
+            a_active = b.from_active,
+            a_recovery = b.from_recovery,
+            a_hitstop = b.from_hitstop,
+            a_hitstun = b.from_hitstun,
+            a_on_hit = b.from_on_hit,
+            a_drc_on_hit = b.from_drc_on_hit,
+            b_startup = b.to_startup,
+            drc_margin_frames = b.drc_margin_frames,
+            drive_cost = b.drive_cost,
+        }
+    end
+    mkdir(WL_DIR)
+    write_worklist(("%s/%s-%s-drc.json"):format(WL_DIR, char_lc, opt.scheme), items)
 end
 
 table.sort(written, function(a, b) return a.path < b.path end)
@@ -492,9 +579,12 @@ say("")
 
 say("## Theoretical edges")
 say("")
+-- Counted from the plain lists, not from the generator's totals, so this
+-- section reads the same with --drive-rush as without it. The rush has its own
+-- section below.
 say("- pairs considered        %d", gen.stats.pairs_considered)
-say("- candidate edges         %d", #gen.candidates)
-say("- excluded                %d", #gen.excluded)
+say("- candidate edges         %d", #plain_edges)
+say("- excluded                %d", #plain_excluded)
 say("")
 say("by reason:")
 local keys = {}
@@ -509,7 +599,9 @@ end
 say("")
 say("excluded because the data said no:")
 keys = {}
-for k in pairs(gen.stats.by_exclusion) do keys[#keys + 1] = k end
+for k in pairs(gen.stats.by_exclusion) do
+    if not CG.DRC_EXCLUSIONS[k] then keys[#keys + 1] = k end
+end
 table.sort(keys)
 for _, k in ipairs(keys) do say("  %-24s %d", k, gen.stats.by_exclusion[k]) end
 say("")
@@ -534,6 +626,55 @@ if (gen.stats.followup_edges or 0) > 0 then
         gen.stats.followup_edges, gen.stats.followup_parent_named or 0)
 end
 say("")
+
+if opt.drive_rush then
+    local s = gen.stats
+    say("## Drive Rush Cancel candidates")
+    say("")
+    say("A -> Drive Rush Cancel -> B. NONE OF THESE CAN BE PRESSED YET: how Drive")
+    say("Rush is input on this build and which action id a Drive Rush Cancel is")
+    say("have never been measured. They are not in the route search below, and with")
+    say("--worklist they go to their own file, which the sweep does not read.")
+    say("")
+    local rec = FrameData.drive_rush_cancel(idx)
+    if rec then
+        say("- DRC record              %q: startup %s, recovery %s, drive cost %s",
+            tostring(rec.numpad), tostring(FrameData.startup(rec)), tostring(rec.recovery),
+            tostring(FrameData.drive_gain(rec) and -FrameData.drive_gain(rec) or nil))
+    else
+        say("- DRC record              NONE in the frame data. Drive cost unknown.")
+    end
+    say("- starters that can rush  %d  (drc_on_hit in the frame data)",
+        s.drc_starters_known or 0)
+    say("- starters nobody knows   %d  (no record, or a guessed one: kept, low)",
+        s.drc_starters_unknown or 0)
+    say("- starters that cannot    %d  (record present, no Drive Rush Cancel in it)",
+        s.drc_not_cancelable or 0)
+    for _, m in ipairs(s.drc_not_cancelable_moves or {}) do say("    %s", m) end
+    say("- pairs considered        %d", s.drc_pairs_considered or 0)
+    say("- DRC edges               %d", #drc_edges)
+    say("- excluded                %d", #drc_excluded)
+    say("")
+    say("by confidence:")
+    for _, k in ipairs({ "high", "medium", "low" }) do
+        say("  %-24s %d", k, (s.drc_by_confidence or {})[k] or 0)
+    end
+    say("")
+    say("excluded:")
+    local dkeys = {}
+    for k in pairs(s.by_exclusion) do
+        if CG.DRC_EXCLUSIONS[k] then dkeys[#dkeys + 1] = k end
+    end
+    table.sort(dkeys)
+    for _, k in ipairs(dkeys) do say("  %-24s %d", k, s.by_exclusion[k]) end
+    say("")
+    say("drc_margin_negative is drc_on_hit minus B's startup, known and below zero,")
+    say("kept with the number. followup_after_drive_rush is structure: a derivation")
+    say("comes out of its parent with nothing in between, and a rush is in between.")
+    say("A starter the source lists without a Drive Rush Cancel is counted once above")
+    say("rather than once per target.")
+    say("")
+end
 
 say("## Route candidates")
 say("")

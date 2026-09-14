@@ -85,6 +85,42 @@ follow. A follow-up whose parent the source never names stays a candidate.
 
 - follow-up edges         2  (parent named by the frame data: 2)
 
+## Drive Rush Cancel candidates
+
+A -> Drive Rush Cancel -> B. NONE OF THESE CAN BE PRESSED YET: how Drive
+Rush is input on this build and which action id a Drive Rush Cancel is
+have never been measured. They are not in the route search below, and with
+--worklist they go to their own file, which the sweep does not read.
+
+- DRC record              "MPMK or 66": startup 9, recovery 15, drive cost 30000
+- starters that can rush  8  (drc_on_hit in the frame data)
+- starters nobody knows   0  (no record, or a guessed one: kept, low)
+- starters that cannot    6  (record present, no Drive Rush Cancel in it)
+    604:manual 中
+    623:manual 2 + 强
+    633:manual 3 + 强
+    637:manual 强
+    662:manual 6 + 强
+    682:manual 6 + 中
+- pairs considered        296
+- DRC edges               145
+- excluded                151
+
+by confidence:
+  high                     28
+  medium                   63
+  low                      54
+
+excluded:
+  drc_margin_negative      119
+  followup_after_drive_rush 32
+
+drc_margin_negative is drc_on_hit minus B's startup, known and below zero,
+kept with the number. followup_after_drive_rush is structure: a derivation
+comes out of its parent with nothing in between, and a rush is in between.
+A starter the source lists without a Drive Rush Cancel is counted once above
+rather than once per target.
+
 ## Route candidates
 
 - routes                  917
@@ -169,8 +205,8 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/zangief/modern/candidate-edges.json  (482259 bytes)
-- candidates/zangief/modern/candidate-routes.json  (3957458 bytes)
+- candidates/zangief/modern/candidate-edges.json  (482863 bytes)
+- candidates/zangief/modern/candidate-routes.json  (3958062 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

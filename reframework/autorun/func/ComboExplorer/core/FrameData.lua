@@ -315,9 +315,15 @@ function M.index(decoded)
         keys = {},
         duplicates = {},
         duplicate_names = {},
+        -- Every record, in source order, including the ones whose every key
+        -- lost to an earlier record. by_key is first-wins, so a record whose
+        -- spellings all collide is otherwise unreachable - and Drive Rush
+        -- Cancel's "MPMK" is exactly such a collision (see drive_rush_cancel).
+        records = {},
     }
 
     for _, mv in ipairs(decoded.moves) do
+        idx.records[#idx.records + 1] = mv
         for _, k in ipairs(M.spellings(mv.numpad)) do
             if idx.by_key[k] then
                 -- Real in this data, and worth naming rather than counting.
@@ -519,11 +525,70 @@ function M.damage(rec)   return rec and num(rec.damage) or nil end
 
 -- Drive and super are recorded as GAIN in this source, and a negative gain is a
 -- spend: the super arts carry `super_gain_on_hit = -10000`, which is the cost of
--- using them. There is no separate spend field, and the drive cost of an OD move
--- appears nowhere at all - so `drive_spend` deliberately does not exist here.
--- Route search counts OD steps instead of inventing a gauge figure for them.
+-- using them. There is no separate spend field, so `drive_spend` deliberately
+-- does not exist here - a spend is read as the negative of a gain, at the one
+-- place that needs it, rather than being given a second name that could drift.
+--
+-- This comment used to say the drive cost of an OD move appears nowhere at all.
+-- That was wrong: it appears exactly where every other spend does, as a negative
+-- drive_gain on the OD move's own record - Zangief's 360+PP (Screw Piledriver,
+-- OD) carries `drive_gain = -20000`, and the Drive Rush Cancel record carries
+-- `-30000`. What route search does with that is its own decision; the point here
+-- is only that the number is in the source and nobody has to invent one.
 function M.drive_gain(rec) return rec and num(rec.drive_gain) or nil end
 function M.super_gain(rec) return rec and num(rec.super_gain_on_hit) or nil end
+
+-- The frame advantage the source gives a move when it is cancelled into a
+-- Drive Rush, on hit and on block. nil means unknown - and the two ways of
+-- getting nil are NOT the same fact, which callers have to keep apart:
+--
+--   * no record at all: nobody has said anything about this move, and it may
+--     well be cancelable. Missing data, never a no.
+--   * a record WITHOUT the field: tools/gen-framedata-fixture.mjs writes
+--     drc_on_hit / drc_on_block only when the source has a driveRushCancel
+--     block for the move, so a record that exists and lacks them is the source
+--     listing the move and declining to give it a Drive Rush Cancel. That is a
+--     statement, in the same class as a cancel list without "chain" in it.
+--
+-- The accessor cannot tell those apart (it only sees `rec`), which is why it
+-- takes the record rather than a row: the caller already knows whether it has
+-- one.
+function M.drc_on_hit(rec)   return rec and num(rec.drc_on_hit) or nil end
+function M.drc_on_block(rec) return rec and num(rec.drc_on_block) or nil end
+
+-- The source's own spelling of the Drive Rush Cancel record. Every one of the
+-- 31 characters carries exactly one record with this numpad, all of them
+-- startup 9 / recovery 15 / drive_gain -30000.
+M.DRIVE_RUSH_CANCEL_NUMPAD = "MPMK or 66"
+
+-- The Drive Rush Cancel record itself, or nil when this index has none.
+--
+-- Found by its whole numpad string and not by key, because the key is taken:
+-- spellings("MPMK or 66") splits into MPMK and 66, and "MPMK" is also Drive
+-- Parry's key, which comes first in the source and so wins the index slot
+-- (idx.duplicates names the collision). Asking by_key["MPMK"] returns Drive
+-- Parry - startup 1, drive_gain -5000 - a different move whose numbers would
+-- make a confident, wrong drive cost. by_key["66"] happens to be free today,
+-- but "happens to be free" is not a join anybody should build on.
+--
+-- Scans idx.records (every record, in source order, collisions included) when
+-- the index has it, and falls back to the by_key values for an index built by
+-- hand without it.
+function M.drive_rush_cancel(idx)
+    if type(idx) ~= "table" then return nil end
+    if type(idx.records) == "table" then
+        for _, mv in ipairs(idx.records) do
+            if type(mv) == "table" and mv.numpad == M.DRIVE_RUSH_CANCEL_NUMPAD then return mv end
+        end
+        return nil
+    end
+    if type(idx.by_key) ~= "table" then return nil end
+    for _, k in ipairs(idx.keys or {}) do
+        local mv = idx.by_key[k]
+        if type(mv) == "table" and mv.numpad == M.DRIVE_RUSH_CANCEL_NUMPAD then return mv end
+    end
+    return nil
+end
 
 function M.can_cancel_into(rec, kind)
     if not rec or type(rec.cancel) ~= "table" then return nil end   -- unknown, not false
