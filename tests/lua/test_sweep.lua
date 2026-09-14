@@ -15,10 +15,17 @@ local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
 
 -- outcomes : per start, what that trial will do. An entry is
 --   { outcome = "judged", retryable = false }  or  { refuse = "why" }
+--
+-- It keeps the real Injector's contract about the result (#45): the row is
+-- written through the sink it was started with, on the tick the outcome
+-- arrives, and result() says whether it landed. Sweep writes nothing itself,
+-- so a fake that did not write would make every sweep look empty - and a fake
+-- that let Sweep write would hide a second writer.
 local function injector(outcomes)
-    local state = { started = {}, delays = {}, delay = {},
+    local state = { started = {}, delays = {}, delay = {}, sinks = {},
                     ticks = 0, running = false, n = 0, recorded = 0 }
     local cur = nil
+    local record_error = nil
     local api
     api = {
         log = state,
@@ -30,18 +37,34 @@ local function injector(outcomes)
             state.started[#state.started + 1] = opts.edge_id
             state.delays[#state.delays + 1] = opts.delays
             state.delay[#state.delay + 1] = opts.delay
+            state.sinks[#state.sinks + 1] = opts.sink
             cur = plan
+            record_error = nil
             state.running = true
             return true
         end,
         tick = function()
             state.ticks = state.ticks + 1
             state.running = false          -- one tick per trial, for the test
+            local spec = api.record()
+            local sink = state.sinks[#state.sinks]
+            if spec and sink and sink.collector then
+                if cur.append_fails then
+                    record_error = "append: " .. cur.append_fails
+                else
+                    local rec, problems = ResultCollector.write(sink.collector, spec)
+                    if not rec then
+                        record_error = tostring(problems and problems[1]
+                                                and problems[1].problem)
+                    end
+                end
+            end
             return { outcome = cur.outcome or "judged" }
         end,
         stop = function() state.running = false cur = nil end,
         result = function()
             return { outcome = cur and cur.outcome,
+                     record_error = record_error,
                      trial = { retryable = cur and cur.retryable or false } }
         end,
         record = function()
@@ -166,6 +189,69 @@ do
     t.ok(tostring(r.stopped_because):find("finished") ~= nil,
          "saying why it stopped: " .. tostring(r.stopped_because))
     t.eq(#inj.log.started, 5, "the injector was started once per pair")
+    Sweep.stop()
+end
+
+-- --- one writer ----------------------------------------------------------------
+
+t.group("the sweep's collector is the trial's sink, and nothing writes twice")
+
+-- #45. The Injector's sink used to be opened and never written, so Sweep wrote
+-- each row itself - while the panel passed the same file to the Injector as
+-- its sink. The day the sink started writing, every row would have gone in
+-- twice. Now the collector IS the sink and Sweep only reads whether the row
+-- landed.
+
+do
+    Sweep.stop()
+    local inj = injector({})
+    local c, written = collector()
+    Sweep.start({ worklist = worklist(3), collector = c, injector = inj,
+                  delay = 4, allow_injection = true })
+    drive()
+    t.eq(#inj.log.sinks, 3, "every trial was handed a sink")
+    for i, sink in ipairs(inj.log.sinks) do
+        t.ok(type(sink) == "table" and sink.collector == c,
+             ("trial %d's sink is the sweep's own collector"):format(i))
+        t.is_nil(sink.path, "and not a second file beside it")
+    end
+    t.eq(#written, 3, "three trials, three lines - the sweep did not add its own")
+    Sweep.stop()
+end
+
+do
+    Sweep.stop()
+    -- The panel used to pass a path here. Ignoring it would leave a caller
+    -- believing the rows go somewhere they do not.
+    local c = collector()
+    local nope, why = Sweep.start({ worklist = worklist(1), collector = c,
+                                    injector = injector({}), delay = 4,
+                                    sink = { path = "x.jsonl" } })
+    t.is_nil(nope, "a sweep given a sink as well as a collector does not start")
+    t.ok(tostring(why):find("second writer") ~= nil,
+         "because that is a second writer: " .. tostring(why))
+    t.eq(Sweep.running(), false, "and nothing is left running")
+end
+
+do
+    Sweep.stop()
+    -- A row that did not land is a problem on the sweep, not a silent hole:
+    -- the pair has not been answered, whatever its verdict was.
+    local inj = injector({ [2] = { outcome = "judged", append_fails = "the disk is full" } })
+    local c, written = collector()
+    Sweep.start({ worklist = worklist(3), collector = c, injector = inj,
+                  delay = 4, allow_injection = true })
+    drive()
+    local r = Sweep.result()
+    t.eq(r.finished, 3, "the sweep carries on past one failed write")
+    t.eq(#written, 2, "with the other two rows on file")
+    local found = nil
+    for _, pr in ipairs(r.problem_detail or {}) do
+        if tostring(pr.reason):find("would not record") then found = pr end
+    end
+    t.ok(found ~= nil, "the failed write is recorded as a problem")
+    t.ok(found and tostring(found.detail):find("disk is full") ~= nil,
+         "carrying the Injector's own reason: " .. tostring(found and found.detail))
     Sweep.stop()
 end
 

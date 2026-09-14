@@ -120,6 +120,30 @@ do
          "naming the encoder rather than the file: " .. tostring(why))
 end
 
+do
+    -- The second shape (#45): a collector the caller already owns, which is
+    -- how Sweep and RouteRun hand over theirs instead of writing beside it.
+    local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
+    local c = ResultCollector.new({ append = function() return true end,
+                                    encode = function() return "{}" end })
+    local sink, why = Injector.open_sink({ collector = c })
+    t.ok(type(sink) == "table", "a collector opens as a sink: " .. tostring(why))
+    t.ok(sink and sink.collector == c, "and it is that collector, not a copy")
+
+    local both, bwhy = Injector.open_sink({ collector = c, path = "x.jsonl" })
+    t.is_nil(both, "a file AND a collector is refused")
+    t.ok(tostring(bwhy):find("one place") ~= nil,
+         "because a trial is written in one place: " .. tostring(bwhy))
+
+    local mute, mwhy = Injector.open_sink({ collector = {} })
+    t.is_nil(mute, "a collector that cannot append is not a sink")
+    t.ok(tostring(mwhy):find("cannot append") ~= nil, tostring(mwhy))
+
+    local empty, ewhy = Injector.open_sink({})
+    t.is_nil(empty, "a sink table that names neither is no sink")
+    t.ok(tostring(ewhy):find("did not happen") ~= nil, tostring(ewhy))
+end
+
 -- --- the tick counts ------------------------------------------------------------
 
 t.group("the budgets the runner will not default")
@@ -221,9 +245,10 @@ t.group("record() hands the trial to the collector, and the collector writes it"
 -- M.trial takes ONE argument and only BUILDS a record, so the collector was
 -- being validated as if it were the spec and nothing was ever appended.
 --
--- It survived because the only caller is Sweep, which passes nil to get the
--- spec back and does its own write. Anything recording through this path would
--- have written nothing, silently.
+-- It survived because the only caller was Sweep, which passed nil to get the
+-- spec back and did its own write. Anything recording through this path would
+-- have written nothing, silently. Since #45 a trial with a sink is written by
+-- tick() instead, and record(collector) is only for a run with recording off.
 
 local StageControlFsm = require("func/ComboExplorer/core/StageControlFsm")
 
@@ -322,6 +347,240 @@ do
         t.eq(#appended, 1, "AND the line reached the collector's append")
     end
 
+    -- Switched off on purpose, and the run says so rather than leaving the
+    -- question of whether it was recorded unanswered.
+    t.eq(Injector.result().recorded, Injector.RECORDED.OFF,
+         "with recording off, the result says it was not recorded on purpose")
+
+    Injector.stop()
+end
+
+-- --- the sink is written ----------------------------------------------------------
+
+t.group("a judged trial is written to its sink, once (#45)")
+
+-- The issue, measured on the machine: RUN ONE TRIAL passed a sink, the trial
+-- reached `judged` with verdict a_failed, and trials.jsonl was never created.
+-- start() had refused to run without a sink - "a trial whose result is not
+-- written is a trial that did not happen" - and then nothing wrote to it.
+
+local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
+local JsonIO = require("func/ComboExplorer/runtime/JsonIO")
+
+local function counting_collector(append)
+    local lines = {}
+    local c = ResultCollector.new({
+        append = append or function(line) lines[#lines + 1] = line return true end,
+        encode = function(rec) return rec.schema .. " " .. tostring(rec.id) end,
+        identity = { calibration_id = "cal-test", game_patch = "p" },
+    })
+    return c, lines
+end
+
+local function until_outcome()
+    local cmd
+    for _ = 1, 3000 do
+        cmd = Injector.tick()
+        if cmd and cmd.outcome ~= nil then break end
+    end
+    return cmd
+end
+
+local function trial_opts(over)
+    local opts = {
+        provenance = measured_register(), allow_injection = true, route = ROUTE,
+        delay = 4, expected = { [1] = { 601 }, [2] = { 621 } },
+        edge_id = "601:manual->621:manual", attempt = 1, adapter = adapter(),
+    }
+    for k, v in pairs(over or {}) do opts[k] = v end
+    return opts
+end
+
+do
+    Injector.stop()
+    local c, lines = counting_collector()
+    local ok, why = Injector.start(trial_opts({ sink = { collector = c } }))
+    t.ok(ok, "a trial starts with a collector as its sink: " .. tostring(why))
+
+    local cmd = until_outcome()
+    -- The fake stage never lets A come out, which is exactly the trial the
+    -- issue was filed from.
+    t.eq(cmd and cmd.outcome, "judged", "the trial is judged")
+    t.eq(#lines, 1, "and ONE line was written, on the tick the verdict arrived")
+    t.ok(tostring(lines[1]):find("ce.trial.v1", 1, true) == 1,
+         "as a ce.trial.v1 record, the collector's own shape: " .. tostring(lines[1]))
+
+    local r = Injector.result()
+    t.eq(r.recorded, Injector.RECORDED.WRITTEN, "the result says it was written")
+    t.ok(type(r.record_id) == "string", "naming the record: " .. tostring(r.record_id))
+    t.is_nil(r.record_error, "with no error")
+    t.eq(Injector.progress().recorded, Injector.RECORDED.WRITTEN,
+         "and progress, which the panel draws, says the same")
+
+    -- More ticks after the outcome, and a caller that also asks to record:
+    -- neither may produce a second line.
+    for _ = 1, 5 do Injector.tick() end
+    t.eq(#lines, 1, "further ticks do not write it again")
+    local again, problems = Injector.record(c)
+    t.is_nil(again, "record(collector) on a run with a sink is refused")
+    t.ok(tostring(problems and problems[1] and problems[1].problem):find("twice") ~= nil,
+         "because it would record one trial twice")
+    t.eq(#lines, 1, "so the file still holds one line")
+    t.eq(c.counts.written, 1, "and the collector counted one write")
+    Injector.stop()
+end
+
+do
+    -- The panel's shape: a path. A collector is built over it, so the line is
+    -- the same record a sweep writes. JsonIO is stood in for, because this
+    -- machine has no json.dump_string - which the refusal test above relies on.
+    Injector.stop()
+    local saved_encode, saved_append = JsonIO.encode_line, JsonIO.append
+    local appended = {}
+    JsonIO.encode_line = function(rec)
+        local p = type(rec.provenance) == "table" and rec.provenance or {}
+        return ("%s %s cal=%s"):format(tostring(rec.schema), tostring(rec.verdict),
+                                       tostring(p.calibration_id))
+    end
+    JsonIO.append = function(path, line, dirs)
+        appended[#appended + 1] = { path = path, line = line, dirs = dirs }
+        return true
+    end
+
+    local sink = {
+        path = "ComboExplorer_data/trials/trials.jsonl",
+        dirs = { "ComboExplorer_data", "ComboExplorer_data/trials" },
+        identity = { calibration_id = "cal-panel", game_patch = "p" },
+    }
+    local ok, why = Injector.start(trial_opts({ sink = sink }))
+    t.ok(ok, "a trial starts with a file sink: " .. tostring(why))
+    until_outcome()
+    for _ = 1, 3 do Injector.tick() end
+    local r = Injector.result()
+    Injector.stop()
+    JsonIO.encode_line, JsonIO.append = saved_encode, saved_append
+
+    t.eq(#appended, 1, "the judged trial reached the file, once")
+    t.eq(appended[1] and appended[1].path, sink.path, "at the path the panel gave")
+    t.ok(appended[1] and appended[1].dirs == sink.dirs, "creating the directories it named")
+    t.ok(tostring(appended[1] and appended[1].line):find("^ce.trial.v1 a_failed") ~= nil,
+         "as a trial record carrying the verdict: " .. tostring(appended[1] and appended[1].line))
+    t.ok(tostring(appended[1] and appended[1].line):find("cal=cal-panel", 1, true) ~= nil,
+         "stamped with the identity the sink was given")
+    t.eq(r.sink_path, sink.path, "and the result says where it went")
+end
+
+do
+    -- A write that fails is on the run, not swallowed. "The move did not come
+    -- out" and "the row did not reach the file" are different problems, so it
+    -- is not folded into write_error either.
+    Injector.stop()
+    local c, _ = counting_collector(function() return false, "the disk is full" end)
+    t.ok(Injector.start(trial_opts({ sink = { collector = c } })), "starts")
+    local cmd = until_outcome()
+    t.eq(cmd and cmd.outcome, "judged", "the trial is judged")
+
+    local r = Injector.result()
+    t.eq(r.recorded, Injector.RECORDED.FAILED, "the result says the write failed")
+    t.ok(tostring(r.record_error):find("the disk is full", 1, true) ~= nil,
+         "with the writer's own reason: " .. tostring(r.record_error))
+    t.is_nil(r.write_error, "and not as a pad write error")
+    t.ok(tostring(Injector.progress().record_error):find("disk is full") ~= nil,
+         "progress carries it too, so the panel can show it while the run is up")
+    t.eq(c.counts.write_failed, 1, "the collector counted the failure")
+    Injector.stop()
+end
+
+do
+    -- A writer that throws rather than returning false is the same fact to
+    -- the operator - the row is not on disk - and is surfaced the same way.
+    Injector.stop()
+    local c = counting_collector(function() error("the writer threw") end)
+    t.ok(Injector.start(trial_opts({ sink = { collector = c } })), "starts")
+    until_outcome()
+    local r = Injector.result()
+    t.eq(r.recorded, Injector.RECORDED.FAILED, "a writer that throws is a failed write")
+    t.ok(tostring(r.record_error):find("the writer threw", 1, true) ~= nil,
+         "and says so: " .. tostring(r.record_error))
+    Injector.stop()
+end
+
+-- --- the drivers, with the real Injector ------------------------------------------
+
+t.group("a sweep's and a route run's rows are written once, by the real Injector")
+
+-- The fakes in test_sweep and test_routerun keep the Injector's contract, but
+-- a fake that keeps a contract cannot show the contract is what the real module
+-- does. These run the two drivers against THIS Injector, with only the adapter
+-- stood in, and count lines.
+
+local Sweep = require("func/ComboExplorer/runtime/Sweep")
+local RouteRun = require("func/ComboExplorer/runtime/RouteRun")
+
+-- The real module, with the one thing a desk cannot provide slipped into every
+-- start: neither driver passes an adapter, because on the machine there is
+-- only one.
+local function real_injector()
+    return setmetatable({
+        start = function(opts)
+            opts.adapter = adapter()
+            return Injector.start(opts)
+        end,
+    }, { __index = Injector })
+end
+
+do
+    Injector.stop()
+    Sweep.stop()
+    local c, lines = counting_collector()
+    local wl = {
+        schema = "ce.worklist.v1", character = "zangief", control_scheme = "modern",
+        pairs = {
+            { a_id = 601, a_method = "manual", a_notation = ROUTE.steps[1].notation,
+              b_id = 621, b_method = "manual", b_notation = ROUTE.steps[2].notation },
+            { a_id = 621, a_method = "manual", a_notation = ROUTE.steps[2].notation,
+              b_id = 601, b_method = "manual", b_notation = ROUTE.steps[1].notation },
+        },
+    }
+    local ok, why = Sweep.start({ worklist = wl, collector = c, injector = real_injector(),
+                                  provenance = measured_register(), delay = 4,
+                                  allow_injection = true })
+    t.ok(ok, "a sweep starts on the real Injector: " .. tostring(why))
+    for _ = 1, 10000 do
+        local p = Sweep.progress()
+        if not p or p.done then break end
+        Sweep.tick()
+    end
+    local r = Sweep.result()
+    t.eq(r.done, true, "the sweep finishes: " .. tostring(r.stopped_because))
+    t.eq(r.finished, 2, "having run both pairs")
+    t.eq(#lines, 2, "and the file holds two lines - one per trial, not two per trial")
+    t.eq(c.counts.written, 2, "the collector counted two writes")
+    t.eq(r.problems, 0, "with nothing reported as failing to record")
+    Sweep.stop()
+    Injector.stop()
+end
+
+do
+    Injector.stop()
+    RouteRun.stop()
+    local c, lines = counting_collector()
+    local ok, why = RouteRun.start({ route = ROUTE, collector = c, delays = { 4, 6, 8 },
+                                     injector = real_injector(),
+                                     provenance = measured_register(),
+                                     allow_injection = true })
+    t.ok(ok, "a route run starts on the real Injector: " .. tostring(why))
+    for _ = 1, 20000 do
+        local p = RouteRun.progress()
+        if not p or p.done then break end
+        RouteRun.tick()
+    end
+    local p = RouteRun.progress()
+    t.eq(p.done, true, "the route run finishes: " .. tostring(p.stopped_because))
+    t.eq(p.finished, 3, "having tried all three gaps")
+    t.eq(#lines, 3, "and the file holds three lines, not six")
+    t.eq(p.problems, 0, "with nothing reported as failing to record")
+    RouteRun.stop()
     Injector.stop()
 end
 

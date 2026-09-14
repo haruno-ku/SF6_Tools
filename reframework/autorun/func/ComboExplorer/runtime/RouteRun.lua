@@ -34,7 +34,6 @@
 -- are not the same finding.
 
 local Route = require("func/ComboExplorer/core/Route")
-local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
 local Catalog = require("func/ComboExplorer/core/Catalog")
 
 local M = { name = "ComboExplorer.RouteRun" }
@@ -59,9 +58,10 @@ M.DEFAULT_MAX_ATTEMPTS = 3
 -- opts.route          : a built route (core/Route.build)
 -- opts.delays         : the values each gap is tried at. Defaults to
 --                       Route.DEFAULT_DELAYS.
--- opts.collector      : a ResultCollector. Required, same reason as Sweep.
+-- opts.collector      : a ResultCollector. Required, same reason as Sweep, and
+--                       handed to every trial as the Injector's sink
 -- opts.provenance     : the register, passed to every trial
--- opts.allow_injection / opts.stage_cfg / opts.sink : passed through
+-- opts.allow_injection / opts.stage_cfg : passed through
 -- opts.injector       : substituted by tests
 function M.start(opts)
     opts = opts or {}
@@ -73,6 +73,13 @@ function M.start(opts)
     end
     if type(opts.collector) ~= "table" then
         return nil, "no collector - a run that cannot record is a run that did not happen"
+    end
+    -- Same refusal as Sweep's, for the same reason: the collector is the sink,
+    -- and a second one is a second writer.
+    if opts.sink ~= nil then
+        return nil, "a route run records through its collector, which every trial "
+            .. "is handed as its sink - a second sink would be a second writer, "
+            .. "and a second writer is every row twice"
     end
 
     local gaps = #route.steps - 1
@@ -95,7 +102,6 @@ function M.start(opts)
         provenance = opts.provenance,
         allow_injection = opts.allow_injection,
         stage_cfg = opts.stage_cfg,
-        sink = opts.sink,
         max_attempts = opts.max_attempts or M.DEFAULT_MAX_ATTEMPTS,
 
         index = 1,
@@ -174,7 +180,7 @@ local function start_one(delays)
         edge_id = ("%s@%s"):format(tostring(run.route.id), key),
         attempt = run.attempts[key],
         stage_cfg = run.stage_cfg,
-        sink = run.sink,
+        sink = { collector = run.collector },
     })
     if not ok then
         run.problems[#run.problems + 1] = { delays = key, reason = tostring(err) }
@@ -226,19 +232,20 @@ function M.finish_trial()
         local res = inj.result()
         local trial = res and res.trial
 
-        -- Written through the collector, not through the Injector's sink. The
-        -- sink is opened and never used (#45), so a run that trusted it would
-        -- record nothing while reporting a path - and "every gap was tried and
-        -- none linked" is only worth anything if the gaps are on disk.
-        local spec = inj.record and inj.record(nil) or nil
-        if spec then
-            local rec, problems = ResultCollector.write(run.collector, spec)
-            if not rec then
-                run.problems[#run.problems + 1] = {
-                    delays = run.current_key, reason = "the result would not record",
-                    detail = problems and problems[1] and problems[1].problem,
-                }
-            end
+        -- Already written. This used to write through the collector itself,
+        -- because the Injector's sink was opened and never used (#45). The
+        -- sink writes now, and the collector IS the sink, so the Injector
+        -- wrote this row on the tick the verdict arrived; writing it here too
+        -- would put every gap in the file twice.
+        --
+        -- What is left is the failure. "Every gap was tried and none linked"
+        -- is only worth anything if the gaps are on disk, so a row that did
+        -- not land is a problem on the run rather than a silent hole.
+        if res and res.record_error then
+            run.problems[#run.problems + 1] = {
+                delays = run.current_key, reason = "the result would not record",
+                detail = res.record_error,
+            }
         end
 
         local verdict = trial and trial.verdict

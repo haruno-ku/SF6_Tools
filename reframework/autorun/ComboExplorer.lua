@@ -472,8 +472,9 @@ Clock.on_frame(function(frame)
         local cmd = Injector.tick()
         if cmd and cmd.outcome ~= nil then
             trial.last_result = Injector.result()
-            trial.last_status = ("trial %s after %d ticks"):format(
-                tostring(cmd.outcome), trial.last_result.ticks)
+            trial.last_status = ("trial %s after %d ticks, result %s"):format(
+                tostring(cmd.outcome), trial.last_result.ticks,
+                tostring(trial.last_result.recorded))
             Injector.stop()
         end
     end
@@ -1291,9 +1292,20 @@ local function draw_trial()
                     attempt = 1,
                     frame = Clock.frame,
                     stage_cfg = STAGE_CFG,
+                    -- WRITTEN, now (#45). This used to be opened and never
+                    -- used, so a judged trial left no trials.jsonl behind.
+                    -- The identity is the same block the sweep stamps, so a
+                    -- single trial's row folds with the sweep's rows rather
+                    -- than beside them.
                     sink = {
                         path = "ComboExplorer_data/trials/trials.jsonl",
                         dirs = { "ComboExplorer_data", "ComboExplorer_data/trials" },
+                        identity = {
+                            calibration_id = reg.calibration_id,
+                            game_patch = reg.game_patch or Config.data.game_patch
+                                or "unknown",
+                            conditions = Injector.conditions_for(STAGE_CFG),
+                        },
                     },
                 })
                 trial.last_status = ok and "trial started"
@@ -1348,6 +1360,16 @@ local function draw_trial()
         end
         local v = res.trial and res.trial.verdict
         if v then kv("verdict", tostring(type(v) == "table" and v.verdict or v)) end
+        -- Whether the row reached the file. A verdict on this panel and nothing
+        -- on disk was #45, and it was invisible from here.
+        if res.recorded then
+            kv("recorded", ("%s%s"):format(tostring(res.recorded),
+                                           res.sink_path and ("  " .. res.sink_path) or ""),
+               res.recorded == "failed" and UIKit.COLORS.Red or UIKit.COLORS.Green)
+        end
+        if res.record_error then
+            imgui.text_colored("  " .. tostring(res.record_error), UIKit.COLORS.Red)
+        end
     end
 
     if trial.last_status then
@@ -1435,8 +1457,8 @@ local function draw_route()
                     provenance = reg,
                     allow_injection = Config.data.allow_injection,
                     stage_cfg = STAGE_CFG,
-                    sink = { path = log_path,
-                             dirs = { "ComboExplorer_data", "ComboExplorer_data/trials" } },
+                    -- No sink: the collector above is handed to every trial
+                    -- as the sink, and RouteRun refuses a second one (#45).
                 })
                 route.status = ok and ("running, writing to " .. log_path)
                     or ("could not start: " .. tostring(err))
@@ -1564,8 +1586,9 @@ local function draw_sweep()
                         buffer_ticks = Provenance.provisional(reg, "input_buffer_ticks"),
                         hold_ticks = 3,
                         stage_cfg = STAGE_CFG,
-                        sink = { path = log_path,
-                                 dirs = { "ComboExplorer_data", "ComboExplorer_data/trials" } },
+                        -- No sink: the collector above is handed to every
+                        -- trial as the sink, and Sweep refuses a second one
+                        -- (#45).
                     })
                     sweep.last_status = ok and "sweep started"
                         or ("could not start: " .. tostring(err))

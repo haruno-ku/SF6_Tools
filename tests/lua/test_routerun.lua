@@ -19,6 +19,7 @@ local function injector(verdicts)
         if self.refuse then return nil, "the fake refused" end
         self.started[#self.started + 1] = opts
         self.last = opts
+        self.record_error = nil
         self.live = true
         return true
     end
@@ -29,7 +30,8 @@ local function injector(verdicts)
         local v = verdicts
         if type(v) == "function" then v = v(key) else v = v[key] end
         v = v or "whiff"
-        return { trial = { verdict = v, retryable = (v == "reset_failed") } }
+        return { record_error = self.record_error,
+                 trial = { verdict = v, retryable = (v == "reset_failed") } }
     end
     -- The fake used to have a finish() the driver called by hand, and the
     -- driver stopped it. That hid the defect this file exists to catch:
@@ -43,14 +45,29 @@ local function injector(verdicts)
         self.ticks = self.ticks + 1
         -- Two ticks of work, then done. More than one so a driver that acts on
         -- the first tick regardless would be visible.
-        if self.ticks % 2 == 0 then return { outcome = "judged" } end
+        if self.ticks % 2 == 0 then
+            -- The real Injector's contract (#45): the row is written through
+            -- the sink the trial was started with, on the tick the outcome
+            -- arrives, and result() says whether it landed. RouteRun writes
+            -- nothing itself any more - its collector IS that sink - so the
+            -- fake has to do the writing or every run would look empty.
+            --
+            -- ResultCollector.write is looked up here rather than captured,
+            -- so the tests below that stand in for it still see every row.
+            local sink = self.last.sink
+            if sink and sink.collector then
+                local RC = require("func/ComboExplorer/core/ResultCollector")
+                local rec, problems = RC.write(sink.collector, self.record())
+                if not rec then
+                    self.record_error = tostring(problems and problems[1]
+                                                 and problems[1].problem)
+                end
+            end
+            return { outcome = "judged" }
+        end
         return { outcome = nil }
     end
-    -- The spec a finished trial offers for recording. RouteRun must write
-    -- through the COLLECTOR: the Injector's sink is opened and never used
-    -- (#45), so a run that trusted it would record nothing while reporting a
-    -- path, and "every gap was tried and none linked" is worth nothing if the
-    -- gaps are not on disk.
+    -- The spec a finished trial offers for recording.
     self.record = function() return { spec_for = RR.key_for(self.last.delays) } end
     return self
 end
@@ -64,9 +81,10 @@ local ROUTE = {
     },
 }
 
--- A REAL collector with a no-op sink. A stand-in table would have hidden the
--- thing this most needs to be right: RouteRun writes through the collector,
--- not through the Injector's sink, which is opened and never used (#45).
+-- A REAL collector with a no-op append. A stand-in table would have hidden
+-- the thing this most needs to be right: every trial's row goes through this
+-- collector, handed to the Injector as its sink, and through nothing else
+-- (#45).
 local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
 local function collector(lines)
     local c = ResultCollector.new({
@@ -393,6 +411,47 @@ do
 end
 
 do
+    -- #45. The collector is the trial's sink, so there is one writer. RouteRun
+    -- used to write each row itself while the panel handed the Injector the
+    -- same file as a sink; the day that sink started writing, every gap would
+    -- have been in the file twice.
+    --
+    -- Every write is counted, whoever makes it: the fake injector writes once
+    -- per trial, so anything above four is RouteRun writing as well.
+    RR.stop()
+    local RC = require("func/ComboExplorer/core/ResultCollector")
+    local saved = RC.write
+    local writes = 0
+    RC.write = function() writes = writes + 1 return { ok = true } end
+
+    local c = collector()
+    local inj = injector({})
+    RR.start({ route = ROUTE, collector = c, injector = inj, delays = { 2, 4 } })
+    drive(inj, 8)
+    RC.write = saved
+
+    t.eq(#inj.started, 4, "four combinations started")
+    for i, opts in ipairs(inj.started) do
+        t.ok(type(opts.sink) == "table" and opts.sink.collector == c,
+             ("combination %d's sink is the run's own collector"):format(i))
+    end
+    t.eq(writes, 4, "and four writes were made - one per trial, not two")
+    RR.stop()
+end
+
+do
+    -- Refused rather than ignored, as Sweep does: a caller passing a path
+    -- believes the rows go there too.
+    RR.stop()
+    local ok, why = RR.start({ route = ROUTE, collector = collector(),
+                               injector = injector({}), delays = { 4 },
+                               sink = { path = "x.jsonl" } })
+    t.is_nil(ok, "a route run given a sink as well as a collector does not start")
+    t.ok(tostring(why):find("second writer") ~= nil, tostring(why))
+    t.eq(RR.running(), false, "and nothing is left running")
+end
+
+do
     -- A collector that refuses is a problem, not a silent loss. The whole
     -- answer rests on the rows existing.
     RR.stop()
@@ -409,6 +468,8 @@ do
     t.ok(p.problems >= 1, "the refusal is recorded as a problem")
     t.ok(tostring(p.problem_detail[1].reason):find("would not record") ~= nil,
          "naming what happened: " .. tostring(p.problem_detail[1].reason))
+    t.ok(tostring(p.problem_detail[1].detail):find("disk said no") ~= nil,
+         "with the reason the write reported: " .. tostring(p.problem_detail[1].detail))
     RR.stop()
 end
 

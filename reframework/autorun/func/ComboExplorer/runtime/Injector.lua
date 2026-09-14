@@ -64,6 +64,36 @@
 -- accepted from the caller. A caller-supplied block could describe a setup that
 -- did not run - the caller does not see StageControl.config's defaults - and a
 -- row describing the wrong experiment is worse than a row describing none.
+--
+-- WHO WRITES THE RESULT
+--
+-- This file, the moment a verdict exists, through a ResultCollector, and
+-- nobody else (#45).
+--
+-- start() has always refused to run without a sink - "a trial whose result is
+-- not written is a trial that did not happen" - and then nothing ever wrote to
+-- it. The sink was opened, stored on the run and never read again. Sweep and
+-- RouteRun did not notice because they wrote through their own collectors; the
+-- panel's RUN ONE TRIAL did, on the machine: a trial reached `judged` with
+-- verdict a_failed and trials.jsonl was never created. A refusal that promises
+-- a write and a run that does not perform one is the worst of the available
+-- states, because the promise is what an operator believes.
+--
+-- So the sink is now the one writer, and it takes one of two shapes:
+--
+--   { path, dirs, identity }  a file. A collector is built over it here, so the
+--                             line is the same ce.trial.v1 the sweep writes and
+--                             not a second format that happens to look alike.
+--   { collector = c }         a collector the caller already owns - Sweep's and
+--                             RouteRun's, which carry the resume index and the
+--                             claim() bookkeeping. The Injector writes through
+--                             it; those callers no longer write themselves.
+--
+-- Not "the caller writes, and says so". Two writers is how the same trial ends
+-- up in a file twice, which a resume reads as a duplicate and ConfirmedEdge
+-- reads as a second attempt that agreed with the first. One place that writes
+-- means the question "was this trial recorded" has one answer, and it is on the
+-- run: progress() and result() carry it, a failed write included.
 
 local Provenance      = require("func/ComboExplorer/core/Provenance")
 local InputMask       = require("func/ComboExplorer/core/InputMask")
@@ -71,6 +101,7 @@ local SequenceCompiler = require("func/ComboExplorer/core/SequenceCompiler")
 local RunnerFsm       = require("func/ComboExplorer/core/RunnerFsm")
 local StageControlFsm = require("func/ComboExplorer/core/StageControlFsm")
 local TestContext     = require("func/ComboExplorer/core/TestContext")
+local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
 local StageControl    = require("func/ComboExplorer/runtime/StageControl")
 local JsonIO          = require("func/ComboExplorer/runtime/JsonIO")
 
@@ -206,7 +237,9 @@ function M.install_error() return install_error end
 --                        conditions themselves are not accepted from a caller
 -- opts.stage_cfg  : overrides for StageControl.DEFAULTS. The conditions on the
 --                   record are derived from whatever this resolves to
--- opts.sink       : { path, dirs } for the JSONL log, or false for no recording
+-- opts.sink       : where the result is written - { path, dirs, identity } for a
+--                   JSONL file, { collector = c } for a collector the caller
+--                   owns, or false for no recording. See WHO WRITES THE RESULT
 -- opts.adapter    : substituted by tests
 function M.start(opts)
     opts = opts or {}
@@ -335,6 +368,14 @@ function M.start(opts)
         adapter = opts.adapter or default_adapter(),
         cfg = cfg,
         sink = sink,
+        -- What became of the result. nil until the trial ends, then exactly
+        -- one of the M.RECORDED words, set once. record_error is the reason
+        -- when it is FAILED - kept apart from write_error, which is about the
+        -- pad, because "the move did not come out" and "the row did not reach
+        -- the file" send an operator to different places.
+        recorded = nil,
+        record_id = nil,
+        record_error = nil,
         attacker_index = opts.attacker_index or 0,
         ticks = 0,
         writes = 0,
@@ -370,9 +411,38 @@ end
 
 -- Returns a sink table, or false for "recording is off", or nil plus a reason.
 -- Separate so a test can assert the refusal without a game.
+--
+-- Every sink that is not `false` comes back holding a collector, because the
+-- collector is the only thing in the project that turns a spec into a line.
+-- A file sink gets one built here; a collector sink brings its own.
 function M.open_sink(spec)
     if spec == false then return false end
-    if type(spec) ~= "table" or type(spec.path) ~= "string" then
+    if type(spec) ~= "table" then
+        return nil, "no sink was given, and a trial whose result is not written "
+            .. "is a trial that did not happen"
+    end
+
+    local has_path = type(spec.path) == "string"
+    local has_collector = spec.collector ~= nil
+
+    -- Both is refused rather than resolved. Whichever one lost would be a
+    -- place the caller believes the result went and it did not.
+    if has_path and has_collector then
+        return nil, "the sink names a file and a collector - a trial is written in "
+            .. "one place, and whichever of the two was ignored would be a file "
+            .. "somebody goes looking for"
+    end
+
+    if has_collector then
+        local c = spec.collector
+        if type(c) ~= "table" or type(c.append) ~= "function" then
+            return nil, "the sink's collector cannot append, so a trial written "
+                .. "through it would not be written"
+        end
+        return { collector = c }
+    end
+
+    if not has_path then
         return nil, "no sink was given, and a trial whose result is not written "
             .. "is a trial that did not happen"
     end
@@ -380,12 +450,65 @@ function M.open_sink(spec)
     local probe, why = JsonIO.encode_line({ schema = "ce.sink_probe.v1", ok = true })
     if not probe then return nil, "the recorder cannot encode: " .. tostring(why) end
 
+    local collector, cerr = ResultCollector.new({
+        -- Through JsonIO at call time rather than a copy taken now, so the
+        -- module the rest of the suite writes through is the one used.
+        append = function(line) return JsonIO.append(spec.path, line, spec.dirs) end,
+        encode = function(rec) return JsonIO.encode_line(rec) end,
+        -- Stamped onto the line when the trial did not carry it: the
+        -- calibration and the patch are what a later fold groups on, and a
+        -- single trial is as much evidence as a sweep row.
+        identity = spec.identity,
+    })
+    if not collector then return nil, "the recorder refused: " .. tostring(cerr) end
+
     return {
         path = spec.path,
         dirs = spec.dirs,
-        append = function(line) return JsonIO.append(spec.path, line, spec.dirs) end,
-        encode = JsonIO.encode_line,
+        collector = collector,
     }
+end
+
+-- What became of a finished trial's result.
+M.RECORDED = {
+    WRITTEN   = "written",    -- the line reached the sink
+    FAILED    = "failed",     -- it did not, and record_error says why
+    NO_RECORD = "no_record",  -- the outcome produces no record, which is its answer
+    OFF       = "off",        -- the caller switched recording off on purpose
+}
+
+-- Called once, on the tick the outcome arrives - not from record() and not
+-- from the caller - so the write cannot be forgotten by a caller that only
+-- reads result(), and cannot be done twice by one that also calls record().
+local function write_result(r)
+    if r.recorded ~= nil then return end
+
+    local spec = r.runner:record_spec()
+    if not spec then
+        r.recorded = M.RECORDED.NO_RECORD
+        return
+    end
+    if not r.sink then
+        r.recorded = M.RECORDED.OFF
+        return
+    end
+
+    local rec, problems = ResultCollector.write(r.sink.collector, spec)
+    if rec then
+        r.recorded = M.RECORDED.WRITTEN
+        r.record_id = rec.id
+        return
+    end
+
+    -- Every problem, not the first. A refusal from the schema can name
+    -- several fields, and the one that matters is not always first.
+    local parts = {}
+    for _, p in ipairs(problems or {}) do
+        parts[#parts + 1] = ("%s: %s"):format(tostring(p.field), tostring(p.problem))
+    end
+    r.recorded = M.RECORDED.FAILED
+    r.record_error = #parts > 0 and table.concat(parts, "; ")
+        or "the collector refused without saying why"
 end
 
 function M.stop()
@@ -441,6 +564,9 @@ function M.tick()
     if cmd.outcome ~= nil then
         run.outcome = cmd.outcome
         pending_mask = nil
+        -- Here, on the tick the verdict exists, before anybody has had the
+        -- chance to stop() the run and take the result with it.
+        write_result(run)
     end
     return cmd
 end
@@ -462,11 +588,20 @@ function M.progress()
         write_errors = run.write_errors,
         write_error = run.write_error,
         unreadable = run.unreadable,
+        recorded = run.recorded,
+        record_id = run.record_id,
+        record_error = run.record_error,
+        sink_path = run.sink and run.sink.path or nil,
     }
 end
 
--- The record, handed to the collector the caller gave us. Returns the
--- collector's own report so a refusal is visible rather than assumed.
+-- The spec, or - with a collector and recording switched off - the record
+-- written through that collector. Returns the collector's own report so a
+-- refusal is visible rather than assumed.
+--
+-- Not how a trial with a sink is recorded: tick() already did that. A run with
+-- a sink refuses a collector here, because writing it again would put the same
+-- trial in a file twice.
 function M.record(collector)
     if not run then return nil, "no trial to record" end
     if run.outcome == nil then return nil, "the trial has not finished" end
@@ -475,14 +610,15 @@ function M.record(collector)
     if not spec then return nil, "the trial produced no record, which is its answer" end
     if not collector then return spec end
 
+    if run.sink then
+        return nil, { { field = "sink",
+            problem = "this trial was already written to its sink when it finished, "
+                .. "and writing it again would record one trial twice" } }
+    end
+
     -- write(), not trial(). M.trial takes ONE argument and only BUILDS a record;
     -- this was calling it with two, so the collector was being validated as if
     -- it were the spec and the record was never appended to anything.
-    --
-    -- It went unnoticed because the only caller is Sweep, which passes nil to
-    -- get the spec and does its own write. The moment anything recorded a trial
-    -- through this path it would have silently written nothing.
-    local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
     return ResultCollector.write(collector, spec)
 end
 
@@ -499,6 +635,10 @@ function M.result()
         write_errors = run.write_errors,
         write_error = run.write_error,
         unreadable_ticks = run.unreadable,
+        recorded = run.recorded,
+        record_id = run.record_id,
+        record_error = run.record_error,
+        sink_path = run.sink and run.sink.path or nil,
         trial = run.runner:result(),
         program_ticks = run.program.total_ticks,
         settings = settings,

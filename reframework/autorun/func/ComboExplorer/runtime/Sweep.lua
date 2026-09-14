@@ -151,7 +151,8 @@ end
 -- opts.worklist   : a decoded worklist, or use opts.path
 -- opts.catalog    : the live catalog, for the identity check
 -- opts.collector  : a ResultCollector. Required - a sweep that cannot record is
---                   a sweep that did not happen
+--                   a sweep that did not happen. It is handed to every trial as
+--                   the Injector's sink, and the Injector is what writes to it
 -- opts.provenance : the register, passed through to every trial
 -- opts.injector   : substituted by tests
 -- opts.delay      : ticks between A and B, one value for this pass
@@ -179,6 +180,17 @@ function M.start(opts)
 
     if type(opts.collector) ~= "table" then
         return nil, "no collector - a sweep that cannot record is a sweep that did not happen"
+    end
+
+    -- Refused, not ignored. The collector IS the sink (#45): every trial is
+    -- written through it by the Injector, once. A caller still passing a path
+    -- here believes the rows go there as well, and before #45 the panel passed
+    -- the same file as both - which, the day the sink started writing, would
+    -- have put every row in it twice.
+    if opts.sink ~= nil then
+        return nil, "a sweep records through its collector, which every trial is "
+            .. "handed as its sink - a second sink would be a second writer, and "
+            .. "a second writer is every row twice"
     end
 
     -- Refused rather than defaulted, and the failure it prevents is the nastiest
@@ -275,7 +287,6 @@ function M.start(opts)
         delay = opts.delay,
         delays = opts.delays,
         allow_injection = opts.allow_injection,
-        sink = opts.sink,
 
         max_attempts = opts.max_attempts or M.DEFAULT_MAX_ATTEMPTS,
         max_start_failures = opts.max_start_failures or M.DEFAULT_MAX_START_FAILURES,
@@ -436,7 +447,10 @@ function M.tick()
         },
         edge_id = key,
         attempt = run.attempts[key],
-        sink = run.sink,
+        -- The collector, as the sink. The Injector writes the row on the tick
+        -- the verdict exists and finish_trial only reads whether it landed:
+        -- one writer, so one row per trial.
+        sink = { collector = run.collector },
         -- The same override every trial in this sweep runs under. It also
         -- scopes the resume, through Injector.conditions_for: a pair answered
         -- with the fighters 300 apart has not been answered with them in
@@ -474,15 +488,15 @@ function M.finish_trial()
     local result = inj.result()
     local key = run.current_key
 
-    local spec = inj.record(nil)   -- the spec, not yet written
-    if spec then
-        local rec, problems = ResultCollector.write(run.collector, spec)
-        if not rec then
-            run.problems[#run.problems + 1] = {
-                pair = key, reason = "the result would not record",
-                detail = problems and problems[1] and problems[1].problem,
-            }
-        end
+    -- Already written, by the Injector, through run.collector (#45). Writing
+    -- it here as well was the obvious thing and would be every row twice. What
+    -- is left is to make a failed write visible, because a pair whose row did
+    -- not land has not been answered, whatever its verdict was.
+    if result and result.record_error then
+        run.problems[#run.problems + 1] = {
+            pair = key, reason = "the result would not record",
+            detail = result.record_error,
+        }
     end
 
     -- A trial that answered nothing may come back, up to a bound. `retryable`
