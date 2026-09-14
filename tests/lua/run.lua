@@ -34,6 +34,7 @@ local H = require("tests.lua.harness")
 
 local SUITES = {
     "tests.lua.test_cli",
+    "tests.lua.test_sweepreport",
     "tests.lua.test_characters",
     "tests.lua.test_json",
     "tests.lua.test_schema",
