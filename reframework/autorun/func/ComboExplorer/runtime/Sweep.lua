@@ -128,18 +128,52 @@ end
 -- Above start() because start uses both: it checks every pair's route before
 -- the first trial, and the queue below builds the same route to run it. One
 -- builder, so the route that was checked is the route that runs.
+--
+-- A pair from a `-drc` worklist is A, then a Drive Rush Cancel, then B. It
+-- names the same A and B as the direct pair and is a different question - B
+-- out of a rush, not B out of A's recovery - so its key says so. Without the
+-- marker the collector would read a DRC trial as the direct pair already
+-- answered (or the other way round) and skip it. The direct key is left
+-- exactly as it was: resume reads committed logs by that spelling.
+local function is_drc(p)
+    return p.via == SequenceCompiler.DRIVE_RUSH_STEP
+end
+
 local function pair_key(p)
+    if is_drc(p) then
+        return ("%d:%s->drc->%d:%s"):format(p.a_id, tostring(p.a_method),
+                                            p.b_id, tostring(p.b_method))
+    end
     return ("%d:%s->%d:%s"):format(p.a_id, tostring(p.a_method), p.b_id, tostring(p.b_method))
 end
 
+-- The DRC shape is three steps with the rush in the middle, the same shape
+-- RouteSearch emits for a DRC edge, so a route checked here and a route found
+-- offline are refused by SequenceCompiler for the same reason in the same
+-- place. Today that refusal is certain: see SequenceCompiler's header for the
+-- three things nobody has measured about pressing a Drive Rush.
 local function pair_route(worklist, p)
+    local a = { index = 1, action_id = p.a_id, input_method = p.a_method,
+                notation = p.a_notation }
+    if is_drc(p) then
+        return {
+            id = ("s-%d-drc-%d"):format(p.a_id, p.b_id),
+            character = worklist.character,
+            control_scheme = worklist.control_scheme,
+            steps = {
+                a,
+                { index = 2, kind = SequenceCompiler.DRIVE_RUSH_STEP },
+                { index = 3, action_id = p.b_id, input_method = p.b_method,
+                  notation = p.b_notation },
+            },
+        }
+    end
     return {
         id = ("s-%d-%d"):format(p.a_id, p.b_id),
         character = worklist.character,
         control_scheme = worklist.control_scheme,
         steps = {
-            { index = 1, action_id = p.a_id, input_method = p.a_method,
-              notation = p.a_notation },
+            a,
             { index = 2, action_id = p.b_id, input_method = p.b_method,
               notation = p.b_notation },
         },
@@ -253,6 +287,12 @@ function M.start(opts)
     -- says it does not come out of. A follow-up whose parent nobody names still
     -- arrives without the field and is still set aside here - absent is not a
     -- vouch, and `== true` keeps a stray string from becoming one.
+    --
+    -- Every Drive Rush Cancel pair lands here as well, as kind drive_rush, and
+    -- nothing about it is computed first: no delay, no expected ids, no claim.
+    -- delay_for would find A's frames and happily predict a gap for a press
+    -- that cannot be made, and a predicted gap on a pair that never ran is a
+    -- number that looks like it meant something.
     local playable, unplayable = {}, {}
     for _, p in ipairs(worklist.pairs or {}) do
         local found = SequenceCompiler.unplayable(pair_route(worklist, p),
@@ -260,8 +300,17 @@ function M.start(opts)
         if #found == 0 then
             playable[#playable + 1] = p
         else
-            unplayable[#unplayable + 1] = { pair = pair_key(p), kind = found[1].kind,
-                                            reason = found[1].reason }
+            -- The first problem, unless one of them is the Drive Rush. A DRC
+            -- pair whose A also repeats a direction would otherwise be counted
+            -- as a 22-style repeat, and fixing the repeat would then look like
+            -- it would make the pair playable when the rush still could not be
+            -- pressed. The rush is the reason no fix to A can get round.
+            local pick = found[1]
+            for _, f in ipairs(found) do
+                if f.kind == SequenceCompiler.UNPLAYABLE.DRIVE_RUSH then pick = f break end
+            end
+            unplayable[#unplayable + 1] = { pair = pair_key(p), kind = pick.kind,
+                                            reason = pick.reason }
         end
     end
     if #unplayable > 0 then

@@ -588,4 +588,75 @@ do
     Sweep.stop()
 end
 
+t.group("a Drive Rush Cancel pair is set aside as drive_rush, and the direct pair still runs")
+
+do
+    -- Built by hand in the shape the -drc worklist carries: a normal pair plus
+    -- via, the on-hit margin through the rush, and the rush's cost.
+    Sweep.stop()
+    local MID = "\228\184\173"   -- 中
+    local wl = worklist(1)
+    local direct = wl.pairs[1]
+    direct.a_notation, direct.b_notation = "2 + " .. MID, "236236 + " .. MID
+    -- Frames on the pair, so delay_for WOULD predict a gap if anything asked it.
+    direct.a_startup, direct.a_active, direct.a_recovery = 5, 3, 10
+    direct.b_startup = 4
+    local drc = {}
+    for k, v in pairs(direct) do drc[k] = v end
+    drc.via, drc.a_drc_on_hit, drc.drc_margin_frames, drc.drive_cost =
+        "drive_rush_cancel", 11, 7, 30000
+    -- And a DRC pair whose A would also be refused as a repeat: still counted
+    -- as the rush, which is the refusal no fix to A gets round.
+    local drc22 = {}
+    for k, v in pairs(drc) do drc22[k] = v end
+    drc22.a_id, drc22.a_notation = 699, "22 + " .. MID
+    wl.pairs = { drc, direct, drc22 }
+    wl.count = 3
+
+    local inj = injector({})
+    local c = collector()
+    local ok, err = Sweep.start({ worklist = wl, collector = c, injector = inj,
+                                  delay = 4, allow_injection = true })
+    t.ok(ok, "a DRC worklist loads and the sweep starts: " .. tostring(err))
+    drive(50)
+
+    local r = Sweep.result()
+    t.eq(r.unplayable, 2, "both DRC pairs are set aside")
+    t.eq(r.unplayable_by_kind.drive_rush, 2, "as drive rush, both of them")
+    t.is_nil(r.unplayable_by_kind["repeat"], "the one with a 22 in A is not counted as a repeat")
+    t.eq(r.total, 1, "the direct pair is left in the list")
+    t.eq(#inj.log.started, 1, "and it is the only one pressed")
+    t.eq(inj.log.started[1], "601:manual->701:manual",
+         "under the direct key, spelled as it always was")
+    t.eq(r.unplayable_detail[1].pair, "601:manual->drc->701:manual",
+         "the DRC pair's key is not the direct pair's")
+    t.ok(r.unplayable_detail[1].pair ~= inj.log.started[1],
+         "so resume can never read one as the other answered")
+    t.ok(tostring(r.unplayable_detail[1].reason):find("Drive Rush Cancel") ~= nil,
+         "with the reason the compiler gives: " .. tostring(r.unplayable_detail[1].reason))
+    t.eq(r.predicted + r.unpredicted, 1, "a gap was decided for the direct pair only")
+    t.eq(r.skipped, 0, "and no claim was made for a set-aside pair")
+    t.eq(#wl.pairs, 3, "the caller's worklist is not edited")
+    Sweep.stop()
+end
+
+t.group("a worklist of nothing but DRC pairs finishes without pressing anything")
+
+do
+    Sweep.stop()
+    local wl = worklist(2)
+    for _, p in ipairs(wl.pairs) do p.via, p.drive_cost = "drive_rush_cancel", 30000 end
+    local inj = injector({})
+    local ok, err = Sweep.start({ worklist = wl, collector = collector(), injector = inj,
+                                  delay = 4, allow_injection = true })
+    t.ok(ok, "it starts: " .. tostring(err))
+    drive(20)
+    local r = Sweep.result()
+    t.eq(r.unplayable_by_kind.drive_rush, 2, "every pair set aside as drive rush")
+    t.eq(#inj.log.started, 0, "nothing pressed")
+    t.eq(r.done, true, "and it says it is done")
+    t.eq(r.start_failures, 0, "not by failing to start")
+    Sweep.stop()
+end
+
 return t.finish()

@@ -78,9 +78,16 @@ function M.resolve(canonical, method, notation)
     return id
 end
 
+-- The route between A and B is part of the trial. A pair that goes through a
+-- Drive Rush Cancel (`via = "drive_rush_cancel"`) names the same two ids as the
+-- direct pair and asks a different question, so the fold below must not treat
+-- one as a duplicate of the other - in a worklist holding both, whichever came
+-- second would vanish, and the report would call it a duplicate. Any other
+-- via is folded with its own kind; a pair with no via keeps the old key.
 local function pair_key(p)
-    return ("%s:%s->%s:%s"):format(tostring(p.a_id), tostring(p.a_method),
-                                   tostring(p.b_id), tostring(p.b_method))
+    local via = (p.via ~= nil) and ("->" .. tostring(p.via)) or ""
+    return ("%s:%s%s->%s:%s"):format(tostring(p.a_id), tostring(p.a_method), via,
+                                     tostring(p.b_id), tostring(p.b_method))
 end
 
 -- worklist  : a decoded ce.worklist.v1

@@ -1626,11 +1626,16 @@ local function draw_sweep()
         kv("finished", tostring(p.finished))
         -- Set aside before the first trial because the compiler cannot play
         -- them (#49). Without this the pair total reads as a short worklist.
+        -- Drive rush is its own count: a -drc worklist is set aside whole on
+        -- this build (see SequenceCompiler's header), and "0 / 0" beside a
+        -- total of 0 would read as a broken file rather than a known refusal.
         if (p.unplayable or 0) > 0 then
             local by = p.unplayable_by_kind or {}
-            kv("not tried - cannot be pressed", ("%d  (22-style repeat %d / follow-up %d)")
+            kv("not tried - cannot be pressed",
+               ("%d  (22-style repeat %d / follow-up %d / drive rush %d)")
                :format(p.unplayable, (by["repeat"] or 0),
-                       (by.followup_context or 0) + (by.followup_first or 0)),
+                       (by.followup_context or 0) + (by.followup_first or 0),
+                       (by.drive_rush or 0)),
                UIKit.COLORS.Orange)
         end
         kv("skipped (already answered)", tostring(p.skipped))

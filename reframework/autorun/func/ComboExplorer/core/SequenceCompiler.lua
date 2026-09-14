@@ -57,6 +57,29 @@
 -- InputMask.compile refuses one outright. In a route it is a different case: the
 -- move before it is the context that makes it available, so a follow-up is
 -- compiled normally when it is not the first step, and refused when it is.
+--
+-- DRIVE RUSH CANCEL
+--
+-- A route may carry a step that is not a move: `{ kind = "drive_rush_cancel" }`,
+-- sitting between the move that is cancelled and the move that comes out of the
+-- rush. It has no notation and no action id, because what it would take to
+-- press it is exactly what is not known on this build:
+--
+--   * Modern spells a Drive Rush as Drive Parry then forward. InputMask has no
+--     token for the Parry button, and the bit Provenance guesses for it (0x40 in
+--     modern_button_bits) is one the button-bit calibration can never witness -
+--     no catalog notation is a single Parry press - so it stays a guess.
+--   * The other spelling, 66, is two forward presses, and
+--     InputMask.repeated_direction refuses it for the reason it refuses 22: the
+--     neutral between the two presses has not been measured (#49).
+--   * Which action id a Drive Rush Cancel comes out as - 500, 501 or 504 - is
+--     disputed, so even a press that worked could not be confirmed by what the
+--     runner sees.
+--
+-- So the step is reported by `unplayable` and refused by `compile` BY NAME.
+-- Without the name the compiler would say "has no notation to compile", which
+-- is true and hides every one of the three reasons above - and the next person
+-- to read it would go looking for a missing notation to add.
 
 local InputMask = require("func/ComboExplorer/core/InputMask")
 
@@ -77,7 +100,20 @@ M.DEFAULTS = {
 
 -- Compiles a single route step to InputMask's { frames, mask } list, with no
 -- lead and no tail: the route owns the gaps between moves.
+-- Why a Drive Rush Cancel step cannot be pressed on this build. One sentence,
+-- shared by unplayable and compile, so the two refusals cannot drift apart. See
+-- the header for each of the three facts.
+M.DRIVE_RUSH_STEP = "drive_rush_cancel"
+M.DRIVE_RUSH_UNMEASURED = "a Drive Rush Cancel cannot be pressed on this build: "
+    .. "InputMask has no Drive Parry token and the Modern Parry bit (0x40) was "
+    .. "never witnessed; 66 is refused because the neutral between the two "
+    .. "presses is unmeasured (#49); and which action id a Drive Rush Cancel is "
+    .. "(500, 501 or 504) is disputed"
+
 local function compile_step(step, index, opts)
+    if step.kind == M.DRIVE_RUSH_STEP then
+        return nil, ("step %d is a Drive Rush Cancel - %s"):format(index, M.DRIVE_RUSH_UNMEASURED)
+    end
     local notation = step.notation or step.classic
     if type(notation) ~= "string" or notation == "" then
         return nil, ("step %d has no notation to compile"):format(index)
@@ -121,6 +157,7 @@ M.UNPLAYABLE = {
     REPEAT = "repeat",                 -- 22: see InputMask.repeated_direction
     FOLLOWUP_FIRST = "followup_first", -- "> X" opening a route
     FOLLOWUP_CONTEXT = "followup_context", -- "> X" after a move nobody said it follows
+    DRIVE_RUSH = "drive_rush",         -- a drive_rush_cancel step: see the header
 }
 
 -- route : a ce.route.v1
@@ -152,7 +189,13 @@ function M.unplayable(route, opts)
     for index, step in ipairs(route.steps) do
         local notation = step.notation or step.classic
         local parsed = type(notation) == "string" and InputMask.parse(notation) or nil
-        if parsed then
+        if step.kind == M.DRIVE_RUSH_STEP then
+            -- Whatever context_known says. A vouch that the moves come in the
+            -- right order says nothing about whether the rush can be pressed.
+            out[#out + 1] = { index = index, notation = notation, kind = M.UNPLAYABLE.DRIVE_RUSH,
+                reason = ("step %d is a Drive Rush Cancel - %s")
+                    :format(index, M.DRIVE_RUSH_UNMEASURED) }
+        elseif parsed then
             local twice = InputMask.repeated_direction(parsed.dirs)
             if twice then
                 out[#out + 1] = { index = index, notation = notation, kind = M.UNPLAYABLE.REPEAT,

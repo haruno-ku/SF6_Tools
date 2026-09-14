@@ -341,4 +341,46 @@ do
     t.eq(#SC.unplayable(nil), 0, "and nothing is nothing")
 end
 
+t.group("a Drive Rush Cancel step is refused by name, with what is unmeasured")
+
+do
+    local MID = "\228\184\173"   -- 中
+    local drc = { id = "d", steps = {
+        { index = 1, action_id = 1, input_method = "manual", notation = "2 + " .. MID },
+        { index = 2, kind = "drive_rush_cancel" },
+        { index = 3, action_id = 2, input_method = "manual", notation = "236236 + " .. MID },
+    } }
+
+    local found = SC.unplayable(drc)
+    t.eq(#found, 1, "the rush is the one step that cannot be played")
+    t.eq(found[1].kind, SC.UNPLAYABLE.DRIVE_RUSH, "named as a drive rush")
+    t.eq(SC.UNPLAYABLE.DRIVE_RUSH, "drive_rush", "and the kind is spelled for the panel")
+    t.eq(found[1].index, 2, "on the middle step")
+    local why = tostring(found[1].reason)
+    t.ok(why:find("Parry") ~= nil and why:find("0x40") ~= nil,
+         "the reason names the unwitnessed Parry bit")
+    t.ok(why:find("66") ~= nil and why:find("#49") ~= nil,
+         "and the unmeasured neutral inside 66")
+    t.ok(why:find("500") ~= nil and why:find("501") ~= nil and why:find("504") ~= nil,
+         "and the disputed action id")
+
+    -- A vouch about order is not a vouch about whether the rush can be pressed.
+    local vouched = SC.unplayable(drc, { context_known = true })
+    t.eq(#vouched, 1, "context_known does not make the rush playable")
+    t.eq(vouched[1].kind, SC.UNPLAYABLE.DRIVE_RUSH, "it is still the rush")
+
+    local prog, reason = SC.compile(drc, { profile = VERIFIED, delays = { 4, 4 } })
+    t.is_nil(prog, "compile refuses the route")
+    t.ok(tostring(reason):find("Drive Rush Cancel") ~= nil, "by name: " .. tostring(reason))
+    t.ok(tostring(reason):find("no notation") == nil,
+         "and not as a missing notation, which would hide why")
+    t.ok(tostring(reason):find("step 2") ~= nil, "naming the step")
+
+    local programs, problems = SC.sweep(drc, { profile = VERIFIED, gap = 1, fixed = 4,
+                                               range = { from = 0, to = 1, step = 1 } })
+    t.eq(#programs, 0, "a sweep over it produces no program")
+    t.ok(tostring(problems[1] and problems[1].reason):find("Drive Rush Cancel") ~= nil,
+         "and every delay says why")
+end
+
 return t.finish()

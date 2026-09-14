@@ -113,6 +113,25 @@ do
     t.eq(wl.pairs[2].b_id, 701, "with the rest of the order untouched")
 end
 
+do
+    -- A pair through a Drive Rush Cancel names the same two ids as the direct
+    -- pair and asks a different question. Folding them would drop whichever
+    -- came second and call it a duplicate.
+    local drc = pair(601, "弱", 678, "x")
+    drc.via, drc.drive_cost, drc.drc_margin_frames = "drive_rush_cancel", 30000, 7
+    local wl, rep = C.apply(worklist({ pair(601, "弱", 678, "x"), drc }), CANON)
+    t.eq(#wl.pairs, 2, "a DRC pair is not folded into the direct pair")
+    t.eq(rep.folded, 0, "and nothing is reported as a duplicate")
+    t.eq(wl.pairs[2].via, "drive_rush_cancel", "the DRC pair keeps its via")
+    t.eq(wl.pairs[2].drive_cost, 30000, "and every field it came with")
+    t.eq(wl.pairs[2].a_id, 611, "while its ids are canonicalised like any other pair")
+
+    local drc2 = pair(602, "弱", 678, "x")
+    drc2.via = "drive_rush_cancel"
+    local wl2 = C.apply(worklist({ drc, drc2 }), CANON)
+    t.eq(#wl2.pairs, 1, "but two DRC pairs that become each other still fold")
+end
+
 -- --- what it refuses to do ---------------------------------------------------
 
 t.group("a group nobody pressed is left alone, and said so")
