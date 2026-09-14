@@ -308,4 +308,37 @@ t.is_nil(SC.compile(label, { profile = VERIFIED, delay = 4 }),
 
 t.ok(#SC.describe(prog, VERIFIED) == prog.total_ticks, "describe covers every tick")
 
+
+-- --- what cannot be played, asked before anything runs (#49) ----------------
+
+t.group("unplayable names the steps the compiler cannot produce")
+
+local function route2(a, b)
+    return { steps = { { index = 1, notation = a }, { index = 2, notation = b } } }
+end
+
+do
+    local MID = "\228\184\173"   -- 中
+    t.eq(#SC.unplayable(route2("2 + " .. MID, "236236 + " .. MID)), 0,
+         "a normal into a motion that never repeats is playable")
+
+    local found = SC.unplayable(route2("2 + " .. MID, "22 + " .. MID))
+    t.eq(#found, 1, "a repeated direction is found")
+    t.eq(found[1].kind, SC.UNPLAYABLE.REPEAT, "and named")
+    t.eq(found[1].index, 2, "on the step that has it")
+
+    found = SC.unplayable(route2("> " .. MID, "2 + " .. MID))
+    t.eq(found[1].kind, SC.UNPLAYABLE.FOLLOWUP_FIRST, "a follow-up cannot open a route")
+
+    found = SC.unplayable(route2("2 + " .. MID, "> " .. MID))
+    t.eq(found[1].kind, SC.UNPLAYABLE.FOLLOWUP_CONTEXT,
+         "a follow-up after a move nobody vouched for is unplayable")
+    t.eq(#SC.unplayable(route2("2 + " .. MID, "> " .. MID), { context_known = true }), 0,
+         "but a route whose author vouches for the context keeps it")
+
+    t.eq(#SC.unplayable(route2("A", "B")), 0,
+         "unreadable notation is left to compile, which says why in more detail")
+    t.eq(#SC.unplayable(nil), 0, "and nothing is nothing")
+end
+
 return t.finish()

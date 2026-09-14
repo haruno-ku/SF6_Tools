@@ -219,6 +219,27 @@ local TOKEN_ORDER = { "AUTO", "THROW", "SP", "DI",
 
 -- --- direction ---------------------------------------------------------------
 
+-- The digit a motion presses twice in a row, or nil. "22" -> "2".
+--
+-- A motion is played one direction per tick, and two ticks of DOWN are one
+-- held DOWN - the game sees a single press. So "22 + 中" compiles, plays, and
+-- produces nothing, and the trial is recorded as "move B never appeared" (#49).
+-- Every other motion changes direction every tick and does come out: the logs
+-- show 360, 63214 and 236236 all producing their move.
+--
+-- Read through MOTION_SHORTHAND, because the circles are spelled "360" and
+-- played as "6321478". Neither expansion repeats.
+--
+-- What would fix it is a neutral between the two presses - the catalog's own
+-- raw_direction_inputs for 678 are neutral, down, neutral, down - but how long
+-- that neutral has to be is not measured, so the compiler refuses instead of
+-- guessing.
+function M.repeated_direction(dirs)
+    if type(dirs) ~= "string" then return nil end
+    local expanded = M.MOTION_SHORTHAND[dirs] or dirs
+    return expanded:match("(%d)%1")
+end
+
 -- "2" -> {2}, "236" -> {2, 10, 8}, "360" -> the circle. Returns a LIST because a
 -- motion is played one direction per tick; a single direction is a list of one.
 function M.dirs_from_numpad(s, profile)
@@ -424,6 +445,15 @@ function M.compile(parsed, opts)
     -- refuse rather than emit a direction-only sequence that silently whiffs.
     if parsed.any_button and #parsed.buttons == 0 then
         return nil, "any-button notation needs an explicit button: " .. tostring(parsed.raw)
+    end
+
+    -- See M.repeated_direction. Refused by name for the same reason as the two
+    -- above: compiled, it presses something that silently produces nothing.
+    local twice = M.repeated_direction(parsed.dirs)
+    if twice then
+        return nil, ("%s presses %s twice in a row, and one tick per direction plays that "
+            .. "as a single held %s - the neutral between the presses is not measured")
+            :format(tostring(parsed.raw), twice, twice)
     end
 
     local btn, err = M.button_mask(parsed.buttons, profile)

@@ -254,13 +254,15 @@ end
 t.eq(parsed_ok + label_ok, 66, "every notation either parsed or is a known label")
 t.eq(label_ok, 4, "exactly four pure labels")
 
--- Every refusal must be a deliberate one: a follow-up, or an any-button
--- notation. Anything else is a parser gap wearing a refusal as a disguise.
+-- Every refusal must be a deliberate one: a follow-up, an any-button notation,
+-- or a direction pressed twice in a row (22 + 中, 22 + 强, and the 44 / 66
+-- dashes - #49). Anything else is a parser gap wearing a refusal as a disguise.
 for _, r in ipairs(refusals) do
-    t.ok(r:find("standalone", 1, true) ~= nil or r:find("any%-button") ~= nil,
+    t.ok(r:find("standalone", 1, true) ~= nil or r:find("any%-button") ~= nil
+         or r:find("twice in a row", 1, true) ~= nil,
          "refusal is deliberate: " .. r)
 end
-t.ok(compiled >= 55, "the large majority compile (" .. compiled .. " of 66)")
+t.ok(compiled >= 53, "the large majority compile (" .. compiled .. " of 66)")
 
 -- --- facing mirror -----------------------------------------------------------
 
@@ -438,6 +440,28 @@ do
     })
     t.eq(denied.measured, false,
          "an explicit measured = false is not overruled by a verified status")
+end
+
+
+-- --- a direction pressed twice in a row (#49) ----------------------------------
+
+t.group("a direction pressed twice in a row is refused, not compiled")
+
+t.eq(IM.repeated_direction("22"), "2", "22 repeats DOWN")
+t.is_nil(IM.repeated_direction("236236"), "236236 changes direction every tick")
+t.is_nil(IM.repeated_direction("63214"), "and so does a half circle")
+t.is_nil(IM.repeated_direction("360"), "360 is read through its shorthand, which does not repeat")
+t.is_nil(IM.repeated_direction("720"), "nor does 720")
+t.is_nil(IM.repeated_direction(""), "no motion is no repeat")
+t.is_nil(IM.repeated_direction(nil), "and neither is nothing")
+
+do
+    local seq, err = IM.compile(IM.parse("22 + \228\184\173"), { profile = VERIFIED })
+    t.is_nil(seq, "22 + 中 does not compile")
+    t.ok(tostring(err):find("twice in a row") ~= nil, "and says why: " .. tostring(err))
+
+    t.ok(IM.compile(IM.parse("236236 + \228\184\173"), { profile = VERIFIED }) ~= nil,
+         "a motion that never repeats still compiles")
 end
 
 return t.finish()

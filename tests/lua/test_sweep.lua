@@ -432,4 +432,39 @@ do
     t.eq(why.predicted, false, "no buffer, no prediction")
 end
 
+
+t.group("pairs the compiler cannot play are set aside before the first trial (#49)")
+
+do
+    Sweep.stop()
+    local MID = "\228\184\173"   -- 中
+    local wl = worklist(4)
+    wl.pairs[1].a_notation, wl.pairs[1].b_notation = "2 + " .. MID, "22 + " .. MID
+    wl.pairs[2].a_notation, wl.pairs[2].b_notation = "2 + " .. MID, "> " .. MID
+    wl.pairs[3].a_notation, wl.pairs[3].b_notation = "2 + " .. MID, "236236 + " .. MID
+    local inj = injector({})
+    local c = collector()
+    local ok, err = Sweep.start({ worklist = wl, collector = c, injector = inj,
+                                  delay = 4, allow_injection = true })
+    t.ok(ok, "the sweep still starts: " .. tostring(err))
+    drive(50)
+
+    local r = Sweep.result()
+    t.eq(r.unplayable, 2, "the 22 pair and the follow-up pair are set aside")
+    t.eq(r.unplayable_by_kind["repeat"], 1, "counted by kind")
+    t.eq(r.unplayable_by_kind.followup_context, 1, "both kinds")
+    t.eq(r.total, 2, "and the pair total says the list is shorter, not truncated")
+    t.eq(#inj.log.started, 2, "neither of them was pressed")
+    for _, id in ipairs(inj.log.started) do
+        t.ok(id ~= "601:manual->701:manual" and id ~= "602:manual->702:manual",
+             "no trial ran for a set-aside pair: " .. id)
+    end
+    t.eq(r.start_failures, 0, "and they are not start failures, which would end the sweep")
+    t.eq(r.unplayable_detail[1].pair, "601:manual->701:manual", "each is listed by pair")
+    t.ok(tostring(r.unplayable_detail[1].reason):find("twice in a row") ~= nil,
+         "with its reason")
+    t.eq(#wl.pairs, 4, "the caller's worklist is not edited")
+    Sweep.stop()
+end
+
 return t.finish()

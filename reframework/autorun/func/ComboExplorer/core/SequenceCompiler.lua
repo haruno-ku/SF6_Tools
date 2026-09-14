@@ -115,6 +115,65 @@ local function compile_step(step, index, opts)
     return seq, nil, parsed
 end
 
+-- --- what cannot be played, before anything is pressed ----------------------
+
+M.UNPLAYABLE = {
+    REPEAT = "repeat",                 -- 22: see InputMask.repeated_direction
+    FOLLOWUP_FIRST = "followup_first", -- "> X" opening a route
+    FOLLOWUP_CONTEXT = "followup_context", -- "> X" after a move nobody said it follows
+}
+
+-- route : a ce.route.v1
+-- opts.context_known : true when whoever wrote the route vouches that each
+--                      follow-up comes after the move it derives from
+--
+-- Returns a list of { index, notation, kind, reason }, empty when every step
+-- can be played. Needs no profile and no delay, so a caller can ask of a whole
+-- worklist before the first trial (#49).
+--
+-- WHY THE FOLLOW-UP RULE DEPENDS ON WHO WROTE THE ROUTE
+--
+-- compile_step lets a follow-up through when it is not the first step, on the
+-- grounds that the move before it is its context. That is true of a route an
+-- operator named (#48's ground truth). It is not true of a sweep pair: the
+-- worklist crosses every starter with every target, so "> 中" is tried after
+-- 2+弱, after 3+强, after everything - and it only exists after one particular
+-- move, which the catalog does not name (ac_path is empty and
+-- inherited_from_action_id is null on 605, 606, 679 and 680). 56 of the 378
+-- pairs were that. They compiled, ran, and were recorded as B never appearing.
+--
+-- Unreadable notation is not reported here. compile says why, in more detail,
+-- and a check that duplicated it would be a second place for the wording to
+-- drift.
+function M.unplayable(route, opts)
+    opts = opts or {}
+    local out = {}
+    if type(route) ~= "table" or type(route.steps) ~= "table" then return out end
+    for index, step in ipairs(route.steps) do
+        local notation = step.notation or step.classic
+        local parsed = type(notation) == "string" and InputMask.parse(notation) or nil
+        if parsed then
+            local twice = InputMask.repeated_direction(parsed.dirs)
+            if twice then
+                out[#out + 1] = { index = index, notation = notation, kind = M.UNPLAYABLE.REPEAT,
+                    reason = ("step %d (%s) presses %s twice in a row, which plays as one held %s")
+                        :format(index, notation, twice, twice) }
+            elseif parsed.followup and index == 1 then
+                out[#out + 1] = { index = index, notation = notation,
+                    kind = M.UNPLAYABLE.FOLLOWUP_FIRST,
+                    reason = ("step %d (%s) is a follow-up and cannot open a route")
+                        :format(index, notation) }
+            elseif parsed.followup and not opts.context_known then
+                out[#out + 1] = { index = index, notation = notation,
+                    kind = M.UNPLAYABLE.FOLLOWUP_CONTEXT,
+                    reason = ("step %d (%s) is a follow-up, and nothing says step %d is the "
+                        .. "move it follows"):format(index, notation, index - 1) }
+            end
+        end
+    end
+    return out
+end
+
 -- --- the program -------------------------------------------------------------
 
 local function seq_ticks(seq)

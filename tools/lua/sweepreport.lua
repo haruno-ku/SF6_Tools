@@ -80,8 +80,7 @@ function M.press_kind(notation)
     local parsed = InputMask.parse(notation)
     if not parsed then return M.PRESS.UNREADABLE end
     if parsed.followup then return M.PRESS.FOLLOWUP end
-    local dirs = InputMask.MOTION_SHORTHAND[parsed.dirs] or parsed.dirs
-    if dirs:find("(%d)%1") then return M.PRESS.REPEAT end
+    if InputMask.repeated_direction(parsed.dirs) then return M.PRESS.REPEAT end
     return M.PRESS.OK
 end
 

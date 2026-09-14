@@ -43,6 +43,7 @@
 local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
 local Canonical       = require("func/ComboExplorer/core/Canonical")
 local Timing          = require("func/ComboExplorer/core/Timing")
+local SequenceCompiler = require("func/ComboExplorer/core/SequenceCompiler")
 local Catalog         = require("func/ComboExplorer/core/Catalog")
 local Provenance      = require("func/ComboExplorer/core/Provenance")
 local JsonIO          = require("func/ComboExplorer/runtime/JsonIO")
@@ -120,6 +121,29 @@ function M.identity_matches(worklist, catalog)
         end
     end
     return true
+end
+
+-- --- a pair, as a key and as a route -----------------------------------------
+
+-- Above start() because start uses both: it checks every pair's route before
+-- the first trial, and the queue below builds the same route to run it. One
+-- builder, so the route that was checked is the route that runs.
+local function pair_key(p)
+    return ("%d:%s->%d:%s"):format(p.a_id, tostring(p.a_method), p.b_id, tostring(p.b_method))
+end
+
+local function pair_route(worklist, p)
+    return {
+        id = ("s-%d-%d"):format(p.a_id, p.b_id),
+        character = worklist.character,
+        control_scheme = worklist.control_scheme,
+        steps = {
+            { index = 1, action_id = p.a_id, input_method = p.a_method,
+              notation = p.a_notation },
+            { index = 2, action_id = p.b_id, input_method = p.b_method,
+              notation = p.b_notation },
+        },
+    }
 end
 
 -- --- starting ----------------------------------------------------------------
@@ -201,6 +225,32 @@ function M.start(opts)
         end
     end
 
+    -- Pairs the compiler cannot play are set aside before the first trial, not
+    -- run and recorded. Run, they compile, press something that produces
+    -- nothing, and write "move B never appeared" - a confident row about a
+    -- link nobody tested, which is the one kind of row this suite exists not to
+    -- write (#49). Set aside, they are listed with their reason, so the pair
+    -- count on the panel says why it is smaller than the file.
+    --
+    -- context_known is false: a worklist crosses every starter with every
+    -- target, so nothing vouches that a follow-up comes after its own move.
+    local playable, unplayable = {}, {}
+    for _, p in ipairs(worklist.pairs or {}) do
+        local found = SequenceCompiler.unplayable(pair_route(worklist, p), { context_known = false })
+        if #found == 0 then
+            playable[#playable + 1] = p
+        else
+            unplayable[#unplayable + 1] = { pair = pair_key(p), kind = found[1].kind,
+                                            reason = found[1].reason }
+        end
+    end
+    if #unplayable > 0 then
+        local copy = {}
+        for k, v in pairs(worklist) do copy[k] = v end
+        copy.pairs = playable
+        worklist = copy
+    end
+
     run = {
         injector = opts.injector or default_injector(),
         worklist = worklist,
@@ -218,6 +268,8 @@ function M.start(opts)
         hold_ticks = opts.hold_ticks,
         canonical_report = creport,
         canonical_why = (creport == nil) and tostring(cwhy or "unavailable") or nil,
+        -- Set aside before the first trial. See the comment where they are found.
+        unplayable = unplayable,
         collector = opts.collector,
         provenance = opts.provenance,
         delay = opts.delay,
@@ -248,10 +300,6 @@ function M.running() return run ~= nil end
 
 -- --- the queue ---------------------------------------------------------------
 
-local function pair_key(p)
-    return ("%d:%s->%d:%s"):format(p.a_id, tostring(p.a_method), p.b_id, tostring(p.b_method))
-end
-
 -- The next pair to try, or nil when there is nothing left. Requeued pairs come
 -- AFTER the whole list rather than immediately: whatever made one inconclusive
 -- is more likely to have passed by the time the list has been round once.
@@ -265,17 +313,7 @@ local function next_pair()
 end
 
 local function route_for(p)
-    return {
-        id = ("s-%d-%d"):format(p.a_id, p.b_id),
-        character = run.worklist.character,
-        control_scheme = run.worklist.control_scheme,
-        steps = {
-            { index = 1, action_id = p.a_id, input_method = p.a_method,
-              notation = p.a_notation },
-            { index = 2, action_id = p.b_id, input_method = p.b_method,
-              notation = p.b_notation },
-        },
-    }
+    return pair_route(run.worklist, p)
 end
 
 -- --- one frame ---------------------------------------------------------------
@@ -497,6 +535,14 @@ function M.progress()
         predicted = run.predicted or 0,
         unpredicted = run.unpredicted or 0,
         unpredicted_why = run.unpredicted_why,
+        -- Not tried, and why. Counted apart from `skipped`, which is pairs
+        -- already answered: these were never going to produce an answer.
+        unplayable = #run.unplayable,
+        unplayable_by_kind = (function()
+            local by = {}
+            for _, u in ipairs(run.unplayable) do by[u.kind] = (by[u.kind] or 0) + 1 end
+            return by
+        end)(),
     }
 end
 
@@ -505,6 +551,7 @@ function M.result()
     local p = M.progress()
     p.summary = ResultCollector.summary(run.collector)
     p.problem_detail = run.problems
+    p.unplayable_detail = run.unplayable
     return p
 end
 

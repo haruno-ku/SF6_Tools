@@ -1590,6 +1590,15 @@ local function draw_sweep()
                 .. "produce", UIKit.COLORS.Orange)
         end
         kv("finished", tostring(p.finished))
+        -- Set aside before the first trial because the compiler cannot play
+        -- them (#49). Without this the pair total reads as a short worklist.
+        if (p.unplayable or 0) > 0 then
+            local by = p.unplayable_by_kind or {}
+            kv("not tried - cannot be pressed", ("%d  (22-style repeat %d / follow-up %d)")
+               :format(p.unplayable, (by["repeat"] or 0),
+                       (by.followup_context or 0) + (by.followup_first or 0)),
+               UIKit.COLORS.Orange)
+        end
         kv("skipped (already answered)", tostring(p.skipped))
         if p.requeued > 0 then kv("waiting for another go", tostring(p.requeued)) end
         if p.start_failures > 0 then
