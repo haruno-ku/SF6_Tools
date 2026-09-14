@@ -79,6 +79,7 @@ local SUITES = {
     "tests.lua.test_stagecontrol",
     "tests.lua.test_injector",
     "tests.lua.test_sweep",
+    "tests.lua.test_planner",
 }
 
 local total_passed, total_failed = 0, 0
