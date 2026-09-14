@@ -595,7 +595,7 @@ function renderElsewhere() {
   const list = (log && log.elsewhere) || [];
   d.hidden = list.length === 0;
   d.replaceChildren(el("summary", { text: `ワークリストに無いペアの試行 ${list.length} 件（${log ? log.name : ""}）` }),
-    el("p", { class: "muted", style: "margin-top:8px;font-size:13px", text: "ワークリストの id とは違う id で記録された行です。多くは表記グループ内の別メンバー（Canonical による置き換え）です。マップには載せていませんが、ログには残っています。" }),
+    el("p", { class: "muted", style: "margin-top:8px;font-size:13px", text: "今のワークリストに無いペアの行です。表記グループ内の別メンバーに置き換えて記録された行（Canonical）と、ワークリストから外れたペアの行（親ではない技の後の派生、#49）があります。マップには載せていませんが、ログには残っています。" }),
     el("ul", {}, ...list.map(k => el("li", { text: k }))));
 }
 
