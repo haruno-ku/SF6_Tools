@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SF6 Combo Explorer キャラクター一覧</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600&family=IBM+Plex+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Page template for tools/lua/all.lua. The same tokens, faces and light/dark
+   handling as report-template.html, so the index and the pages it links to
+   read as one set. Static: the rows are written in at the markers, no script. */
+:root {
+  --ground: #eef0f4;
+  --surface: #ffffff;
+  --sunk: #e4e7ed;
+  --ink: #151a24;
+  --muted: #5b6474;
+  --rule: #d5dae2;
+  --accent: #2f55d4;
+  --v-link: #11905a;
+  --v-combo_broke: #e0891c;
+  --v-whiff: #c2452f;
+  --v-wrong_move: #bcc2cc;
+  --band-bad: #f6e3dc;
+
+  --f-display: "Chakra Petch", "IBM Plex Sans JP", "Yu Gothic UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans JP", "Yu Gothic UI", "Hiragino Sans", "Microsoft YaHei", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0e1117;
+    --surface: #161a22;
+    --sunk: #1d222c;
+    --ink: #e6e9ef;
+    --muted: #97a0ae;
+    --rule: #2a303b;
+    --accent: #7d97ff;
+    --v-link: #35c27c;
+    --v-combo_broke: #f0a13f;
+    --v-whiff: #e2654e;
+    --v-wrong_move: #4a515d;
+    --band-bad: #3a231d;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0e1117;
+  --surface: #161a22;
+  --sunk: #1d222c;
+  --ink: #e6e9ef;
+  --muted: #97a0ae;
+  --rule: #2a303b;
+  --accent: #7d97ff;
+  --v-link: #35c27c;
+  --v-combo_broke: #f0a13f;
+  --v-whiff: #e2654e;
+  --v-wrong_move: #4a515d;
+  --band-bad: #3a231d;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 14px/1.6 var(--f-body);
+  padding-inline: clamp(16px, 4vw, 48px);
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 1320px; margin: 0 auto; display: grid; gap: 32px; }
+h1, h2 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: .01em; }
+h1 { font-size: clamp(26px, 3.4vw, 38px); line-height: 1.15; }
+h2 { font-size: 21px; }
+p { margin: 0; max-width: 68ch; }
+.mono, code { font-family: var(--f-mono); font-size: .92em; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+header { display: grid; gap: 12px; }
+
+/* --- totals -------------------------------------------------------------- */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+.big { font: 600 30px/1 var(--f-display); }
+.tile .sub { font-size: 12.5px; }
+
+/* --- the table ------------------------------------------------------------ */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+table.chars { border-collapse: collapse; width: 100%; font-size: 13px; }
+.chars th { text-align: left; font: 500 11px/1.2 var(--f-body); color: var(--muted); letter-spacing: .04em; padding: 10px 12px; border-bottom: 1px solid var(--rule); white-space: nowrap; vertical-align: bottom; }
+.chars th.n { text-align: right; }
+.chars td { padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.chars tbody tr:last-child td { border-bottom: 0; }
+.chars tbody tr:hover td { background: color-mix(in srgb, var(--sunk) 45%, transparent); }
+.chars td.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.chars td.n b { font: 600 16px var(--f-display); }
+.chars td small { display: block; font-size: 11px; color: var(--muted); }
+.who { font: 600 16px/1.2 var(--f-display); }
+.who a { color: var(--ink); text-decoration: none; border-bottom: 1.5px solid var(--rule); }
+.who a:hover { color: var(--accent); border-color: var(--accent); }
+.who-cell .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.badge { font: 600 11px/1 var(--f-body); padding: 4px 7px; border-radius: 3px; white-space: nowrap; display: inline-block; }
+.badge.ok { background: var(--v-link); color: var(--surface); }
+.badge.tried { color: var(--v-link); box-shadow: inset 0 0 0 1.5px var(--v-link); }
+.badge.open { color: var(--muted); box-shadow: inset 0 0 0 1px var(--rule); }
+.badge.fail { color: var(--v-whiff); box-shadow: inset 0 0 0 1.5px var(--v-whiff); }
+
+/* high / medium / low: the order the worklist is swept in */
+.conf { display: flex; width: 132px; height: 8px; border-radius: 2px; overflow: hidden; background: var(--sunk); margin-top: 5px; }
+.conf span { display: block; height: 100%; }
+.conf .c-high { background: var(--v-link); }
+.conf .c-medium { background: var(--v-combo_broke); }
+.conf .c-low { background: var(--v-wrong_move); }
+.conf-n { font: 11px/1 var(--f-mono); color: var(--muted); margin-top: 5px; white-space: nowrap; }
+
+.plans { display: grid; gap: 3px; }
+.plan { font: 12px/1.3 var(--f-mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.plan i { font: normal 11px var(--f-body); color: var(--muted); display: inline-block; min-width: 6.5em; }
+
+abbr.cut { text-decoration: none; color: var(--v-combo_broke); font-weight: 600; margin-left: 2px; cursor: help; }
+.notes { margin: 0; padding-left: 16px; font-size: 12px; color: var(--muted); display: grid; gap: 2px; min-width: 220px; max-width: 360px; }
+.notes li::marker { color: var(--v-combo_broke); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 12.5px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+footer { font-size: 12px; color: var(--muted); display: grid; gap: 6px; border-top: 1px solid var(--rule); padding-top: 16px; }
+
+/* Phone width: each character becomes a block of label / value lines. */
+@media (max-width: 760px) {
+  .table-wrap { background: transparent; border: 0; overflow: visible; }
+  table.chars, .chars tbody, .chars tr, .chars td { display: block; width: 100%; }
+  .chars thead { display: none; }
+  .chars tr { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 14px; }
+  .chars tr + tr { margin-top: 10px; }
+  .chars td, .chars td.n { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; text-align: left; padding: 7px 0; border-bottom: 1px solid var(--rule); white-space: normal; }
+  .chars td::before { content: attr(data-label); flex: none; width: 8.5em; font-size: 11px; color: var(--muted); }
+  .chars td.who-cell { display: flex; gap: 10px; }
+  .chars td.who-cell::before { content: none; }
+  .chars tbody tr:last-child td, .chars td:last-child { border-bottom: 0; }
+  .chars tbody tr:hover td { background: none; }
+  .chars td small { display: inline; }
+  .chars td .conf { margin-top: 0; }
+  .plans { flex: 1 1 auto; }
+  .notes { min-width: 0; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SF6 Combo Explorer — Modern</div>
+    <h1>キャラクター一覧</h1>
+    <p>31 キャラクターそれぞれの、スイープに渡すワークリストと候補ルート、そして実機で確かめた結果です。ワークリスト・ルート・プランはフレームデータからの予測で、コンボではありません。「確定」に数えるのはゲームが繋がったと答えたものだけです。</p>
+  </header>
+
+  <section class="tiles" aria-label="合計">
+<div class="tile"><div class="eyebrow">キャラクター</div><div class="big num">31</div><div class="muted sub">実機ログあり 1</div></div>
+<div class="tile"><div class="eyebrow">ワークリスト</div><div class="big num">22,038</div><div class="muted sub">ペア · スイープが押す候補</div></div>
+<div class="tile"><div class="eyebrow">DRC ペア</div><div class="big num">12,337</div><div class="muted sub">まだ押せない · 別ファイル</div></div>
+<div class="tile"><div class="eyebrow">候補ルート</div><div class="big num">34,625</div><div class="muted sub">+ DRC 経由 28,027</div></div>
+<div class="tile"><div class="eyebrow">確定コンボ</div><div class="big num">7</div><div class="muted sub">試行 1,000 回から</div></div>
+  </section>
+
+  <section style="display:grid;gap:12px" aria-labelledby="h-chars">
+    <h2 id="h-chars">キャラクター</h2>
+    <div class="legend">
+      <span><i style="background:var(--v-link)"></i>high 確度</span>
+      <span><i style="background:var(--v-combo_broke)"></i>medium</span>
+      <span><i style="background:var(--v-wrong_move)"></i>low（数字が足りない候補）</span>
+      <span>1パス = ペア数 × 約3秒</span>
+      <span><b style="color:var(--v-combo_broke)">*</b> ルート探索が上限で打ち切られた</span>
+      <span>名前から接続マップとルート検索へ</span>
+    </div>
+    <div class="table-wrap">
+      <table class="chars">
+        <thead>
+          <tr>
+            <th>キャラ</th>
+            <th>状態</th>
+            <th class="n">ワークリスト</th>
+            <th>確度 high · med · low</th>
+            <th class="n">DRC ペア</th>
+            <th class="n">候補ルート</th>
+            <th>プラン（ペア数）</th>
+            <th class="n">確定 / 試行</th>
+            <th>注意</th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-ryu-modern.html">Ryu</a></div><div class="sub mono">#1</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">551</b><small>1パス 約28分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 170、medium 121、low 260"><span class="c-high" style="width:30.9%"></span><span class="c-medium" style="width:22.0%"></span><span class="c-low" style="width:47.2%"></span></div><div class="conf-n num">170 · 121 · 260</div></td><td data-label="DRC ペア" class="n">234</td><td data-label="候補ルート" class="n">1,092<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 1,502</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 22</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 25</span><span class="plan" title="starter-chu"><i>中始動</i> 22</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-luke-modern.html">Luke</a></div><div class="sub mono">#2</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">295</b><small>1パス 約15分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 136、medium 72、low 87"><span class="c-high" style="width:46.1%"></span><span class="c-medium" style="width:24.4%"></span><span class="c-low" style="width:29.5%"></span></div><div class="conf-n num">136 · 72 · 87</div></td><td data-label="DRC ペア" class="n">84</td><td data-label="候補ルート" class="n">623<small>+DRC 1,012</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 20</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 25</span><span class="plan" title="starter-chu"><i>中始動</i> 20</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-kimberly-modern.html">Kimberly</a></div><div class="sub mono">#3</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">503</b><small>1パス 約25分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 243、medium 136、low 124"><span class="c-high" style="width:48.3%"></span><span class="c-medium" style="width:27.0%"></span><span class="c-low" style="width:24.7%"></span></div><div class="conf-n num">243 · 136 · 124</div></td><td data-label="DRC ペア" class="n">144</td><td data-label="候補ルート" class="n">912<small>+DRC 938</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 19</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 25</span><span class="plan" title="starter-chu"><i>中始動</i> 22</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-chunli-modern.html">ChunLi</a></div><div class="sub mono">#4</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">619</b><small>1パス 約31分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 364、medium 195、low 60"><span class="c-high" style="width:58.8%"></span><span class="c-medium" style="width:31.5%"></span><span class="c-low" style="width:9.7%"></span></div><div class="conf-n num">364 · 195 · 60</div></td><td data-label="DRC ペア" class="n">257</td><td data-label="候補ルート" class="n">1,157<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 1,373</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 24</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 25</span><span class="plan" title="starter-chu"><i>中始動</i> 23</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-manon-modern.html">Manon</a></div><div class="sub mono">#5</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">655</b><small>1パス 約33分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 417、medium 166、low 72"><span class="c-high" style="width:63.7%"></span><span class="c-medium" style="width:25.3%"></span><span class="c-low" style="width:11.0%"></span></div><div class="conf-n num">417 · 166 · 72</div></td><td data-label="DRC ペア" class="n">218</td><td data-label="候補ルート" class="n">599<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 421</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 23</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 21</span><span class="plan" title="starter-chu"><i>中始動</i> 22</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-zangief-modern.html">Zangief</a></div><div class="sub mono">#6</div></td><td data-label="状態"><span class="badge ok">確定 7</span></td><td data-label="ワークリスト" class="n"><b class="num">324</b><small>1パス 約16分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 88、medium 135、low 101"><span class="c-high" style="width:27.2%"></span><span class="c-medium" style="width:41.7%"></span><span class="c-low" style="width:31.2%"></span></div><div class="conf-n num">88 · 135 · 101</div></td><td data-label="DRC ペア" class="n">145</td><td data-label="候補ルート" class="n">917<small>+DRC 713</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 17</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 15</span><span class="plan" title="starter-chu"><i>中始動</i> 16</span></div></td><td data-label="確定 / 試行" class="n">7<small>試行 1,000</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-jp-modern.html">JP</a></div><div class="sub mono">#7</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">631</b><small>1パス 約32分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 343、medium 150、low 138"><span class="c-high" style="width:54.4%"></span><span class="c-medium" style="width:23.8%"></span><span class="c-low" style="width:21.9%"></span></div><div class="conf-n num">343 · 150 · 138</div></td><td data-label="DRC ペア" class="n">175</td><td data-label="候補ルート" class="n">1,202<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 1,181</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 25</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 26</span><span class="plan" title="starter-chu"><i>中始動</i> 21</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-dhalsim-modern.html">Dhalsim</a></div><div class="sub mono">#8</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">664</b><small>1パス 約33分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 161、medium 109、low 394"><span class="c-high" style="width:24.2%"></span><span class="c-medium" style="width:16.4%"></span><span class="c-low" style="width:59.3%"></span></div><div class="conf-n num">161 · 109 · 394</div></td><td data-label="DRC ペア" class="n">158</td><td data-label="候補ルート" class="n">2,681<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 1,720</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 19</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 23</span><span class="plan" title="starter-chu"><i>中始動</i> 20</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-cammy-modern.html">Cammy</a></div><div class="sub mono">#9</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">453</b><small>1パス 約23分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 187、medium 226、low 40"><span class="c-high" style="width:41.3%"></span><span class="c-medium" style="width:49.9%"></span><span class="c-low" style="width:8.8%"></span></div><div class="conf-n num">187 · 226 · 40</div></td><td data-label="DRC ペア" class="n">166</td><td data-label="候補ルート" class="n">1,541<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 1,461</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 22</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 21</span><span class="plan" title="starter-chu"><i>中始動</i> 19</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-ken-modern.html">Ken</a></div><div class="sub mono">#10</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">365</b><small>1パス 約18分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 158、medium 100、low 107"><span class="c-high" style="width:43.3%"></span><span class="c-medium" style="width:27.4%"></span><span class="c-low" style="width:29.3%"></span></div><div class="conf-n num">158 · 100 · 107</div></td><td data-label="DRC ペア" class="n">97</td><td data-label="候補ルート" class="n">674<small>+DRC 682</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 20</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 24</span><span class="plan" title="starter-chu"><i>中始動</i> 20</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-deejay-modern.html">DeeJay</a></div><div class="sub mono">#11</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">1,572</b><small>1パス 約1.3時間</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 142、medium 183、low 1247"><span class="c-high" style="width:9.0%"></span><span class="c-medium" style="width:11.6%"></span><span class="c-low" style="width:79.3%"></span></div><div class="conf-n num">142 · 183 · 1247</div></td><td data-label="DRC ペア" class="n">1,862</td><td data-label="候補ルート" class="n">1,070<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 489</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 23</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 22</span><span class="plan" title="starter-chu"><i>中始動</i> 24</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><ul class="notes"><li>ワークリストの 79% が low 確度</li></ul></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-lily-modern.html">Lily</a></div><div class="sub mono">#12</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">635</b><small>1パス 約32分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 392、medium 134、low 109"><span class="c-high" style="width:61.7%"></span><span class="c-medium" style="width:21.1%"></span><span class="c-low" style="width:17.2%"></span></div><div class="conf-n num">392 · 134 · 109</div></td><td data-label="DRC ペア" class="n">294</td><td data-label="候補ルート" class="n">848<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 1,226</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 21</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 17</span><span class="plan" title="starter-chu"><i>中始動</i> 8</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-aki-modern.html">AKI</a></div><div class="sub mono">#13</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">330</b><small>1パス 約17分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 128、medium 98、low 104"><span class="c-high" style="width:38.8%"></span><span class="c-medium" style="width:29.7%"></span><span class="c-low" style="width:31.5%"></span></div><div class="conf-n num">128 · 98 · 104</div></td><td data-label="DRC ペア" class="n">30</td><td data-label="候補ルート" class="n">657<small>+DRC 89</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 20</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 20</span><span class="plan" title="starter-chu"><i>中始動</i> 16</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-rashid-modern.html">Rashid</a></div><div class="sub mono">#14</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">495</b><small>1パス 約25分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 256、medium 144、low 95"><span class="c-high" style="width:51.7%"></span><span class="c-medium" style="width:29.1%"></span><span class="c-low" style="width:19.2%"></span></div><div class="conf-n num">256 · 144 · 95</div></td><td data-label="DRC ペア" class="n">131</td><td data-label="候補ルート" class="n">872<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 466</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 21</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 21</span><span class="plan" title="starter-chu"><i>中始動</i> 22</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-blanka-modern.html">Blanka</a></div><div class="sub mono">#15</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">565</b><small>1パス 約28分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 60、medium 92、low 413"><span class="c-high" style="width:10.6%"></span><span class="c-medium" style="width:16.3%"></span><span class="c-low" style="width:73.1%"></span></div><div class="conf-n num">60 · 92 · 413</div></td><td data-label="DRC ペア" class="n">105</td><td data-label="候補ルート" class="n">2,182<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 1,245</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 22</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 24</span><span class="plan" title="starter-chu"><i>中始動</i> 18</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><ul class="notes"><li>ワークリストの 73% が low 確度</li></ul></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-juri-modern.html">Juri</a></div><div class="sub mono">#16</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">2,388</b><small>1パス 約2時間</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 714、medium 254、low 1420"><span class="c-high" style="width:29.9%"></span><span class="c-medium" style="width:10.6%"></span><span class="c-low" style="width:59.5%"></span></div><div class="conf-n num">714 · 254 · 1420</div></td><td data-label="DRC ペア" class="n">2,026</td><td data-label="候補ルート" class="n">775<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 552</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 23</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 22</span><span class="plan" title="starter-chu"><i>中始動</i> 23</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-marisa-modern.html">Marisa</a></div><div class="sub mono">#17</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">313</b><small>1パス 約16分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 132、medium 116、low 65"><span class="c-high" style="width:42.2%"></span><span class="c-medium" style="width:37.1%"></span><span class="c-low" style="width:20.8%"></span></div><div class="conf-n num">132 · 116 · 65</div></td><td data-label="DRC ペア" class="n">67</td><td data-label="候補ルート" class="n">803<small>+DRC 863</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 21</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 21</span><span class="plan" title="starter-chu"><i>中始動</i> 21</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-guile-modern.html">Guile</a></div><div class="sub mono">#18</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">2,797</b><small>1パス 約2.3時間</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 302、medium 149、low 2346"><span class="c-high" style="width:10.8%"></span><span class="c-medium" style="width:5.3%"></span><span class="c-low" style="width:83.9%"></span></div><div class="conf-n num">302 · 149 · 2346</div></td><td data-label="DRC ペア" class="n">2,319</td><td data-label="候補ルート" class="n">1,178<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 986</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 22</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 22</span><span class="plan" title="starter-chu"><i>中始動</i> 21</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><ul class="notes"><li>始動・対象技のフレームデータ結合 112/135 (83%): 残りは数字のない候補</li><li>ワークリストの 84% が low 確度</li></ul></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-ed-modern.html">Ed</a></div><div class="sub mono">#19</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">336</b><small>1パス 約17分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 143、medium 101、low 92"><span class="c-high" style="width:42.6%"></span><span class="c-medium" style="width:30.1%"></span><span class="c-low" style="width:27.4%"></span></div><div class="conf-n num">143 · 101 · 92</div></td><td data-label="DRC ペア" class="n">108</td><td data-label="候補ルート" class="n">1,245<small>+DRC 1,057</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 18</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 24</span><span class="plan" title="starter-chu"><i>中始動</i> 20</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-ehonda-modern.html">EHonda</a></div><div class="sub mono">#20</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">444</b><small>1パス 約22分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 267、medium 111、low 66"><span class="c-high" style="width:60.1%"></span><span class="c-medium" style="width:25.0%"></span><span class="c-low" style="width:14.9%"></span></div><div class="conf-n num">267 · 111 · 66</div></td><td data-label="DRC ペア" class="n">174</td><td data-label="候補ルート" class="n">609<small>+DRC 714</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 20</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 21</span><span class="plan" title="starter-chu"><i>中始動</i> 18</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-jamie-modern.html">Jamie</a></div><div class="sub mono">#21</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">824</b><small>1パス 約41分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 137、medium 91、low 596"><span class="c-high" style="width:16.6%"></span><span class="c-medium" style="width:11.0%"></span><span class="c-low" style="width:72.3%"></span></div><div class="conf-n num">137 · 91 · 596</div></td><td data-label="DRC ペア" class="n">722</td><td data-label="候補ルート" class="n">1,111<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 1,298</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 21</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 20</span><span class="plan" title="starter-chu"><i>中始動</i> 26</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><ul class="notes"><li>始動・対象技のフレームデータ結合 71/92 (77%): 残りは数字のない候補</li><li>ワークリストの 72% が low 確度</li></ul></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-akuma-modern.html">Akuma</a></div><div class="sub mono">#22</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">822</b><small>1パス 約41分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 270、medium 186、low 366"><span class="c-high" style="width:32.8%"></span><span class="c-medium" style="width:22.6%"></span><span class="c-low" style="width:44.5%"></span></div><div class="conf-n num">270 · 186 · 366</div></td><td data-label="DRC ペア" class="n">408</td><td data-label="候補ルート" class="n">1,520<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 2,059</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 23</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 22</span><span class="plan" title="starter-chu"><i>中始動</i> 22</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-sagat-modern.html">Sagat</a></div><div class="sub mono">#25</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">412</b><small>1パス 約21分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 171、medium 169、low 72"><span class="c-high" style="width:41.5%"></span><span class="c-medium" style="width:41.0%"></span><span class="c-low" style="width:17.5%"></span></div><div class="conf-n num">171 · 169 · 72</div></td><td data-label="DRC ペア" class="n">96</td><td data-label="候補ルート" class="n">979<small>+DRC 708</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 21</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 25</span><span class="plan" title="starter-chu"><i>中始動</i> 22</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-mbison-modern.html">MBison</a></div><div class="sub mono">#26</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">694</b><small>1パス 約35分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 149、medium 115、low 430"><span class="c-high" style="width:21.5%"></span><span class="c-medium" style="width:16.6%"></span><span class="c-low" style="width:62.0%"></span></div><div class="conf-n num">149 · 115 · 430</div></td><td data-label="DRC ペア" class="n">125</td><td data-label="候補ルート" class="n">1,368<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 638</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 21</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 23</span><span class="plan" title="starter-chu"><i>中始動</i> 20</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><ul class="notes"><li>ワークリストの 62% が low 確度</li></ul></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-terry-modern.html">Terry</a></div><div class="sub mono">#27</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">409</b><small>1パス 約20分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 216、medium 113、low 80"><span class="c-high" style="width:52.8%"></span><span class="c-medium" style="width:27.6%"></span><span class="c-low" style="width:19.6%"></span></div><div class="conf-n num">216 · 113 · 80</div></td><td data-label="DRC ペア" class="n">125</td><td data-label="候補ルート" class="n">699<small>+DRC 892</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 20</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 24</span><span class="plan" title="starter-chu"><i>中始動</i> 20</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-mai-modern.html">Mai</a></div><div class="sub mono">#28</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">519</b><small>1パス 約26分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 0、medium 67、low 452"><span class="c-high" style="width:0.0%"></span><span class="c-medium" style="width:12.9%"></span><span class="c-low" style="width:87.1%"></span></div><div class="conf-n num">0 · 67 · 452</div></td><td data-label="DRC ペア" class="n">44</td><td data-label="候補ルート" class="n">454<small>+DRC 185</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 17</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 22</span><span class="plan" title="starter-chu"><i>中始動</i> 22</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><ul class="notes"><li>ワークリストの 87% が low 確度</li></ul></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-elena-modern.html">Elena</a></div><div class="sub mono">#29</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">1,093</b><small>1パス 約55分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 180、medium 105、low 808"><span class="c-high" style="width:16.5%"></span><span class="c-medium" style="width:9.6%"></span><span class="c-low" style="width:73.9%"></span></div><div class="conf-n num">180 · 105 · 808</div></td><td data-label="DRC ペア" class="n">858</td><td data-label="候補ルート" class="n">857<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 825</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 22</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 24</span><span class="plan" title="starter-chu"><i>中始動</i> 19</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><ul class="notes"><li>始動・対象技のフレームデータ結合 75/97 (77%): 残りは数字のない候補</li><li>ワークリストの 74% が low 確度</li></ul></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-cviper-modern.html">CViper</a></div><div class="sub mono">#30</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">295</b><small>1パス 約15分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 115、medium 108、low 72"><span class="c-high" style="width:39.0%"></span><span class="c-medium" style="width:36.6%"></span><span class="c-low" style="width:24.4%"></span></div><div class="conf-n num">115 · 108 · 72</div></td><td data-label="DRC ペア" class="n">64</td><td data-label="候補ルート" class="n">719<small>+DRC 429</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 20</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 22</span><span class="plan" title="starter-chu"><i>中始動</i> 16</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-alex-modern.html">Alex</a></div><div class="sub mono">#31</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">583</b><small>1パス 約29分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 147、medium 188、low 248"><span class="c-high" style="width:25.2%"></span><span class="c-medium" style="width:32.2%"></span><span class="c-low" style="width:42.5%"></span></div><div class="conf-n num">147 · 188 · 248</div></td><td data-label="DRC ペア" class="n">349</td><td data-label="候補ルート" class="n">919<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 744</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 22</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 24</span><span class="plan" title="starter-chu"><i>中始動</i> 16</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-ingrid-modern.html">Ingrid</a></div><div class="sub mono">#32</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">719</b><small>1パス 約36分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 78、medium 197、low 444"><span class="c-high" style="width:10.8%"></span><span class="c-medium" style="width:27.4%"></span><span class="c-low" style="width:61.8%"></span></div><div class="conf-n num">78 · 197 · 444</div></td><td data-label="DRC ペア" class="n">356</td><td data-label="候補ルート" class="n">2,502<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 890</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 21</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 24</span><span class="plan" title="starter-chu"><i>中始動</i> 24</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><ul class="notes"><li>ワークリストの 62% が low 確度</li></ul></td></tr>
+<tr><td data-label="キャラ" class="who-cell"><div class="who"><a href="sweep-report-yasmine-modern.html">Yasmine</a></div><div class="sub mono">#33</div></td><td data-label="状態"><span class="badge open">未試行</span></td><td data-label="ワークリスト" class="n"><b class="num">733</b><small>1パス 約37分</small></td><td data-label="確度 high · med · low"><div class="conf" role="img" aria-label="high 32、medium 61、low 640"><span class="c-high" style="width:4.4%"></span><span class="c-medium" style="width:8.3%"></span><span class="c-low" style="width:87.3%"></span></div><div class="conf-n num">32 · 61 · 640</div></td><td data-label="DRC ペア" class="n">396</td><td data-label="候補ルート" class="n">1,860<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr><small>+DRC 669</small></td><td data-label="プラン（ペア数）"><div class="plans"><span class="plan" title="max-damage"><i>最大ダメージ</i> 20</span><span class="plan" title="no-gauge"><i>ノーゲージ</i> 18</span><span class="plan" title="starter-chu"><i>中始動</i> 23</span></div></td><td data-label="確定 / 試行" class="n">0<small>試行 0</small></td><td data-label="注意" class="notes-cell"><ul class="notes"><li>ワークリストの 87% が low 確度</li></ul></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <div>再生成: <code>lua tools/lua/all.lua</code>（一部だけなら <code>--only Ryu,Ken</code>）。数字は <code>docs/ComboExplorer/characters.json</code> にもあります。</div>
+    <div>DRC ペアはスイープがまだ押せないため、別ファイル（<code>worklist/&lt;char&gt;-modern-drc.json</code>）に分けています。Classic はまだありません。</div>
+    <div>ワークリスト・確度・ルートはフレームデータ由来です（CC-BY-SA-4.0、docs/NOTICE.md）。試行結果は Street Fighter 6 上で測ったものです。</div>
+  </footer>
+</div>
+</body>
+</html>

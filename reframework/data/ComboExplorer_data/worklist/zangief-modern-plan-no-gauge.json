@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 15,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-14T11:23:36Z",
+  "generated_at": "2026-09-14T12:59:20Z",
   "pairs": [
     {
       "a_active": "7(5)",
@@ -36,6 +36,7 @@
       "confidence": "low",
       "known_status": "pending",
       "margin_frames": 22,
+      "mechanism": "link",
       "needed_by_ranks": [
         1,
         5
@@ -57,6 +58,7 @@
       "confidence": "low",
       "known_status": "pending",
       "margin_frames": 14,
+      "mechanism": "link",
       "needed_by_ranks": [
         2,
         6
@@ -78,6 +80,7 @@
       "confidence": "low",
       "known_status": "pending",
       "margin_frames": 30,
+      "mechanism": "link",
       "needed_by_ranks": [
         3,
         7
@@ -100,6 +103,7 @@
       "confidence": "low",
       "known_status": "pending",
       "margin_frames": -7,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         4,
         8
@@ -125,6 +129,7 @@
       ],
       "known_status": "pending",
       "margin_frames": -18,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         5,
         12,
@@ -151,6 +156,7 @@
       ],
       "known_status": "pending",
       "margin_frames": -7,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         6,
         15
@@ -176,6 +182,7 @@
       ],
       "known_status": "pending",
       "margin_frames": -8,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         7,
         16
@@ -201,6 +208,7 @@
       ],
       "known_status": "pending",
       "margin_frames": -3,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         8,
         20
@@ -226,6 +234,7 @@
       ],
       "known_status": "pending",
       "margin_frames": -3,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         9
       ]
@@ -250,6 +259,7 @@
       ],
       "known_status": "pending",
       "margin_frames": -2,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         9,
         10
@@ -269,6 +279,7 @@
       "b_notation": "强",
       "confidence": "low",
       "known_status": "pending",
+      "mechanism": "unknown",
       "needed_by_ranks": [
         11,
         12
@@ -288,6 +299,7 @@
       "b_notation": "强",
       "confidence": "low",
       "known_status": "pending",
+      "mechanism": "unknown",
       "needed_by_ranks": [
         13,
         15
@@ -307,6 +319,7 @@
       "b_notation": "强",
       "confidence": "low",
       "known_status": "pending",
+      "mechanism": "unknown",
       "needed_by_ranks": [
         14,
         16
@@ -327,6 +340,7 @@
       "b_notation": "强",
       "confidence": "low",
       "known_status": "pending",
+      "mechanism": "unknown",
       "needed_by_ranks": [
         17,
         20
@@ -348,6 +362,7 @@
       "confidence": "medium",
       "known_status": "pending",
       "margin_frames": 19,
+      "mechanism": "link",
       "needed_by_ranks": [
         18,
         19
@@ -360,7 +375,7 @@
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-14T11:23:36Z",
+    "generated_at": "2026-09-14T12:59:20Z",
     "include_verified": false,
     "name": "no-gauge",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",

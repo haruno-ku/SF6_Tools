@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 16,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-14T11:23:39Z",
+  "generated_at": "2026-09-14T12:59:28Z",
   "pairs": [
     {
       "a_active": "3",
@@ -37,6 +37,7 @@
       "confidence": "low",
       "known_status": "pending",
       "margin_frames": -11,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         1
       ]
@@ -58,6 +59,7 @@
       "confidence": "low",
       "known_status": "pending",
       "margin_frames": -7,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         3
       ]
@@ -79,6 +81,7 @@
       "confidence": "low",
       "known_status": "pending",
       "margin_frames": -11,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         5
       ]
@@ -100,6 +103,7 @@
       "confidence": "low",
       "known_status": "pending",
       "margin_frames": -11,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         6
       ]
@@ -121,6 +125,7 @@
       "confidence": "low",
       "known_status": "pending",
       "margin_frames": -7,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         8
       ]
@@ -142,6 +147,7 @@
       "confidence": "low",
       "known_status": "pending",
       "margin_frames": -7,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         9
       ]
@@ -163,6 +169,7 @@
       "confidence": "low",
       "known_status": "pending",
       "margin_frames": -7,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         11
       ]
@@ -182,6 +189,7 @@
       "b_notation": "强",
       "confidence": "low",
       "known_status": "pending",
+      "mechanism": "unknown",
       "needed_by_ranks": [
         12
       ]
@@ -201,6 +209,7 @@
       "b_notation": "强",
       "confidence": "low",
       "known_status": "pending",
+      "mechanism": "unknown",
       "needed_by_ranks": [
         13
       ]
@@ -220,6 +229,7 @@
       "b_notation": "强",
       "confidence": "low",
       "known_status": "pending",
+      "mechanism": "unknown",
       "needed_by_ranks": [
         14
       ]
@@ -239,6 +249,7 @@
       "b_notation": "强",
       "confidence": "low",
       "known_status": "pending",
+      "mechanism": "unknown",
       "needed_by_ranks": [
         15
       ]
@@ -260,6 +271,7 @@
       "confidence": "high",
       "known_status": "pending",
       "margin_frames": -10,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         16
       ]
@@ -281,6 +293,7 @@
       "confidence": "high",
       "known_status": "pending",
       "margin_frames": -6,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         17
       ]
@@ -304,6 +317,7 @@
       "context_known": true,
       "known_status": "pending",
       "margin_frames": -7,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         18
       ]
@@ -325,6 +339,7 @@
       "confidence": "low",
       "known_status": "rejected",
       "margin_frames": -7,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         19
       ]
@@ -346,6 +361,7 @@
       "confidence": "low",
       "known_status": "rejected",
       "margin_frames": -3,
+      "mechanism": "cancel",
       "needed_by_ranks": [
         20
       ]
@@ -357,7 +373,7 @@
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-14T11:23:39Z",
+    "generated_at": "2026-09-14T12:59:28Z",
     "include_verified": false,
     "name": "starter-chu",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",

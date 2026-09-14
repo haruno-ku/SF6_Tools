@@ -228,6 +228,8 @@ marked as decidable offline.
 
 - candidates/zangief/modern/candidate-edges.json  (482895 bytes)
 - candidates/zangief/modern/candidate-routes.json  (6514643 bytes)
+- reframework/data/ComboExplorer_data/worklist/zangief-modern-drc.json  (69006 bytes)
+- reframework/data/ComboExplorer_data/worklist/zangief-modern.json  (131515 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

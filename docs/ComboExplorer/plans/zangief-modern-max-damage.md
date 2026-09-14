@@ -1,6 +1,6 @@
 # Route plan - Zangief / modern - max-damage
 
-Generated 2026-09-14T11:23:31Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-14T12:59:12Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -154,11 +154,13 @@ before pressing it, so that is the id its trials carry.
 
 ## Running it
 
-The in-game SWEEP panel reads `worklist/<char>-<scheme>.json` by that exact name.
-To sweep this plan, put the plan's worklist in its place on the game machine
-(keep the full one aside), or teach the panel to pick a file.
+Copy the worklist to the game machine (`scripts/install-dev.ps1` syncs
+reframework/data), then pick `plan: max-damage` in the SWEEP panel's worklist list
+(REFRESH if the panel was already open) and START SWEEP. It writes to the same
+trial log as the full sweep, so pairs the full sweep already answered under the
+same calibration and conditions are skipped, and the other way round.
 
 ## Written
 
-- reframework/data/ComboExplorer_data/worklist/zangief-modern-plan-max-damage.json  (17 pairs, 9512 bytes)
+- reframework/data/ComboExplorer_data/worklist/zangief-modern-plan-max-damage.json  (17 pairs, 9981 bytes)
 - docs/ComboExplorer/plans/zangief-modern-max-damage.md
