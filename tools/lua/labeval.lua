@@ -44,13 +44,22 @@
 -- exactly once; a flag the policy does not mention is a refusal, not a pass,
 -- because a new flag exists precisely to say something about the runs.
 --
--- 1. superseded_rerun excludes the run, whatever it answered.
+-- 1. superseded_rerun excludes the run unless it LINKED.
 --    The file was re-run with a defect fixed and the re-run holds the same key
 --    in the same cohort (0370f6c for framedata-singleid, 9a1cea9 / 8c7e9f2 for
---    the ground-truth pre-group file). Counting both would count one question
---    twice, once with the defect. The re-run is the answer.
+--    the ground-truth pre-group file). Both defects were in the EXPECTATION -
+--    the trial accepted one action id where the notation names several - so
+--    they produced false "wrong_move" and could hide a real outcome, but they
+--    cannot manufacture a link: a link needs the expected move to come out and
+--    raise the combo counter. So the superseded negatives and unanswered runs
+--    are left out (the re-run answers them), and a superseded link counts. It
+--    is a separate trial, recorded at its own time, not a copy of the re-run.
 --
--- 2. A POSITIVE counts unless rule 1 excluded it.
+--    First written as "excluded whatever it answered". On the committed logs
+--    that left no pair reproduced: in four of the five pair combos the second
+--    link at the same delay is in the superseded singleid file.
+--
+-- 2. A POSITIVE counts, under every flag rule 3 names.
 --    A link is the game saying the combo connected: the timing it was pressed
 --    at being late (be1c0be), the gap being a cancel window (#46), or today's
 --    compiler judging the input unpressable (#49) do not undo a link that was
@@ -147,8 +156,8 @@ M.POLICIES = {
     ["ce-eval-v1"] = {
         key = "ce-eval-v1",
         version = 1,
-        description = "Superseded re-runs are left out entirely. A link counts "
-            .. "unless superseded. A negative counts only when the run asked the "
+        description = "A superseded re-run is left out unless it linked. A link "
+            .. "counts under every flag. A negative counts only when the run asked the "
             .. "question at the right timing with a pressable input "
             .. "(no fixed_delay_4, unplayable_input, link_timing_on_cancel_pair, "
             .. "motion_button_late). Unanswered runs count as unanswered. Pairs fold "
@@ -156,8 +165,8 @@ M.POLICIES = {
             .. "cohort through the combo rule (reproduced = 2 counted links at any gap).",
         rules = {
             labrows_version = LabRows.VERSION,
-            -- Rule 1: left out whatever the run answered.
-            exclude_run = { FLAG.SUPERSEDED_RERUN },
+            -- Rule 1: left out unless the run linked.
+            exclude_non_positive = { FLAG.SUPERSEDED_RERUN },
             -- Rule 3: a negative with any of these is left out; the first one
             -- present, in this order, is the reason recorded.
             exclude_negative = {
@@ -168,8 +177,8 @@ M.POLICIES = {
             },
             -- Rules 4 and 5: named so that "not excluding" is a decision too.
             never_exclude = { FLAG.LEGACY_ROUTE_SUBJECT, FLAG.EVIDENCE_MISSING },
-            positive = "counted unless exclude_run",
-            unanswered = "counted as unanswered unless exclude_run",
+            positive = "always counted",
+            unanswered = "counted as unanswered unless exclude_non_positive",
             cohort = "ResultCollector.cohort_key",
             pair = { subject_kind = "edge", fold = "ConfirmedEdge.fold",
                      min_attempts = ConfirmedEdge.DEFAULT_MIN_ATTEMPTS,
@@ -198,7 +207,7 @@ function M.check_policy(policy)
     end
     local r = policy.rules
     local seen = {}
-    for _, list_name in ipairs({ "exclude_run", "exclude_negative", "never_exclude" }) do
+    for _, list_name in ipairs({ "exclude_non_positive", "exclude_negative", "never_exclude" }) do
         for _, f in ipairs(r[list_name] or {}) do
             if seen[f] then
                 problems[#problems + 1] = ("flag %s is named by both %s and %s"):format(f, seen[f], list_name)
@@ -259,7 +268,7 @@ function M.include(run, policy)
     for _, f in ipairs(M.flags_of(run)) do flags[f] = true end
 
     local classified = {}
-    for _, list in ipairs({ r.exclude_run, r.exclude_negative, r.never_exclude }) do
+    for _, list in ipairs({ r.exclude_non_positive, r.exclude_negative, r.never_exclude }) do
         for _, f in ipairs(list or {}) do classified[f] = true end
     end
     for f in pairs(flags) do
@@ -269,8 +278,10 @@ function M.include(run, policy)
         end
     end
 
-    for _, f in ipairs(r.exclude_run or {}) do
-        if flags[f] then return M.INCLUSION.EXCLUDED, f end
+    if run.answers ~= ANSWERS.POSITIVE then
+        for _, f in ipairs(r.exclude_non_positive or {}) do
+            if flags[f] then return M.INCLUSION.EXCLUDED, f end
+        end
     end
     if run.answers == ANSWERS.NEGATIVE then
         for _, f in ipairs(r.exclude_negative or {}) do

@@ -85,7 +85,7 @@ do
     t.ok(POLICY ~= nil, "ce-eval-v1 loads and checks")
     t.eq(POLICY.key, "ce-eval-v1", "under its key")
     local named = {}
-    for _, list in ipairs({ POLICY.rules.exclude_run, POLICY.rules.exclude_negative, POLICY.rules.never_exclude }) do
+    for _, list in ipairs({ POLICY.rules.exclude_non_positive, POLICY.rules.exclude_negative, POLICY.rules.never_exclude }) do
         for _, f in ipairs(list) do named[f] = (named[f] or 0) + 1 end
     end
     for _, f in pairs(F) do t.eq(named[f], 1, "flag " .. f .. " is classified exactly once") end
@@ -112,12 +112,17 @@ end
 
 -- --- rule 1: superseded ---------------------------------------------------------------
 
-t.group("rule 1: a superseded re-run is left out, whatever it answered")
+t.group("rule 1: a superseded re-run is left out unless it linked")
 
-for _, v in ipairs({ "link", "whiff", "wrong_move" }) do
+for _, v in ipairs({ "whiff", "wrong_move" }) do
     local inc, why = E.include(run(v, 4, { quality_flags = { F.SUPERSEDED_RERUN } }), POLICY)
     t.eq(inc, INC.EXCLUDED, v .. " superseded: excluded")
     t.eq(why, F.SUPERSEDED_RERUN, "  with superseded_rerun as the reason")
+end
+do
+    local inc, why = E.include(run("link", 4, { quality_flags = { F.SUPERSEDED_RERUN } }), POLICY)
+    t.eq(inc, INC.COUNTED, "a superseded link counts: the defect could not manufacture a link")
+    t.is_nil(why, "  with no reason")
 end
 
 do
@@ -235,7 +240,7 @@ do
     t.eq(ev.result, R.PENDING, "unanswered only: pending")
     t.eq(ev.unanswered_runs, 2, "  both counted as unanswered")
 
-    ev = only(evaluate({ run("link", 4, { quality_flags = { F.SUPERSEDED_RERUN } }),
+    ev = only(evaluate({ run("wrong_move", 4, { quality_flags = { F.SUPERSEDED_RERUN } }),
                          run("whiff", 4, { quality_flags = { F.FIXED_DELAY_4 } }) }))
     t.eq(ev.result, R.PENDING, "every run excluded: pending")
     t.eq(ev.excluded_runs, 2, "  both kept as excluded")
@@ -243,7 +248,7 @@ do
     t.eq(ev.measured_summary.stable, false, "  nothing stable")
 
     ev = only(evaluate({ run("link", 4, { quality_flags = { F.SUPERSEDED_RERUN } }), run("link", 4, { attempt = 2 }) }))
-    t.eq(ev.result, R.OBSERVED_SUCCESS, "a superseded link does not make a pair reproduced")
+    t.eq(ev.result, R.REPRODUCED, "a superseded link and its re-run's link at the same delay: reproduced")
 end
 
 -- --- cohorts --------------------------------------------------------------------------------
@@ -340,7 +345,7 @@ do
     ev = only(evaluate({ route_run("link", { 40, 2 }), route_run("link", { 40, 4 }), route_run("whiff", { 40, 6 }) }))
     t.eq(ev.result, R.REPRODUCED, "two links and a failure: reproduced")
     ev = only(evaluate({ route_run("link", { 40, 2 }), route_run("link", { 40, 4 }, { quality_flags = { F.SUPERSEDED_RERUN } }) }))
-    t.eq(ev.result, R.OBSERVED_SUCCESS, "a superseded link is not the second link")
+    t.eq(ev.result, R.REPRODUCED, "a superseded link is still a second link")
     ev = only(evaluate({ route_run("link", { 40, 2 }, { quality_flags = { F.LEGACY_ROUTE_SUBJECT, F.EVIDENCE_MISSING } }),
                          route_run("link", { 40, 4 }, { quality_flags = { F.LEGACY_ROUTE_SUBJECT } }) }))
     t.eq(ev.result, R.REPRODUCED, "legacy route rows count like any others")
@@ -361,12 +366,13 @@ do
     local ev = only(evaluate({
         route_run("link", { 40, 2 }, { measured_damage = 2400 }),
         route_run("link", { 40, 4 }, { measured_damage = 2600 }),
-        route_run("link", { 40, 6 }, { measured_damage = 9999, quality_flags = { F.SUPERSEDED_RERUN } }),
+        route_run("link", { 40, 6 }, { measured_damage = 9999, quality_flags = { F.FIXED_DELAY_4 } }),
+        route_run("wrong_move", { 40, 12 }, { measured_damage = 7777, quality_flags = { F.SUPERSEDED_RERUN } }),
         route_run("whiff", { 40, 8 }, { measured_damage = 100 }),
     }))
-    t.eq(ev.measured_summary.damage.samples, 2, "damage from counted links only")
+    t.eq(ev.measured_summary.damage.samples, 3, "damage from counted links only")
     t.eq(ev.measured_summary.damage.min, 2400, "  min")
-    t.eq(ev.measured_summary.damage.max, 2600, "  max (the superseded 9999 and the whiff are not in it)")
+    t.eq(ev.measured_summary.damage.max, 9999, "  max (a link under a flag counts; the whiff and the excluded run do not)")
     ev = only(evaluate({ run("link", 4) }))
     t.is_nil(ev.measured_summary.damage, "no measured damage: no damage block, not zero")
 end
