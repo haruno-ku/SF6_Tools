@@ -29,7 +29,7 @@ knowledge-db の Supabase にある **`lab` スキーマ**へ入れ（#38 Phase 
 motion_button_late 231 / legacy_route_subject 222 / fixed_delay_4 202 / unplayable_input 156 /
 link_timing_on_cancel_pair 146。フラグは削除ではなくデータで、評価のときに除外に使います。
 
-## 評価（Phase B、本番未適用）
+## 評価（Phase B、2026-09-15 本番適用）
 
 | 表・ビュー | 中身 |
 |---|---|
@@ -110,9 +110,17 @@ delay4 の 1 回だけのリンク（弱 → SA2 など 8 件）は `observed_su
    `lab-apply.mjs` がそれです（Node の `pg` の `client.query(sql)` はパラメータ無しなら単純クエリ
    プロトコルなので、ファイル全体を 1 回で渡せる）。
 
-## 取り込み用ログイン lab_importer を作る（1 回だけ、運用者が手で）
+## 取り込み用ログイン lab_importer
 
-migration はパスワードを持たないので、ログインロールは手で作ります（`postgres` で、SQL エディタか psql から）:
+**2026-09-15 に本番で作成済み**（確認クエリは全部 true）。接続 URL は knowledge-db の `.env`
+（gitignore）に `LAB_DB_URL` として入っています。SF6_Tools で流すときは:
+
+```
+set -a; . ../sf6-knowledge-db/.env; set +a    # LAB_DB_URL を読む（表示しない）
+npm run lab:apply -- --dry-run
+```
+
+作り直す場合、migration はパスワードを持たないので `postgres` で手で作ります:
 
 ```sql
 create role lab_importer login password '<長いランダム文字列>' in role explorer_ingest;
