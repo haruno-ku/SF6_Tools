@@ -41,7 +41,7 @@ link_timing_on_cancel_pair 146。フラグは削除ではなくデータで、�
 
 `ce-eval-v1` の規則（詳しくは `labeval.lua` 冒頭）:
 
-- `superseded_rerun` の試行は答えに関係なく除外（同じキーを直して撮り直した行がある）
+- `superseded_rerun` の試行は、繋がったもの以外を除外（撮り直しの原因は期待 id の不具合で、偽の wrong_move は作れても link は作れない）
 - link は数える（タイミングが悪くても繋がったものは繋がった）
 - 否定は `fixed_delay_4` / `unplayable_input` / `link_timing_on_cancel_pair` / `motion_button_late`
   のどれかがあれば除外（正しいタイミング・押せる入力で問えていない）
@@ -52,16 +52,15 @@ link_timing_on_cancel_pair 146。フラグは削除ではなくデータで、�
   成功のみ `observed_success` / 失敗のみ `no_success_observed`
 
 既存ログ（1000 行）での結果: 評価 420（edge pending 365 / no_success_observed 41 /
-observed_success 12、route reproduced 2）。除外 356（superseded_rerun 246 /
+observed_success 8 / reproduced 4、route reproduced 2）。除外 352（superseded_rerun 242 /
 link_timing_on_cancel_pair 44 / fixed_delay_4 37 / motion_button_late 29）。
 
-**確定コンボは 2 件**（ground-truth の 3 手ルート 19 回、ab の 2 手ルート 2 回）で、
-`combos-zangief-modern.md` の「確定 7」とは違います。残り 5 件はペアで、コンボ一覧が
-「技が同じなら入力方式（236236+中 と 4+SP+强）も cohort（delay4 は別の校正）も
-隙間も superseded の行もまとめて 2 回」と数えるのに対し、評価は
+**確定コンボ（`lab.confirmed_combos`）は 6 件**: ground-truth の 3 手ルート（19 回）、ab の 2 手ルート（2 回）、
+ペア 4 件（2+弱 → 236236+中 / 2+弱 → 4+SP+强 @22、2+中 → 4+SP+强 @35、3+强 → 4+SP+强 @53、いずれも同じ遅延で 2 回）。
+`combos-zangief-modern.md` の「確定 7」と数が違うのは、コンボ一覧が「技が同じなら入力方式も cohort
+（delay4 は別の校正）も隙間もまとめて 2 回」と数えるのに対し、評価は
 **エッジ（入力方式込み）× cohort ごとに、同じ遅延で 2 回**を要求するためです。
-どのエッジも 1 cohort 1 遅延で 1 回しか繋がっていない（うち 4 件は 2 回目が
-superseded の singleid 行）ので `observed_success` です。確定にするには同じ遅延で撮り直す。
+delay4 の 1 回だけのリンク（弱 → SA2 など 8 件）は `observed_success` で、確定にするには同じ遅延で撮り直す。
 
 同じ id の評価が内容違いで入っていれば取り込みは中断します（規則を変えたら policy_key を変える）。
 
