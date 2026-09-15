@@ -11,6 +11,10 @@
     "test:lua": "node tools/lua-runner.mjs test",
     "lint:lua": "node tools/lua-runner.mjs syntax",
     "gen:fixtures": "node tools/gen-notation-fixture.mjs Zangief",
-    "lab:sql": "node tools/db/lab-import.mjs"
+    "lab:sql": "node tools/db/lab-import.mjs",
+    "lab:apply": "node tools/db/lab-apply.mjs"
+  },
+  "devDependencies": {
+    "pg": "^8.23.0"
   }
 }

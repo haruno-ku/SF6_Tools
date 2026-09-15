@@ -83,6 +83,7 @@ local SUITES = {
     "tests.lua.test_routeview",
     "tests.lua.test_batch",
     "tests.lua.test_labrows",
+    "tests.lua.test_labeval",
 }
 
 local total_passed, total_failed = 0, 0

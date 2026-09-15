@@ -1,6 +1,7 @@
 // Turns every committed trial log, calibration and route definition into one
 // idempotent SQL file for knowledge-db's `lab` schema (haruno-ku/SF6_Tools#38,
-// Phase A).
+// Phase A), followed by the evaluations over those runs (Phase B,
+// tools/db/lab-eval.mjs).
 //
 //   node tools/db/lab-import.mjs            (from the repo root; npm run lab:sql)
 //
@@ -10,8 +11,10 @@
 //
 // Both report rows per table before and after, so the dry run against the real
 // database says what the real run would add - and a second real run adds
-// nothing. The dry run's report is the message of the exception it ends in. The schema is supabase/migrations/*_lab_schema.sql in
-// knowledge-db, which must be applied first.
+// nothing. The dry run's report is the message of the exception it ends in.
+// The schema is knowledge-db's supabase/migrations/*_lab_schema.sql and
+// *_lab_evaluations.sql, which must be applied first. tools/db/lab-apply.mjs
+// (npm run lab:apply) sends either file to a database.
 //
 // WHO DOES WHAT
 //
@@ -46,6 +49,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { homedir } from 'node:os'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { buildEvaluations, EVAL_TABLES } from './lab-eval.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const DATA = 'reframework/data/ComboExplorer_data'
@@ -73,7 +77,7 @@ function findLua() {
 
 // --- hashing and ids -------------------------------------------------------------
 
-const sha256 = (data) => createHash('sha256').update(data).digest('hex')
+export const sha256 = (data) => createHash('sha256').update(data).digest('hex')
 
 export function canonicalJson(v) {
   if (v === null || typeof v !== 'object') {
@@ -147,7 +151,7 @@ export const sql = {
   },
 }
 
-function insert(table, columns, rows, conflict) {
+export function insert(table, columns, rows, conflict) {
   if (rows.length === 0) return `-- ${table}: nothing to insert\n`
   const values = rows.map((r) => '  (' + r.join(', ') + ')').join(',\n')
   return `insert into ${table} (${columns.join(', ')}) values\n${values}\n${conflict};\n`
@@ -351,6 +355,7 @@ function main() {
       recorded_at: row.recorded_at ?? null, started_at_frame: row.started_at_frame ?? null,
       quality_flags: row.quality_flags, supersedes: row.supersedes ?? null, supersedes_id: null,
       derived: row.derived ?? {}, payload: rec,
+      row, // the labrows row the evaluation reads; not a column
     })
   }
   for (const run of runs.values()) {
@@ -361,8 +366,9 @@ function main() {
   }
 
   // --- the SQL -------------------------------------------------------------------------------
-  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z')
-  const tables = ['import_batches', 'catalog_snapshots', 'calibration_profiles', 'test_contexts', 'routes', 'route_steps', 'route_definitions', 'runs', 'run_sources']
+  const generatedAt = new Date()
+  const stamp = generatedAt.toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z')
+  const tables = ['import_batches', 'catalog_snapshots', 'calibration_profiles', 'test_contexts', 'routes', 'route_steps', 'route_definitions', 'runs', 'run_sources', ...EVAL_TABLES]
   const report = tables.map((t) => `select '${t}' as lab_table, (select n from _lab_before where t = '${t}') as rows_before, (select count(*) from lab.${t}) as rows_after`).join('\nunion all\n')
 
   const body = []
@@ -452,6 +458,16 @@ end $check$;
     sources.map((s) => [sql.uuid(runs.get(s.event_key).id), sql.uuid(s.import_batch_id), sql.text(s.source_file), sql.text(s.file_sha256), sql.int(s.line_no), sql.textArray(s.quality_flags)]),
     'on conflict do nothing'))
 
+  // Evaluations last: they reference the runs above, and they are computed over
+  // exactly the runs this file carries. computed_at is when this file was
+  // generated, not when it is applied, so applying an older file later does not
+  // make its evaluations the current ones.
+  const evaluated = buildEvaluations({
+    lua, root: ROOT, runs, sources, toolCommit, computedAt: generatedAt.toISOString(),
+    helpers: { sql, uuidFor, sha256, insert },
+  })
+  body.push(evaluated.sqlText)
+
   const sqlText = body.join('\n')
   // `supabase db query` shows the LAST statement's result. So the real file
   // reports after COMMIT, and the dry run ends in an exception whose message is
@@ -481,6 +497,10 @@ rollback;
   for (const r of runs.values()) for (const f of r.quality_flags) flagCounts[f] = (flagCounts[f] ?? 0) + 1
   console.log(`trial lines ${sources.length}, distinct runs ${runs.size}, contexts ${contexts.size}, routes ${routes.size}, calibrations ${calibrations.size}, route definitions ${definitions.length}, batches ${batches.size}`)
   console.log('quality flags over distinct runs:', JSON.stringify(flagCounts))
+  const ev = evaluated.summary
+  console.log(`evaluations (${evaluated.policy.policy_key}): ${evaluated.evaluations.length} over ${evaluated.evaluationRuns.length} run(s)`)
+  console.log('  by subject kind and result:', JSON.stringify(ev.by_kind_result))
+  console.log('  excluded runs by reason:', JSON.stringify(ev.excluded_by_reason))
   console.log(`wrote ${relative(ROOT, realPath)} (${Buffer.byteLength(sqlText + realEnd)} bytes)`)
   console.log(`wrote ${relative(ROOT, dryPath)}`)
 }

@@ -225,6 +225,16 @@ end
 M.COMBO = { CONFIRMED = "confirmed", ONCE = "once" }
 M.CONFIRM_LINKS = 2
 
+-- The combo rule, in one place: linked in CONFIRM_LINKS trials, at any gap, is
+-- confirmed; linked at all is seen once; never linked is not on the list (nil).
+-- The lab evaluation (tools/lua/labeval.lua) calls this for routes instead of
+-- restating it, so the page and the database cannot disagree about what
+-- "confirmed" means - only about which trials each of them counted.
+function M.combo_status(links)
+    if type(links) ~= "number" or links <= 0 then return nil end
+    return links >= M.CONFIRM_LINKS and M.COMBO.CONFIRMED or M.COMBO.ONCE
+end
+
 -- steps : { { id, notation }, ... } in order. The key is the moves alone.
 local function combo_key(steps)
     local ids = {}
@@ -287,7 +297,7 @@ local function note_combo_trial(book, steps, rec, log_name, gap_label)
 end
 
 -- Gap labels sort by their numbers, not as strings: "4" before "22".
-local function gap_less(x, y)
+function M.gap_less(x, y)
     local xs, ys = {}, {}
     for n in x:gmatch("%d+") do xs[#xs + 1] = tonumber(n) end
     for n in y:gmatch("%d+") do ys[#ys + 1] = tonumber(n) end
@@ -302,9 +312,9 @@ local function finish_combos(book, classic)
     for _, c in pairs(book) do
         if c.links > 0 then
             c.input_seen, c.gap_seen, c.log_seen = nil, nil, nil
-            c.status = c.links >= M.CONFIRM_LINKS and M.COMBO.CONFIRMED or M.COMBO.ONCE
+            c.status = M.combo_status(c.links)
             for _, s in ipairs(c.steps) do s.classic = classic and classic[s.id] or nil end
-            table.sort(c.linked_gaps, gap_less)
+            table.sort(c.linked_gaps, M.gap_less)
             -- Said as a field rather than left out when nothing measured it,
             -- because ce.verified_combo.v1 requires damage and a list that did
             -- not mention it would read as ready to publish. Logs written before
