@@ -1,0 +1,100 @@
+{
+  "attribution": {
+    "applies_to": "the name_en column, and nothing else in this file",
+    "commit": "a64f2acf90fffc855ddc1a958a4ee752e15c571c",
+    "fetched_at": "2026-09-10T09:58:49Z",
+    "license": "CC-BY-SA",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "modifications": "One English move name per action id, joined through the command_display classic command. No source value was altered.",
+    "obtained_via": "RyoSogawa/sf6-sensei",
+    "original_url": "https://wiki.supercombo.gg/w/Street_Fighter_6",
+    "original_work": "SuperCombo Wiki - Street Fighter 6 Frame Data",
+    "share_alike": "This document is a derived work of the above and is offered under the same licence.",
+    "source_url": "https://wiki.supercombo.gg/w/Street_Fighter_6"
+  },
+  "character": "Zangief",
+  "control_scheme": "modern",
+  "generated_at": "2026-09-16T05:15:04Z",
+  "generated_by": "tools/lua/publish.lua",
+  "moves": {
+    "1206": {
+      "action_id": 1206,
+      "blocks": 4,
+      "classic": "236236+P",
+      "input_method": "manual",
+      "name_en": "Cyclone Lariat",
+      "name_en_matched_by": "no_plus",
+      "notation": "236236 + 中",
+      "slug": null,
+      "source": "unfilled"
+    },
+    "617": {
+      "action_id": 617,
+      "blocks": 2,
+      "classic": "2+LP",
+      "input_method": "manual",
+      "name_en": "Crouching Light Punch",
+      "name_en_matched_by": "no_plus",
+      "notation": "2 + 弱",
+      "slug": null,
+      "source": "unfilled"
+    },
+    "621": {
+      "action_id": 621,
+      "blocks": 1,
+      "classic": "2+MP",
+      "input_method": "manual",
+      "name_en": "Crouching Medium Punch",
+      "name_en_matched_by": "no_plus",
+      "notation": "2 + 中",
+      "slug": null,
+      "source": "unfilled"
+    },
+    "633": {
+      "action_id": 633,
+      "blocks": 1,
+      "classic": "2+HK",
+      "input_method": "manual",
+      "name_en": "Big Stampede",
+      "name_en_matched_by": "no_plus",
+      "notation": "3 + 强",
+      "slug": null,
+      "source": "unfilled"
+    },
+    "655": {
+      "action_id": 655,
+      "blocks": 2,
+      "classic": "3+MP",
+      "input_method": "manual",
+      "name_en": "Hellstab",
+      "name_en_matched_by": "no_plus",
+      "notation": "3 + 中",
+      "slug": null,
+      "source": "unfilled"
+    },
+    "660": {
+      "action_id": 660,
+      "blocks": 2,
+      "classic": "6+HP",
+      "input_method": "simple",
+      "name_en": "Headbutt",
+      "name_en_matched_by": "no_plus",
+      "notation": "AUTO + 强",
+      "slug": null,
+      "source": "unfilled"
+    },
+    "900": {
+      "action_id": 900,
+      "blocks": 1,
+      "classic": "PP",
+      "input_method": "simple",
+      "name_en": "Double Lariat",
+      "name_en_matched_by": "exact",
+      "notation": "2 + SP",
+      "slug": null,
+      "source": "unfilled"
+    }
+  },
+  "note": "action_id -> the move's slug in sf6-knowledge-db's data/characters/<slug>/moves.yaml. THIS TOOL NEVER FILLS THE SLUG COLUMN: a slug is a name in the other project and guessing one would put a dangling reference through validate.ts. Fill `slug` by hand and set `source` to how it was decided (\"hand\", \"matched by name\", \"from moves.yaml\"). What filling it enables: KnowledgeDb.export can then name every step of a combo, which is the last thing standing between a measured combo and a row in combos.yaml - the other is the measured damage, which only a session on the game can supply. An entry left unfilled is not a failure; it is the export's missing_moves list, written down. `blocks` is how many reproduced combos this move currently holds up. `name_en` is the frame source's English name, reached through the classic command, and `name_en_matched_by` says how - a prefix or strength match is one reading of several and `name_en_ambiguous` says when there were several. It is a hint for the person filling the row in, never the answer.",
+  "schema": "ce.action_slugs.v1"
+}
