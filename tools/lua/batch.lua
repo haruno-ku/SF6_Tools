@@ -333,8 +333,11 @@ function M.row(entry, scheme, explore, worklist, drc, plans, summary, errors, op
             -- the index should print the one that happened.
             local s = doc and doc.plan and doc.plan.search
             if s and not row.deep then
+                -- routes_found, not the plan's `available`: the index is saying
+                -- what the deeper search reached, not how many routes one
+                -- preset's conditions happened to keep.
                 row.deep = { beam = s.beam, max_steps = s.max_steps,
-                             complete = s.complete, routes = doc.plan.available }
+                             complete = s.complete, routes = s.routes_found }
             end
         end
         row.route_files = opts.route_files
@@ -626,20 +629,24 @@ function M.priority_note_html(rows)
     if not pri then return "" end
     local deep = pri.deep
     local search = deep
-        and ("beam %s・最大 %s 手で探索し、%s（候補ルート %s）")
+        and ("beam %s・最大 %s 手で探索し、%s（探索が見つけたルート %s 本）")
             :format(M.thousands(deep.beam), tostring(deep.max_steps),
                     deep.complete and "打ち切りなしで完走" or "それでも打ち切られた",
                     n_or_dash(deep.routes))
         or ("beam %s・最大 %s 手"):format(M.thousands(M.DEEP.beam), tostring(M.DEEP.max_steps))
+    -- Each name escaped, then joined with the markup. H over the joined string
+    -- would escape the <code> tags and print them.
     local names = {}
-    for _, p in ipairs(M.PRACTICE_PRESETS) do names[#names + 1] = p.name end
+    for _, p in ipairs(M.PRACTICE_PRESETS) do
+        names[#names + 1] = "<code>" .. H(p.name) .. "</code>"
+    end
     return table.concat({
         '<div class="priority-note">',
         ('<b>優先キャラ: %s</b> — 実際に練習している 1 人だけ、オフラインの扱いを厚くしています。'):format(H(pri.character)),
         "<ol>",
         ("<li>深い探索: %s。ほかの 30 キャラは既定のまま（beam 4,000・最大 3 手）です。</li>"):format(H(search)),
-        ("<li>練習用プラン: 通常の 3 プリセットに加えて <code>%s</code>。覚えるための条件で絞ったものです。</li>")
-            :format(H(table.concat(names, "</code>, <code>"))),
+        ("<li>練習用プラン: 通常の %d プリセットに加えて %s。覚えるための条件で絞ったものです。</li>")
+            :format(#M.PRESETS, table.concat(names, ", ")),
         ("<li>ルートファイル: 練習プランの上位ルートを %s に書き出し済み。ゲーム側の ROUTE から走らせられます。</li>")
             :format(pri.route_files and ("%d 本"):format(pri.route_files) or "route/"),
         "</ol>",

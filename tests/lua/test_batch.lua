@@ -251,8 +251,9 @@ t.group("a priority row")
 
 local deep_plan = {
     count = 9,
-    plan = { search = { beam = B.DEEP.beam, max_steps = B.DEEP.max_steps, complete = true },
-             available = 2373 },
+    plan = { search = { beam = B.DEEP.beam, max_steps = B.DEEP.max_steps, complete = true,
+                        routes_found = 4538 },
+             available = 330 },
 }
 local plans_pri = { ["max-damage"] = { count = 12 }, ["easy-damage"] = deep_plan,
                     ["hit-confirm"] = { count = 4, plan = { search = { complete = true } } } }
@@ -263,7 +264,7 @@ t.ok(pri.priority, "the row says it is the priority character")
 t.eq(pri.practice_plans["easy-damage"], 9, "and carries the practice plans' pair counts")
 t.eq(pri.route_files, 9, "and how many route files the game can run")
 t.eq(pri.deep.beam, B.DEEP.beam, "the deep settings come off the plan that ran, not the constant")
-t.eq(pri.deep.routes, 2373, "with how many routes satisfied its conditions")
+t.eq(pri.deep.routes, 4538, "with what the SEARCH found, not what one preset's conditions kept")
 t.eq(pri.plans["max-damage"], 12, "the standard plans are unchanged")
 
 local plain = B.row({ catalog = "Luke", fighter_id = 2 }, "modern", nil, nil, nil, {}, nil, nil)
@@ -294,7 +295,9 @@ local pri_tpl = "<t><!--__TOTALS__--></t><p><!--__PRIORITY__--></p><r><!--__ROWS
 local pri_page = B.render_index(pri_tpl, { plain, pri })
 t.ok(pri_page:find("優先キャラ: Ryu", 1, true), "the note names the character")
 t.ok(pri_page:find("beam 60,000", 1, true), "and the search it ran")
-t.ok(pri_page:find("easy-damage", 1, true), "and the practice presets")
+t.ok(pri_page:find("<code>easy-damage</code>", 1, true),
+    "and the practice presets, as markup rather than escaped tags")
+t.ok(pri_page:find("4,538", 1, true), "and how many routes that search reached")
 t.ok(pri_page:find("9 本", 1, true), "and how many route files are ready")
 t.ok(pri_page:find('<tr class="pri">', 1, true), "the row is marked")
 t.ok(pri_page:find("pri-badge", 1, true), "with a badge")

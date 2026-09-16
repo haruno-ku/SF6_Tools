@@ -403,6 +403,10 @@ local wl_doc, werr = Pipeline.worklist_doc(ctx, items, {
         search = {
             max_steps = search_depth,
             beam = ctx.opt.beam,
+            -- How many routes the SEARCH found, before any condition. `available`
+            -- below is how many survived the conditions, and the two are easy to
+            -- print in place of each other.
+            routes_found = plan.filter.input,
             complete = found.stats.complete,
             beam_dropped = found.stats.beam_dropped_total,
             truncated_routes = found.stats.truncated_routes,
