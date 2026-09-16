@@ -38,6 +38,33 @@ local found = RS.search(g, {
 })
 local routes = Scoring.apply(found.routes)
 
+-- A second search, identical but for letting every probeable move OPEN a route
+-- rather than only the normals.
+--
+-- Zangief's OD specials are 63214+KK and 360+PP, and his 360+P and 720+P are
+-- specials and a super: all four are command throws. The generator no longer
+-- offers a throw as anyone's second move (a hit puts the opponent in hitstun,
+-- where nothing can be thrown), so out of normals alone no route contains an OD
+-- move, and none contains a motion longer than 236236. As a STARTER a throw is
+-- untouched, which is where the drive figure and the big motion can still be
+-- read off a real route rather than a hand-built one.
+local od_routes
+do
+    local ALL = { categories = { "normal", "command_normal", "special", "od_special", "super" },
+                  input_methods = { "manual", "simple" } }
+    local od_gen = CG.generate(cat, idx, { from = ALL, to = ALL, include_followups = true })
+    local od_g = GraphStore.build(od_gen.candidates, {
+        character = "zangief", game_patch = "2026-08-03",
+        ac_sha256 = "aaaa", bcm_sha256 = "bbbb",
+    })
+    local od_found = RS.search(od_g, {
+        frame_idx = idx, character = "zangief", control_scheme = "modern",
+        position = "midscreen", counter = "none",
+        max_steps = 3, beam_width = 4000, max_routes = 20000,
+    })
+    od_routes = Scoring.apply(od_found.routes)
+end
+
 -- --- input shape -------------------------------------------------------------
 
 t.group("counting inputs from notation")
@@ -116,11 +143,15 @@ t.is_nil(s.predicted_damage_is_upper_bound,
 
 -- Drive spend is what the source says a move costs - a negative drive_gain -
 -- and it is only called known when every move in the route had a figure.
-local od_known, drive_gap
+local drive_gap
 for _, r in ipairs(routes) do
+    if (r.basis.drive_spend_unknown_steps or 0) > 0 then drive_gap = drive_gap or r end
+end
+
+local od_known
+for _, r in ipairs(od_routes) do
     local sc = r.offline_score
     if sc.od_steps > 0 and sc.drive_spend_known then od_known = od_known or r end
-    if (r.basis.drive_spend_unknown_steps or 0) > 0 then drive_gap = drive_gap or r end
 end
 t.ok(od_known ~= nil, "a route with an OD move and a drive figure on every step exists")
 t.ok(od_known.offline_score.predicted_drive_spend >= 20000,
@@ -177,7 +208,7 @@ t.ok(s.execution_cost_basis.weights ~= nil, "including the weights, which are a 
 -- A route through a 720 has more to input than one through two normals, and the
 -- cost has to reflect that or it is measuring nothing.
 local plain, motion
-for _, r in ipairs(routes) do
+for _, r in ipairs(od_routes) do
     if r.offline_score.hardest_motion == 0 and not plain then plain = r end
     if r.offline_score.hardest_motion >= 7 and not motion then motion = r end
 end

@@ -459,6 +459,152 @@ do
     t.is_nil(a2, "the same row after HK is not, so one cache entry cannot serve both")
 end
 
+-- --- a throw is not the second move of a combo --------------------------------
+
+-- The scope the survey measures every character under: normals start, and
+-- specials and supers are reachable targets. Zangief's command throws live
+-- there - 360+P, 63214K, 720+P - which is how they ever became pairs.
+local TARGETS = { categories = { "normal", "command_normal", "special", "od_special", "super" },
+                  input_methods = { "manual", "simple" } }
+
+t.group("a throw as the second move is excluded, with the source's own marking")
+
+do
+    local r = CG.generate(cat, idx, { from = GROUND, to = TARGETS, include_followups = false })
+
+    local reason = CG.EXCLUDED.THROW_AFTER_HIT
+    t.eq(reason, "throw_after_a_hit", "the reason has a stable name")
+
+    -- 14 starters x 15 throw rows among the 33 targets.
+    t.eq(r.stats.by_exclusion[reason], 210, "every crossing into a throw is counted")
+
+    local listed, sample = 0, nil
+    for _, x in ipairs(r.excluded) do
+        if x.reason == reason then
+            listed = listed + 1
+            sample = sample or x
+            -- The values that decided it, not the sentence. nil in both would
+            -- be silence, which may never exclude anything.
+            t.ok(x.throw_property == true or x.to_record_category == "throw",
+                 ("%d -> %d carries the source's own marking"):format(x.from, x.to))
+            t.ok(type(x.to_frame_key) == "string",
+                 ("%d -> %d names the record it read"):format(x.from, x.to))
+        end
+    end
+    t.eq(listed, 210, "and each one is in the excluded list, not silently gone")
+    t.ok(type(sample.evidence) == "string" and #sample.evidence > 0,
+         "with the reason in words beside the values")
+
+    -- 720 + 强, the SA3 that headed every damage ranking and never once linked.
+    local by = {}
+    for _, e in ipairs(r.candidates) do by[e.id] = e end
+    t.is_nil(by["633:manual->1218:manual"], "2HK into SA3 (720+P) is no longer a candidate")
+    t.is_nil(by["633:manual->1218:simple"], "nor by its simple spelling")
+    t.is_nil(by["621:manual->940:manual"], "nor 2MP into Screw Piledriver")
+
+    -- Nothing with a throw for B survives anywhere in the list.
+    local survivors = 0
+    for _, e in ipairs(r.candidates) do
+        local rec = FrameData.lookup(idx, e.to.classic,
+                                     { after = e.from.classic, band = nil })
+        if rec and (FrameData.has_property(rec, "throw") == true or rec.category == "throw") then
+            survivors = survivors + 1
+        end
+    end
+    t.eq(survivors, 0, "no candidate has a throw as its second move")
+
+    -- The survey's rule: every exclusion carries the thing that decided it.
+    local undecided = 0
+    for _, x in ipairs(r.excluded) do
+        local justified
+        if x.reason == "frame_margin_negative" then
+            justified = type(x.margin_frames) == "number"
+        elseif x.reason == "self_pair_without_chain" then
+            justified = (x.chain_property == false)
+        elseif x.reason == "throw_after_a_hit" then
+            justified = (x.throw_property == true) or (x.to_record_category == "throw")
+        else
+            justified = false
+        end
+        if not justified then undecided = undecided + 1 end
+    end
+    t.eq(undecided, 0, "no pair is excluded without the value that decided it")
+end
+
+t.group("a throw is a fine STARTER")
+
+do
+    -- The rule is about what may follow a hit. Move A is produced from neutral
+    -- against a standing opponent, so a throw there is untouched.
+    local r = CG.generate(cat, idx, { from = TARGETS, to = GROUND, include_followups = false })
+    t.is_nil(r.stats.by_exclusion[CG.EXCLUDED.THROW_AFTER_HIT],
+             "with only normals as targets the reason never fires")
+    local from_throws = 0
+    for _, e in ipairs(r.candidates) do
+        if e.from.action_id == 1218 or e.from.action_id == 940 then
+            from_throws = from_throws + 1
+        end
+    end
+    t.eq(from_throws, 56, "SA3 and Screw Piledriver still open combos (56 edges)")
+end
+
+t.group("a throw nobody wrote down is not a throw")
+
+do
+    -- The corollary this module is built on, held at the edge of the new rule.
+    -- The same source with the two 720+P records removed: nothing now says what
+    -- kind of move 1218 is, and silence may not exclude.
+    local raw = dofile("data/frame-data/zangief.lua")
+    local moves = {}
+    for _, mv in ipairs(raw.moves) do
+        if mv.numpad ~= "720+P" then moves[#moves + 1] = mv end
+    end
+    local no_sa3 = FrameData.index({ _meta = raw._meta, moves = moves })
+    local r = CG.generate(cat, no_sa3, { from = GROUND, to = TARGETS,
+                                         include_followups = false })
+    local back = 0
+    for _, e in ipairs(r.candidates) do
+        if e.to.action_id == 1218 then back = back + 1 end
+    end
+    t.eq(back, 28, "with no record for it, every crossing into 1218 is a candidate again")
+    t.eq(r.stats.by_exclusion[CG.EXCLUDED.THROW_AFTER_HIT], 154,
+         "and only the throws the source still names are excluded")
+
+    -- A record present but saying nothing about properties is the same silence.
+    local blanked = {}
+    for _, mv in ipairs(raw.moves) do
+        local copy = {}
+        for k, v in pairs(mv) do copy[k] = v end
+        if copy.numpad == "720+P" then copy.properties = nil end
+        blanked[#blanked + 1] = copy
+    end
+    local no_props = FrameData.index({ _meta = raw._meta, moves = blanked })
+    local r2 = CG.generate(cat, no_props, { from = GROUND, to = TARGETS,
+                                            include_followups = false })
+    local thrown_out = 0
+    for _, x in ipairs(r2.excluded) do
+        if x.to == 1218 and x.reason == CG.EXCLUDED.THROW_AFTER_HIT then
+            thrown_out = thrown_out + 1
+        end
+    end
+    t.eq(thrown_out, 0, "a record with no properties list says nothing, so no pair is a throw pair")
+    -- The 720+P record is still there with its numbers, so the ordinary
+    -- reasoning applies again and 22 of the 28 survive it - which is the point:
+    -- they are judged, not deleted.
+    local kept = 0
+    for _, e in ipairs(r2.candidates) do
+        if e.to.action_id == 1218 then kept = kept + 1 end
+    end
+    t.eq(kept, 22, "and the crossings are back to being judged on their frames")
+
+    -- And with no frame data at all, nothing may be excluded for anything.
+    local blind_t = CG.generate(cat, nil, { from = GROUND, to = TARGETS,
+                                            include_followups = false })
+    t.is_nil(blind_t.stats.by_exclusion[CG.EXCLUDED.THROW_AFTER_HIT],
+             "with no frame data no pair is excluded as a throw")
+    t.eq(#blind_t.excluded, 0, "and nothing is excluded at all")
+end
+
 -- --- the two sources disagreeing travels onto the edge ------------------------
 
 t.group("an edge built on a contradicted record says so")
@@ -794,6 +940,43 @@ do
     t.eq(drc_run.stats.drc_excluded, #drc_excl, "stats.drc_excluded counts them")
     t.ok(CG.DRC_EXCLUSIONS[reason] and CG.DRC_EXCLUSIONS.drc_margin_negative,
          "and both reasons are named as the rush's")
+end
+
+t.group("drive rush: a rush does not make a throw connect")
+
+do
+    -- The rush is between the two moves, but the opponent on the other end is
+    -- still the one A hit and still in hitstun. Same fact, same reason, marked
+    -- as the rush's by `via` rather than given a second name.
+    local r = CG.generate(cat, idx, { from = GROUND, to = TARGETS, include_followups = false,
+                                      include_drive_rush = true })
+    local plain, rushed = 0, 0
+    for _, x in ipairs(r.excluded) do
+        if x.reason == CG.EXCLUDED.THROW_AFTER_HIT then
+            if CG.is_drive_rush(x) then
+                rushed = rushed + 1
+                t.ok(x.throw_property == true or x.to_record_category == "throw",
+                     ("DRC %d -> %d carries the source's own marking"):format(x.from, x.to))
+            else
+                plain = plain + 1
+            end
+        end
+    end
+    t.eq(plain, 210, "the plain pass excludes the same 210 it always did")
+    -- 8 starters the source says can rush, times the 15 throw rows among the 33
+    -- targets.
+    t.eq(rushed, 120, "and the rush pass excludes its own 120")
+    t.eq(r.stats.by_exclusion[CG.EXCLUDED.THROW_AFTER_HIT], plain + rushed,
+         "by_exclusion counts both, because it counts every exclusion in the list")
+    t.is_nil(CG.DRC_EXCLUSIONS[CG.EXCLUDED.THROW_AFTER_HIT],
+             "the reason is not named as the rush's own - both passes produce it")
+
+    local into_throw = 0
+    for _, e in ipairs(r.candidates) do
+        local rec = FrameData.lookup(idx, e.to.classic, { band = nil })
+        if rec and FrameData.has_property(rec, "throw") == true then into_throw = into_throw + 1 end
+    end
+    t.eq(into_throw, 0, "and no edge of either kind ends on a throw")
 end
 
 t.group("drive rush: a guessed record's silence is not the move's")

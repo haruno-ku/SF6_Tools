@@ -424,12 +424,14 @@ do
         }
         local path = "reframework/data/ComboExplorer_data/trials/zangief-modern-framedata.jsonl"
         local counts, n, refused = {}, 0, 0
+        local rows = {}
         local i = 0
         for line in io.lines(path) do
             i = i + 1
             local r = L.row(json.decode(line), { source_file = path, line_no = i, lookup = lookup })
             if r then
                 n = n + 1
+                rows[#rows + 1] = r
                 for _, f in ipairs(r.quality_flags) do counts[f] = (counts[f] or 0) + 1 end
             else
                 refused = refused + 1
@@ -437,9 +439,21 @@ do
         end
         t.eq(n, 216, "every one of the 216 lines becomes a row")
         t.eq(refused, 0, "and none is refused")
-        -- be1c0be's count: the pairs whose only mechanism is a cancel, measured
-        -- only at the link gap.
-        t.eq(counts[F.LINK_TIMING_ON_CANCEL_PAIR], 73, "73 rows are cancel pairs pressed at link timing")
+        -- The pairs whose only mechanism is a cancel, measured only at the link
+        -- gap. The flag is read off the edge the generator produces TODAY, so
+        -- the count moves when the generator does: be1c0be counted 73, and 48
+        -- of those were pairs whose B is a throw. Those are no longer edges with
+        -- a mechanism at all - a throw cannot connect after a hit - so they are
+        -- excluded pairs now, and a bad gap is no longer the interesting thing
+        -- about them.
+        t.eq(counts[F.LINK_TIMING_ON_CANCEL_PAIR], 25, "25 rows are cancel pairs pressed at link timing")
+        local throw_rows = 0
+        for _, r in ipairs(rows) do
+            if r.derived and r.derived.exclusion == "throw_after_a_hit" then
+                throw_rows = throw_rows + 1
+            end
+        end
+        t.eq(throw_rows, 98, "98 of the 216 trials were spent on a throw after a hit")
         t.eq(counts[F.EVIDENCE_MISSING], 98, "the 98 wrong_moves are the rows without evidence")
         t.is_nil(counts[F.LEGACY_ROUTE_SUBJECT], "a pair sweep has no legacy route rows")
     end

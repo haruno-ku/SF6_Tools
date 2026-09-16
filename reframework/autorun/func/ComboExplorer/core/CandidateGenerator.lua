@@ -59,6 +59,34 @@
 -- That is the vouching SequenceCompiler.unplayable asks for: the worklist
 -- carries it, and the sweep plays the pair instead of setting it aside.
 --
+-- A THROW IS NOT THE SECOND MOVE OF A COMBO
+--
+-- The route finder's best routes by predicted damage were almost all "X > 720 +
+-- 强" - Zangief's SA3, action 1218, 4800 damage - and the trial logs say none of
+-- them ever connected. At cancel timing SA3 came out and touched nothing
+-- (hits_added 0) after 611, 617, 621 and 655, while the strike super 1206 at the
+-- same timing linked. The reason is not the timing: an opponent in hitstun is
+-- not throwable, and the frame source tags 720+P, 360+P, 63214K and 236236K
+-- `throw`. So those pairs cannot be made to work by any delay, and every trial
+-- spent on one was three seconds spent confirming a rule of the game.
+--
+-- This is a KNOWN structural fact, the same class as a derivation after a move
+-- that is not its parent: the source STATES the property, so the pair is
+-- excluded under its own reason with the statement attached, not silently
+-- dropped. When the record is absent, or present with no properties list, the
+-- source says nothing about what kind of move it is - and silence is never
+-- grounds to exclude, so the pair stays a candidate exactly as before.
+--
+-- Only move B. A throw is a perfectly good STARTER: it is what the combo opens
+-- with, the opponent is standing in neutral, and every throw remains in the
+-- from-set untouched. The rule is about what may follow a hit, and it holds at
+-- any depth, because a route is built out of these edges and every step after
+-- the first is a B.
+--
+-- A rush does not rescue it. A -> DRC -> throw is still a throw after a hit, so
+-- the Drive Rush pass asks the same question and records the same reason,
+-- marked `via` like the rest of that pass.
+--
 -- DRIVE RUSH CANCEL EDGES: A -> (drive rush) -> B
 --
 -- Off unless opts.include_drive_rush is set, so every existing output is the
@@ -141,6 +169,10 @@ M.EXCLUDED = {
     -- Structure, not a gap: see "A FOLLOW-UP AFTER A MOVE THAT IS NOT ITS
     -- PARENT" above for why this is not an exclusion for missing information.
     FOLLOWUP_NOT_AFTER_PARENT = "followup_after_a_move_not_its_parent",
+    -- B is a throw, and the opponent A just hit is in hitstun rather than
+    -- throwable. Structure, not a gap: see "A THROW IS NOT THE SECOND MOVE OF A
+    -- COMBO" above.
+    THROW_AFTER_HIT = "throw_after_a_hit",
     -- A -> DRC -> B where the source's drc_on_hit for A leaves B's startup
     -- short. The number travels as drc_margin_frames.
     DRC_MARGIN_NEGATIVE = "drc_margin_negative",
@@ -150,6 +182,9 @@ M.EXCLUDED = {
 
 -- The exclusion reasons only the Drive Rush pass produces, so a consumer that
 -- reports plain edges can leave them out of its own by_exclusion table.
+-- THROW_AFTER_HIT is deliberately not here: both passes produce it, because it
+-- is one fact about move B and not a fact about the rush. A reader who needs to
+-- tell those apart has M.is_drive_rush on the record itself.
 M.DRC_EXCLUSIONS = {
     [M.EXCLUDED.DRC_MARGIN_NEGATIVE] = true,
     [M.EXCLUDED.FOLLOWUP_AFTER_DRIVE_RUSH] = true,
@@ -237,6 +272,31 @@ local function add_unknown(edge, what, why)
     elseif not existing:find(why, 1, true) then
         edge.unknown_detail[what] = existing .. "; " .. why
     end
+end
+
+-- Does the frame source say this record is a throw? true / false / nil, and nil
+-- is the answer that matters: no record, or a record with no properties list, is
+-- the source saying nothing, and nothing is never grounds to exclude a pair.
+--
+-- Two independent statements are accepted, because the source makes it both
+-- ways. A normal throw is spelled category "throw" AND properties { "throw" };
+-- a command throw - 360+P, 720+P, 63214K, 236236K - is category "special" or
+-- "super_art" and carries the property alone. Across the 31 shipped characters
+-- no record is category "throw" without the property, so the property covers
+-- every case today; the category is read as well so that a source which drops
+-- the property from an obvious throw is not read as silence.
+--
+-- Returns the verdict and the two values it was read from, which travel on the
+-- exclusion so a reader can check it against the source rather than trust a
+-- sentence.
+local function throw_verdict(rec)
+    local prop = FrameData.has_property(rec, "throw")
+    local category = rec and rec.category or nil
+    local is_throw
+    if prop == true or category == "throw" then is_throw = true
+    elseif prop == false then is_throw = false
+    else is_throw = nil end
+    return is_throw, prop, category
 end
 
 local function edge_id(a, b)
@@ -552,6 +612,34 @@ function M.generate(catalog, frame_idx, opts)
         -- B does: in this edge, A is what it comes out of.
         local a_frame, a_info = frame_for(a_row)
         local b_frame, b_info = frame_for(b_row, a_row)
+
+        -- Before any arithmetic, for the same reason as the parent check: a
+        -- throw after a hit is not a thin link, it is not a link at all. The
+        -- opponent A just hit is in hitstun and cannot be thrown, so no delay
+        -- makes this pair work. Only a stated property excludes; a record the
+        -- source never wrote is silence and the pair survives it.
+        local b_is_throw, b_throw_prop, b_record_category = throw_verdict(b_frame)
+        if b_is_throw then
+            excluded[#excluded + 1] = {
+                from = a_row.action_id, to = b_row.action_id,
+                from_notation = a_row.notation, to_notation = b_row.notation,
+                reason = M.EXCLUDED.THROW_AFTER_HIT,
+                -- The values that decided it, not a sentence about them. `true`
+                -- or "throw" means the source stated it; nil would mean nobody
+                -- did, and this branch is not reached on nil.
+                throw_property = b_throw_prop,
+                to_record_category = b_record_category,
+                -- Which record was read, so the statement can be looked up.
+                to_frame_key = b_info and b_info.key,
+                to_frame_join_guessed = FrameData.uncertain(b_info) or nil,
+                evidence = "the frame source marks the second move a throw, and a throw "
+                    .. "cannot connect after a hit: the opponent is in hitstun, not throwable",
+            }
+            stats.by_exclusion[M.EXCLUDED.THROW_AFTER_HIT] =
+                (stats.by_exclusion[M.EXCLUDED.THROW_AFTER_HIT] or 0) + 1
+            return
+        end
+
         local a = assess(a_row, b_row, a_frame, b_frame, opts)
 
         -- If either half's numbers came from a guessed join, the reasoning
@@ -769,6 +857,23 @@ function M.generate(catalog, frame_idx, opts)
             -- for a derivation spelled as a chain from the move before it, and
             -- after a rush the move before B is the rush.
             local b_frame, b_info = frame_for(b_row)
+
+            -- A rush does not make a throw connect. The opponent is still the
+            -- one A hit, and still in hitstun when B comes out.
+            local b_is_throw, b_throw_prop, b_record_category = throw_verdict(b_frame)
+            if b_is_throw then
+                drc_exclude({
+                    from = a_row.action_id, to = b_row.action_id,
+                    from_notation = a_row.notation, to_notation = b_row.notation,
+                    throw_property = b_throw_prop,
+                    to_record_category = b_record_category,
+                    to_frame_key = b_info and b_info.key,
+                    to_frame_join_guessed = FrameData.uncertain(b_info) or nil,
+                    evidence = "the frame source marks the second move a throw, and a throw "
+                        .. "cannot connect after a hit, with or without a rush in between",
+                }, M.EXCLUDED.THROW_AFTER_HIT)
+                return
+            end
 
             local a = { reasons = { M.REASON.DRIVE_RUSH_CANCEL }, basis = {}, unknowns = {} }
             local _, b_startup = frames_of_pair(a, a_frame, b_frame, opts)
