@@ -647,8 +647,9 @@ function M.priority_note_html(rows)
         ("<li>深い探索: %s。ほかの 30 キャラは既定のまま（beam 4,000・最大 3 手）です。</li>"):format(H(search)),
         ("<li>練習用プラン: 通常の %d プリセットに加えて %s。覚えるための条件で絞ったものです。</li>")
             :format(#M.PRESETS, table.concat(names, ", ")),
-        ("<li>ルートファイル: 練習プランの上位ルートを %s に書き出し済み。ゲーム側の ROUTE から走らせられます。</li>")
-            :format(pri.route_files and ("%d 本"):format(pri.route_files) or "route/"),
+        ("<li>ルートファイル: 練習プランの上位ルートを %s。ゲーム側の ROUTE から走らせられます。</li>")
+            :format(pri.route_files and ("%d 本書き出し済み"):format(pri.route_files)
+                or "<code>route/</code> に書き出し済み"),
         "</ol>",
         '<p class="muted" style="margin:6px 0 0">優先キャラでも、オフラインで出る数字はすべて予測です。'
             .. '実機で確かめた回数は上の表の「確定 / 試行」列が示します。</p>',
@@ -742,8 +743,8 @@ function M.render_characters_md(rows, scheme)
                                                   tostring(M.DEEP.max_steps)),
             (pri.deep and pri.deep.complete) and "打ち切りなしで完走" or "打ち切りあり")
         say("2. **練習用プラン** — %s。", table.concat(names, " / "))
-        say("3. **ルートファイル** — 練習プランの上位ルートを `reframework/data/ComboExplorer_data/route/` に%s。",
-            pri.route_files and ("%d 本書き出し済み"):format(pri.route_files) or "書き出し済み")
+        say("3. **ルートファイル** — 練習プランの上位ルートを %s`reframework/data/ComboExplorer_data/route/` に書き出し済み。",
+            pri.route_files and ("%d 本、"):format(pri.route_files) or "")
         say("")
         say("それでも数字は全部予測です。%s の実機ログは %s 件。",
             pri.character, dash(pri.trials))

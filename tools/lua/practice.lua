@@ -306,7 +306,11 @@ local function flag_ja(f)
     elseif f.kind == "low_confidence" then
         return ("ワークリストの %.0f%% が low 確度"):format(f.share * 100)
     elseif f.kind == "search_truncated" then
-        return "ルート探索が beam 上限で打ち切られた"
+        -- About THIS search. The ranking searches all 31 at the same settings
+        -- on purpose, so a character the pipeline searches deeper elsewhere
+        -- (all.lua --deep) can be flagged here and say "complete" on its own
+        -- page. Both are true; they are different searches.
+        return "この順位づけの探索（全キャラ共通の設定）が beam 上限で打ち切られた"
     elseif f.kind == "incomplete" then
         local parts = {}
         for i, c in ipairs(f.components) do parts[i] = COMPONENT_JA[c] or c end
@@ -616,7 +620,12 @@ local function render_md(doc, ranked)
     say("  probing, so a Classic player's answer is not in this table.")
     say("- **Beam-truncated searches.** The route search hits its beam limit for most of the")
     say("  roster. The routes it did not reach are not in any component, and they are not")
-    say("  random - the beam keeps what looked good early.")
+    say("  random - the beam keeps what looked good early. This is deliberately the SAME")
+    say("  settings for every character, including one the pipeline searches deeper for its")
+    say("  own pages (`all.lua --deep`). A ranking where one character had been searched")
+    say("  further than the rest would be comparing different populations of routes, so the")
+    say("  flag beside a name here is about THIS search, not about that character's own")
+    say("  report - which may well say the search finished.")
     say("- **Damage scaling is an unverified model.** `predicted_damage_scaled` comes from")
     say("  `core/DamageScaling`, built from public write-ups and never checked against this")
     say("  build. It is used for ordering and must not be read as damage.")
