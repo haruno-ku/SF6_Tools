@@ -1,0 +1,97 @@
+{
+  "character": "Ryu",
+  "control_scheme": "modern",
+  "delays": [
+    [
+      0,
+      9,
+      11,
+      13
+    ],
+    [
+      41,
+      42,
+      43,
+      44,
+      45
+    ],
+    [
+      1,
+      14,
+      16,
+      18
+    ]
+  ],
+  "gaps": [
+    {
+      "delays": [
+        0,
+        9,
+        11,
+        13
+      ],
+      "pair": "600:manual->643:manual",
+      "source": "predicted",
+      "why": "runtime/Sweep.plan_for's grid for this pair: the predicted cancel gap"
+    },
+    {
+      "delays": [
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "pair": "643:manual->608:manual",
+      "source": "predicted",
+      "why": "runtime/Sweep.plan_for's grid for this pair: the predicted link window"
+    },
+    {
+      "delays": [
+        1,
+        14,
+        16,
+        18
+      ],
+      "pair": "608:manual->1233:manual",
+      "source": "predicted",
+      "why": "runtime/Sweep.plan_for's grid for this pair: the predicted cancel gap"
+    }
+  ],
+  "id": "ryu-modern-hit-confirm-3",
+  "note": "Written by tools/lua/plan.lua --routes from plan hit-confirm (rank 3). Every gap is a LIST, never one number: a single delay would read as a measurement, and pressing at one unmeasured gap is how a cancel window gets mistaken for a link window (#46). Where each list came from:\ngap 1 (弱 -> 3 + 强): 0, 9, 11, 13 from predicted - runtime/Sweep.plan_for's grid for this pair: the predicted cancel gap\ngap 2 (3 + 强 -> 强): 41, 42, 43, 44, 45 from predicted - runtime/Sweep.plan_for's grid for this pair: the predicted link window\ngap 3 (强 -> 236236 + 强): 1, 14, 16, 18 from predicted - runtime/Sweep.plan_for's grid for this pair: the predicted cancel gap\nWhat the logs already say: 0/3 pairs reproduced\nThe grid is 80 combination(s). EVERY ROUTE IN A PLAN IS A PREDICTION: this file is a question for the game, not a combo.",
+  "plan": {
+    "conditions": {
+      "first_pair_mechanism": "cancel,both",
+      "starter_buttons": "L,M"
+    },
+    "generated_at": "2026-09-16T01:53:17Z",
+    "name": "hit-confirm",
+    "rank": 3,
+    "sort": "scaled_damage",
+    "tool": "tools/lua/plan.lua --routes"
+  },
+  "schema": "ce.route.v1",
+  "steps": [
+    {
+      "action_id": 600,
+      "input_method": "manual",
+      "notation": "弱"
+    },
+    {
+      "action_id": 643,
+      "input_method": "manual",
+      "notation": "3 + 强"
+    },
+    {
+      "action_id": 608,
+      "input_method": "manual",
+      "notation": "强"
+    },
+    {
+      "action_id": 1233,
+      "input_method": "manual",
+      "notation": "236236 + 强"
+    }
+  ]
+}

@@ -11,6 +11,12 @@
         "matched": 66,
         "rows": 66
       },
+      "deep": {
+        "beam": 60000,
+        "complete": true,
+        "max_steps": 4,
+        "routes": 4538
+      },
       "drc_edges": 234,
       "drc_pairs": 234,
       "fighter_id": 1,
@@ -20,15 +26,22 @@
       "notes": [],
       "offline_report": "ryu-offline-report.md",
       "page": "sweep-report-ryu-modern.html",
-      "page_bytes": 299299,
+      "page_bytes": 706889,
       "plans": {
-        "max-damage": 22,
+        "max-damage": 21,
         "no-gauge": 25,
-        "starter-chu": 22
+        "starter-chu": 26
       },
-      "routes": 1092,
-      "routes_complete": false,
-      "routes_drc": 1502,
+      "practice_plans": {
+        "easy-damage": 22,
+        "hit-confirm": 19,
+        "no-gauge-3": 25
+      },
+      "priority": true,
+      "route_files": 9,
+      "routes": 4538,
+      "routes_complete": true,
+      "routes_drc": 2437,
       "trials": 0,
       "unpressable": 3,
       "worklist_confidence": {

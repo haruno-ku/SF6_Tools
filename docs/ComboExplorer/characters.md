@@ -7,11 +7,11 @@
 - 確定コンボと試行は**実機のログだけ**から数えています
 - Classic はまだありません（パイプラインの scheme は modern のみ）
 
-合計: 31 キャラ · ワークリスト 21,216 ペア · DRC 11,875 ペア · 候補ルート 33,558（+DRC 27,553）· 確定コンボ 7 · 試行 1,000
+合計: 31 キャラ · ワークリスト 21,216 ペア · DRC 11,875 ペア · 候補ルート 37,004（+DRC 28,488）· 確定コンボ 7 · 試行 1,000
 
 | キャラ | ワークリスト | high / med / low | DRC | ルート | +DRC | max-damage | no-gauge | starter-chu | 確定 | 試行 | 1パス |
 |---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| [Ryu](sweep-report-ryu-modern.html) | 551 | 170 / 121 / 260 | 234 | 1092\* | 1502 | [22](plans/ryu-modern-max-damage.md) | [25](plans/ryu-modern-no-gauge.md) | [22](plans/ryu-modern-starter-chu.md) | 0 | 0 | 約28分 |
+| ★ [Ryu](sweep-report-ryu-modern.html) | 551 | 170 / 121 / 260 | 234 | 4538 | 2437 | [21](plans/ryu-modern-max-damage.md) | [25](plans/ryu-modern-no-gauge.md) | [26](plans/ryu-modern-starter-chu.md) | 0 | 0 | 約28分 |
 | [Luke](sweep-report-luke-modern.html) | 295 | 136 / 72 / 87 | 84 | 623 | 1012 | [20](plans/luke-modern-max-damage.md) | [25](plans/luke-modern-no-gauge.md) | [20](plans/luke-modern-starter-chu.md) | 0 | 0 | 約15分 |
 | [Kimberly](sweep-report-kimberly-modern.html) | 503 | 243 / 136 / 124 | 144 | 912 | 938 | [19](plans/kimberly-modern-max-damage.md) | [25](plans/kimberly-modern-no-gauge.md) | [22](plans/kimberly-modern-starter-chu.md) | 0 | 0 | 約25分 |
 | [ChunLi](sweep-report-chunli-modern.html) | 619 | 364 / 195 / 60 | 257 | 1157\* | 1373 | [24](plans/chunli-modern-max-damage.md) | [25](plans/chunli-modern-no-gauge.md) | [23](plans/chunli-modern-starter-chu.md) | 0 | 0 | 約31分 |
@@ -44,6 +44,14 @@
 | [Yasmine](sweep-report-yasmine-modern.html) | 733 | 32 / 61 / 640 | 396 | 1860\* | 669 | [20](plans/yasmine-modern-max-damage.md) | [18](plans/yasmine-modern-no-gauge.md) | [23](plans/yasmine-modern-starter-chu.md) | 0 | 0 | 約37分 |
 
 `*` ルート探索が beam の上限で打ち切られたキャラ。載っていないルートがあります（explore.lua と同じ設定）。
+
+`★` 優先キャラ。Ryu だけ扱いが厚く、3 点だけ違います。
+
+1. **深い探索** — beam 60,000・最大 4 手、打ち切りなしで完走。ほかの 30 キャラは既定（beam 4,000・最大 3 手）のままです。
+2. **練習用プラン** — [easy-damage](plans/ryu-modern-easy-damage.md) 22 ペア / [hit-confirm](plans/ryu-modern-hit-confirm.md) 19 ペア / [no-gauge-3](plans/ryu-modern-no-gauge-3.md) 25 ペア。
+3. **ルートファイル** — 練習プランの上位ルートを 9 本、`reframework/data/ComboExplorer_data/route/` に書き出し済み。
+
+それでも数字は全部予測です。Ryu の実機ログは 0 件。
 
 ## 注意が要るキャラ
 

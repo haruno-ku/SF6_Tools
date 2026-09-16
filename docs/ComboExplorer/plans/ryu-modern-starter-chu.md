@@ -1,6 +1,6 @@
 # Route plan - Ryu / modern - starter-chu
 
-Generated 2026-09-16T00:25:10Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-16T01:52:55Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -10,7 +10,8 @@ game say whether these routes connect.
 
 - `starter_button` = `M`
 - sort: `scaled_damage`, top 20
-- search: explore.lua's settings (normal,command_normal -> normal,command_normal,special,od_special,super, manual -> manual,simple, max 3 moves, beam 4000, collapse true)
+- search: explore.lua's settings (normal,command_normal -> normal,command_normal,special,od_special,super, manual -> manual,simple, max 4 moves - --search-steps, deeper than explore.lua's 3, beam 60000, collapse true)
+- search complete: true - every route the settings can reach is in the list below
 - Drive Rush Cancel edges in the search: no (pass --drive-rush to route through them)
 - demote routes through a rejected pair: yes
 
@@ -21,22 +22,20 @@ game say whether these routes connect.
 
 Ordered on `offline_score.predicted_damage_scaled`, the combo-scaled prediction.
 
-1 route(s) carry no value on that field and are ranked after the rest, not removed.
+7 route(s) carry no value on that field and are ranked after the rest, not removed.
 
 Unscaled damage is a frame-table sum: an upper bound for ordering when complete,
 never a damage figure.
 
 ## What each condition removed
 
-- routes found by the search: 1092 (search complete: false)
-  - the beam dropped 334 partial routes and 0 routes were not emitted, so a route
-    satisfying these conditions may be missing
+- routes found by the search: 4538 (search complete: true)
 
 | condition | value | before | removed | after | kept on a gap |
 |---|---|---:|---:|---:|---:|
-| starter_button | M | 1092 | 973 | 119 | 0 |
+| starter_button | M | 4538 | 3905 | 633 | 0 |
 
-- routes satisfying every condition: 119
+- routes satisfying every condition: 633
 - of those, through a pair the policy CONCLUSIVELY rejected: 0 (ranked after the clean ones)
 - in this plan (top 20): 20
 
@@ -51,26 +50,26 @@ rejected pair were moved behind the clean ones.
 |---:|---:|---|---|---:|---:|---|---:|---|---|
 | 1 | 1 | 中 → 236236 + 强 | MP → 236236+K | 4600 | 4600 | SA 1, drive >=0 (1 unknown) | 8.4 | low | 0/1 pairs reproduced |
 | 2 | 2 | 2 + 中 → 236236 + 强 | 2+MK → 236236+K | 4500 | 4500 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs reproduced |
-| 3 | 3 | 中 → 弱 → 236236 + 强 | MP → LP → 236236+K | 4100 | 4900 | SA 1, drive >=0 (1 unknown) | 9.9 | low | 0/2 pairs reproduced |
-| 4 | 4 | 中 → 2 + 弱 → 236236 + 强 | MP → 2+LP → 236236+K | 4100 | 4900 | SA 1, drive >=0 (1 unknown) | 10.4 | low | 0/2 pairs reproduced |
-| 5 | 5 | 中 → 2 + SP + 强 | MP → 236236+K | 3800 | 4600 | SA 1, drive >=0 (1 unknown) | 6.0 | low | 0/1 pairs reproduced |
-| 6 | 6 | 2 + 中 → 2 + SP + 强 | 2+MK → 236236+K | 3700 | 4500 | SA 1, drive >=0 (1 unknown) | 6.5 | low | 0/1 pairs reproduced |
-| 7 | 7 | 中 → 弱 → 2 + SP + 强 | MP → LP → 236236+K | 3460 | 4900 | SA 1, drive >=0 (1 unknown) | 7.5 | low | 0/2 pairs reproduced |
-| 8 | 8 | 中 → 2 + 弱 → 2 + SP + 强 | MP → 2+LP → 236236+K | 3460 | 4900 | SA 1, drive >=0 (1 unknown) | 8.0 | low | 0/2 pairs reproduced |
-| 9 | 9 | 中 → 214214 + 中 | MP → 214214+P | 3400 | 3400 | SA 1, drive >=0 (1 unknown) | 8.4 | low | 0/1 pairs reproduced |
-| 10 | 10 | 2 + 中 → 214214 + 中 | 2+MK → 214214+P | 3300 | 3300 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs reproduced |
-| 11 | 11 | 中 → 弱 → 214214 + 中 | MP → LP → 214214+P | 3140 | 3700 | SA 1, drive >=0 (1 unknown) | 9.9 | low | 0/2 pairs reproduced |
-| 12 | 12 | 中 → 2 + 弱 → 214214 + 中 | MP → 2+LP → 214214+P | 3140 | 3700 | SA 1, drive >=0 (1 unknown) | 10.4 | low | 0/2 pairs reproduced |
-| 13 | 13 | 中 → 4 + SP + 强 | MP → 214214+P | 2840 | 3400 | SA 1, drive >=0 (1 unknown) | 6.0 | low | 0/1 pairs reproduced |
-| 14 | 14 | 2 + 中 → 4 + SP + 强 | 2+MK → 214214+P | 2740 | 3300 | SA 1, drive >=0 (1 unknown) | 6.5 | low | 0/1 pairs reproduced |
-| 15 | 15 | 中 → 弱 → 4 + SP + 强 | MP → LP → 214214+P | 2692 | 3700 | SA 1, drive >=0 (1 unknown) | 7.5 | low | 0/2 pairs reproduced |
-| 16 | 16 | 中 → 2 + 弱 → 4 + SP + 强 | MP → 2+LP → 214214+P | 2692 | 3700 | SA 1, drive >=0 (1 unknown) | 8.0 | low | 0/2 pairs reproduced |
-| 17 | 17 | 中 → 弱 → 623 + 强 | MP → LP → 623+HP | 2020 | 2300 | drive 0 | 7.2 | high | 0/2 pairs reproduced |
-| 18 | 18 | 中 → 2 + 弱 → 623 + 强 | MP → 2+LP → 623+HP | 2020 | 2300 | drive 0 | 7.7 | high | 0/2 pairs reproduced |
-| 19 | 19 | 中 → 623 + 强 | MP → 623+HP | 2000 | 2000 | drive 0 | 5.7 | high | 0/1 pairs reproduced |
-| 20 | 20 | 2 + 中 → 623 + 强 | 2+MK → 623+HP | 1900 | 1900 | drive 0 | 6.2 | high | 0/1 pairs reproduced |
+| 3 | 3 | 中 → 弱 → 3 + 强 → 236236 + 强 | MP → LP → 2+HK → 236236+K | 4420 | 5800 | SA 1, drive >=0 (1 unknown) | 11.9 | low | 0/3 pairs reproduced |
+| 4 | 4 | 中 → 2 + 弱 → 3 + 强 → 236236 + 强 | MP → 2+LP → 2+HK → 236236+K | 4420 | 5800 | SA 1, drive >=0 (1 unknown) | 12.4 | low | 0/3 pairs reproduced |
+| 5 | 5 | 中 → 弱 → 强 → 236236 + 强 | MP → LP → HP → 236236+K | 4340 | 5700 | SA 1, drive >=0 (1 unknown) | 11.4 | low | 0/3 pairs reproduced |
+| 6 | 6 | 中 → 弱 → 2 + 强 → 236236 + 强 | MP → LP → 2+HP → 236236+K | 4340 | 5700 | SA 1, drive >=0 (1 unknown) | 11.9 | low | 0/3 pairs reproduced |
+| 7 | 7 | 中 → 2 + 弱 → 强 → 236236 + 强 | MP → 2+LP → HP → 236236+K | 4340 | 5700 | SA 1, drive >=0 (1 unknown) | 11.9 | low | 0/3 pairs reproduced |
+| 8 | 8 | 中 → 2 + 弱 → 2 + 强 → 236236 + 强 | MP → 2+LP → 2+HP → 236236+K | 4340 | 5700 | SA 1, drive >=0 (1 unknown) | 12.4 | low | 0/3 pairs reproduced |
+| 9 | 9 | 中 → 弱 → 中 → 236236 + 强 | MP → LP → MP → 236236+K | 4180 | 5500 | SA 1, drive >=0 (1 unknown) | 11.4 | low | 0/3 pairs reproduced |
+| 10 | 10 | 中 → 2 + 弱 → 中 → 236236 + 强 | MP → 2+LP → MP → 236236+K | 4180 | 5500 | SA 1, drive >=0 (1 unknown) | 11.9 | low | 0/3 pairs reproduced |
+| 11 | 11 | 中 → 弱 → 236236 + 强 | MP → LP → 236236+K | 4100 | 4900 | SA 1, drive >=0 (1 unknown) | 9.9 | low | 0/2 pairs reproduced |
+| 12 | 12 | 中 → 弱 → 2 + 中 → 236236 + 强 | MP → LP → 2+MK → 236236+K | 4100 | 5400 | SA 1, drive >=0 (1 unknown) | 11.9 | low | 0/3 pairs reproduced |
+| 13 | 13 | 中 → 2 + 弱 → 236236 + 强 | MP → 2+LP → 236236+K | 4100 | 4900 | SA 1, drive >=0 (1 unknown) | 10.4 | low | 0/2 pairs reproduced |
+| 14 | 14 | 中 → 2 + 弱 → 2 + 中 → 236236 + 强 | MP → 2+LP → 2+MK → 236236+K | 4100 | 5400 | SA 1, drive >=0 (1 unknown) | 12.4 | low | 0/3 pairs reproduced |
+| 15 | 15 | 中 → 弱 → 4 + 强 → 236236 + 强 | MP → LP → 4+HK → 236236+K | 4020 | 5300 | SA 1, drive >=0 (1 unknown) | 11.9 | low | 0/3 pairs reproduced |
+| 16 | 16 | 中 → 2 + 弱 → 4 + 强 → 236236 + 强 | MP → 2+LP → 4+HK → 236236+K | 4020 | 5300 | SA 1, drive >=0 (1 unknown) | 12.4 | low | 0/3 pairs reproduced |
+| 17 | 17 | 中 → 弱 → 弱 → 236236 + 强 | MP → LP → LP → 236236+K | 3940 | 5200 | SA 1, drive >=0 (1 unknown) | 10.9 | low | 0/3 pairs reproduced |
+| 18 | 18 | 中 → 弱 → 2 + 弱 → 236236 + 强 | MP → LP → 2+LP → 236236+K | 3940 | 5200 | SA 1, drive >=0 (1 unknown) | 11.9 | low | 0/3 pairs reproduced |
+| 19 | 19 | 中 → 2 + 弱 → 弱 → 236236 + 强 | MP → 2+LP → LP → 236236+K | 3940 | 5200 | SA 1, drive >=0 (1 unknown) | 11.9 | low | 0/3 pairs reproduced |
+| 20 | 20 | 中 → 2 + 弱 → 2 + 弱 → 236236 + 强 | MP → 2+LP → 2+LP → 236236+K | 3940 | 5200 | SA 1, drive >=0 (1 unknown) | 11.9 | low | 0/3 pairs reproduced |
 
-## Pairs to sweep: 22
+## Pairs to sweep: 26
 
 In the order the worklist holds them. `needed by` lists the plan ranks of the
 routes containing the pair. The full worklist has 551 pairs.
@@ -82,28 +81,32 @@ them (#49), so a plan that needs one needs a route run or a compiler change.
 
 | # | pair | key | needed by | logs say | press | confidence | margin |
 |---:|---|---|---|---|---|---|---:|
-| 1 | 中 → 236236 + 强 | `605:manual->1233:manual` | 1 | untested | single | low | 2 |
-| 2 | 2 + 中 → 236236 + 强 | `640:manual->1233:manual` | 2 | untested | single | low | -4 |
-| 3 | 中 → 弱 | `605:manual->600:manual` | 3, 7, 11, 15, 17 | untested | single | high | 3 |
-| 4 | 弱 → 236236 + 强 | `600:manual->1233:manual` | 3 | untested | single | low | -1 |
-| 5 | 中 → 2 + 弱 | `605:manual->623:manual` | 4, 8, 12, 16, 18 | untested | single | high | 3 |
-| 6 | 2 + 弱 → 236236 + 强 | `623:manual->1233:manual` | 4 | untested | single | low | -1 |
-| 7 | 中 → 2 + SP + 强 | `605:manual->1233:simple` | 5 | untested | single | low | 2 |
-| 8 | 2 + 中 → 2 + SP + 强 | `640:manual->1233:simple` | 6 | untested | single | low | -4 |
-| 9 | 弱 → 2 + SP + 强 | `600:manual->1233:simple` | 7 | untested | single | low | -1 |
-| 10 | 2 + 弱 → 2 + SP + 强 | `623:manual->1233:simple` | 8 | untested | single | low | -1 |
-| 11 | 中 → 214214 + 中 | `605:manual->1212:manual` | 9 | untested | single | low | -5 |
-| 12 | 2 + 中 → 214214 + 中 | `640:manual->1212:manual` | 10 | untested | single | low | -11 |
-| 13 | 弱 → 214214 + 中 | `600:manual->1212:manual` | 11 | untested | single | low | -8 |
-| 14 | 2 + 弱 → 214214 + 中 | `623:manual->1212:manual` | 12 | untested | single | low | -8 |
-| 15 | 中 → 4 + SP + 强 | `605:manual->1212:simple` | 13 | untested | single | low | -5 |
-| 16 | 2 + 中 → 4 + SP + 强 | `640:manual->1212:simple` | 14 | untested | single | low | -11 |
-| 17 | 弱 → 4 + SP + 强 | `600:manual->1212:simple` | 15 | untested | single | low | -8 |
-| 18 | 2 + 弱 → 4 + SP + 强 | `623:manual->1212:simple` | 16 | untested | single | low | -8 |
-| 19 | 弱 → 623 + 强 | `600:manual->934:manual` | 17 | untested | single | high | -3 |
-| 20 | 2 + 弱 → 623 + 强 | `623:manual->934:manual` | 18 | untested | single | high | -3 |
-| 21 | 中 → 623 + 强 | `605:manual->934:manual` | 19 | untested | single | high | 0 |
-| 22 | 2 + 中 → 623 + 强 | `640:manual->934:manual` | 20 | untested | single | high | -6 |
+| 1 | 中 → 236236 + 强 | `605:manual->1233:manual` | 1, 9, 10 | untested | single | low | 2 |
+| 2 | 2 + 中 → 236236 + 强 | `640:manual->1233:manual` | 2, 12, 14 | untested | single | low | -4 |
+| 3 | 中 → 弱 | `605:manual->600:manual` | 3, 5, 6, 9, 11, 12, 15, 17, 18 | untested | single | high | 3 |
+| 4 | 弱 → 3 + 强 | `600:manual->643:manual` | 3 | untested | single | medium | -5 |
+| 5 | 3 + 强 → 236236 + 强 | `643:manual->1233:manual` | 3, 4 | untested | single | low | 35 |
+| 6 | 中 → 2 + 弱 | `605:manual->623:manual` | 4, 7, 8, 10, 13, 14, 16, 19, 20 | untested | single | high | 3 |
+| 7 | 2 + 弱 → 3 + 强 | `623:manual->643:manual` | 4 | untested | single | medium | -5 |
+| 8 | 弱 → 强 | `600:manual->608:manual` | 5 | untested | single | medium | -6 |
+| 9 | 强 → 236236 + 强 | `608:manual->1233:manual` | 5, 7 | untested | single | low | -1 |
+| 10 | 弱 → 2 + 强 | `600:manual->630:manual` | 6 | untested | single | medium | -5 |
+| 11 | 2 + 强 → 236236 + 强 | `630:manual->1233:manual` | 6, 8 | untested | single | low | -4 |
+| 12 | 2 + 弱 → 强 | `623:manual->608:manual` | 7 | untested | single | medium | -6 |
+| 13 | 2 + 弱 → 2 + 强 | `623:manual->630:manual` | 8 | untested | single | medium | -5 |
+| 14 | 弱 → 中 | `600:manual->605:manual` | 9 | untested | single | medium | -2 |
+| 15 | 2 + 弱 → 中 | `623:manual->605:manual` | 10 | untested | single | medium | -2 |
+| 16 | 弱 → 236236 + 强 | `600:manual->1233:manual` | 11, 17, 19 | untested | single | low | -1 |
+| 17 | 弱 → 2 + 中 | `600:manual->640:manual` | 12 | untested | single | medium | -4 |
+| 18 | 2 + 弱 → 236236 + 强 | `623:manual->1233:manual` | 13, 18, 20 | untested | single | low | -1 |
+| 19 | 2 + 弱 → 2 + 中 | `623:manual->640:manual` | 14 | untested | single | medium | -4 |
+| 20 | 弱 → 4 + 强 | `600:manual->668:manual` | 15 | untested | single | medium | -6 |
+| 21 | 4 + 强 → 236236 + 强 | `668:manual->1233:manual` | 15, 16 | untested | single | low | -5 |
+| 22 | 2 + 弱 → 4 + 强 | `623:manual->668:manual` | 16 | untested | single | medium | -6 |
+| 23 | 弱 → 弱 | `600:manual->600:manual` | 17 | untested | single | medium | 0 |
+| 24 | 弱 → 2 + 弱 | `600:manual->623:manual` | 18 | untested | single | medium | 0 |
+| 25 | 2 + 弱 → 弱 | `623:manual->600:manual` | 19 | untested | single | medium | 0 |
+| 26 | 2 + 弱 → 2 + 弱 | `623:manual->623:manual` | 20 | untested | single | medium | 0 |
 
 ## Already known: 0
 
@@ -148,5 +151,5 @@ same calibration and conditions are skipped, and the other way round.
 
 ## Written
 
-- reframework/data/ComboExplorer_data/worklist/ryu-modern-plan-starter-chu.json  (22 pairs, 12572 bytes)
+- reframework/data/ComboExplorer_data/worklist/ryu-modern-plan-starter-chu.json  (26 pairs, 51900 bytes)
 - docs/ComboExplorer/plans/ryu-modern-starter-chu.md

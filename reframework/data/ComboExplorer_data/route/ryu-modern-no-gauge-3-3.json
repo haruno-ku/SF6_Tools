@@ -1,0 +1,76 @@
+{
+  "character": "Ryu",
+  "control_scheme": "modern",
+  "delays": [
+    [
+      41,
+      42,
+      43,
+      44,
+      45
+    ],
+    [
+      10,
+      23,
+      25,
+      27
+    ]
+  ],
+  "gaps": [
+    {
+      "delays": [
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "pair": "643:manual->670:manual",
+      "source": "predicted",
+      "why": "runtime/Sweep.plan_for's grid for this pair: the predicted link window"
+    },
+    {
+      "delays": [
+        10,
+        23,
+        25,
+        27
+      ],
+      "pair": "670:manual->934:manual",
+      "source": "predicted",
+      "why": "runtime/Sweep.plan_for's grid for this pair: the predicted cancel gap"
+    }
+  ],
+  "id": "ryu-modern-no-gauge-3-3",
+  "note": "Written by tools/lua/plan.lua --routes from plan no-gauge-3 (rank 3). Every gap is a LIST, never one number: a single delay would read as a measurement, and pressing at one unmeasured gap is how a cancel window gets mistaken for a link window (#46). Where each list came from:\ngap 1 (3 + 强 -> 6 + 强): 41, 42, 43, 44, 45 from predicted - runtime/Sweep.plan_for's grid for this pair: the predicted link window\ngap 2 (6 + 强 -> 623 + 强): 10, 23, 25, 27 from predicted - runtime/Sweep.plan_for's grid for this pair: the predicted cancel gap\nWhat the logs already say: 0/2 pairs reproduced\nThe grid is 20 combination(s). EVERY ROUTE IN A PLAN IS A PREDICTION: this file is a question for the game, not a combo.",
+  "plan": {
+    "conditions": {
+      "max_steps": 3,
+      "min_steps": 3,
+      "no_gauge": true
+    },
+    "generated_at": "2026-09-16T01:53:30Z",
+    "name": "no-gauge-3",
+    "rank": 3,
+    "sort": "scaled_damage",
+    "tool": "tools/lua/plan.lua --routes"
+  },
+  "schema": "ce.route.v1",
+  "steps": [
+    {
+      "action_id": 643,
+      "input_method": "manual",
+      "notation": "3 + 强"
+    },
+    {
+      "action_id": 670,
+      "input_method": "manual",
+      "notation": "6 + 强"
+    },
+    {
+      "action_id": 934,
+      "input_method": "manual",
+      "notation": "623 + 强"
+    }
+  ]
+}

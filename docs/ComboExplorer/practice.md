@@ -374,7 +374,12 @@ Inside the components:
   probing, so a Classic player's answer is not in this table.
 - **Beam-truncated searches.** The route search hits its beam limit for most of the
   roster. The routes it did not reach are not in any component, and they are not
-  random - the beam keeps what looked good early.
+  random - the beam keeps what looked good early. This is deliberately the SAME
+  settings for every character, including one the pipeline searches deeper for its
+  own pages (`all.lua --deep`). A ranking where one character had been searched
+  further than the rest would be comparing different populations of routes, so the
+  flag beside a name here is about THIS search, not about that character's own
+  report - which may well say the search finished.
 - **Damage scaling is an unverified model.** `predicted_damage_scaled` comes from
   `core/DamageScaling`, built from public write-ups and never checked against this
   build. It is used for ordering and must not be read as damage.
@@ -382,4 +387,4 @@ Inside the components:
   data says is worth a trial. None of them is known to combo.
 - **Min-max is relative.** A 0 in a column means "last of these 31", not "none".
 
-Page version: [practice.html](practice.html). Numbers: `practice.json`. Generated 2026-09-16T00:28:18Z.
+Page version: [practice.html](practice.html). Numbers: `practice.json`. Generated 2026-09-16T01:54:41Z.

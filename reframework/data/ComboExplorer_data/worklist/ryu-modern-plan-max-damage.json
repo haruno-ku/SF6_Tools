@@ -16,9 +16,9 @@
   "bcm_sha256": "b77a3e65145add3d864a56e3f325435b5bf85b420fc9d36f8daf33bf03699ee9",
   "character": "Ryu",
   "control_scheme": "modern",
-  "count": 22,
+  "count": 21,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:25:05Z",
+  "generated_at": "2026-09-16T01:52:31Z",
   "pairs": [
     {
       "a_active": "3",
@@ -38,7 +38,11 @@
       "margin_frames": 35,
       "mechanism": "link",
       "needed_by_ranks": [
-        1
+        1,
+        8,
+        9,
+        15,
+        16
       ]
     },
     {
@@ -60,7 +64,8 @@
       "mechanism": "link",
       "needed_by_ranks": [
         2,
-        16
+        6,
+        7
       ]
     },
     {
@@ -83,7 +88,10 @@
       "mechanism": "cancel",
       "needed_by_ranks": [
         2,
-        4
+        4,
+        11,
+        13,
+        19
       ]
     },
     {
@@ -104,8 +112,7 @@
       "margin_frames": 31,
       "mechanism": "link",
       "needed_by_ranks": [
-        3,
-        17
+        3
       ]
     },
     {
@@ -128,160 +135,35 @@
       "mechanism": "cancel",
       "needed_by_ranks": [
         3,
-        5
+        5,
+        12,
+        14,
+        20
       ]
     },
     {
-      "a_active": "3",
+      "a_active": "5",
       "a_hitstop": 13,
-      "a_id": 643,
+      "a_hitstun": 27,
+      "a_id": 608,
       "a_method": "manual",
-      "a_notation": "3 + 强",
-      "a_on_hit": 40,
-      "a_recovery": 23,
-      "a_startup": 9,
-      "b_id": 605,
-      "b_method": "manual",
-      "b_notation": "中",
-      "b_startup": 6,
-      "confidence": "medium",
-      "known_status": "untested",
-      "margin_frames": 34,
-      "mechanism": "link",
-      "needed_by_ranks": [
-        6
-      ]
-    },
-    {
-      "a_active": "4",
-      "a_hitstop": 11,
-      "a_hitstun": 22,
-      "a_id": 605,
-      "a_method": "manual",
-      "a_notation": "中",
-      "a_on_hit": 7,
-      "a_recovery": 11,
-      "a_startup": 6,
-      "b_id": 1233,
-      "b_method": "manual",
-      "b_notation": "236236 + 强",
-      "b_startup": 5,
-      "confidence": "low",
-      "known_status": "untested",
-      "margin_frames": 2,
-      "mechanism": "both",
-      "needed_by_ranks": [
-        6,
-        7
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 13,
-      "a_id": 643,
-      "a_method": "manual",
-      "a_notation": "3 + 强",
-      "a_on_hit": 40,
-      "a_recovery": 23,
-      "a_startup": 9,
-      "b_id": 640,
-      "b_method": "manual",
-      "b_notation": "2 + 中",
-      "b_startup": 8,
-      "confidence": "medium",
-      "known_status": "untested",
-      "margin_frames": 32,
-      "mechanism": "link",
-      "needed_by_ranks": [
-        8
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 9,
-      "a_hitstun": 23,
-      "a_id": 640,
-      "a_method": "manual",
-      "a_notation": "2 + 中",
-      "a_on_hit": 1,
-      "a_recovery": 19,
-      "a_startup": 8,
-      "b_id": 1233,
-      "b_method": "manual",
-      "b_notation": "236236 + 强",
-      "b_startup": 5,
-      "confidence": "low",
-      "known_status": "untested",
-      "margin_frames": -4,
-      "mechanism": "cancel",
-      "needed_by_ranks": [
-        8,
-        9
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 13,
-      "a_id": 643,
-      "a_method": "manual",
-      "a_notation": "3 + 强",
-      "a_on_hit": 40,
-      "a_recovery": 23,
-      "a_startup": 9,
-      "b_id": 668,
-      "b_method": "manual",
-      "b_notation": "4 + 强",
-      "b_startup": 10,
-      "confidence": "medium",
-      "known_status": "untested",
-      "margin_frames": 30,
-      "mechanism": "link",
-      "needed_by_ranks": [
-        10
-      ]
-    },
-    {
-      "a_active": "5(5)3",
-      "a_hitstop": 10,
-      "a_hitstun": 20,
-      "a_id": 668,
-      "a_method": "manual",
-      "a_notation": "4 + 强",
-      "a_on_hit": 0,
-      "a_recovery": 21,
+      "a_notation": "强",
+      "a_on_hit": 4,
+      "a_recovery": 18,
       "a_startup": 10,
-      "b_id": 1233,
-      "b_method": "manual",
-      "b_notation": "236236 + 强",
-      "b_startup": 5,
-      "confidence": "low",
-      "known_status": "untested",
-      "margin_frames": -5,
-      "mechanism": "cancel",
-      "needed_by_ranks": [
-        10,
-        13
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 13,
-      "a_id": 643,
-      "a_method": "manual",
-      "a_notation": "3 + 强",
-      "a_on_hit": 40,
-      "a_recovery": 23,
-      "a_startup": 9,
       "b_id": 600,
       "b_method": "manual",
       "b_notation": "弱",
       "b_startup": 4,
       "confidence": "medium",
       "known_status": "untested",
-      "margin_frames": 36,
+      "margin_frames": 0,
       "mechanism": "link",
       "needed_by_ranks": [
-        11
+        6,
+        15,
+        19,
+        20
       ]
     },
     {
@@ -303,30 +185,30 @@
       "margin_frames": -1,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        11,
-        14,
-        18
+        6
       ]
     },
     {
-      "a_active": "3",
+      "a_active": "5",
       "a_hitstop": 13,
-      "a_id": 643,
+      "a_hitstun": 27,
+      "a_id": 608,
       "a_method": "manual",
-      "a_notation": "3 + 强",
-      "a_on_hit": 40,
-      "a_recovery": 23,
-      "a_startup": 9,
+      "a_notation": "强",
+      "a_on_hit": 4,
+      "a_recovery": 18,
+      "a_startup": 10,
       "b_id": 623,
       "b_method": "manual",
       "b_notation": "2 + 弱",
       "b_startup": 4,
       "confidence": "medium",
       "known_status": "untested",
-      "margin_frames": 36,
+      "margin_frames": 0,
       "mechanism": "link",
       "needed_by_ranks": [
-        12
+        7,
+        16
       ]
     },
     {
@@ -348,141 +230,7 @@
       "margin_frames": -1,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        12,
-        15,
-        19
-      ]
-    },
-    {
-      "a_active": "5",
-      "a_hitstop": 13,
-      "a_hitstun": 27,
-      "a_id": 608,
-      "a_method": "manual",
-      "a_notation": "强",
-      "a_on_hit": 4,
-      "a_recovery": 18,
-      "a_startup": 10,
-      "b_id": 600,
-      "b_method": "manual",
-      "b_notation": "弱",
-      "b_startup": 4,
-      "confidence": "medium",
-      "known_status": "untested",
-      "margin_frames": 0,
-      "mechanism": "link",
-      "needed_by_ranks": [
-        14
-      ]
-    },
-    {
-      "a_active": "5",
-      "a_hitstop": 13,
-      "a_hitstun": 27,
-      "a_id": 608,
-      "a_method": "manual",
-      "a_notation": "强",
-      "a_on_hit": 4,
-      "a_recovery": 18,
-      "a_startup": 10,
-      "b_id": 623,
-      "b_method": "manual",
-      "b_notation": "2 + 弱",
-      "b_startup": 4,
-      "confidence": "medium",
-      "known_status": "untested",
-      "margin_frames": 0,
-      "mechanism": "link",
-      "needed_by_ranks": [
-        15
-      ]
-    },
-    {
-      "a_active": "5",
-      "a_hitstop": 13,
-      "a_hitstun": 27,
-      "a_id": 608,
-      "a_method": "manual",
-      "a_notation": "强",
-      "a_on_hit": 4,
-      "a_recovery": 18,
-      "a_startup": 10,
-      "b_id": 1233,
-      "b_method": "simple",
-      "b_notation": "2 + SP + 强",
-      "b_startup": 5,
-      "confidence": "low",
-      "known_status": "untested",
-      "margin_frames": -1,
-      "mechanism": "cancel",
-      "needed_by_ranks": [
-        16
-      ]
-    },
-    {
-      "a_active": "6",
-      "a_hitstop": 13,
-      "a_hitstun": 27,
-      "a_id": 630,
-      "a_method": "manual",
-      "a_notation": "2 + 强",
-      "a_on_hit": 1,
-      "a_recovery": 21,
-      "a_startup": 9,
-      "b_id": 1233,
-      "b_method": "simple",
-      "b_notation": "2 + SP + 强",
-      "b_startup": 5,
-      "confidence": "low",
-      "known_status": "untested",
-      "margin_frames": -4,
-      "mechanism": "cancel",
-      "needed_by_ranks": [
-        17
-      ]
-    },
-    {
-      "a_active": "4",
-      "a_hitstop": 11,
-      "a_hitstun": 22,
-      "a_id": 605,
-      "a_method": "manual",
-      "a_notation": "中",
-      "a_on_hit": 7,
-      "a_recovery": 11,
-      "a_startup": 6,
-      "b_id": 600,
-      "b_method": "manual",
-      "b_notation": "弱",
-      "b_startup": 4,
-      "confidence": "high",
-      "known_status": "untested",
-      "margin_frames": 3,
-      "mechanism": "link",
-      "needed_by_ranks": [
-        18
-      ]
-    },
-    {
-      "a_active": "4",
-      "a_hitstop": 11,
-      "a_hitstun": 22,
-      "a_id": 605,
-      "a_method": "manual",
-      "a_notation": "中",
-      "a_on_hit": 7,
-      "a_recovery": 11,
-      "a_startup": 6,
-      "b_id": 623,
-      "b_method": "manual",
-      "b_notation": "2 + 弱",
-      "b_startup": 4,
-      "confidence": "high",
-      "known_status": "untested",
-      "margin_frames": 3,
-      "mechanism": "link",
-      "needed_by_ranks": [
-        19
+        7
       ]
     },
     {
@@ -494,27 +242,1496 @@
       "a_on_hit": 40,
       "a_recovery": 23,
       "a_startup": 9,
+      "b_id": 600,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "b_startup": 4,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": 36,
+      "mechanism": "link",
+      "needed_by_ranks": [
+        8,
+        11,
+        12
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 9,
+      "a_hitstun": 14,
+      "a_id": 600,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "a_on_hit": 4,
+      "a_recovery": 7,
+      "a_startup": 4,
+      "b_id": 643,
+      "b_method": "manual",
+      "b_notation": "3 + 强",
+      "b_startup": 9,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": -5,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        8,
+        15
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 13,
+      "a_id": 643,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "a_on_hit": 40,
+      "a_recovery": 23,
+      "a_startup": 9,
+      "b_id": 623,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "b_startup": 4,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": 36,
+      "mechanism": "link",
+      "needed_by_ranks": [
+        9,
+        13,
+        14
+      ]
+    },
+    {
+      "a_active": "2",
+      "a_hitstop": 9,
+      "a_hitstun": 15,
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "a_on_hit": 4,
+      "a_recovery": 9,
+      "a_startup": 4,
+      "b_id": 643,
+      "b_method": "manual",
+      "b_notation": "3 + 强",
+      "b_startup": 9,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": -5,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        9,
+        16
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 13,
+      "a_id": 643,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "a_on_hit": 40,
+      "a_recovery": 23,
+      "a_startup": 9,
+      "b_id": 605,
+      "b_method": "manual",
+      "b_notation": "中",
+      "b_startup": 6,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": 34,
+      "mechanism": "link",
+      "needed_by_ranks": [
+        10
+      ]
+    },
+    {
+      "a_active": "4",
+      "a_hitstop": 11,
+      "a_hitstun": 22,
+      "a_id": 605,
+      "a_method": "manual",
+      "a_notation": "中",
+      "a_on_hit": 7,
+      "a_recovery": 11,
+      "a_startup": 6,
       "b_id": 1233,
-      "b_method": "simple",
-      "b_notation": "2 + SP + 强",
+      "b_method": "manual",
+      "b_notation": "236236 + 强",
       "b_startup": 5,
       "confidence": "low",
       "known_status": "untested",
-      "margin_frames": 35,
+      "margin_frames": 2,
+      "mechanism": "both",
+      "needed_by_ranks": [
+        10,
+        17
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 9,
+      "a_hitstun": 14,
+      "a_id": 600,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "a_on_hit": 4,
+      "a_recovery": 7,
+      "a_startup": 4,
+      "b_id": 608,
+      "b_method": "manual",
+      "b_notation": "强",
+      "b_startup": 10,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": -6,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        11,
+        19
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 9,
+      "a_hitstun": 14,
+      "a_id": 600,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "a_on_hit": 4,
+      "a_recovery": 7,
+      "a_startup": 4,
+      "b_id": 630,
+      "b_method": "manual",
+      "b_notation": "2 + 强",
+      "b_startup": 9,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": -5,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        12,
+        20
+      ]
+    },
+    {
+      "a_active": "2",
+      "a_hitstop": 9,
+      "a_hitstun": 15,
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "a_on_hit": 4,
+      "a_recovery": 9,
+      "a_startup": 4,
+      "b_id": 608,
+      "b_method": "manual",
+      "b_notation": "强",
+      "b_startup": 10,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": -6,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        13
+      ]
+    },
+    {
+      "a_active": "2",
+      "a_hitstop": 9,
+      "a_hitstun": 15,
+      "a_id": 623,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "a_on_hit": 4,
+      "a_recovery": 9,
+      "a_startup": 4,
+      "b_id": 630,
+      "b_method": "manual",
+      "b_notation": "2 + 强",
+      "b_startup": 9,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": -5,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        14
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 13,
+      "a_id": 643,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "a_on_hit": 40,
+      "a_recovery": 23,
+      "a_startup": 9,
+      "b_id": 640,
+      "b_method": "manual",
+      "b_notation": "2 + 中",
+      "b_startup": 8,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": 32,
       "mechanism": "link",
       "needed_by_ranks": [
-        20
+        18
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 9,
+      "a_hitstun": 23,
+      "a_id": 640,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "a_on_hit": 1,
+      "a_recovery": 19,
+      "a_startup": 8,
+      "b_id": 1233,
+      "b_method": "manual",
+      "b_notation": "236236 + 强",
+      "b_startup": 5,
+      "confidence": "low",
+      "known_status": "untested",
+      "margin_frames": -4,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        18
       ]
     }
   ],
   "plan": {
+    "available": 4538,
     "conditions": {},
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:25:05Z",
+    "generated_at": "2026-09-16T01:52:31Z",
     "include_verified": false,
     "name": "max-damage",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "2+HK → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>1233:manual",
+        "input_count": 9,
+        "notation": "3 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->1233:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4900.0,
+        "rank": 1,
+        "route_file": "ryu-modern-max-damage-1",
+        "route_length": 2,
+        "sort_rank": 1,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>608:manual>1233:manual",
+        "input_count": 10,
+        "notation": "3 + 强 → 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->608:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "608:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4900.0,
+        "rank": 2,
+        "route_file": "ryu-modern-max-damage-2",
+        "route_length": 3,
+        "sort_rank": 2,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 608,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>630:manual>1233:manual",
+        "input_count": 11,
+        "notation": "3 + 强 → 2 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->630:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "630:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4900.0,
+        "rank": 3,
+        "route_file": "ryu-modern-max-damage-3",
+        "route_length": 3,
+        "sort_rank": 3,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 630,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.4000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "608:manual>1233:manual",
+        "input_count": 8,
+        "notation": "强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "608:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4800.0,
+        "rank": 4,
+        "route_file": "ryu-modern-max-damage-4",
+        "route_length": 2,
+        "sort_rank": 4,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 608,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "630:manual>1233:manual",
+        "input_count": 9,
+        "notation": "2 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "630:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4800.0,
+        "rank": 5,
+        "route_file": "ryu-modern-max-damage-5",
+        "route_length": 2,
+        "sort_rank": 5,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 630,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → HP → LP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 11.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>608:manual>600:manual>1233:manual",
+        "input_count": 11,
+        "notation": "3 + 强 → 强 → 弱 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->608:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "608:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4740.0,
+        "rank": 6,
+        "route_file": "ryu-modern-max-damage-6",
+        "route_length": 4,
+        "sort_rank": 6,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 608,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → HP → 2+LP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 12.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>608:manual>623:manual>1233:manual",
+        "input_count": 12,
+        "notation": "3 + 强 → 强 → 2 + 弱 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->608:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "608:manual->623:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "623:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4740.0,
+        "rank": 7,
+        "route_file": "ryu-modern-max-damage-7",
+        "route_length": 4,
+        "sort_rank": 7,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 608,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 623,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → LP → 2+HK → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 12.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>600:manual>643:manual>1233:manual",
+        "input_count": 12,
+        "notation": "3 + 强 → 弱 → 3 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->643:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "643:manual->1233:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 6100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4720.0,
+        "rank": 8,
+        "route_file": "ryu-modern-max-damage-8",
+        "route_length": 4,
+        "sort_rank": 8,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+LP → 2+HK → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 12.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>623:manual>643:manual>1233:manual",
+        "input_count": 13,
+        "notation": "3 + 强 → 2 + 弱 → 3 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->623:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "623:manual->643:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "643:manual->1233:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 6100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4720.0,
+        "rank": 9,
+        "route_file": "ryu-modern-max-damage-9",
+        "route_length": 4,
+        "sort_rank": 9,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 623,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → MP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>605:manual>1233:manual",
+        "input_count": 10,
+        "notation": "3 + 强 → 中 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->605:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "605:manual->1233:manual",
+            "mechanism": "both",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4700.0,
+        "rank": 10,
+        "route_file": "ryu-modern-max-damage-10",
+        "route_length": 3,
+        "sort_rank": 10,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 605,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → LP → HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 11.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>600:manual>608:manual>1233:manual",
+        "input_count": 11,
+        "notation": "3 + 强 → 弱 → 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->608:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "608:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4640.0,
+        "rank": 11,
+        "route_file": "ryu-modern-max-damage-11",
+        "route_length": 4,
+        "sort_rank": 11,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 608,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → LP → 2+HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 12.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>600:manual>630:manual>1233:manual",
+        "input_count": 12,
+        "notation": "3 + 强 → 弱 → 2 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->630:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "630:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4640.0,
+        "rank": 12,
+        "route_file": "ryu-modern-max-damage-12",
+        "route_length": 4,
+        "sort_rank": 12,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 630,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+LP → HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 12.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>623:manual>608:manual>1233:manual",
+        "input_count": 12,
+        "notation": "3 + 强 → 2 + 弱 → 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->623:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "623:manual->608:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "608:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4640.0,
+        "rank": 13,
+        "route_file": "ryu-modern-max-damage-13",
+        "route_length": 4,
+        "sort_rank": 13,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 623,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 608,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+LP → 2+HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 12.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>623:manual>630:manual>1233:manual",
+        "input_count": 13,
+        "notation": "3 + 强 → 2 + 弱 → 2 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->623:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "623:manual->630:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "630:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4640.0,
+        "rank": 14,
+        "route_file": "ryu-modern-max-damage-14",
+        "route_length": 4,
+        "sort_rank": 14,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 623,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 630,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HP → LP → 2+HK → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 11.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "608:manual>600:manual>643:manual>1233:manual",
+        "input_count": 11,
+        "notation": "强 → 弱 → 3 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "608:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->643:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "643:manual->1233:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4620.0,
+        "rank": 15,
+        "route_file": "ryu-modern-max-damage-15",
+        "route_length": 4,
+        "sort_rank": 15,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 608,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HP → 2+LP → 2+HK → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 12.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "608:manual>623:manual>643:manual>1233:manual",
+        "input_count": 12,
+        "notation": "强 → 2 + 弱 → 3 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "608:manual->623:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "623:manual->643:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "643:manual->1233:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4620.0,
+        "rank": 16,
+        "route_file": "ryu-modern-max-damage-16",
+        "route_length": 4,
+        "sort_rank": 16,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 608,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 623,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.4000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "605:manual>1233:manual",
+        "input_count": 8,
+        "notation": "中 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "605:manual->1233:manual",
+            "mechanism": "both",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4600.0,
+        "rank": 17,
+        "route_file": "ryu-modern-max-damage-17",
+        "route_length": 2,
+        "sort_rank": 17,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 605,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+MK → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "643:manual>640:manual>1233:manual",
+        "input_count": 11,
+        "notation": "3 + 强 → 2 + 中 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->640:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "640:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4600.0,
+        "rank": 18,
+        "route_file": "ryu-modern-max-damage-18",
+        "route_length": 3,
+        "sort_rank": 18,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HP → LP → HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 11.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "608:manual>600:manual>608:manual>1233:manual",
+        "input_count": 10,
+        "notation": "强 → 弱 → 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "608:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->608:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "608:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 5900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4540.0,
+        "rank": 19,
+        "route_file": "ryu-modern-max-damage-19",
+        "route_length": 4,
+        "sort_rank": 19,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 608,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 608,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HP → LP → 2+HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 11.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "608:manual>600:manual>630:manual>1233:manual",
+        "input_count": 11,
+        "notation": "强 → 弱 → 2 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "608:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->630:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "630:manual->1233:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 3,
+        "pairs_verified": 0,
+        "predicted_damage": 5900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4540.0,
+        "rank": 20,
+        "route_file": "ryu-modern-max-damage-20",
+        "route_length": 4,
+        "sort_rank": 20,
+        "status": "0/3 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 608,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 630,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1233,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 60000,
+      "beam_dropped": 0,
+      "complete": true,
+      "deep": true,
+      "max_steps": 4,
+      "routes_found": 4538,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

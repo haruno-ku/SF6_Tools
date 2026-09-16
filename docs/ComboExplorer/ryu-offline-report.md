@@ -131,17 +131,18 @@ rather than once per target.
 
 ## Route candidates
 
-- routes                  1092
+- routes                  4538
 - graph nodes             55
 - graph edges             551
-- folded canonical variants 3459  (same buttons, unresolved action id)
-- search complete         false
-  beam dropped 334 partial routes, 0 routes not emitted
+- folded canonical variants 35809  (same buttons, unresolved action id)
+- search complete         true
   length 2               255
-  length 3               837
+  length 3               871
+  length 4               3412
 
 dropped by a search bound (not by the game):
-  max_repeat_per_action    6
+  max_repeat_per_action    147
+  max_repeat_per_edge      64
 
 ## Top 10 by predicted damage
 
@@ -150,16 +151,16 @@ frame table and neither does Modern's own damage reduction, so this is an
 upper bound for ordering, never a damage figure.
 
 #   route                                            dmg~   cost conf    unknowns
-1   3 + 强 > 强 > 236236 + 强                     5700   10.4 low     8
-2   3 + 强 > 强 > 2 + SP + 强                     5700    8.0 low     8
-3   3 + 强 > 2 + 强 > 236236 + 强                 5700   10.9 low     8
-4   3 + 强 > 2 + 强 > 2 + SP + 强                 5700    8.5 low     8
-5   3 + 强 > 中 > 236236 + 强                     5500   10.4 low     8
-6   3 + 强 > 中 > 2 + SP + 强                     5500    8.0 low     8
-7   3 + 强 > 2 + 中 > 236236 + 强                 5400   10.9 low     8
-8   3 + 强 > 2 + 中 > 2 + SP + 强                 5400    8.5 low     8
-9   3 + 强 > 4 + 强 > 236236 + 强                 5300   10.9 low     8
-10  3 + 强 > 4 + 强 > 2 + SP + 强                 5300    8.5 low     8
+1   3 + 强 > 弱 > 3 + 强 > 236236 + 强           6100   12.4 low     8
+2   3 + 强 > 弱 > 3 + 强 > 2 + SP + 强           6100   10.0 low     8
+3   3 + 强 > 2 + 弱 > 3 + 强 > 236236 + 强       6100   12.9 low     8
+4   3 + 强 > 2 + 弱 > 3 + 强 > 2 + SP + 强       6100   10.5 low     8
+5   弱 > 3 + 强 > 强 > 236236 + 强               6000   11.9 low     8
+6   弱 > 3 + 强 > 强 > 2 + SP + 强               6000    9.5 low     8
+7   弱 > 3 + 强 > 2 + 强 > 236236 + 强           6000   12.4 low     8
+8   弱 > 3 + 强 > 2 + 强 > 2 + SP + 强           6000   10.0 low     8
+9   强 > 弱 > 3 + 强 > 236236 + 强               6000   11.9 low     8
+10  强 > 弱 > 3 + 强 > 2 + SP + 强               6000    9.5 low     8
 
 ## Top 10 by predicted scaled damage (model)
 
@@ -176,11 +177,11 @@ scaling_model.not_modelled on every route. Used for ordering only.
 3   3 + 强 > 2 + 强 > 236236 + 强                 4900     5700   10.9 low    
 4   强 > 236236 + 强                               4800     4800    8.4 low    
 5   2 + 强 > 236236 + 强                           4800     4800    8.9 low    
-6   3 + 强 > 中 > 236236 + 强                     4700     5500   10.4 low    
-7   中 > 236236 + 强                               4600     4600    8.4 low    
-8   3 + 强 > 2 + 中 > 236236 + 强                 4600     5400   10.9 low    
-9   2 + 中 > 236236 + 强                           4500     4500    8.9 low    
-10  3 + 强 > 4 + 强 > 236236 + 强                 4500     5300   10.9 low    
+6   3 + 强 > 强 > 弱 > 236236 + 强               4740     6000   11.9 low    
+7   3 + 强 > 强 > 2 + 弱 > 236236 + 强           4740     6000   12.4 low    
+8   3 + 强 > 弱 > 3 + 强 > 236236 + 强           4720     6100   12.4 low    
+9   3 + 强 > 2 + 弱 > 3 + 强 > 236236 + 强       4720     6100   12.9 low    
+10  3 + 强 > 中 > 236236 + 强                     4700     5500   10.4 low    
 
 ## Top 10 by fewest inputs
 
@@ -196,18 +197,18 @@ scaling_model.not_modelled on every route. Used for ordering only.
 9   弱 > 2 + 弱                                     600    3.5 medium 
 10  弱 > 2 + 强                                    1100    3.5 medium 
 
-## Pareto frontier: 10 routes nothing beats on both damage and inputs
+## Pareto frontier: 13 routes nothing beats on both damage and inputs
 
-1   3 + 强 > 强 > 2 + SP + 强                     5700    8.0
-2   弱 > 强 > 2 + SP + 强                         5100    7.5
-3   3 + 强 > 2 + SP + 强                           4900    6.5
-4   强 > 2 + SP + 强                               4800    6.0
-5   强 > 6 + SP                                     2200    5.5
-6   弱 > 3 + 强 > 强                              2000    5.0
-7   强 > 弱 > 强                                  1900    4.5
-8   3 + 强 > 强                                    1700    3.5
-9   弱 > 强                                        1100    3.0
-10  弱 > 弱                                         600    2.5
+1   3 + 强 > 弱 > 3 + 强 > 2 + SP + 强           6100   10.0
+2   弱 > 3 + 强 > 强 > 2 + SP + 强               6000    9.5
+3   强 > 弱 > 强 > 2 + SP + 强                   5900    9.0
+4   3 + 强 > 强 > 2 + SP + 强                     5700    8.0
+5   弱 > 强 > 2 + SP + 强                         5100    7.5
+6   3 + 强 > 2 + SP + 强                           4900    6.5
+7   强 > 2 + SP + 强                               4800    6.0
+8   强 > 弱 > 弱 > 强                            2200    5.5
+9   弱 > 3 + 强 > 强                              2000    5.0
+10  强 > 弱 > 强                                  1900    4.5
 
 ## Why the game still has to answer
 
@@ -242,8 +243,8 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/ryu/modern/candidate-edges.json  (801705 bytes)
-- candidates/ryu/modern/candidate-routes.json  (7651129 bytes)
+- candidates/ryu/modern/candidate-edges.json  (801758 bytes)
+- candidates/ryu/modern/candidate-routes.json  (36981594 bytes)
 - reframework/data/ComboExplorer_data/worklist/ryu-modern-drc.json  (111633 bytes)
 - reframework/data/ComboExplorer_data/worklist/ryu-modern.json  (226375 bytes)
 

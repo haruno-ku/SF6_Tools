@@ -1,0 +1,51 @@
+{
+  "character": "Ryu",
+  "control_scheme": "modern",
+  "delays": [
+    [
+      4,
+      17,
+      19,
+      21
+    ]
+  ],
+  "gaps": [
+    {
+      "delays": [
+        4,
+        17,
+        19,
+        21
+      ],
+      "pair": "608:manual->934:manual",
+      "source": "predicted",
+      "why": "runtime/Sweep.plan_for's grid for this pair: the predicted cancel gap"
+    }
+  ],
+  "id": "ryu-modern-easy-damage-1",
+  "note": "Written by tools/lua/plan.lua --routes from plan easy-damage (rank 1). Every gap is a LIST, never one number: a single delay would read as a measurement, and pressing at one unmeasured gap is how a cancel window gets mistaken for a link window (#46). Where each list came from:\ngap 1 (强 -> 623 + 强): 4, 17, 19, 21 from predicted - runtime/Sweep.plan_for's grid for this pair: the predicted cancel gap\nWhat the logs already say: 0/1 pairs reproduced\nThe grid is 4 combination(s). EVERY ROUTE IN A PLAN IS A PREDICTION: this file is a question for the game, not a combo.",
+  "plan": {
+    "conditions": {
+      "max_execution_cost": 6.0,
+      "no_gauge": true
+    },
+    "generated_at": "2026-09-16T01:53:05Z",
+    "name": "easy-damage",
+    "rank": 1,
+    "sort": "scaled_damage",
+    "tool": "tools/lua/plan.lua --routes"
+  },
+  "schema": "ce.route.v1",
+  "steps": [
+    {
+      "action_id": 608,
+      "input_method": "manual",
+      "notation": "强"
+    },
+    {
+      "action_id": 934,
+      "input_method": "manual",
+      "notation": "623 + 强"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "character": "Ryu",
+  "control_scheme": "modern",
+  "delays": [
+    [
+      0,
+      8,
+      10,
+      12,
+      20,
+      21,
+      22,
+      23,
+      24
+    ]
+  ],
+  "gaps": [
+    {
+      "delays": [
+        0,
+        8,
+        10,
+        12,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "pair": "605:manual->1233:manual",
+      "source": "predicted",
+      "why": "runtime/Sweep.plan_for's grid for this pair: the predicted cancel gap, then the predicted link window"
+    }
+  ],
+  "id": "ryu-modern-hit-confirm-1",
+  "note": "Written by tools/lua/plan.lua --routes from plan hit-confirm (rank 1). Every gap is a LIST, never one number: a single delay would read as a measurement, and pressing at one unmeasured gap is how a cancel window gets mistaken for a link window (#46). Where each list came from:\ngap 1 (中 -> 236236 + 强): 0, 8, 10, 12, 20, 21, 22, 23, 24 from predicted - runtime/Sweep.plan_for's grid for this pair: the predicted cancel gap, then the predicted link window\nWhat the logs already say: 0/1 pairs reproduced\nThe grid is 9 combination(s). EVERY ROUTE IN A PLAN IS A PREDICTION: this file is a question for the game, not a combo.",
+  "plan": {
+    "conditions": {
+      "first_pair_mechanism": "cancel,both",
+      "starter_buttons": "L,M"
+    },
+    "generated_at": "2026-09-16T01:53:17Z",
+    "name": "hit-confirm",
+    "rank": 1,
+    "sort": "scaled_damage",
+    "tool": "tools/lua/plan.lua --routes"
+  },
+  "schema": "ce.route.v1",
+  "steps": [
+    {
+      "action_id": 605,
+      "input_method": "manual",
+      "notation": "中"
+    },
+    {
+      "action_id": 1233,
+      "input_method": "manual",
+      "notation": "236236 + 强"
+    }
+  ]
+}
