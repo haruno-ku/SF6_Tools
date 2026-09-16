@@ -25,6 +25,10 @@
 --   docs/ComboExplorer/index.html         the page linking every report
 --   docs/ComboExplorer/characters.md      the same, for GitHub
 --   docs/ComboExplorer/RUNBOOK.md         the pair-count table between its markers
+--   docs/ComboExplorer/practice.md        the predicted-execution-ease ranking,
+--   docs/ComboExplorer/practice.html      its page, and practice.json, the numbers
+--                                         behind both (tools/lua/practice.lua; always
+--                                         all 31 characters, since it is a ranking)
 --
 -- A character that fails does not stop the run. Its row says which step failed
 -- and the step's log is under candidates/_batch/logs/. The exit code is 1 when
@@ -51,6 +55,7 @@
 -- generated_at stamps the tools already put in their own outputs. The index,
 -- characters.md and characters.json carry no timestamp, so rerunning with
 -- nothing changed leaves them byte-identical. Timings are printed, not written.
+-- practice.md/html/json do carry a generated_at, like the offline reports do.
 
 local Cli = dofile("tools/lua/cli.lua")
 
@@ -327,6 +332,27 @@ if opt.index ~= false then
     print("")
     print(("written: %s/index.html, characters.md, characters.json (%d characters)"):format(opt.docs, #rows))
     print(("report pages: %s across %d characters"):format(Batch.bytes(t.page_bytes), #rows))
+
+    -- practice.md / practice.html: the predicted-execution-ease ranking. It is
+    -- a cross-character document, so it always covers all 31 whatever --only
+    -- said - a ranking over four characters would be a different ranking.
+    --
+    -- Four of its five components need PER-ROUTE scores, and characters.json
+    -- carries none, so --index-only cannot recompute them: it re-renders from
+    -- practice.json instead, which is what --from-cache does (and which falls
+    -- back to a full minute-long run when there is no practice.json yet).
+    local pargs = { "tools/lua/practice.lua", "--scheme", opt.scheme,
+                    "--docs", opt.docs, "--data", opt.data }
+    if opt.index_only then pargs[#pargs + 1] = "--from-cache" end
+    local plog = ("%s/practice.log"):format(LOG_DIR)
+    local pok = os.execute(Batch.command(opt.lua, pargs, plog, WIN))
+    if pok then
+        print(("written: %s/practice.md, practice.html, practice.json%s"):format(
+            opt.docs, opt.index_only and " (re-rendered from practice.json)" or ""))
+    else
+        failed = failed + 1
+        io.stderr:write(("all: practice.lua failed - see %s\n"):format(plog))
+    end
 end
 
 print(("elapsed: %ds"):format(now() - started))

@@ -82,6 +82,7 @@ local SUITES = {
     "tests.lua.test_planner",
     "tests.lua.test_routeview",
     "tests.lua.test_batch",
+    "tests.lua.test_practicescore",
     "tests.lua.test_labrows",
     "tests.lua.test_labeval",
 }

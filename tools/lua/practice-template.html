@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SF6 Combo Explorer コンボ操作のラクさ（予測）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600&family=IBM+Plex+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Page template for tools/lua/practice.lua. The same tokens, faces and
+   light/dark handling as index-template.html and report-template.html, so the
+   three read as one set. The only script is the column sorter. */
+:root {
+  --ground: #eef0f4;
+  --surface: #ffffff;
+  --sunk: #e4e7ed;
+  --ink: #151a24;
+  --muted: #5b6474;
+  --rule: #d5dae2;
+  --accent: #2f55d4;
+  --v-link: #11905a;
+  --v-combo_broke: #e0891c;
+  --v-whiff: #c2452f;
+  --v-wrong_move: #bcc2cc;
+  --band-bad: #f6e3dc;
+
+  --f-display: "Chakra Petch", "IBM Plex Sans JP", "Yu Gothic UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans JP", "Yu Gothic UI", "Hiragino Sans", "Microsoft YaHei", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0e1117;
+    --surface: #161a22;
+    --sunk: #1d222c;
+    --ink: #e6e9ef;
+    --muted: #97a0ae;
+    --rule: #2a303b;
+    --accent: #7d97ff;
+    --v-link: #35c27c;
+    --v-combo_broke: #f0a13f;
+    --v-whiff: #e2654e;
+    --v-wrong_move: #4a515d;
+    --band-bad: #3a231d;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0e1117;
+  --surface: #161a22;
+  --sunk: #1d222c;
+  --ink: #e6e9ef;
+  --muted: #97a0ae;
+  --rule: #2a303b;
+  --accent: #7d97ff;
+  --v-link: #35c27c;
+  --v-combo_broke: #f0a13f;
+  --v-whiff: #e2654e;
+  --v-wrong_move: #4a515d;
+  --band-bad: #3a231d;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 14px/1.6 var(--f-body);
+  padding-inline: clamp(16px, 4vw, 48px);
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 1320px; margin: 0 auto; display: grid; gap: 32px; }
+h1, h2 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: .01em; }
+h1 { font-size: clamp(26px, 3.4vw, 38px); line-height: 1.15; }
+h2 { font-size: 21px; }
+p { margin: 0; max-width: 68ch; }
+.mono, code { font-family: var(--f-mono); font-size: .92em; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+header { display: grid; gap: 12px; }
+
+/* The one thing a reader must not miss. */
+.warn {
+  background: var(--band-bad);
+  border: 1px solid var(--v-whiff);
+  border-radius: 6px;
+  padding: 14px 18px;
+  display: grid; gap: 8px;
+}
+.warn b { color: var(--v-whiff); }
+.warn p { max-width: 80ch; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+.big { font: 600 30px/1 var(--f-display); }
+.tile .sub { font-size: 12.5px; }
+
+/* --- the table ------------------------------------------------------------ */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+table.ease { border-collapse: collapse; width: 100%; font-size: 13px; }
+.ease th { text-align: left; font: 500 11px/1.2 var(--f-body); color: var(--muted); letter-spacing: .04em; padding: 10px 12px; border-bottom: 1px solid var(--rule); white-space: nowrap; vertical-align: bottom; }
+.ease th.n { text-align: right; }
+.ease th[aria-sort] button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; display: inline-flex; gap: 4px; align-items: baseline; }
+.ease th button:hover { color: var(--accent); }
+.ease th button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+.ease th button::after { content: "↕"; font-size: 10px; color: var(--rule); }
+.ease th[aria-sort="ascending"] button::after { content: "↑"; color: var(--accent); }
+.ease th[aria-sort="descending"] button::after { content: "↓"; color: var(--accent); }
+.ease td { padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.ease tbody tr:last-child td { border-bottom: 0; }
+.ease tbody tr:hover td { background: color-mix(in srgb, var(--sunk) 45%, transparent); }
+.ease td.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ease td.r { text-align: right; }
+.ease td small { display: block; font-size: 11px; color: var(--muted); white-space: nowrap; }
+.rank { font: 600 16px var(--f-display); color: var(--muted); }
+.score b, .ease td.score b { font: 600 18px var(--f-display); }
+.who { font: 600 16px/1.2 var(--f-display); }
+.who-cell .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.barwrap { position: relative; width: 118px; height: 16px; background: var(--sunk); border-radius: 3px; margin-left: auto; }
+.bar { height: 100%; background: var(--v-link); border-radius: 3px; }
+.barn { position: absolute; inset: 0; text-align: right; padding-right: 5px; font: 500 11px/16px var(--f-mono); color: var(--ink); mix-blend-mode: normal; }
+
+.notes { margin: 0; padding-left: 16px; font-size: 12px; color: var(--muted); display: grid; gap: 2px; min-width: 200px; max-width: 320px; }
+.notes li::marker { color: var(--v-combo_broke); }
+
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+.card h3 { font: 600 14px var(--f-display); margin: 0; }
+.card p, .card li { font-size: 12.5px; color: var(--muted); }
+.card ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.w { font: 500 12px var(--f-mono); color: var(--ink); }
+
+footer { font-size: 12px; color: var(--muted); display: grid; gap: 6px; border-top: 1px solid var(--rule); padding-top: 16px; }
+
+/* Phone width: each character becomes a block of label / value lines. */
+@media (max-width: 860px) {
+  .table-wrap { background: transparent; border: 0; overflow: visible; }
+  table.ease, .ease tbody, .ease tr, .ease td { display: block; width: 100%; }
+  .ease thead { display: none; }
+  .ease tr { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 14px; }
+  .ease tr + tr { margin-top: 10px; }
+  .ease td, .ease td.n, .ease td.r { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; text-align: left; padding: 7px 0; border-bottom: 1px solid var(--rule); white-space: normal; }
+  .ease td::before { content: attr(data-label); flex: none; width: 9em; font-size: 11px; color: var(--muted); }
+  .ease td.who-cell { display: flex; gap: 10px; }
+  .ease td.who-cell::before { content: none; }
+  .ease tbody tr:last-child td, .ease td:last-child { border-bottom: 0; }
+  .ease tbody tr:hover td { background: none; }
+  .ease td small { display: inline; white-space: normal; }
+  .barwrap { margin-left: 0; }
+  .notes { min-width: 0; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SF6 Combo Explorer — Modern</div>
+    <h1>コンボ操作のラクさ（<em>予測</em>）</h1>
+    <p>「どのキャラがコンボを覚えやすいか」に、このリポジトリのオフラインデータだけで答えたものです。フレームデータと入力の形からの<strong>予測</strong>であり、実際に難しさを測った結果ではありません。</p>
+  </header>
+
+  <div class="warn">
+    <div><b>これは予測であって、計測された難易度ではありません。</b></div>
+    <p>リンクの猶予フレームは <em>1 本も</em> 実機で測っていません。<code>margin_frames</code> はフレームテーブルの引き算で、<code>core/Scoring.lua</code> が書いているとおり 1F リンクと 6F リンクはここからは同じ形に見えます。<!--__LAB__-->すべて「試す価値のある候補」であって、繋がると分かっているコンボではありません。</p>
+  </div>
+
+  <section class="tiles" aria-label="まとめ">
+<!--__TILES__-->
+  </section>
+
+  <section style="display:grid;gap:12px" aria-labelledby="h-rank">
+    <h2 id="h-rank">予測ラクさランキング</h2>
+    <p class="muted">列見出しをクリックすると並べ替わります。各成分は 0–100 で、この 31 キャラ内の min-max 正規化です（一番下は「この中で最下位」であって「ゼロ」ではありません）。重みに納得できなければ、成分の列だけを読んでください。</p>
+    <div class="table-wrap">
+      <table class="ease" id="ease">
+        <thead>
+          <tr>
+            <th class="n" aria-sort="ascending" data-dir="asc"><button type="button">#</button></th>
+            <th><button type="button">キャラ</button></th>
+            <th class="n"><button type="button">予測ラクさ</button></th>
+            <th class="n"><button type="button">① 安く出るダメージ</button></th>
+            <th class="n"><button type="button">② 入力の形</button></th>
+            <th class="n"><button type="button">③ タイミングの余裕</button></th>
+            <th class="n"><button type="button">④ ルートの数</button></th>
+            <th class="n"><button type="button">⑤ データの確かさ</button></th>
+            <th class="n"><button type="button">① 単独順位</button></th>
+            <th><button type="button">注意</button></th>
+          </tr>
+        </thead>
+        <tbody>
+<!--__ROWS__-->
+        </tbody>
+      </table>
+    </div>
+    <p class="muted mono" style="max-width:none"><!--__SETTINGS__--></p>
+  </section>
+
+  <section style="display:grid;gap:12px" aria-labelledby="h-comp">
+    <h2 id="h-comp">成分の中身と重み</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>① 安く出るダメージ <span class="w">0.30</span></h3>
+        <p>実行コストがしきい値以下のルートのうち、<code>predicted_damage_scaled</code> が最大のもの。加えて <code>Scoring.pareto</code> の front 上でのダメージ÷コストの最大値。しきい値は全キャラの全ルートを合わせた実行コストの第 25 百分位で、全員同じ線です。</p>
+        <p>使う人がいないルートは練習ではない、という理由で一番重い成分です。</p>
+      </div>
+      <div class="card">
+        <h3>② 入力の形 <span class="w">0.25</span></h3>
+        <p>スケール後ダメージ上位ルートについて、平均入力数・平均最長モーション・4 方向以上のモーションを要する割合・平均の入力方式切り替え回数・SP（シンプル）入力を使う割合。</p>
+        <p>窓の広さの推測ではなく、表記から数えられる唯一の操作量です。</p>
+      </div>
+      <div class="card">
+        <h3>③ タイミングの余裕（予測） <span class="w">0.25</span></h3>
+        <p>コミット済みワークリストのペアについて、キャンセル・キャンセル兼リンク・余裕 3F 以上のリンクが全体に占める割合。キャンセルの窓は一般にリンクより広く、スイープも両者を別扱いします（be1c0be）。</p>
+        <p><code>unknown</code>（フレームが足りず判定できないペア）は「余裕あり」に数えません。</p>
+      </div>
+      <div class="card">
+        <h3>④ ルートの数 <span class="w">0.10</span></h3>
+        <p>3 技ルートがそもそも何本あるか、OD・SA・ドライブラッシュを使わずに届くルートが何本あるか。<code>offline_score</code> から直接数えており、planner.lua の no-gauge プリセットの定義ではありません。</p>
+        <p>候補の本数は探索の性質でもあるので、重みは小さめです。</p>
+      </div>
+      <div class="card">
+        <h3>⑤ データの確かさ <span class="w">0.10</span></h3>
+        <p>フレームデータの結合率、ワークリストの low 確度の割合、上位ルートの推測結合ステップの割合。数字が弱いキャラは黙って順位に混ぜず、注意欄に出します。</p>
+        <p>結合の良し悪しはキャラの性質ではなくこのリポジトリの性質なので、順位を少し動かすだけにしてあります。</p>
+      </div>
+      <div class="card">
+        <h3>この表に見えていないもの</h3>
+        <ul>
+          <li>リンクの実測猶予フレーム（1 本もない）</li>
+          <li>対空・起き攻め・立ち回り・防御・ゲージ管理・相性</li>
+          <li>Classic（パイプラインは modern のみ）</li>
+          <li>beam 上限で打ち切られた探索の先にあるルート</li>
+          <li>ダメージスケーリングは未検証のモデル（順位付け専用）</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>再生成: <code>lua tools/lua/practice.lua</code>（<code>lua tools/lua/all.lua</code> の最後にも走ります）。数字は <code>docs/ComboExplorer/practice.json</code>、文章版は <a href="practice.md">practice.md</a>、一覧は <a href="index.html">index.html</a>。</div>
+    <div>ワークリスト・確度・ルート・予測ダメージはフレームデータ由来です（CC-BY-SA-4.0、docs/NOTICE.md）。実機で確かめた結果は Zangief の分だけです。</div>
+  </footer>
+</div>
+<script>
+// Column sorter. Rows carry data-sort on every cell; a cell with no number
+// sorts last whichever way the column is pointing, so "-" never wins a column.
+(function () {
+  var table = document.getElementById("ease");
+  if (!table) return;
+  var head = table.tHead.rows[0];
+  var body = table.tBodies[0];
+  Array.prototype.forEach.call(head.cells, function (th, i) {
+    var button = th.querySelector("button");
+    if (!button) return;
+    button.addEventListener("click", function () {
+      var asc = th.getAttribute("aria-sort") !== "ascending";
+      Array.prototype.forEach.call(head.cells, function (o) { o.removeAttribute("aria-sort"); });
+      th.setAttribute("aria-sort", asc ? "ascending" : "descending");
+      var rows = Array.prototype.slice.call(body.rows);
+      rows.sort(function (a, b) {
+        var x = a.cells[i], y = b.cells[i];
+        var xs = x.getAttribute("data-sort"), ys = y.getAttribute("data-sort");
+        var xn = xs === "" || xs === null ? null : parseFloat(xs);
+        var yn = ys === "" || ys === null ? null : parseFloat(ys);
+        if (xn === null && yn === null) {
+          return (x.textContent.trim()).localeCompare(y.textContent.trim()) * (asc ? 1 : -1);
+        }
+        if (xn === null) return 1;
+        if (yn === null) return -1;
+        if (xn === yn) return 0;
+        return (xn < yn ? -1 : 1) * (asc ? 1 : -1);
+      });
+      rows.forEach(function (r) { body.appendChild(r); });
+    });
+  });
+})();
+</script>
+</body>
+</html>
