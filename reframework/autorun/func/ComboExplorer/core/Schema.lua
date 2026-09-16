@@ -283,8 +283,13 @@ local VALIDATORS = {}
 VALIDATORS[M.KIND.MOVE] = function(o, p)
     require_fields(o, { "action_id", "input_method", "notation", "standalone",
                         "canonical_status" }, p)
-    if o.input_method and not ({ manual = true, simple = true, assist = true })[o.input_method] then
-        err(p, "input_method", "must be manual, simple or assist")
+    -- "classic" is the fourth because it is a fourth WAY OF PRESSING, not a
+    -- fourth scheme field: a move reached with LP is not the same input as the
+    -- same move reached with 弱, and a record that called both "manual" would
+    -- merge two experiments.
+    if o.input_method and not ({ manual = true, simple = true, assist = true,
+                                 classic = true })[o.input_method] then
+        err(p, "input_method", "must be manual, simple, assist or classic")
     end
     if o.canonical_status and not M.is_canonical_status(o.canonical_status) then
         err(p, "canonical_status", "must be unresolved, verified or conflicting")

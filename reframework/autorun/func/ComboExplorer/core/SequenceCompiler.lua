@@ -80,6 +80,31 @@
 -- Without the name the compiler would say "has no notation to compile", which
 -- is true and hides every one of the three reasons above - and the next person
 -- to read it would go looking for a missing notation to add.
+--
+-- CLASSIC CONTROLS
+--
+-- The same shape, for a much larger set. A route whose control_scheme is
+-- "classic" names its moves with LP/MP/HP/LK/MK/HK, and not one of those six
+-- has a measured pl_input_new bit on this build: Provenance.classic_button_bits
+-- is an empty map with all six listed as unwitnessed, because the only
+-- button-bit sweep this project has ever run was run under Modern and
+-- command_display's own raw_button_mask gives LP and LK the same number.
+--
+-- Left to compile, such a step would fail at InputMask.button_mask - which is
+-- correct but arrives one pair at a time, in the middle of a sweep, phrased as
+-- a fact about a button. Reported here it is a fact about the run: the whole
+-- classic worklist is set aside before the first trial, under one name, and the
+-- panel's unplayable count says why.
+--
+-- CHARGE MOTIONS
+--
+-- "[4]6" means hold back, then forward. Both displays spell it that way and
+-- both parsers keep only the digits, so what reaches the compiler is "46" -
+-- back and forward one tick each, which is not a charge. 112 Modern displays
+-- and 116 classic ones are written like this, and how long the hold has to be
+-- is not measured anywhere (#34). Same treatment as "22", and for the same
+-- reason: pressed, it produces nothing and the trial reads as a link that
+-- failed.
 
 local InputMask = require("func/ComboExplorer/core/InputMask")
 
@@ -108,6 +133,26 @@ M.DRIVE_RUSH_UNMEASURED = "a Drive Rush Cancel cannot be pressed on this build: 
     .. "presses is unmeasured (#49); and which action id a Drive Rush Cancel is "
     .. "(500, 501 or 504) is disputed"
 
+-- The one sentence for the classic refusal, shared by unplayable and compile
+-- for the same reason DRIVE_RUSH_UNMEASURED is: two refusals that drift apart
+-- are two different accounts of the same build.
+M.CLASSIC_SCHEME = "classic"
+M.CLASSIC_BUTTONS_UNMEASURED = "no Classic button has a measured pl_input_new bit on this "
+    .. "build: the only button-bit calibration ever run was run under Modern, and "
+    .. "command_display's raw_button_mask is that same Modern mask - it gives LP and LK "
+    .. "both 16, MP and MK both 128, HP and HK both 256 - so it cannot say which bit is "
+    .. "which. Provenance.classic_button_bits is empty with all six unwitnessed"
+
+local function scheme_of(route, opts)
+    if opts and opts.scheme ~= nil then return opts.scheme end
+    if type(route) == "table" then return route.control_scheme end
+    return nil
+end
+
+local function parse_opts_for(scheme)
+    return (scheme == M.CLASSIC_SCHEME) and { scheme = M.CLASSIC_SCHEME } or nil
+end
+
 -- Compiles a single route step to InputMask's { frames, mask } list, with no
 -- lead and no tail: the route owns the gaps between moves.
 local function compile_step(step, index, opts)
@@ -119,7 +164,7 @@ local function compile_step(step, index, opts)
         return nil, ("step %d has no notation to compile"):format(index)
     end
 
-    local parsed, perr = InputMask.parse(notation)
+    local parsed, perr = InputMask.parse(notation, parse_opts_for(opts.scheme))
     if not parsed then
         return nil, ("step %d (%s): %s"):format(index, notation, tostring(perr))
     end
@@ -133,8 +178,12 @@ local function compile_step(step, index, opts)
         -- producible. The flag is cleared for the compile and recorded on the
         -- program, because it changes what a failed trial means: the move not
         -- coming out may be the previous step not having connected.
+        -- `charge` travels with the copy. Dropped, a follow-up written "[4]6"
+        -- would compile as back-then-forward and be the one charge in the data
+        -- that got past the refusal below.
         parsed = { air = parsed.air, any_button = parsed.any_button, assist = parsed.assist,
                    followup = false, dirs = parsed.dirs, buttons = parsed.buttons,
+                   charge = parsed.charge, scheme = parsed.scheme,
                    raw = parsed.raw }
     end
 
@@ -158,7 +207,34 @@ M.UNPLAYABLE = {
     FOLLOWUP_FIRST = "followup_first", -- "> X" opening a route
     FOLLOWUP_CONTEXT = "followup_context", -- "> X" after a move nobody said it follows
     DRIVE_RUSH = "drive_rush",         -- a drive_rush_cancel step: see the header
+    -- A classic step naming a button whose bit nobody has witnessed. See the
+    -- header: this is every classic pair on this build.
+    CLASSIC_BUTTONS = "classic_buttons_unmeasured",
+    CHARGE = "charge",                 -- [4]6: see InputMask.charge_direction
 }
+
+-- Reasons no fix to the route can get round, most fundamental first.
+--
+-- A pair can trip several rules at once, and a caller that shows one of them
+-- has to show the one that is still true after the others are fixed. A classic
+-- "[4]6+LP" repeats nothing and follows nothing, and correcting its charge
+-- would not make it pressable, because there is no bit for LP - so naming the
+-- charge would tell the reader the smaller of two truths and imply the larger
+-- one was settled.
+M.UNPLAYABLE_PRIORITY = { M.UNPLAYABLE.CLASSIC_BUTTONS, M.UNPLAYABLE.DRIVE_RUSH }
+
+-- The one of `found` a caller should show. Ordered by UNPLAYABLE_PRIORITY, and
+-- the first entry otherwise - which is what runtime/Sweep.lua did by hand for
+-- the Drive Rush alone.
+function M.principal_unplayable(found)
+    if type(found) ~= "table" or #found == 0 then return nil end
+    for _, kind in ipairs(M.UNPLAYABLE_PRIORITY) do
+        for _, f in ipairs(found) do
+            if f.kind == kind then return f end
+        end
+    end
+    return found[1]
+end
 
 -- route : a ce.route.v1
 -- opts.context_known : true when whoever wrote the route vouches that each
@@ -186,18 +262,38 @@ function M.unplayable(route, opts)
     opts = opts or {}
     local out = {}
     if type(route) ~= "table" or type(route.steps) ~= "table" then return out end
+    local scheme = scheme_of(route, opts)
+    local popts = parse_opts_for(scheme)
     for index, step in ipairs(route.steps) do
         local notation = step.notation or step.classic
-        local parsed = type(notation) == "string" and InputMask.parse(notation) or nil
+        local parsed = type(notation) == "string" and InputMask.parse(notation, popts) or nil
         if step.kind == M.DRIVE_RUSH_STEP then
             -- Whatever context_known says. A vouch that the moves come in the
             -- right order says nothing about whether the rush can be pressed.
             out[#out + 1] = { index = index, notation = notation, kind = M.UNPLAYABLE.DRIVE_RUSH,
                 reason = ("step %d is a Drive Rush Cancel - %s")
                     :format(index, M.DRIVE_RUSH_UNMEASURED) }
+        elseif parsed and scheme == M.CLASSIC_SCHEME and #parsed.buttons > 0 then
+            -- Named per step, and only for a step that actually presses one of
+            -- the six. A classic route of pure directions - "66" into "236" -
+            -- needs no button bit and is not set aside by this rule, which is
+            -- the difference between "this scheme cannot be pressed" and "this
+            -- step cannot be pressed".
+            out[#out + 1] = { index = index, notation = notation,
+                kind = M.UNPLAYABLE.CLASSIC_BUTTONS,
+                reason = ("step %d (%s) presses %s under Classic controls, and %s")
+                    :format(index, notation, table.concat(parsed.buttons, "+"),
+                            M.CLASSIC_BUTTONS_UNMEASURED) }
         elseif parsed then
+            local charge = parsed.charge
             local twice = InputMask.repeated_direction(parsed.dirs)
-            if twice then
+            if charge then
+                out[#out + 1] = { index = index, notation = notation,
+                    kind = M.UNPLAYABLE.CHARGE,
+                    reason = ("step %d (%s) is a charge motion - it says to hold %s first, "
+                        .. "and how long that hold has to be is not measured on this build")
+                        :format(index, notation, charge) }
+            elseif twice then
                 out[#out + 1] = { index = index, notation = notation, kind = M.UNPLAYABLE.REPEAT,
                     reason = ("step %d (%s) presses %s twice in a row, which plays as one held %s")
                         :format(index, notation, twice, twice) }
@@ -293,6 +389,12 @@ function M.compile(route, opts)
             profile = opts.profile,
             allow_unverified = opts.allow_unverified,
             hold_ticks = cfg.hold_ticks,
+            -- Which vocabulary the step's notation is written in. The route
+            -- says; opts.scheme overrides for a caller compiling a bare step
+            -- list. Getting this wrong does not throw - the wrong tokeniser
+            -- reads "2+MP" as a direction and no buttons at all - so it is
+            -- passed explicitly rather than sniffed from the string.
+            scheme = scheme_of(route, opts),
         })
         if not part then return nil, err end
 
@@ -432,6 +534,7 @@ function M.sweep(route, opts)
         local prog, err = M.compile(route, {
             profile = opts.profile,
             allow_unverified = opts.allow_unverified,
+            scheme = opts.scheme,
             delays = delays,
             lead_ticks = opts.lead_ticks, hold_ticks = opts.hold_ticks,
             tail_ticks = opts.tail_ticks, max_ticks = opts.max_ticks,

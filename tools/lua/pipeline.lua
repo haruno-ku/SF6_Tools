@@ -52,6 +52,26 @@ M.DEFAULTS = {
     collapse = true,
 }
 
+-- The method filters only make sense against the scheme the catalog was built
+-- for. Classic has one method, so "manual,simple" against a classic catalog
+-- selects nothing - and an empty candidate set looks exactly like a character
+-- with no links. Applied only where the caller did not say, so `--from-methods`
+-- still means what it says.
+M.SCHEME_METHOD_DEFAULTS = {
+    classic = { from_methods = "classic", to_methods = "classic" },
+}
+
+-- Fills in the method defaults for a scheme. `explicit` is the option table the
+-- caller supplied, so a key it names is left alone.
+function M.apply_scheme_defaults(o, explicit)
+    local d = M.SCHEME_METHOD_DEFAULTS[o.scheme]
+    if not d then return o end
+    for k, v in pairs(d) do
+        if (explicit or {})[k] == nil then o[k] = v end
+    end
+    return o
+end
+
 M.WL_DIR = "reframework/data/ComboExplorer_data/worklist"
 M.DATA_DIR = "reframework/data/ComboExplorer_data"
 
@@ -73,6 +93,7 @@ function M.load(opt)
     local o = {}
     for k, v in pairs(M.DEFAULTS) do o[k] = v end
     for k, v in pairs(opt or {}) do o[k] = v end
+    M.apply_scheme_defaults(o, opt)
 
     local entry, cerr = Characters.resolve(o.character)
     if not entry then return nil, tostring(cerr) end
@@ -83,8 +104,10 @@ function M.load(opt)
 
     local raw, jerr = json.load_file(o.catalog)
     if not raw then return nil, ("could not read %s: %s"):format(o.catalog, tostring(jerr)) end
-    local cat, cat_problems = Catalog.build(raw)
-    if not cat then return nil, "could not build a catalog from " .. o.catalog end
+    local cat, cat_problems = Catalog.build(raw, { scheme = o.scheme })
+    if not cat then
+        return nil, ("could not build a %s catalog from %s"):format(tostring(o.scheme), o.catalog)
+    end
 
     local warnings = {}
     local frames_ok, frames_raw = pcall(dofile, o.frames)

@@ -100,6 +100,13 @@ end
 M.CAPABILITY = {
     TIMING      = "timing",       -- can a delay be expressed in a known unit?
     INJECTION   = "injection",    -- can we press a button and mean it?
+    -- The same question for the other control scheme, and a separate one
+    -- because the answer is separate: Modern has three attack buttons and
+    -- Classic has six, so a measured Modern map says nothing about four of
+    -- Classic's. Kept out of INJECTION so that adding the classic question does
+    -- not un-answer the Modern one - a shared gate would have closed injection
+    -- on a build where it had already been measured.
+    INJECTION_CLASSIC = "injection_classic",
     DAMAGE      = "damage",       -- can a damage number be trusted?
     CATALOG     = "catalog",      -- is the action-id catalog pinned to reality?
     STAGE_RESET = "stage_reset",  -- is a reset reproducible?
@@ -188,10 +195,52 @@ M.DEFAULTS = {
         measured_by = "calibration_button_bits",
     },
 
+    -- The other scheme's six. There is deliberately no provisional value here:
+    -- every other entry in this register carries a guess with a source, and
+    -- this one has no source to carry.
+    --
+    -- WHAT THE DATA SAYS, AND WHY IT IS NOT AN ANSWER
+    --
+    -- command_display does record a raw_button_mask beside each move, and for a
+    -- classic display it is filled in - but it is the MODERN mask. Measured
+    -- over the 31 shipped catalogs: the bare "LP" rows carry 16 and so do the
+    -- bare "LK" rows; "MP" and "MK" both carry 128; "HP" and "HK" both carry
+    -- 256, and each of those routes names a Modern button (弱/中/强) as its
+    -- visible_button. The file is describing the same action under Modern
+    -- controls, not under Classic. It cannot tell LP from LK, which is exactly
+    -- the distinction Classic needs, and the 316 classic-only entries carry no
+    -- route at all.
+    --
+    -- So the value is an empty map and `unwitnessed` names all six. A classic
+    -- profile built from this refuses every button by name at
+    -- InputMask.button_mask, which is the whole point: a guessed bit presses
+    -- something that does not exist and the trial is recorded as "these moves
+    -- do not link".
+    classic_button_bits = entry {
+        value = {},
+        status = M.STATUS.UNVERIFIED,
+        gates = { C.INJECTION_CLASSIC },
+        unwitnessed = { "HK", "HP", "LK", "LP", "MK", "MP" },
+        unwitnessed_reason = "no calibration has ever run under Classic controls on this "
+            .. "build, and command_display's raw_button_mask is the Modern mask for the "
+            .. "same action - it gives LP and LK the same bit, so it cannot answer this",
+        question = "Which pl_input_new bit does each of the six Classic buttons occupy?",
+        provisional_source = "None. Every other entry here carries a guess from somewhere; "
+            .. "this one has nowhere to take one from. The Modern map covers L/M/H, SP, "
+            .. "AUTO, THROW and DI, and SF6 puts Modern's three attack buttons on three of "
+            .. "the pad's six - which three, and whether they keep their bits when the "
+            .. "scheme changes, is not stated anywhere this project can read.",
+        if_wrong = "The Explorer presses buttons that do not exist. Every classic trial "
+            .. "whiffs and is recorded as 'these moves do not link' - a confident negative "
+            .. "with no error.",
+        measured_by = "calibration_button_bits, run with the pad set to Classic and against "
+            .. "a catalog built with Catalog.build(raw, { scheme = 'classic' })",
+    },
+
     direction_bits = entry {
         value = { UP = 1, DOWN = 2, LEFT = 4, RIGHT = 8 },
         status = M.STATUS.UNVERIFIED,
-        gates = { C.INJECTION },
+        gates = { C.INJECTION, C.INJECTION_CLASSIC },
         question = "Which pl_input_new bit is which direction?",
         provisional_source = "Two independent readers agree: ComboTrials_D2D.lua:288-297 decodes left=4 / "
             .. "right=8, and SF6_RecordingSlotManager.lua:106-110 maps numpad 4->4 and 6->8. RSM's own "
@@ -204,7 +253,7 @@ M.DEFAULTS = {
     rl_dir_polarity = entry {
         value = "mirror_when_falsy",
         status = M.STATUS.UNVERIFIED,
-        gates = { C.INJECTION },
+        gates = { C.INJECTION, C.INJECTION_CLASSIC },
         question = "Which truth value of cPlayer.rl_dir means the direction bits must be mirrored?",
         provisional_source = "Three P1 writers mirror when rl_dir is FALSY (RSM:1993, "
             .. "TrainingMoveExecution:299, TrainingComboTrials:6843); SharedHooks.write_p2_input_mask "
@@ -445,6 +494,11 @@ function M.apply_calibration(reg, profile)
             -- needs one of these has to learn it is missing from the register it
             -- is already holding, not by going back to find the profile.
             e.unwitnessed = incoming.unwitnessed and deep_copy(incoming.unwitnessed) or nil
+            -- Dropped with the value it explained. The default reason on
+            -- classic_button_bits says "no calibration has ever run under
+            -- Classic" - true until one does, and a lie the moment one has,
+            -- which is exactly when a reader would be quoting it.
+            e.unwitnessed_reason = incoming.unwitnessed_reason
             e.verified_by = profile.calibration_id
             e.verified_at_patch = profile.game_patch
             e.measurement_note = incoming.note

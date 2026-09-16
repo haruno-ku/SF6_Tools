@@ -28,9 +28,19 @@ M.PRESETS = {
     { name = "starter-chu", label = "中始動", args = { "--starter-button", "M", "--top", "20" } },
 }
 
--- Modern only. The pipeline's scheme is "modern" everywhere today - the
--- catalog's Classic rows are excluded from probing - so a classic run would be a
--- modern run under another name.
+-- Modern only, and no longer because classic cannot be built.
+--
+-- `explore.lua --scheme classic` now builds a real classic catalog and a real
+-- classic worklist - Catalog.build reads classic_command, the frame-data join
+-- is the same join it always was, and the routes come out. What it cannot do is
+-- be swept: not one of the six Classic buttons has a measured pl_input_new bit
+-- on this build (Provenance.classic_button_bits), so runtime/Sweep.lua sets
+-- every classic pair aside by name before the first trial.
+--
+-- A batch that generated classic pages would therefore publish a full set of
+-- documents for a scheme with zero confirmed rows in it, beside a Modern set
+-- with real ones, and the two would look like the same kind of thing. When the
+-- calibration has been run under Classic, add it here.
 M.SCHEMES = { modern = true }
 
 -- Seconds a sweep trial takes, for the runbook's "one pass" column. RUNBOOK.md's

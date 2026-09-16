@@ -115,6 +115,11 @@ function M.profile(opts)
         mirror_when = mirror_when,
         status = opts.status or "unverified",
         buttons_underivable = opts.buttons_underivable,
+        -- Why those buttons have no bit, in this profile's own words. The
+        -- Modern answer ("no notation names it on its own") is not the classic
+        -- answer ("no sweep has ever run in this scheme"), and button_mask has
+        -- to be able to say which one it is.
+        buttons_unmeasured_reason = opts.buttons_unmeasured_reason,
         -- Whether anybody has LOOKED at the three values behind this profile,
         -- as opposed to whether their guesses survived. The gates want this
         -- one. A profile built by hand says so explicitly; one built from a
@@ -148,14 +153,27 @@ end
 -- looked" are different, and three gates were asking the first while meaning
 -- the second - so a fully measured register whose guess had been corrected
 -- opened the injection capability and then refused to compile a single input.
+--
+-- The button entry is chosen by SCHEME. Classic's is a separate register entry
+-- with no bit in it at all (Provenance.classic_button_bits), so a classic
+-- profile is a profile with an empty button map: everything it is asked to
+-- press is refused by name, and nothing anywhere had to invent a bit to get
+-- there.
+M.BITS_KEY = { modern = "modern_button_bits", classic = "classic_button_bits" }
+
 function M.profile_from_provenance(P, reg, scheme)
     scheme = scheme or "modern"
-    local buttons, bstatus = P.provisional(reg, "modern_button_bits")
+    local key = M.BITS_KEY[scheme]
+    if key == nil then
+        return nil, ("no button-bit register entry for control scheme %q"):format(tostring(scheme))
+    end
+    local buttons, bstatus = P.provisional(reg, key)
     local dir, dstatus     = P.provisional(reg, "direction_bits")
     local pol, pstatus     = P.provisional(reg, "rl_dir_polarity")
 
-    local bits_entry = P.get(reg, "modern_button_bits")
+    local bits_entry = P.get(reg, key)
     local underivable = bits_entry and bits_entry.unwitnessed or nil
+    local unmeasured_reason = bits_entry and bits_entry.unwitnessed_reason or nil
 
     local status, worst = nil, math.huge
     local measured = true
@@ -191,6 +209,7 @@ function M.profile_from_provenance(P, reg, scheme)
         -- for them. button_mask already refuses an unknown name; this is what
         -- lets the refusal say WHY instead of just that the name is unknown.
         buttons_underivable = underivable,
+        buttons_unmeasured_reason = unmeasured_reason,
         scheme = scheme,
         source = "provenance:" .. tostring(reg.calibration_id or "none"),
     })
@@ -217,6 +236,31 @@ M.ANY_TOKEN = "\228\187\187\230\132\143\233\148\174"    -- 任意键 "any button
 local TOKEN_ORDER = { "AUTO", "THROW", "SP", "DI",
                       "\229\188\177", "\228\184\173", "\229\188\186" }
 
+-- --- the classic vocabulary --------------------------------------------------
+--
+-- A different scheme is a different set of buttons, and the two token sets are
+-- kept apart rather than merged. "SP" contains a P; a single table that matched
+-- the classic generic-punch token would read the Modern Special button as "any
+-- punch" and the failure would be a mask, not an error.
+--
+-- These are NAMES, exactly as the Modern ones are. No bit for any of them
+-- exists anywhere in this project - see Provenance.classic_button_bits - and
+-- nothing here invents one.
+M.CLASSIC_BUTTONS = { "LP", "MP", "HP", "LK", "MK", "HK" }
+
+-- Every piece a classic display can put between its "+" signs, other than the
+-- directions and the generic punch/kick forms. THROW and DI are the two names
+-- the two schemes share; they are the same word in the source for both.
+M.CLASSIC_TOKENS = {
+    LP = "LP", MP = "MP", HP = "HP",
+    LK = "LK", MK = "MK", HK = "HK",
+    THROW = "THROW",
+    DI = "DI",
+}
+
+-- "j." is the source's air prefix on the classic side, where Modern writes 空中.
+M.CLASSIC_AIR_PREFIX = "j."
+
 -- --- direction ---------------------------------------------------------------
 
 -- The digit a motion presses twice in a row, or nil. "22" -> "2".
@@ -238,6 +282,22 @@ function M.repeated_direction(dirs)
     if type(dirs) ~= "string" then return nil end
     local expanded = M.MOTION_SHORTHAND[dirs] or dirs
     return expanded:match("(%d)%1")
+end
+
+-- The direction a charge motion says to HOLD, or nil. "[4]6" -> "4".
+--
+-- Both schemes spell it the same way and both lose it the same way: `dirs` is
+-- the digits of the notation with everything else stripped, so "[4]6" arrives
+-- at the compiler as "46" - forward-then-back played one tick each, which is
+-- not a charge and produces nothing. 112 Modern displays and 116 classic ones
+-- are written this way (#34).
+--
+-- How long the hold has to be is not measured anywhere in this project, which
+-- is why this is a flag and not an expansion: the compiler refuses a charge by
+-- name, the same way it refuses "22".
+function M.charge_direction(s)
+    if type(s) ~= "string" then return nil end
+    return s:match("%[([1-9])%]")
 end
 
 -- "2" -> {2}, "236" -> {2, 10, 8}, "360" -> the circle. Returns a LIST because a
@@ -272,10 +332,24 @@ end
 --
 -- Returns nil, reason for a string carrying no input at all (a pure label like
 -- "RAW DR").
-function M.parse(display)
+--
+-- opts.scheme = "classic" parses the OTHER display the source carries. Passing
+-- nothing is the Modern reading, byte for byte what it always was.
+--
+-- WHY A SCHEME ARGUMENT AND NOT ONE TABLE OF TOKENS
+--
+-- The two vocabularies overlap in a way that a merged table reads wrongly
+-- rather than loudly. "SP" is the Modern Special button and ends in a P, which
+-- is the classic generic-punch token; "DI" is a shared name; "LP" never appears
+-- in a Modern display and 弱 never appears in a classic one. A single tokeniser
+-- would have to be ordered exactly right to keep "SP" from being read as
+-- "S" + "any punch", and getting that ordering wrong produces a mask, not an
+-- error - which is the failure this module exists to prevent.
+function M.parse(display, opts)
     if type(display) ~= "string" or display == "" then
         return nil, "empty"
     end
+    if opts and opts.scheme == "classic" then return M.parse_classic(display) end
 
     local s = display
     local out = { air = false, any_button = false, assist = false,
@@ -310,9 +384,90 @@ function M.parse(display)
         end
     end
 
+    -- Read before the digits are stripped, because stripping is what loses it:
+    -- "[4]6" and "46" are the same string afterwards and only one of them is a
+    -- charge. See M.charge_direction.
+    out.charge = M.charge_direction(s)
+
     -- Whatever digits remain are the motion. Done last so button tokens cannot
     -- contribute stray digits.
     out.dirs = s:gsub("[^%d]", "")
+
+    if #out.buttons == 0 and out.dirs == "" and not out.any_button then
+        return nil, "no input tokens in: " .. display
+    end
+    return out
+end
+
+-- The classic display, in the same shape M.parse returns.
+--
+--   "LP"              -> { buttons = {"LP"} }
+--   "2+MP"            -> { dirs = "2",   buttons = {"MP"} }
+--   "236+HP"          -> { dirs = "236", buttons = {"HP"} }
+--   "236+PP"          -> { dirs = "236", any_button = true, button_count = 2 }
+--   "j.HK"            -> { air = true,   buttons = {"HK"} }
+--   ">j.MK"           -> { followup = true, air = true, buttons = {"MK"} }
+--   "[4]6+LP"         -> { charge = "4", dirs = "46", buttons = {"LP"} }
+--   "4+THROW"         -> { dirs = "4",   buttons = {"THROW"} }
+--
+-- A classic display is "+"-separated: an optional direction piece first, then
+-- one button piece per press. That is a reading of the data rather than a
+-- guess - 127 distinct shapes over the 31 shipped characters and every one of
+-- them fits it - and it is why this is not a token soup like the Modern side.
+-- Splitting on "+" is also what keeps "DP" (the parry label) from being read as
+-- a punch: "DP" is one piece, it is not a button name, and the whole display is
+-- refused rather than half-understood.
+--
+-- The generic forms - "P", "PP", "PPP", "K", "KK", "KKK" - name a strength-less
+-- press, which is what 任意键 is on the Modern side, and they come back the same
+-- way: any_button, with no button name. There is no such thing as pressing "any
+-- punch", so this is a refusal downstream, not a choice made here.
+function M.parse_classic(display)
+    if type(display) ~= "string" or display == "" then return nil, "empty" end
+
+    local out = { air = false, any_button = false, assist = false,
+                  followup = false, dirs = "", buttons = {}, raw = display,
+                  scheme = "classic" }
+
+    local s = display
+    local stripped = s:match("^%s*>%s*(.*)$")
+    if stripped then
+        out.followup = true
+        s = stripped
+    end
+
+    -- ">j.HK" is a derivation in the air, so the air prefix is read after the
+    -- ">" and not instead of it.
+    local airless = s:match("^%s*[jJ]%.%s*(.*)$")
+    if airless then
+        out.air = true
+        s = airless
+    end
+
+    local parts = {}
+    for piece in (s .. "+"):gmatch("(.-)%+") do
+        parts[#parts + 1] = piece:match("^%s*(.-)%s*$")
+    end
+
+    for i, piece in ipairs(parts) do
+        if piece ~= "" then
+            local u = piece:upper()
+            if i == 1 and u:match("^[%d%[%]]+$") then
+                out.charge = M.charge_direction(u)
+                out.dirs = u:gsub("[^%d]", "")
+            elseif M.CLASSIC_TOKENS[u] then
+                out.buttons[#out.buttons + 1] = M.CLASSIC_TOKENS[u]
+            elseif u:match("^P+$") or u:match("^K+$") then
+                out.any_button = true
+                out.button_count = (out.button_count or 0) + #u
+            else
+                -- Named rather than ignored. A piece nobody recognises is a
+                -- display this parser does not understand, and understanding
+                -- half of it would press half a move.
+                return nil, ("unrecognised classic token %q in: %s"):format(piece, display)
+            end
+        end
+    end
 
     if #out.buttons == 0 and out.dirs == "" and not out.any_button then
         return nil, "no input tokens in: " .. display
@@ -334,6 +489,10 @@ function M.button_mask(names, profile)
         if bit == nil then
             for _, u in ipairs(profile.buttons_underivable or {}) do
                 if u == n then
+                    if profile.buttons_unmeasured_reason then
+                        return nil, ("button %q has no bit in this profile: %s")
+                            :format(tostring(n), tostring(profile.buttons_unmeasured_reason))
+                    end
                     return nil, ("button %q has no bit in this profile: the sweep could "
                         .. "not witness one, because no notation in this catalog names it "
                         .. "on its own"):format(tostring(n))
@@ -445,6 +604,17 @@ function M.compile(parsed, opts)
     -- refuse rather than emit a direction-only sequence that silently whiffs.
     if parsed.any_button and #parsed.buttons == 0 then
         return nil, "any-button notation needs an explicit button: " .. tostring(parsed.raw)
+    end
+
+    -- A charge, for the same reason and with the same consequence as the
+    -- repeat below: `dirs` has already lost the brackets, so compiling one
+    -- plays "[4]6" as back-then-forward one tick each. That is not a charge,
+    -- the move does not come out, and the trial reads as a link that failed.
+    -- How long the hold has to be is not measured, so this is a refusal (#34).
+    if parsed.charge then
+        return nil, ("%s is a charge motion - the notation says to hold %s first, and how "
+            .. "long that hold has to be is not measured on this build")
+            :format(tostring(parsed.raw), tostring(parsed.charge))
     end
 
     -- See M.repeated_direction. Refused by name for the same reason as the two

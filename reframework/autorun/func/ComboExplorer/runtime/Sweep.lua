@@ -470,15 +470,14 @@ function M.start(opts)
         if #found == 0 then
             playable[#playable + 1] = p
         else
-            -- The first problem, unless one of them is the Drive Rush. A DRC
-            -- pair whose A also repeats a direction would otherwise be counted
-            -- as a 22-style repeat, and fixing the repeat would then look like
-            -- it would make the pair playable when the rush still could not be
-            -- pressed. The rush is the reason no fix to A can get round.
-            local pick = found[1]
-            for _, f in ipairs(found) do
-                if f.kind == SequenceCompiler.UNPLAYABLE.DRIVE_RUSH then pick = f break end
-            end
+            -- The first problem, unless one of them is a reason no fix to the
+            -- pair can get round. A DRC pair whose A also repeats a direction
+            -- would otherwise be counted as a 22-style repeat, and fixing the
+            -- repeat would then look like it would make the pair playable when
+            -- the rush still could not be pressed; a classic pair is the same
+            -- case with an unwitnessed button map in place of the rush. The
+            -- order lives in SequenceCompiler, beside the kinds themselves.
+            local pick = SequenceCompiler.principal_unplayable(found)
             unplayable[#unplayable + 1] = { pair = pair_key(p), kind = pick.kind,
                                             reason = pick.reason }
         end

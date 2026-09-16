@@ -1799,12 +1799,26 @@ local function draw_sweep()
         -- this build (see SequenceCompiler's header), and "0 / 0" beside a
         -- total of 0 would read as a broken file rather than a known refusal.
         if (p.unplayable or 0) > 0 then
-            local by = p.unplayable_by_kind or {}
+            -- Read off the counts rather than spelled out. The list used to
+            -- name three kinds; a fourth (a classic worklist, whose six button
+            -- bits nobody has witnessed) and a fifth (a charge motion) would
+            -- have gone into the total and appeared nowhere in the breakdown,
+            -- so the panel would have said "not tried: 486 (repeat 0 /
+            -- follow-up 0 / drive rush 0)" and left the operator with no way to
+            -- find out why.
+            local by, kinds = p.unplayable_by_kind or {}, {}
+            for kind, n in pairs(by) do kinds[#kinds + 1] = { kind = kind, n = n } end
+            table.sort(kinds, function(a, b)
+                if a.n ~= b.n then return a.n > b.n end
+                return a.kind < b.kind
+            end)
+            local parts = {}
+            for _, e in ipairs(kinds) do
+                parts[#parts + 1] = ("%s %d"):format(e.kind, e.n)
+            end
             kv("not tried - cannot be pressed",
-               ("%d  (22-style repeat %d / follow-up %d / drive rush %d)")
-               :format(p.unplayable, (by["repeat"] or 0),
-                       (by.followup_context or 0) + (by.followup_first or 0),
-                       (by.drive_rush or 0)),
+               ("%d  (%s)"):format(p.unplayable,
+                   #parts > 0 and table.concat(parts, " / ") or "reason not recorded"),
                UIKit.COLORS.Orange)
         end
         kv("skipped (already answered)", tostring(p.skipped))

@@ -34,6 +34,7 @@ local Scoring   = require("func/ComboExplorer/core/Scoring")
 local DamageScaling = require("func/ComboExplorer/core/DamageScaling")
 local Exporter  = require("func/ComboExplorer/core/Exporter")
 local Schema    = require("func/ComboExplorer/core/Schema")
+local SequenceCompiler = require("func/ComboExplorer/core/SequenceCompiler")
 
 -- --- arguments ---------------------------------------------------------------
 
@@ -58,6 +59,10 @@ local opt = {
     top = 10,
     collapse = true,
 }
+
+-- Which options the command line actually named, so a scheme default cannot
+-- overwrite something the operator asked for.
+local given = {}
 
 local i = 1
 while i <= #arg do
@@ -96,9 +101,24 @@ while i <= #arg do
         else
             opt[key] = tonumber(v) or v
         end
+        given[key] = true
         i = i + 2
     end
 end
+
+-- --scheme classic used to be a label and nothing more: the catalog was built
+-- from the Modern displays either way, and the run wrote a document, a worklist
+-- and a report that said "classic" over Modern rows. The scheme now chooses
+-- which display every row is built from, and with it which input methods exist
+-- - classic has one, so the Modern "manual,simple" defaults would select no
+-- rows at all and the report would read as a character with no links.
+local Pipeline = dofile("tools/lua/pipeline.lua")
+if opt.scheme ~= "modern" and opt.scheme ~= "classic" then
+    io.stderr:write(("explore: --scheme must be modern or classic, not %q\n")
+        :format(tostring(opt.scheme)))
+    os.exit(2)
+end
+Pipeline.apply_scheme_defaults(opt, given)
 
 -- Resolved through the bridge rather than by casing the argument. The three
 -- names a character has do not derive from one another, and the failure when
@@ -127,8 +147,8 @@ end
 local raw, jerr = json.load_file(opt.catalog)
 if not raw then die(("could not read %s: %s"):format(opt.catalog, tostring(jerr))) end
 
-local cat, cat_problems = Catalog.build(raw)
-if not cat then die("could not build a catalog from " .. opt.catalog) end
+local cat, cat_problems = Catalog.build(raw, { scheme = opt.scheme })
+if not cat then die(("could not build a %s catalog from %s"):format(opt.scheme, opt.catalog)) end
 
 local frames_ok, frames_raw = pcall(dofile, opt.frames)
 local idx
@@ -341,6 +361,22 @@ local function write_worklist(wl_path, items)
         -- gets synced to the machine running the game.
         attribution = Exporter.attribution_for(provenance.frame_data),
     }
+
+    -- A classic worklist says on its face that nothing in it can be pressed.
+    --
+    -- runtime/Sweep.lua would set every pair aside anyway - SequenceCompiler's
+    -- classic_buttons_unmeasured rule fires on any step naming one of the six -
+    -- and that is the gate that matters, because it is the one the runner
+    -- actually consults. This is for the reader: a file of 3000 candidate pairs
+    -- with no note on it looks like work waiting to be done, and somebody would
+    -- reasonably spend an evening finding out why the sweep kept refusing.
+    if opt.scheme == "classic" then
+        wl_doc.unplayable_on_this_build = {
+            kind = SequenceCompiler.UNPLAYABLE.CLASSIC_BUTTONS,
+            reason = SequenceCompiler.CLASSIC_BUTTONS_UNMEASURED,
+            settled_by = "one calibration_button_bits run with the pad set to Classic",
+        }
+    end
     -- Refused rather than written without it. This document ships into
     -- reframework/data - the tree synced to the machine running the game - and
     -- its confidence, and the order of the whole list, are computed from the
@@ -505,8 +541,25 @@ say("- starting moves          %d  (%s / %s)", #probeable,
     opt.from_categories, opt.from_methods)
 say("- target moves            %d  (%s / %s)", #targets,
     opt.to_categories, opt.to_methods)
-say("- excluded from probing   %d  (classic-only, air, throws, system, follow-ups)",
-    cat.counts.excluded)
+-- Named from the counts rather than from a fixed sentence. The list used to be
+-- written out ("classic-only, air, throws, system, follow-ups") and was already
+-- short by two under Modern; under classic it is a different set again -
+-- classic-only is not an exclusion there, and movement is.
+do
+    local kinds = {}
+    for kind in pairs(cat.counts.by_exclusion or {}) do kinds[#kinds + 1] = kind end
+    table.sort(kinds, function(a, b)
+        local ca, cb = cat.counts.by_exclusion[a], cat.counts.by_exclusion[b]
+        if ca ~= cb then return ca > cb end
+        return a < b
+    end)
+    local parts = {}
+    for _, kind in ipairs(kinds) do
+        parts[#parts + 1] = ("%s %d"):format(kind, cat.counts.by_exclusion[kind])
+    end
+    say("- excluded from probing   %d  (%s)", cat.counts.excluded,
+        #parts > 0 and table.concat(parts, ", ") or "none")
+end
 if idx then
     -- Measured over every row the run actually uses, not just the starters.
     --

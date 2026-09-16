@@ -44,6 +44,7 @@ local SUITES = {
     "tests.lua.test_clockstats",
     "tests.lua.test_probea",
     "tests.lua.test_catalog",
+    "tests.lua.test_classic",
     "tests.lua.test_framedata",
     "tests.lua.test_candidategenerator",
     "tests.lua.test_graphstore",

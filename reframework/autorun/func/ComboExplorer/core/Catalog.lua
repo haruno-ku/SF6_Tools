@@ -44,12 +44,28 @@ M.SCHEMA = "ce.catalog.v1"
 
 -- --- classification vocabulary ----------------------------------------------
 
-M.INPUT_METHODS = { MANUAL = "manual", SIMPLE = "simple", ASSIST = "assist" }
+M.INPUT_METHODS = { MANUAL = "manual", SIMPLE = "simple", ASSIST = "assist",
+                    -- Classic has one way of pressing a move: the six buttons
+                    -- and a motion. There is no shortcut button to be a second
+                    -- method, so the scheme contributes exactly one.
+                    CLASSIC = "classic" }
+
+M.SCHEMES = { MODERN = "modern", CLASSIC = "classic" }
+
+-- The input methods a scheme's rows can carry. A caller filtering by method
+-- reads this rather than spelling the names, so asking for "manual" against a
+-- classic catalog is a question with a knowable answer instead of an empty
+-- result nobody can explain.
+M.SCHEME_METHODS = {
+    modern  = { M.INPUT_METHODS.MANUAL, M.INPUT_METHODS.SIMPLE, M.INPUT_METHODS.ASSIST },
+    classic = { M.INPUT_METHODS.CLASSIC },
+}
 
 -- Why a row cannot be probed standalone. Each is a real thing in the data, and
 -- each would otherwise be recorded as a move that does not work.
 M.EXCLUSION = {
     CLASSIC_ONLY   = "classic_only",     -- control_support says Modern cannot reach it
+    MODERN_ONLY    = "modern_only",      -- the mirror, for a classic build
     FOLLOWUP       = "followup",         -- ">" derivation: needs a preceding action
     ASSIST_COMBO   = "assist_combo",     -- only a step inside the auto-combo string
     AC_STATE       = "ac_state",         -- reachable only from a specific action state
@@ -58,6 +74,13 @@ M.EXCLUSION = {
     SYSTEM         = "system",           -- dash, DI, parry, drive rush, stance labels
     NO_INPUT       = "no_input",         -- a pure label, no performable input
     ANY_BUTTON     = "any_button",       -- notation names no concrete strength
+    -- The notation is a direction and nothing else: "6", "66", "8". Pressing it
+    -- walks, jumps or dashes; it cannot produce an attack, so a trial that
+    -- pressed it and saw nothing hit would be recording a link that was never
+    -- attempted. 74 classic rows over the 31 catalogs, and none under Modern,
+    -- which spells the same entries with a motion_command that ends in a
+    -- runtime_common ownership the SYSTEM rule already catches.
+    MOVEMENT       = "movement",
     UNCLASSIFIED   = "unclassified",     -- the classifier had no opinion; NOT a statement about the move
 }
 
@@ -183,12 +206,34 @@ end
 
 -- decoded : the parsed contents of command_display/<Char>.json
 -- opts.ground_only : drop air rows from `probeable` (default true)
+-- opts.scheme      : "modern" (default) or "classic"
+--
+-- WHAT CHANGES UNDER CLASSIC
+--
+-- The classification does not. `category` has always been read off the CLASSIC
+-- display - that is what category_from_classic is - and so has the frame-data
+-- join, which looks up row.classic. Those two were already scheme-independent
+-- and are untouched here.
+--
+-- What changes is which display becomes the row's `notation`, and therefore
+-- what the row says it would take to press. Under Modern a row is built from
+-- motion_command or simple_command, and an entry with neither produces no row
+-- at all; under Classic a row is built from classic_command, which the source
+-- fills in for every entry of every shipped character. That is why a classic
+-- catalog is bigger, and it is a fact about coverage rather than about the
+-- scheme being better: the 316 classic_only entries across the 31 catalogs are
+-- moves Modern genuinely cannot reach.
 --
 -- Returns catalog, problems. `problems` is never a reason to stop - it is the
 -- list of entries the classifier could not place, which is exactly what should
 -- be looked at when a new character is added.
 function M.build(decoded, opts)
     opts = opts or {}
+    local scheme = opts.scheme or M.SCHEMES.MODERN
+    if scheme ~= M.SCHEMES.MODERN and scheme ~= M.SCHEMES.CLASSIC then
+        return nil, { { reason = ("unknown control scheme %q"):format(tostring(scheme)) } }
+    end
+    local parse_opts = (scheme == M.SCHEMES.CLASSIC) and { scheme = "classic" } or nil
     if type(decoded) ~= "table" then return nil, { { reason = "not a table" } } end
 
     local meta = decoded._meta
@@ -198,6 +243,12 @@ function M.build(decoded, opts)
 
     local catalog = {
         schema = M.SCHEMA,
+        -- Which display every row's `notation` came from. Carried on the
+        -- catalog because several consumers have to parse that notation back
+        -- (Calibration's single-button groups, SequenceCompiler) and the two
+        -- vocabularies do not overlap: reading a classic notation with the
+        -- Modern tokeniser produces an empty parse, not an error.
+        scheme = scheme,
         source_schema = meta.schema,
         character = meta.character,
         fighter_id = meta.fighter_id,
@@ -242,10 +293,19 @@ function M.build(decoded, opts)
             -- and each execution path has to be probed separately because they
             -- are different inputs producing the same action.
             local candidates = {}
-            if motion then
+            if scheme == M.SCHEMES.CLASSIC then
+                -- One row, one way of pressing it. The Modern branch below is
+                -- skipped entirely rather than added to: a classic sweep that
+                -- also carried the Modern rows would be two experiments in one
+                -- worklist, and the trial record has one control_scheme field.
+                if classic then
+                    candidates[#candidates + 1] =
+                        { method = M.INPUT_METHODS.CLASSIC, notation = classic }
+                end
+            elseif motion then
                 candidates[#candidates + 1] = { method = M.INPUT_METHODS.MANUAL, notation = motion }
             end
-            if simple then
+            if simple and scheme == M.SCHEMES.MODERN then
                 -- AUTO is the Assist button; SP is the Special button. A
                 -- notation can carry both ("AUTO + SP"), so this is not a
                 -- choice between them.
@@ -266,7 +326,21 @@ function M.build(decoded, opts)
                 end
             end
 
-            if #candidates == 0 and support ~= "classic_modern" then
+            if #candidates == 0 and scheme == M.SCHEMES.CLASSIC then
+                -- The mirror of the Modern case below, and on the shipped data
+                -- it never fires: every one of the 3079 entries across the 31
+                -- catalogs carries a classic_command display. Written anyway,
+                -- because an entry that vanished with no trace looks the same
+                -- as one the source never mentioned.
+                catalog.unreachable[#catalog.unreachable + 1] = {
+                    action_id = action_id,
+                    classic = classic,
+                    control_support = support,
+                    ownership = ownership,
+                    reason = (support == "modern_only") and M.EXCLUSION.MODERN_ONLY
+                        or M.EXCLUSION.NO_INPUT,
+                }
+            elseif #candidates == 0 and support ~= "classic_modern" then
                 -- The ordinary case for a classic-only move, and the reason the
                 -- CLASSIC_ONLY exclusion below almost never fires: an entry with
                 -- neither a motion nor a simple command produces no row to
@@ -282,7 +356,7 @@ function M.build(decoded, opts)
                 }
             end
 
-            if #candidates == 0 and support == "classic_modern" then
+            if #candidates == 0 and support == "classic_modern" and scheme == M.SCHEMES.MODERN then
                 problems[#problems + 1] = {
                     action_id = action_id,
                     reason = "classic_modern but no Modern command form",
@@ -291,7 +365,7 @@ function M.build(decoded, opts)
             end
 
             for _, cand in ipairs(candidates) do
-                local parsed, perr = InputMask.parse(cand.notation)
+                local parsed, perr = InputMask.parse(cand.notation, parse_opts)
 
                 local row = {
                     action_id = action_id,
@@ -347,8 +421,13 @@ function M.build(decoded, opts)
                 -- system action - and this list is read by a human deciding
                 -- what to probe next.
                 local exclusion = nil
-                if support ~= "classic_modern" then
+                if scheme == M.SCHEMES.MODERN and support ~= "classic_modern" then
                     exclusion = M.EXCLUSION.CLASSIC_ONLY
+                elseif scheme == M.SCHEMES.CLASSIC and support == "modern_only" then
+                    -- The mirror. `classic_only` is NOT an exclusion under
+                    -- classic: it is the source saying this scheme is the one
+                    -- that can reach the move, which is the opposite statement.
+                    exclusion = M.EXCLUSION.MODERN_ONLY
                 elseif row.category == "system" then
                     exclusion = M.EXCLUSION.SYSTEM
                 elseif not parsed then
@@ -367,6 +446,16 @@ function M.build(decoded, opts)
                     exclusion = M.EXCLUSION.THROW
                 elseif row.category == "system" or ownership == "runtime_common" then
                     exclusion = M.EXCLUSION.SYSTEM
+                elseif #parsed.buttons == 0 and not parsed.any_button then
+                    -- Last of the positive rules and deliberately so: anything
+                    -- above it is a better description of the same row. What is
+                    -- left is a notation with directions and no press at all,
+                    -- which the leading-digit rule in category_from_classic
+                    -- calls a command normal. Kimberly's 908-913 are the sharp
+                    -- case - six rows displaying "6", all of them in the
+                    -- specials band - and the frame source lists none of them,
+                    -- because they are not moves anyone inputs.
+                    exclusion = M.EXCLUSION.MOVEMENT
                 elseif row.category == "unknown" then
                     -- "The classifier could not place this" is not the same
                     -- statement as "this is a dash". Both used to come out as
