@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SF6 Combo Explorer コンボ操作のラクさ（予測）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600&family=IBM+Plex+Sans+JP:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Page template for tools/lua/practice.lua. The same tokens, faces and
+   light/dark handling as index-template.html and report-template.html, so the
+   three read as one set. The only script is the column sorter. */
+:root {
+  --ground: #eef0f4;
+  --surface: #ffffff;
+  --sunk: #e4e7ed;
+  --ink: #151a24;
+  --muted: #5b6474;
+  --rule: #d5dae2;
+  --accent: #2f55d4;
+  --v-link: #11905a;
+  --v-combo_broke: #e0891c;
+  --v-whiff: #c2452f;
+  --v-wrong_move: #bcc2cc;
+  --band-bad: #f6e3dc;
+
+  --f-display: "Chakra Petch", "IBM Plex Sans JP", "Yu Gothic UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans JP", "Yu Gothic UI", "Hiragino Sans", "Microsoft YaHei", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0e1117;
+    --surface: #161a22;
+    --sunk: #1d222c;
+    --ink: #e6e9ef;
+    --muted: #97a0ae;
+    --rule: #2a303b;
+    --accent: #7d97ff;
+    --v-link: #35c27c;
+    --v-combo_broke: #f0a13f;
+    --v-whiff: #e2654e;
+    --v-wrong_move: #4a515d;
+    --band-bad: #3a231d;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0e1117;
+  --surface: #161a22;
+  --sunk: #1d222c;
+  --ink: #e6e9ef;
+  --muted: #97a0ae;
+  --rule: #2a303b;
+  --accent: #7d97ff;
+  --v-link: #35c27c;
+  --v-combo_broke: #f0a13f;
+  --v-whiff: #e2654e;
+  --v-wrong_move: #4a515d;
+  --band-bad: #3a231d;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 14px/1.6 var(--f-body);
+  padding-inline: clamp(16px, 4vw, 48px);
+  padding-block: 32px 64px;
+}
+.wrap { max-width: 1320px; margin: 0 auto; display: grid; gap: 32px; }
+h1, h2 { font-family: var(--f-display); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: .01em; }
+h1 { font-size: clamp(26px, 3.4vw, 38px); line-height: 1.15; }
+h2 { font-size: 21px; }
+p { margin: 0; max-width: 68ch; }
+.mono, code { font-family: var(--f-mono); font-size: .92em; }
+.num { font-variant-numeric: tabular-nums; }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+header { display: grid; gap: 12px; }
+
+/* The one thing a reader must not miss. */
+.warn {
+  background: var(--band-bad);
+  border: 1px solid var(--v-whiff);
+  border-radius: 6px;
+  padding: 14px 18px;
+  display: grid; gap: 8px;
+}
+.warn b { color: var(--v-whiff); }
+.warn p { max-width: 80ch; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+.big { font: 600 30px/1 var(--f-display); }
+.tile .sub { font-size: 12.5px; }
+
+/* --- the table ------------------------------------------------------------ */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; }
+table.ease { border-collapse: collapse; width: 100%; font-size: 13px; }
+.ease th { text-align: left; font: 500 11px/1.2 var(--f-body); color: var(--muted); letter-spacing: .04em; padding: 10px 12px; border-bottom: 1px solid var(--rule); white-space: nowrap; vertical-align: bottom; }
+.ease th.n { text-align: right; }
+.ease th[aria-sort] button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; display: inline-flex; gap: 4px; align-items: baseline; }
+.ease th button:hover { color: var(--accent); }
+.ease th button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+.ease th button::after { content: "↕"; font-size: 10px; color: var(--rule); }
+.ease th[aria-sort="ascending"] button::after { content: "↑"; color: var(--accent); }
+.ease th[aria-sort="descending"] button::after { content: "↓"; color: var(--accent); }
+.ease td { padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.ease tbody tr:last-child td { border-bottom: 0; }
+.ease tbody tr:hover td { background: color-mix(in srgb, var(--sunk) 45%, transparent); }
+.ease td.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ease td.r { text-align: right; }
+.ease td small { display: block; font-size: 11px; color: var(--muted); white-space: nowrap; }
+.rank { font: 600 16px var(--f-display); color: var(--muted); }
+.score b, .ease td.score b { font: 600 18px var(--f-display); }
+.who { font: 600 16px/1.2 var(--f-display); }
+.who-cell .sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.barwrap { position: relative; width: 118px; height: 16px; background: var(--sunk); border-radius: 3px; margin-left: auto; }
+.bar { height: 100%; background: var(--v-link); border-radius: 3px; }
+.barn { position: absolute; inset: 0; text-align: right; padding-right: 5px; font: 500 11px/16px var(--f-mono); color: var(--ink); mix-blend-mode: normal; }
+
+.notes { margin: 0; padding-left: 16px; font-size: 12px; color: var(--muted); display: grid; gap: 2px; min-width: 200px; max-width: 320px; }
+.notes li::marker { color: var(--v-combo_broke); }
+
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+.card h3 { font: 600 14px var(--f-display); margin: 0; }
+.card p, .card li { font-size: 12.5px; color: var(--muted); }
+.card ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.w { font: 500 12px var(--f-mono); color: var(--ink); }
+
+footer { font-size: 12px; color: var(--muted); display: grid; gap: 6px; border-top: 1px solid var(--rule); padding-top: 16px; }
+
+/* Phone width: each character becomes a block of label / value lines. */
+@media (max-width: 860px) {
+  .table-wrap { background: transparent; border: 0; overflow: visible; }
+  table.ease, .ease tbody, .ease tr, .ease td { display: block; width: 100%; }
+  .ease thead { display: none; }
+  .ease tr { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 14px; }
+  .ease tr + tr { margin-top: 10px; }
+  .ease td, .ease td.n, .ease td.r { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; text-align: left; padding: 7px 0; border-bottom: 1px solid var(--rule); white-space: normal; }
+  .ease td::before { content: attr(data-label); flex: none; width: 9em; font-size: 11px; color: var(--muted); }
+  .ease td.who-cell { display: flex; gap: 10px; }
+  .ease td.who-cell::before { content: none; }
+  .ease tbody tr:last-child td, .ease td:last-child { border-bottom: 0; }
+  .ease tbody tr:hover td { background: none; }
+  .ease td small { display: inline; white-space: normal; }
+  .barwrap { margin-left: 0; }
+  .notes { min-width: 0; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">SF6 Combo Explorer — Modern</div>
+    <h1>コンボ操作のラクさ（<em>予測</em>）</h1>
+    <p>「どのキャラがコンボを覚えやすいか」に、このリポジトリのオフラインデータだけで答えたものです。フレームデータと入力の形からの<strong>予測</strong>であり、実際に難しさを測った結果ではありません。</p>
+  </header>
+
+  <div class="warn">
+    <div><b>これは予測であって、計測された難易度ではありません。</b></div>
+    <p>リンクの猶予フレームは <em>1 本も</em> 実機で測っていません。<code>margin_frames</code> はフレームテーブルの引き算で、<code>core/Scoring.lua</code> が書いているとおり 1F リンクと 6F リンクはここからは同じ形に見えます。実機に持ち込んだのは Zangief だけ（試行 1000 回・確定コンボ 7）。残り 30 キャラには照らし合わせる実測がありません。すべて「試す価値のある候補」であって、繋がると分かっているコンボではありません。</p>
+  </div>
+
+  <section class="tiles" aria-label="まとめ">
+<div class="tile"><div class="eyebrow">キャラクター</div><div class="big num">31</div><div class="muted sub">Modern のみ · 全員が予測値</div></div>
+<div class="tile"><div class="eyebrow">実機で試したキャラ</div><div class="big num">1</div><div class="muted sub">Zangief（確定 7 / 試行 1000）</div></div>
+<div class="tile"><div class="eyebrow">予測ラク 1位</div><div class="big num">Lily</div><div class="muted sub">スコア 76.8</div></div>
+<div class="tile"><div class="eyebrow">予測ラク 最下位</div><div class="big num">Elena</div><div class="muted sub">スコア 27.2</div></div>
+<div class="tile"><div class="eyebrow">注意つき</div><div class="big num">20</div><div class="muted sub">数字が弱いキャラ</div></div>
+  </section>
+
+  <section style="display:grid;gap:12px" aria-labelledby="h-rank">
+    <h2 id="h-rank">予測ラクさランキング</h2>
+    <p class="muted">列見出しをクリックすると並べ替わります。各成分は 0–100 で、この 31 キャラ内の min-max 正規化です（一番下は「この中で最下位」であって「ゼロ」ではありません）。重みに納得できなければ、成分の列だけを読んでください。</p>
+    <div class="table-wrap">
+      <table class="ease" id="ease">
+        <thead>
+          <tr>
+            <th class="n" aria-sort="ascending" data-dir="asc"><button type="button">#</button></th>
+            <th><button type="button">キャラ</button></th>
+            <th class="n"><button type="button">予測ラクさ</button></th>
+            <th class="n"><button type="button">① 安く出るダメージ</button></th>
+            <th class="n"><button type="button">② 入力の形</button></th>
+            <th class="n"><button type="button">③ タイミングの余裕</button></th>
+            <th class="n"><button type="button">④ ルートの数</button></th>
+            <th class="n"><button type="button">⑤ データの確かさ</button></th>
+            <th class="n"><button type="button">① 単独順位</button></th>
+            <th><button type="button">注意</button></th>
+          </tr>
+        </thead>
+        <tbody>
+<tr><td data-label="#" data-sort="1.000000" class="r"><span class="rank num">1</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Lily</div><div class="sub mono">#12</div></td><td data-label="予測ラクさ" data-sort="76.807770" class="n score"><b class="num">76.8</b></td><td data-label="① 安く出るダメージ" data-sort="0.872596" class="n"><div class="barwrap"><div class="bar" style="width:87.3%"></div><span class="barn num">87</span></div><small>最安ルート 4500 / 比 750.0</small></td><td data-label="② 入力の形" data-sort="0.582825" class="n"><div class="barwrap"><div class="bar" style="width:58.3%"></div><span class="barn num">58</span></div><small>入力 8.5 · 最長モーション 4.08 · 4+ 68%</small></td><td data-label="③ タイミングの余裕" data-sort="0.962031" class="n"><div class="barwrap"><div class="bar" style="width:96.2%"></div><span class="barn num">96</span></div><small>猶予あり 98% · リンク 59/62 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.383081" class="n"><div class="barwrap"><div class="bar" style="width:38.3%"></div><span class="barn num">38</span></div><small>ゲージ不要 654 / 848 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.817768" class="n"><div class="barwrap"><div class="bar" style="width:81.8%"></div><span class="barn num">82</span></div><small>結合 100% · low 17%</small></td><td data-label="① 単独順位" data-sort="2.000000" class="n"><span class="num">2 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="2.000000" class="r"><span class="rank num">2</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">JP</div><div class="sub mono">#7</div></td><td data-label="予測ラクさ" data-sort="66.946408" class="n score"><b class="num">66.9</b></td><td data-label="① 安く出るダメージ" data-sort="0.306863" class="n"><div class="barwrap"><div class="bar" style="width:30.7%"></div><span class="barn num">31</span></div><small>最安ルート 3800 / 比 633.3</small></td><td data-label="② 入力の形" data-sort="0.850000" class="n"><div class="barwrap"><div class="bar" style="width:85.0%"></div><span class="barn num">85</span></div><small>入力 6.3 · 最長モーション 1.44 · 4+ 24%</small></td><td data-label="③ タイミングの余裕" data-sort="0.885371" class="n"><div class="barwrap"><div class="bar" style="width:88.5%"></div><span class="barn num">89</span></div><small>猶予あり 93% · リンク 41/56 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.568248" class="n"><div class="barwrap"><div class="bar" style="width:56.8%"></div><span class="barn num">57</span></div><small>ゲージ不要 925 / 1202 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.867375" class="n"><div class="barwrap"><div class="bar" style="width:86.7%"></div><span class="barn num">87</span></div><small>結合 100% · low 22%</small></td><td data-label="① 単独順位" data-sort="19.000000" class="n"><span class="num">19 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="3.000000" class="r"><span class="rank num">3</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Zangief</div><div class="sub mono">#6</div></td><td data-label="予測ラクさ" data-sort="66.084529" class="n score"><b class="num">66.1</b></td><td data-label="① 安く出るダメージ" data-sort="0.885057" class="n"><div class="barwrap"><div class="bar" style="width:88.5%"></div><span class="barn num">89</span></div><small>最安ルート 4100 / 比 790.8</small></td><td data-label="② 入力の形" data-sort="0.189474" class="n"><div class="barwrap"><div class="bar" style="width:18.9%"></div><span class="barn num">19</span></div><small>入力 13.6 · 最長モーション 8.80 · 4+ 80%</small></td><td data-label="③ タイミングの余裕" data-sort="0.950390" class="n"><div class="barwrap"><div class="bar" style="width:95.0%"></div><span class="barn num">95</span></div><small>猶予あり 97% · リンク 90/92 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.348512" class="n"><div class="barwrap"><div class="bar" style="width:34.9%"></div><span class="barn num">35</span></div><small>ゲージ不要 613 / 917 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.755109" class="n"><div class="barwrap"><div class="bar" style="width:75.5%"></div><span class="barn num">76</span></div><small>結合 100% · low 31%</small></td><td data-label="① 単独順位" data-sort="1.000000" class="n"><span class="num">1 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="#" data-sort="4.000000" class="r"><span class="rank num">4</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Ryu</div><div class="sub mono">#1</div></td><td data-label="予測ラクさ" data-sort="63.999673" class="n score"><b class="num">64.0</b></td><td data-label="① 安く出るダメージ" data-sort="0.468501" class="n"><div class="barwrap"><div class="bar" style="width:46.9%"></div><span class="barn num">47</span></div><small>最安ルート 4000 / 比 666.7</small></td><td data-label="② 入力の形" data-sort="0.565129" class="n"><div class="barwrap"><div class="bar" style="width:56.5%"></div><span class="barn num">57</span></div><small>入力 8.6 · 最長モーション 4.32 · 4+ 72%</small></td><td data-label="③ タイミングの余裕" data-sort="0.982497" class="n"><div class="barwrap"><div class="bar" style="width:98.2%"></div><span class="barn num">98</span></div><small>猶予あり 99% · リンク 56/62 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.458357" class="n"><div class="barwrap"><div class="bar" style="width:45.8%"></div><span class="barn num">46</span></div><small>ゲージ不要 753 / 1092 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.667040" class="n"><div class="barwrap"><div class="bar" style="width:66.7%"></div><span class="barn num">67</span></div><small>結合 100% · low 47%</small></td><td data-label="① 単独順位" data-sort="11.000000" class="n"><span class="num">11 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="5.000000" class="r"><span class="rank num">5</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Manon</div><div class="sub mono">#5</div></td><td data-label="予測ラクさ" data-sort="63.649829" class="n score"><b class="num">63.6</b></td><td data-label="① 安く出るダメージ" data-sort="0.468501" class="n"><div class="barwrap"><div class="bar" style="width:46.9%"></div><span class="barn num">47</span></div><small>最安ルート 4000 / 比 666.7</small></td><td data-label="② 入力の形" data-sort="0.563049" class="n"><div class="barwrap"><div class="bar" style="width:56.3%"></div><span class="barn num">56</span></div><small>入力 8.3 · 最長モーション 4.44 · 4+ 76%</small></td><td data-label="③ タイミングの余裕" data-sort="0.975460" class="n"><div class="barwrap"><div class="bar" style="width:97.5%"></div><span class="barn num">98</span></div><small>猶予あり 98% · リンク 74/84 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.177551" class="n"><div class="barwrap"><div class="bar" style="width:17.8%"></div><span class="barn num">18</span></div><small>ゲージ不要 445 / 599 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.935656" class="n"><div class="barwrap"><div class="bar" style="width:93.6%"></div><span class="barn num">94</span></div><small>結合 100% · low 11%</small></td><td data-label="① 単独順位" data-sort="10.000000" class="n"><span class="num">10 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="6.000000" class="r"><span class="rank num">6</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Alex</div><div class="sub mono">#31</div></td><td data-label="予測ラクさ" data-sort="62.121185" class="n score"><b class="num">62.1</b></td><td data-label="① 安く出るダメージ" data-sort="0.549320" class="n"><div class="barwrap"><div class="bar" style="width:54.9%"></div><span class="barn num">55</span></div><small>最安ルート 4100 / 比 683.3</small></td><td data-label="② 入力の形" data-sort="0.501717" class="n"><div class="barwrap"><div class="bar" style="width:50.2%"></div><span class="barn num">50</span></div><small>入力 9.3 · 最長モーション 4.80 · 4+ 80%</small></td><td data-label="③ タイミングの余裕" data-sort="0.892476" class="n"><div class="barwrap"><div class="bar" style="width:89.2%"></div><span class="barn num">89</span></div><small>猶予あり 93% · リンク 94/133 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.355435" class="n"><div class="barwrap"><div class="bar" style="width:35.5%"></div><span class="barn num">36</span></div><small>ゲージ不要 621 / 919 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.723242" class="n"><div class="barwrap"><div class="bar" style="width:72.3%"></div><span class="barn num">72</span></div><small>結合 100% · low 43%</small></td><td data-label="① 単独順位" data-sort="5.000000" class="n"><span class="num">5 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="7.000000" class="r"><span class="rank num">7</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">EHonda</div><div class="sub mono">#20</div></td><td data-label="予測ラクさ" data-sort="62.060952" class="n score"><b class="num">62.1</b></td><td data-label="① 安く出るダメージ" data-sort="0.549320" class="n"><div class="barwrap"><div class="bar" style="width:54.9%"></div><span class="barn num">55</span></div><small>最安ルート 4100 / 比 683.3</small></td><td data-label="② 入力の形" data-sort="0.581523" class="n"><div class="barwrap"><div class="bar" style="width:58.2%"></div><span class="barn num">58</span></div><small>入力 8.4 · 最長モーション 4.08 · 4+ 72%</small></td><td data-label="③ タイミングの余裕" data-sort="0.866054" class="n"><div class="barwrap"><div class="bar" style="width:86.6%"></div><span class="barn num">87</span></div><small>猶予あり 92% · リンク 53/74 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.087666" class="n"><div class="barwrap"><div class="bar" style="width:8.8%"></div><span class="barn num">9</span></div><small>ゲージ不要 376 / 609 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.851525" class="n"><div class="barwrap"><div class="bar" style="width:85.2%"></div><span class="barn num">85</span></div><small>結合 100% · low 15%</small></td><td data-label="① 単独順位" data-sort="6.000000" class="n"><span class="num">6 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="#" data-sort="8.000000" class="r"><span class="rank num">8</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Terry</div><div class="sub mono">#27</div></td><td data-label="予測ラクさ" data-sort="61.916792" class="n score"><b class="num">61.9</b></td><td data-label="① 安く出るダメージ" data-sort="0.387682" class="n"><div class="barwrap"><div class="bar" style="width:38.8%"></div><span class="barn num">39</span></div><small>最安ルート 3900 / 比 650.0</small></td><td data-label="② 入力の形" data-sort="0.600520" class="n"><div class="barwrap"><div class="bar" style="width:60.1%"></div><span class="barn num">60</span></div><small>入力 8.5 · 最長モーション 3.84 · 4+ 64%</small></td><td data-label="③ タイミングの余裕" data-sort="1.000000" class="n"><div class="barwrap"><div class="bar" style="width:100.0%"></div><span class="barn num">100</span></div><small>猶予あり 100% · リンク 43/43 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.205581" class="n"><div class="barwrap"><div class="bar" style="width:20.6%"></div><span class="barn num">21</span></div><small>ゲージ不要 469 / 699 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.821751" class="n"><div class="barwrap"><div class="bar" style="width:82.2%"></div><span class="barn num">82</span></div><small>結合 100% · low 20%</small></td><td data-label="① 単独順位" data-sort="15.000000" class="n"><span class="num">15 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="#" data-sort="9.000000" class="r"><span class="rank num">9</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">ChunLi</div><div class="sub mono">#4</div></td><td data-label="予測ラクさ" data-sort="61.041336" class="n score"><b class="num">61.0</b></td><td data-label="① 安く出るダメージ" data-sort="0.306863" class="n"><div class="barwrap"><div class="bar" style="width:30.7%"></div><span class="barn num">31</span></div><small>最安ルート 3800 / 比 633.3</small></td><td data-label="② 入力の形" data-sort="0.594942" class="n"><div class="barwrap"><div class="bar" style="width:59.5%"></div><span class="barn num">59</span></div><small>入力 8.2 · 最長モーション 4.16 · 4+ 68%</small></td><td data-label="③ タイミングの余裕" data-sort="0.903922" class="n"><div class="barwrap"><div class="bar" style="width:90.4%"></div><span class="barn num">90</span></div><small>猶予あり 94% · リンク 48/85 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.531186" class="n"><div class="barwrap"><div class="bar" style="width:53.1%"></div><span class="barn num">53</span></div><small>ゲージ不要 863 / 1157 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.905196" class="n"><div class="barwrap"><div class="bar" style="width:90.5%"></div><span class="barn num">91</span></div><small>結合 100% · low 10%</small></td><td data-label="① 単独順位" data-sort="17.000000" class="n"><span class="num">17 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="10.000000" class="r"><span class="rank num">10</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Ed</div><div class="sub mono">#19</div></td><td data-label="予測ラクさ" data-sort="60.862219" class="n score"><b class="num">60.9</b></td><td data-label="① 安く出るダメージ" data-sort="0.468501" class="n"><div class="barwrap"><div class="bar" style="width:46.9%"></div><span class="barn num">47</span></div><small>最安ルート 4000 / 比 666.7</small></td><td data-label="② 入力の形" data-sort="0.637995" class="n"><div class="barwrap"><div class="bar" style="width:63.8%"></div><span class="barn num">64</span></div><small>入力 8.0 · 最長モーション 3.60 · 4+ 60%</small></td><td data-label="③ タイミングの余裕" data-sort="0.732108" class="n"><div class="barwrap"><div class="bar" style="width:73.2%"></div><span class="barn num">73</span></div><small>猶予あり 83% · リンク 43/45 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.519926" class="n"><div class="barwrap"><div class="bar" style="width:52.0%"></div><span class="barn num">52</span></div><small>ゲージ不要 845 / 1245 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.735534" class="n"><div class="barwrap"><div class="bar" style="width:73.6%"></div><span class="barn num">74</span></div><small>結合 98% · low 27%</small></td><td data-label="① 単独順位" data-sort="8.000000" class="n"><span class="num">8 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="#" data-sort="11.000000" class="r"><span class="rank num">11</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Akuma</div><div class="sub mono">#22</div></td><td data-label="予測ラクさ" data-sort="60.003602" class="n score"><b class="num">60.0</b></td><td data-label="① 安く出るダメージ" data-sort="0.566772" class="n"><div class="barwrap"><div class="bar" style="width:56.7%"></div><span class="barn num">57</span></div><small>最安ルート 4000 / 比 698.1</small></td><td data-label="② 入力の形" data-sort="0.683801" class="n"><div class="barwrap"><div class="bar" style="width:68.4%"></div><span class="barn num">68</span></div><small>入力 8.0 · 最長モーション 3.52 · 4+ 48%</small></td><td data-label="③ タイミングの余裕" data-sort="0.518967" class="n"><div class="barwrap"><div class="bar" style="width:51.9%"></div><span class="barn num">52</span></div><small>猶予あり 70% · リンク 64/77 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.626208" class="n"><div class="barwrap"><div class="bar" style="width:62.6%"></div><span class="barn num">63</span></div><small>ゲージ不要 1031 / 1520 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.666915" class="n"><div class="barwrap"><div class="bar" style="width:66.7%"></div><span class="barn num">67</span></div><small>結合 95% · low 45%</small></td><td data-label="① 単独順位" data-sort="4.000000" class="n"><span class="num">4 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="12.000000" class="r"><span class="rank num">12</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Kimberly</div><div class="sub mono">#3</div></td><td data-label="予測ラクさ" data-sort="56.524092" class="n score"><b class="num">56.5</b></td><td data-label="① 安く出るダメージ" data-sort="0.331109" class="n"><div class="barwrap"><div class="bar" style="width:33.1%"></div><span class="barn num">33</span></div><small>最安ルート 3830 / 比 638.3</small></td><td data-label="② 入力の形" data-sort="0.558536" class="n"><div class="barwrap"><div class="bar" style="width:55.9%"></div><span class="barn num">56</span></div><small>入力 8.7 · 最長モーション 4.32 · 4+ 72%</small></td><td data-label="③ タイミングの余裕" data-sort="0.856201" class="n"><div class="barwrap"><div class="bar" style="width:85.6%"></div><span class="barn num">86</span></div><small>猶予あり 91% · リンク 42/51 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.383897" class="n"><div class="barwrap"><div class="bar" style="width:38.4%"></div><span class="barn num">38</span></div><small>ゲージ不要 655 / 912 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.738343" class="n"><div class="barwrap"><div class="bar" style="width:73.8%"></div><span class="barn num">74</span></div><small>結合 97% · low 25%</small></td><td data-label="① 単独順位" data-sort="16.000000" class="n"><span class="num">16 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="#" data-sort="13.000000" class="r"><span class="rank num">13</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Ken</div><div class="sub mono">#10</div></td><td data-label="予測ラクさ" data-sort="56.245844" class="n score"><b class="num">56.2</b></td><td data-label="① 安く出るダメージ" data-sort="0.306863" class="n"><div class="barwrap"><div class="bar" style="width:30.7%"></div><span class="barn num">31</span></div><small>最安ルート 3800 / 比 633.3</small></td><td data-label="② 入力の形" data-sort="0.600520" class="n"><div class="barwrap"><div class="bar" style="width:60.1%"></div><span class="barn num">60</span></div><small>入力 8.5 · 最長モーション 3.84 · 4+ 64%</small></td><td data-label="③ タイミングの余裕" data-sort="0.933944" class="n"><div class="barwrap"><div class="bar" style="width:93.4%"></div><span class="barn num">93</span></div><small>猶予あり 96% · リンク 38/38 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.091905" class="n"><div class="barwrap"><div class="bar" style="width:9.2%"></div><span class="barn num">9</span></div><small>ゲージ不要 379 / 674 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.775929" class="n"><div class="barwrap"><div class="bar" style="width:77.6%"></div><span class="barn num">78</span></div><small>結合 100% · low 29%</small></td><td data-label="① 単独順位" data-sort="21.000000" class="n"><span class="num">21 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="#" data-sort="14.000000" class="r"><span class="rank num">14</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">MBison</div><div class="sub mono">#26</div></td><td data-label="予測ラクさ" data-sort="55.704560" class="n score"><b class="num">55.7</b></td><td data-label="① 安く出るダメージ" data-sort="0.630139" class="n"><div class="barwrap"><div class="bar" style="width:63.0%"></div><span class="barn num">63</span></div><small>最安ルート 4200 / 比 700.0</small></td><td data-label="② 入力の形" data-sort="0.588724" class="n"><div class="barwrap"><div class="bar" style="width:58.9%"></div><span class="barn num">59</span></div><small>入力 8.8 · 最長モーション 4.08 · 4+ 64%</small></td><td data-label="③ タイミングの余裕" data-sort="0.446459" class="n"><div class="barwrap"><div class="bar" style="width:44.6%"></div><span class="barn num">45</span></div><small>猶予あり 66% · リンク 46/55 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.468892" class="n"><div class="barwrap"><div class="bar" style="width:46.9%"></div><span class="barn num">47</span></div><small>ゲージ不要 768 / 1368 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.623189" class="n"><div class="barwrap"><div class="bar" style="width:62.3%"></div><span class="barn num">62</span></div><small>結合 100% · low 62%</small></td><td data-label="① 単独順位" data-sort="3.000000" class="n"><span class="num">3 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ワークリストの 62% が low 確度</li><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="15.000000" class="r"><span class="rank num">15</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Luke</div><div class="sub mono">#2</div></td><td data-label="予測ラクさ" data-sort="55.201036" class="n score"><b class="num">55.2</b></td><td data-label="① 安く出るダメージ" data-sort="0.306863" class="n"><div class="barwrap"><div class="bar" style="width:30.7%"></div><span class="barn num">31</span></div><small>最安ルート 3800 / 比 633.3</small></td><td data-label="② 入力の形" data-sort="0.579528" class="n"><div class="barwrap"><div class="bar" style="width:58.0%"></div><span class="barn num">58</span></div><small>入力 8.6 · 最長モーション 4.08 · 4+ 68%</small></td><td data-label="③ タイミングの余裕" data-sort="0.918270" class="n"><div class="barwrap"><div class="bar" style="width:91.8%"></div><span class="barn num">92</span></div><small>猶予あり 95% · リンク 36/36 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.071829" class="n"><div class="barwrap"><div class="bar" style="width:7.2%"></div><span class="barn num">7</span></div><small>ゲージ不要 365 / 623 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.783189" class="n"><div class="barwrap"><div class="bar" style="width:78.3%"></div><span class="barn num">78</span></div><small>結合 100% · low 29%</small></td><td data-label="① 単独順位" data-sort="22.000000" class="n"><span class="num">22 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="#" data-sort="16.000000" class="r"><span class="rank num">16</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Juri</div><div class="sub mono">#16</div></td><td data-label="予測ラクさ" data-sort="54.590048" class="n score"><b class="num">54.6</b></td><td data-label="① 安く出るダメージ" data-sort="0.306863" class="n"><div class="barwrap"><div class="bar" style="width:30.7%"></div><span class="barn num">31</span></div><small>最安ルート 3800 / 比 633.3</small></td><td data-label="② 入力の形" data-sort="0.646237" class="n"><div class="barwrap"><div class="bar" style="width:64.6%"></div><span class="barn num">65</span></div><small>入力 7.8 · 最長モーション 3.60 · 4+ 60%</small></td><td data-label="③ タイミングの余裕" data-sort="0.783263" class="n"><div class="barwrap"><div class="bar" style="width:78.3%"></div><span class="barn num">78</span></div><small>猶予あり 87% · リンク 224/296 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.319887" class="n"><div class="barwrap"><div class="bar" style="width:32.0%"></div><span class="barn num">32</span></div><small>ゲージ不要 581 / 775 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.644777" class="n"><div class="barwrap"><div class="bar" style="width:64.5%"></div><span class="barn num">64</span></div><small>結合 100% · low 59%</small></td><td data-label="① 単独順位" data-sort="20.000000" class="n"><span class="num">20 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="17.000000" class="r"><span class="rank num">17</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">DeeJay</div><div class="sub mono">#11</div></td><td data-label="予測ラクさ" data-sort="53.679308" class="n score"><b class="num">53.7</b></td><td data-label="① 安く出るダメージ" data-sort="0.468501" class="n"><div class="barwrap"><div class="bar" style="width:46.9%"></div><span class="barn num">47</span></div><small>最安ルート 4000 / 比 666.7</small></td><td data-label="② 入力の形" data-sort="0.472483" class="n"><div class="barwrap"><div class="bar" style="width:47.2%"></div><span class="barn num">47</span></div><small>入力 9.6 · 最長モーション 5.04 · 4+ 84%</small></td><td data-label="③ タイミングの余裕" data-sort="0.731085" class="n"><div class="barwrap"><div class="bar" style="width:73.1%"></div><span class="barn num">73</span></div><small>猶予あり 83% · リンク 139/356 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.441790" class="n"><div class="barwrap"><div class="bar" style="width:44.2%"></div><span class="barn num">44</span></div><small>ゲージ不要 730 / 1070 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.511716" class="n"><div class="barwrap"><div class="bar" style="width:51.2%"></div><span class="barn num">51</span></div><small>結合 100% · low 79%</small></td><td data-label="① 単独順位" data-sort="7.000000" class="n"><span class="num">7 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ワークリストの 79% が low 確度</li><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="18.000000" class="r"><span class="rank num">18</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Cammy</div><div class="sub mono">#9</div></td><td data-label="予測ラクさ" data-sort="52.923922" class="n score"><b class="num">52.9</b></td><td data-label="① 安く出るダメージ" data-sort="0.028736" class="n"><div class="barwrap"><div class="bar" style="width:2.9%"></div><span class="barn num">3</span></div><small>最安ルート 2860 / 比 630.8</small></td><td data-label="② 入力の形" data-sort="0.508310" class="n"><div class="barwrap"><div class="bar" style="width:50.8%"></div><span class="barn num">51</span></div><small>入力 9.2 · 最長モーション 4.80 · 4+ 80%</small></td><td data-label="③ タイミングの余裕" data-sort="0.914842" class="n"><div class="barwrap"><div class="bar" style="width:91.5%"></div><span class="barn num">91</span></div><small>猶予あり 95% · リンク 74/98 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.700592" class="n"><div class="barwrap"><div class="bar" style="width:70.1%"></div><span class="barn num">70</span></div><small>ゲージ不要 1185 / 1541 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.947712" class="n"><div class="barwrap"><div class="bar" style="width:94.8%"></div><span class="barn num">95</span></div><small>結合 100% · low 9%</small></td><td data-label="① 単独順位" data-sort="26.000000" class="n"><span class="num">26 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="19.000000" class="r"><span class="rank num">19</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Sagat</div><div class="sub mono">#25</div></td><td data-label="予測ラクさ" data-sort="50.835306" class="n score"><b class="num">50.8</b></td><td data-label="① 安く出るダメージ" data-sort="0.028736" class="n"><div class="barwrap"><div class="bar" style="width:2.9%"></div><span class="barn num">3</span></div><small>最安ルート 2860 / 比 630.8</small></td><td data-label="② 入力の形" data-sort="0.540404" class="n"><div class="barwrap"><div class="bar" style="width:54.0%"></div><span class="barn num">54</span></div><small>入力 9.2 · 最長モーション 4.32 · 4+ 72%</small></td><td data-label="③ タイミングの余裕" data-sort="0.949283" class="n"><div class="barwrap"><div class="bar" style="width:94.9%"></div><span class="barn num">95</span></div><small>猶予あり 97% · リンク 62/75 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.446161" class="n"><div class="barwrap"><div class="bar" style="width:44.6%"></div><span class="barn num">45</span></div><small>ゲージ不要 736 / 979 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.826946" class="n"><div class="barwrap"><div class="bar" style="width:82.7%"></div><span class="barn num">83</span></div><small>結合 100% · low 17%</small></td><td data-label="① 単独順位" data-sort="30.000000" class="n"><span class="num">30 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="#" data-sort="20.000000" class="r"><span class="rank num">20</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Marisa</div><div class="sub mono">#17</div></td><td data-label="予測ラクさ" data-sort="47.402981" class="n score"><b class="num">47.4</b></td><td data-label="① 安く出るダメージ" data-sort="0.048077" class="n"><div class="barwrap"><div class="bar" style="width:4.8%"></div><span class="barn num">5</span></div><small>最安ルート 2760 / 比 646.2</small></td><td data-label="② 入力の形" data-sort="0.506225" class="n"><div class="barwrap"><div class="bar" style="width:50.6%"></div><span class="barn num">51</span></div><small>入力 9.6 · 最長モーション 4.56 · 4+ 76%</small></td><td data-label="③ タイミングの余裕" data-sort="0.887023" class="n"><div class="barwrap"><div class="bar" style="width:88.7%"></div><span class="barn num">89</span></div><small>猶予あり 93% · リンク 74/88 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.291584" class="n"><div class="barwrap"><div class="bar" style="width:29.2%"></div><span class="barn num">29</span></div><small>ゲージ不要 551 / 803 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.821362" class="n"><div class="barwrap"><div class="bar" style="width:82.1%"></div><span class="barn num">82</span></div><small>結合 100% · low 21%</small></td><td data-label="① 単独順位" data-sort="23.000000" class="n"><span class="num">23 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="#" data-sort="21.000000" class="r"><span class="rank num">21</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Ingrid</div><div class="sub mono">#32</div></td><td data-label="予測ラクさ" data-sort="45.961945" class="n score"><b class="num">46.0</b></td><td data-label="① 安く出るダメージ" data-sort="0.399326" class="n"><div class="barwrap"><div class="bar" style="width:39.9%"></div><span class="barn num">40</span></div><small>最安ルート 3800 / 比 662.9</small></td><td data-label="② 入力の形" data-sort="0.325878" class="n"><div class="barwrap"><div class="bar" style="width:32.6%"></div><span class="barn num">33</span></div><small>入力 11.6 · 最長モーション 6.00 · 4+ 100%</small></td><td data-label="③ タイミングの余裕" data-sort="0.432173" class="n"><div class="barwrap"><div class="bar" style="width:43.2%"></div><span class="barn num">43</span></div><small>猶予あり 65% · リンク 231/253 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.820829" class="n"><div class="barwrap"><div class="bar" style="width:82.1%"></div><span class="barn num">82</span></div><small>ゲージ不要 1484 / 2502 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.682261" class="n"><div class="barwrap"><div class="bar" style="width:68.2%"></div><span class="barn num">68</span></div><small>結合 97% · low 62%</small></td><td data-label="① 単独順位" data-sort="13.000000" class="n"><span class="num">13 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ワークリストの 62% が low 確度</li><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="22.000000" class="r"><span class="rank num">22</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Rashid</div><div class="sub mono">#14</div></td><td data-label="予測ラクさ" data-sort="45.385307" class="n score"><b class="num">45.4</b></td><td data-label="① 安く出るダメージ" data-sort="0.028736" class="n"><div class="barwrap"><div class="bar" style="width:2.9%"></div><span class="barn num">3</span></div><small>最安ルート 2860 / 比 630.8</small></td><td data-label="② 入力の形" data-sort="0.567989" class="n"><div class="barwrap"><div class="bar" style="width:56.8%"></div><span class="barn num">57</span></div><small>入力 8.9 · 最長モーション 4.08 · 4+ 68%</small></td><td data-label="③ タイミングの余裕" data-sort="0.769450" class="n"><div class="barwrap"><div class="bar" style="width:76.9%"></div><span class="barn num">77</span></div><small>猶予あり 86% · リンク 52/70 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.292552" class="n"><div class="barwrap"><div class="bar" style="width:29.3%"></div><span class="barn num">29</span></div><small>ゲージ不要 552 / 872 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.816172" class="n"><div class="barwrap"><div class="bar" style="width:81.6%"></div><span class="barn num">82</span></div><small>結合 100% · low 19%</small></td><td data-label="① 単独順位" data-sort="29.000000" class="n"><span class="num">29 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="23.000000" class="r"><span class="rank num">23</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Mai</div><div class="sub mono">#28</div></td><td data-label="予測ラクさ" data-sort="44.779779" class="n score"><b class="num">44.8</b></td><td data-label="① 安く出るダメージ" data-sort="0.028736" class="n"><div class="barwrap"><div class="bar" style="width:2.9%"></div><span class="barn num">3</span></div><small>最安ルート 2860 / 比 630.8</small></td><td data-label="② 入力の形" data-sort="0.618215" class="n"><div class="barwrap"><div class="bar" style="width:61.8%"></div><span class="barn num">62</span></div><small>入力 8.4 · 最長モーション 3.60 · 4+ 60%</small></td><td data-label="③ タイミングの余裕" data-sort="0.950448" class="n"><div class="barwrap"><div class="bar" style="width:95.0%"></div><span class="barn num">95</span></div><small>猶予あり 97% · リンク 69/85 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.000000" class="n"><div class="barwrap"><div class="bar" style="width:0.0%"></div><span class="barn num">0</span></div><small>ゲージ不要 319 / 454 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.470114" class="n"><div class="barwrap"><div class="bar" style="width:47.0%"></div><span class="barn num">47</span></div><small>結合 100% · low 87%</small></td><td data-label="① 単独順位" data-sort="28.000000" class="n"><span class="num">28 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ワークリストの 87% が low 確度</li></ul></td></tr>
+<tr><td data-label="#" data-sort="24.000000" class="r"><span class="rank num">24</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Guile</div><div class="sub mono">#18</div></td><td data-label="予測ラクさ" data-sort="44.131456" class="n score"><b class="num">44.1</b></td><td data-label="① 安く出るダメージ" data-sort="0.468501" class="n"><div class="barwrap"><div class="bar" style="width:46.9%"></div><span class="barn num">47</span></div><small>最安ルート 4000 / 比 666.7</small></td><td data-label="② 入力の形" data-sort="0.671735" class="n"><div class="barwrap"><div class="bar" style="width:67.2%"></div><span class="barn num">67</span></div><small>入力 7.2 · 最長モーション 2.88 · 4+ 72%</small></td><td data-label="③ タイミングの余裕" data-sort="0.232815" class="n"><div class="barwrap"><div class="bar" style="width:23.3%"></div><span class="barn num">23</span></div><small>猶予あり 52% · リンク 88/171 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.564771" class="n"><div class="barwrap"><div class="bar" style="width:56.5%"></div><span class="barn num">56</span></div><small>ゲージ不要 919 / 1178 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.181496" class="n"><div class="barwrap"><div class="bar" style="width:18.1%"></div><span class="barn num">18</span></div><small>結合 83% · low 84%</small></td><td data-label="① 単独順位" data-sort="9.000000" class="n"><span class="num">9 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>フレームデータ結合 112/135（83%）</li><li>ワークリストの 84% が low 確度</li><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="25.000000" class="r"><span class="rank num">25</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">CViper</div><div class="sub mono">#30</div></td><td data-label="予測ラクさ" data-sort="42.710349" class="n score"><b class="num">42.7</b></td><td data-label="① 安く出るダメージ" data-sort="0.028736" class="n"><div class="barwrap"><div class="bar" style="width:2.9%"></div><span class="barn num">3</span></div><small>最安ルート 2860 / 比 630.8</small></td><td data-label="② 入力の形" data-sort="0.524357" class="n"><div class="barwrap"><div class="bar" style="width:52.4%"></div><span class="barn num">52</span></div><small>入力 9.2 · 最長モーション 4.56 · 4+ 76%</small></td><td data-label="③ タイミングの余裕" data-sort="0.771157" class="n"><div class="barwrap"><div class="bar" style="width:77.1%"></div><span class="barn num">77</span></div><small>猶予あり 86% · リンク 38/52 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.255517" class="n"><div class="barwrap"><div class="bar" style="width:25.6%"></div><span class="barn num">26</span></div><small>ゲージ不要 515 / 719 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.690526" class="n"><div class="barwrap"><div class="bar" style="width:69.1%"></div><span class="barn num">69</span></div><small>結合 93% · low 24%</small></td><td data-label="① 単独順位" data-sort="25.000000" class="n"><span class="num">25 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="#" data-sort="26.000000" class="r"><span class="rank num">26</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Jamie</div><div class="sub mono">#21</div></td><td data-label="予測ラクさ" data-sort="40.568005" class="n score"><b class="num">40.6</b></td><td data-label="① 安く出るダメージ" data-sort="0.462423" class="n"><div class="barwrap"><div class="bar" style="width:46.2%"></div><span class="barn num">46</span></div><small>最安ルート 3700 / 比 692.3</small></td><td data-label="② 入力の形" data-sort="0.467538" class="n"><div class="barwrap"><div class="bar" style="width:46.8%"></div><span class="barn num">47</span></div><small>入力 9.8 · 最長モーション 5.04 · 4+ 84%</small></td><td data-label="③ タイミングの余裕" data-sort="0.385539" class="n"><div class="barwrap"><div class="bar" style="width:38.6%"></div><span class="barn num">39</span></div><small>猶予あり 62% · リンク 112/131 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.460481" class="n"><div class="barwrap"><div class="bar" style="width:46.0%"></div><span class="barn num">46</span></div><small>ゲージ不要 756 / 1111 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.076360" class="n"><div class="barwrap"><div class="bar" style="width:7.6%"></div><span class="barn num">8</span></div><small>結合 77% · low 72%</small></td><td data-label="① 単独順位" data-sort="12.000000" class="n"><span class="num">12 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>フレームデータ結合 71/92（77%）</li><li>ワークリストの 72% が low 確度</li><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="27.000000" class="r"><span class="rank num">27</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Blanka</div><div class="sub mono">#15</div></td><td data-label="予測ラクさ" data-sort="40.405479" class="n score"><b class="num">40.4</b></td><td data-label="① 安く出るダメージ" data-sort="0.395004" class="n"><div class="barwrap"><div class="bar" style="width:39.5%"></div><span class="barn num">40</span></div><small>最安ルート 3800 / 比 661.5</small></td><td data-label="② 入力の形" data-sort="0.479077" class="n"><div class="barwrap"><div class="bar" style="width:47.9%"></div><span class="barn num">48</span></div><small>入力 9.5 · 最長モーション 5.04 · 4+ 84%</small></td><td data-label="③ タイミングの余裕" data-sort="0.118090" class="n"><div class="barwrap"><div class="bar" style="width:11.8%"></div><span class="barn num">12</span></div><small>猶予あり 45% · リンク 76/98 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.849914" class="n"><div class="barwrap"><div class="bar" style="width:85.0%"></div><span class="barn num">85</span></div><small>ゲージ不要 1567 / 2182 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.512705" class="n"><div class="barwrap"><div class="bar" style="width:51.3%"></div><span class="barn num">51</span></div><small>結合 98% · low 73%</small></td><td data-label="① 単独順位" data-sort="14.000000" class="n"><span class="num">14 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ワークリストの 73% が low 確度</li><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="28.000000" class="r"><span class="rank num">28</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Dhalsim</div><div class="sub mono">#8</div></td><td data-label="予測ラクさ" data-sort="39.371578" class="n score"><b class="num">39.4</b></td><td data-label="① 安く出るダメージ" data-sort="0.028736" class="n"><div class="barwrap"><div class="bar" style="width:2.9%"></div><span class="barn num">3</span></div><small>最安ルート 2860 / 比 630.8</small></td><td data-label="② 入力の形" data-sort="0.614918" class="n"><div class="barwrap"><div class="bar" style="width:61.5%"></div><span class="barn num">61</span></div><small>入力 8.5 · 最長モーション 3.60 · 4+ 60%</small></td><td data-label="③ タイミングの余裕" data-sort="0.293152" class="n"><div class="barwrap"><div class="bar" style="width:29.3%"></div><span class="barn num">29</span></div><small>猶予あり 56% · リンク 48/49 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="1.000000" class="n"><div class="barwrap"><div class="bar" style="width:100.0%"></div><span class="barn num">100</span></div><small>ゲージ不要 2075 / 2681 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.580775" class="n"><div class="barwrap"><div class="bar" style="width:58.1%"></div><span class="barn num">58</span></div><small>結合 99% · low 59%</small></td><td data-label="① 単独順位" data-sort="27.000000" class="n"><span class="num">27 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="29.000000" class="r"><span class="rank num">29</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Yasmine</div><div class="sub mono">#33</div></td><td data-label="予測ラクさ" data-sort="39.271613" class="n score"><b class="num">39.3</b></td><td data-label="① 安く出るダメージ" data-sort="0.028736" class="n"><div class="barwrap"><div class="bar" style="width:2.9%"></div><span class="barn num">3</span></div><small>最安ルート 2860 / 比 630.8</small></td><td data-label="② 入力の形" data-sort="0.606677" class="n"><div class="barwrap"><div class="bar" style="width:60.7%"></div><span class="barn num">61</span></div><small>入力 8.7 · 最長モーション 3.60 · 4+ 60%</small></td><td data-label="③ タイミングの余裕" data-sort="0.447404" class="n"><div class="barwrap"><div class="bar" style="width:44.7%"></div><span class="barn num">45</span></div><small>猶予あり 66% · リンク 23/33 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.788925" class="n"><div class="barwrap"><div class="bar" style="width:78.9%"></div><span class="barn num">79</span></div><small>ゲージ不要 1398 / 1860 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.416828" class="n"><div class="barwrap"><div class="bar" style="width:41.7%"></div><span class="barn num">42</span></div><small>結合 97% · low 87%</small></td><td data-label="① 単独順位" data-sort="31.000000" class="n"><span class="num">31 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>ワークリストの 87% が low 確度</li><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+<tr><td data-label="#" data-sort="30.000000" class="r"><span class="rank num">30</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">AKI</div><div class="sub mono">#13</div></td><td data-label="予測ラクさ" data-sort="38.447557" class="n score"><b class="num">38.4</b></td><td data-label="① 安く出るダメージ" data-sort="0.028736" class="n"><div class="barwrap"><div class="bar" style="width:2.9%"></div><span class="barn num">3</span></div><small>最安ルート 2860 / 比 630.8</small></td><td data-label="② 入力の形" data-sort="0.595575" class="n"><div class="barwrap"><div class="bar" style="width:59.6%"></div><span class="barn num">60</span></div><small>入力 8.6 · 最長モーション 3.84 · 4+ 64%</small></td><td data-label="③ タイミングの余裕" data-sort="0.576243" class="n"><div class="barwrap"><div class="bar" style="width:57.6%"></div><span class="barn num">58</span></div><small>猶予あり 74% · リンク 32/57 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.140311" class="n"><div class="barwrap"><div class="bar" style="width:14.0%"></div><span class="barn num">14</span></div><small>ゲージ不要 415 / 657 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.688692" class="n"><div class="barwrap"><div class="bar" style="width:68.9%"></div><span class="barn num">69</span></div><small>結合 96% · low 32%</small></td><td data-label="① 単独順位" data-sort="24.000000" class="n"><span class="num">24 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><span class="muted">-</span></td></tr>
+<tr><td data-label="#" data-sort="31.000000" class="r"><span class="rank num">31</span></td><td data-label="キャラ" data-sort="" class="who-cell"><div class="who">Elena</div><div class="sub mono">#29</div></td><td data-label="予測ラクさ" data-sort="27.170872" class="n score"><b class="num">27.2</b></td><td data-label="① 安く出るダメージ" data-sort="0.306863" class="n"><div class="barwrap"><div class="bar" style="width:30.7%"></div><span class="barn num">31</span></div><small>最安ルート 3800 / 比 633.3</small></td><td data-label="② 入力の形" data-sort="0.555239" class="n"><div class="barwrap"><div class="bar" style="width:55.5%"></div><span class="barn num">56</span></div><small>入力 8.8 · 最長モーション 4.32 · 4+ 72%</small></td><td data-label="③ タイミングの余裕" data-sort="0.000000" class="n"><div class="barwrap"><div class="bar" style="width:0.0%"></div><span class="barn num">0</span></div><small>猶予あり 38% · リンク 57/69 が 3f 以上</small></td><td data-label="④ ルートの数" data-sort="0.253440" class="n"><div class="barwrap"><div class="bar" style="width:25.3%"></div><span class="barn num">25</span></div><small>ゲージ不要 513 / 857 ルート</small></td><td data-label="⑤ データの確かさ" data-sort="0.154959" class="n"><div class="barwrap"><div class="bar" style="width:15.5%"></div><span class="barn num">15</span></div><small>結合 77% · low 74%</small></td><td data-label="① 単独順位" data-sort="18.000000" class="n"><span class="num">18 位</span></td><td data-label="注意" data-sort="" class="notes-cell"><ul class="notes"><li>フレームデータ結合 75/97（77%）</li><li>ワークリストの 74% が low 確度</li><li>ルート探索が beam 上限で打ち切られた</li></ul></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted mono" style="max-width:none">実行コストの「安い」しきい値 6.00（全 34625 ルートの第 25 百分位）· 上位 25 ルートで入力形状を集計 · リンクの余裕 3 フレーム以上を「余裕あり」· 最大 3 技 · beam 4000 · DRC 抜き · 生成 2026-09-16T00:03:13Z</p>
+  </section>
+
+  <section style="display:grid;gap:12px" aria-labelledby="h-comp">
+    <h2 id="h-comp">成分の中身と重み</h2>
+    <div class="cols">
+      <div class="card">
+        <h3>① 安く出るダメージ <span class="w">0.30</span></h3>
+        <p>実行コストがしきい値以下のルートのうち、<code>predicted_damage_scaled</code> が最大のもの。加えて <code>Scoring.pareto</code> の front 上でのダメージ÷コストの最大値。しきい値は全キャラの全ルートを合わせた実行コストの第 25 百分位で、全員同じ線です。</p>
+        <p>使う人がいないルートは練習ではない、という理由で一番重い成分です。</p>
+      </div>
+      <div class="card">
+        <h3>② 入力の形 <span class="w">0.25</span></h3>
+        <p>スケール後ダメージ上位ルートについて、平均入力数・平均最長モーション・4 方向以上のモーションを要する割合・平均の入力方式切り替え回数・SP（シンプル）入力を使う割合。</p>
+        <p>窓の広さの推測ではなく、表記から数えられる唯一の操作量です。</p>
+      </div>
+      <div class="card">
+        <h3>③ タイミングの余裕（予測） <span class="w">0.25</span></h3>
+        <p>コミット済みワークリストのペアについて、キャンセル・キャンセル兼リンク・余裕 3F 以上のリンクが全体に占める割合。キャンセルの窓は一般にリンクより広く、スイープも両者を別扱いします（be1c0be）。</p>
+        <p><code>unknown</code>（フレームが足りず判定できないペア）は「余裕あり」に数えません。</p>
+      </div>
+      <div class="card">
+        <h3>④ ルートの数 <span class="w">0.10</span></h3>
+        <p>3 技ルートがそもそも何本あるか、OD・SA・ドライブラッシュを使わずに届くルートが何本あるか。<code>offline_score</code> から直接数えており、planner.lua の no-gauge プリセットの定義ではありません。</p>
+        <p>候補の本数は探索の性質でもあるので、重みは小さめです。</p>
+      </div>
+      <div class="card">
+        <h3>⑤ データの確かさ <span class="w">0.10</span></h3>
+        <p>フレームデータの結合率、ワークリストの low 確度の割合、上位ルートの推測結合ステップの割合。数字が弱いキャラは黙って順位に混ぜず、注意欄に出します。</p>
+        <p>結合の良し悪しはキャラの性質ではなくこのリポジトリの性質なので、順位を少し動かすだけにしてあります。</p>
+      </div>
+      <div class="card">
+        <h3>この表に見えていないもの</h3>
+        <ul>
+          <li>リンクの実測猶予フレーム（1 本もない）</li>
+          <li>対空・起き攻め・立ち回り・防御・ゲージ管理・相性</li>
+          <li>Classic（パイプラインは modern のみ）</li>
+          <li>beam 上限で打ち切られた探索の先にあるルート</li>
+          <li>ダメージスケーリングは未検証のモデル（順位付け専用）</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>再生成: <code>lua tools/lua/practice.lua</code>（<code>lua tools/lua/all.lua</code> の最後にも走ります）。数字は <code>docs/ComboExplorer/practice.json</code>、文章版は <a href="practice.md">practice.md</a>、一覧は <a href="index.html">index.html</a>。</div>
+    <div>ワークリスト・確度・ルート・予測ダメージはフレームデータ由来です（CC-BY-SA-4.0、docs/NOTICE.md）。実機で確かめた結果は Zangief の分だけです。</div>
+  </footer>
+</div>
+<script>
+// Column sorter. Rows carry data-sort on every cell; a cell with no number
+// sorts last whichever way the column is pointing, so "-" never wins a column.
+(function () {
+  var table = document.getElementById("ease");
+  if (!table) return;
+  var head = table.tHead.rows[0];
+  var body = table.tBodies[0];
+  Array.prototype.forEach.call(head.cells, function (th, i) {
+    var button = th.querySelector("button");
+    if (!button) return;
+    button.addEventListener("click", function () {
+      var asc = th.getAttribute("aria-sort") !== "ascending";
+      Array.prototype.forEach.call(head.cells, function (o) { o.removeAttribute("aria-sort"); });
+      th.setAttribute("aria-sort", asc ? "ascending" : "descending");
+      var rows = Array.prototype.slice.call(body.rows);
+      rows.sort(function (a, b) {
+        var x = a.cells[i], y = b.cells[i];
+        var xs = x.getAttribute("data-sort"), ys = y.getAttribute("data-sort");
+        var xn = xs === "" || xs === null ? null : parseFloat(xs);
+        var yn = ys === "" || ys === null ? null : parseFloat(ys);
+        if (xn === null && yn === null) {
+          return (x.textContent.trim()).localeCompare(y.textContent.trim()) * (asc ? 1 : -1);
+        }
+        if (xn === null) return 1;
+        if (yn === null) return -1;
+        if (xn === yn) return 0;
+        return (xn < yn ? -1 : 1) * (asc ? 1 : -1);
+      });
+      rows.forEach(function (r) { body.appendChild(r); });
+    });
+  });
+})();
+</script>
+</body>
+</html>
