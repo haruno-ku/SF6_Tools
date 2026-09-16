@@ -264,6 +264,27 @@ table.rt { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 
 .badge.open { color: var(--muted); box-shadow: inset 0 0 0 1px var(--rule); }
 .badge.flag { color: var(--v-combo_broke); box-shadow: inset 0 0 0 1px var(--v-combo_broke); margin-top: 4px; }
 
+/* What to practise. Only drawn when this character has practice plans, which
+   today means the priority character of tools/lua/all.lua --deep. Built from
+   the plan worklists and the route files already on disk, so it agrees with
+   docs/ComboExplorer/plans/*.md line for line. */
+.pr-lead { background: var(--surface); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 6px; padding: 14px 16px; display: grid; gap: 6px; }
+.pr-lead b { font-weight: 600; }
+.pr-card { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.pr-head { padding: 14px 16px; border-bottom: 1px solid var(--rule); display: grid; gap: 6px; }
+.pr-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+.pr-title h3 { margin: 0; font: 600 16px var(--f-body); }
+.pr-title code { color: var(--muted); }
+.pr-why { font-size: 13px; color: var(--muted); max-width: 72ch; }
+.pr-facts { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 12.5px; }
+.pr-facts b { font-family: var(--f-display); font-size: 15px; font-variant-numeric: tabular-nums; margin-right: 3px; }
+.pr-next { padding: 12px 16px; border-top: 1px solid var(--rule); font-size: 13px; background: var(--sunk); }
+.src { font: 500 10px/1 var(--f-mono); padding: 2px 5px; border-radius: 3px; white-space: nowrap; }
+.src.measured { background: var(--v-link); color: var(--surface); }
+.src.predicted { color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.src.default { color: var(--v-whiff); box-shadow: inset 0 0 0 1px var(--v-whiff); }
+.rt .file { font: 11px var(--f-mono); color: var(--muted); margin-top: 3px; }
+
 @media (max-width: 640px) {
   .combo { grid-template-columns: minmax(0, 1fr); }
   .combo .stats { text-align: left; grid-auto-flow: column; justify-content: start; align-items: baseline; gap: 12px; }
@@ -290,6 +311,14 @@ table.rt { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 
       <span class="rule" id="combo-rule"></span>
     </div>
     <ol class="combo-list" id="combos"></ol>
+  </section>
+
+  <section style="display:grid;gap:12px" id="practice" aria-labelledby="h-practice" hidden>
+    <div class="combos-head">
+      <h2 id="h-practice">何を練習するか</h2>
+      <span class="rule">覚えるための条件で絞ったプランと、ゲームに渡せるルートファイル。数字はすべて予測です。</span>
+    </div>
+    <div id="practice-body" style="display:grid;gap:14px"></div>
   </section>
 
   <section style="display:grid;gap:12px" aria-labelledby="h-finder">
@@ -510,6 +539,139 @@ function renderCombos() {
   }
 }
 
+/* --- what to practise --------------------------------------------- */
+//
+// MODEL.practice is present only when this character has practice plans, which
+// today means the priority character of tools/lua/all.lua --deep. Everything
+// drawn here was written by tools/lua/plan.lua into the plan worklists and the
+// route files; nothing is recomputed in the browser, so this section and
+// docs/ComboExplorer/plans/*.md cannot drift apart.
+//
+// The honesty rule of the rest of the page holds: the combo list above is what
+// the game answered, and every number below is a prediction from the frame
+// data. The lead paragraph says so with the trial count beside it, because on a
+// character with no trials that is the single most important fact on the page.
+const SRC_LABEL = {
+  measured: "計測", predicted: "予測", default: "既定",
+};
+const SRC_HELP = {
+  measured: "このペアが実際に繋がった隙間。方針が数えた試行から",
+  predicted: "runtime/Sweep がこのペアに出す隙間の候補。フレームデータからの予測で、まだ誰も押していません",
+  default: "core/Route.DEFAULT_DELAYS の総当たり範囲。計測もなく、フレームデータも窓を出せませんでした",
+};
+
+function renderPractice() {
+  const pr = MODEL.practice;
+  if (!pr) return;
+  const sec = $("practice");
+  const body = $("practice-body");
+  sec.hidden = false;
+
+  const untried = !pr.trials;
+  body.append(el("div", { class: "pr-lead" },
+    el("div", {}, el("b", { text: `${MODEL.character} はこのパイプラインの優先キャラです。` }),
+      " 探索を深くとり、覚えるための条件でプランを 3 本つくり、その上位ルートをゲームが走らせられるファイルに書き出してあります。"),
+    el("div", { class: "muted", text: untried
+      ? `ただし実機の試行ログは 0 本です。下のダメージも入力数もゲージも、すべてフレームデータからの予測で、「このコンボが出る」と確かめたものは1つもありません。隙間はどれも予測値なので、まず走らせて答えを取るところからです。`
+      : `実機のログは ${pr.trials} 本。下の数字は予測で、繋がったかどうかは上の「繋がったコンボ」と各ペアの状態が示します。` }),
+    el("div", { class: "muted", text: `ルートファイルの置き場所: ${pr.route_dir}` })));
+
+  for (const p of pr.presets) {
+    const card = el("div", { class: "pr-card" });
+    const head = el("div", { class: "pr-head" });
+    head.append(el("div", { class: "pr-title" },
+      el("h3", { text: p.label || p.name }),
+      el("code", { text: p.name }),
+      el("a", { class: "muted", href: p.plan_page, style: "font-size:12.5px", text: "プラン全文 →" })));
+    if (p.why) head.append(el("div", { class: "pr-why", text: p.why }));
+
+    const chips = el("div", { class: "chips" });
+    for (const [k, v] of Object.entries(obj(p.conditions))) {
+      chips.append(el("span", { class: "chip", text: `${k} = ${v}` }));
+    }
+    chips.append(el("span", { class: "chip", text: `sort ${p.sort}` }));
+    head.append(chips);
+
+    const s = obj(p.search);
+    const facts = el("div", { class: "pr-facts" });
+    const fact = (n, label, title) => facts.append(el("span", { title },
+      el("b", { text: String(n) }), label));
+    fact(p.available ?? "—", "条件を満たすルート", "探索が見つけたルートのうち、上の条件を全部満たしたもの");
+    fact(p.routes.length, "プラン入り", `上位 ${p.top} 本まで`);
+    fact(p.pairs ?? "—", "確かめるペア", "この上位ルートを成立させるのに必要なペアの数");
+    facts.append(el("span", { class: "muted", text:
+      `探索: beam ${s.beam ?? "—"} · 最大 ${s.max_steps ?? "—"} 手 · ${
+        s.complete === true ? "打ち切りなし（これで全部）"
+        : s.complete === false ? `打ち切りあり（beam が ${s.beam_dropped ?? "?"} 本の途中ルートを捨てた）`
+        : "打ち切りの有無は不明"}` }));
+    head.append(facts);
+    card.append(head);
+
+    const wrap = el("div", { class: "routes-table-wrap" });
+    const tb = el("table", { class: "rt" });
+    tb.append(el("thead", {}, el("tr", {},
+      el("th", { text: "#" }),
+      el("th", { text: "ルート（予測）" }),
+      el("th", { class: "dmg", text: "ダメージ（補正後）" }),
+      el("th", { class: "dmg", text: "入力" }),
+      el("th", { text: "ゲージ" }),
+      el("th", { text: "ペアの状態" }),
+      el("th", { text: "隙間の出どころ" }))));
+    const tbody = el("tbody");
+    for (const r of p.routes) {
+      const chain = el("td", {},
+        el("div", { class: "chain", text: r.notation }),
+        r.classic && r.classic !== "-" ? el("div", { class: "classic", text: r.classic }) : null,
+        r.file ? el("div", { class: "file", text: `${r.file}.json` }) : null);
+      const dmg = el("td", { class: "dmg" },
+        el("b", { text: r.sd != null ? String(r.sd) : "—" }),
+        el("small", { text: r.d != null ? `補正前 ${r.d}${r.dc === false ? "（欠けあり）" : ""}` : "" }));
+      const inputs = el("td", { class: "dmg" },
+        el("b", { text: r.inputs != null ? String(r.inputs) : "—" }),
+        el("small", { text: `${r.len ?? "?"} 手 · コスト ${r.cost ?? "—"}` }));
+      const gauge = el("td", {}, el("div", { class: "chips" },
+        ...(r.od ? [el("span", { class: "chip gauge", text: `OD ${r.od}` })] : []),
+        ...(r.sa ? [el("span", { class: "chip gauge", text: `SA ${r.sa}` })] : []),
+        ...(r.drc ? [el("span", { class: "chip gauge", text: `DRC ${r.drc}` })] : []),
+        ...(!r.od && !r.sa && !r.drc ? [el("span", { class: "chip", text: "なし" })] : [])),
+        el("div", { class: "classic", text: r.gauge || "" }));
+      const pc = el("div", { class: "chips" });
+      for (const q of (r.pairs || [])) {
+        const st = q.status || "untested";
+        pc.append(el("span", { class: `pchip ${st}`,
+          title: `${q.key}\n${q.mechanism ? `つなぎ方: ${q.mechanism}\n` : ""}${PAIR_LABEL[st] || st}: ${PAIR_HELP[st] || ""}`,
+          text: PAIR_LABEL[st] || st }));
+      }
+      const srcs = el("div", { class: "chips" });
+      if (r.gap_sources) {
+        for (const [k, n] of Object.entries(r.gap_sources)) {
+          srcs.append(el("span", { class: `src ${k}`, title: SRC_HELP[k] || "",
+            text: `${SRC_LABEL[k] || k} ${n}` }));
+        }
+      } else {
+        srcs.append(el("span", { class: "muted", style: "font-size:12px",
+          text: "ルートファイルなし" }));
+      }
+      tbody.append(el("tr", {},
+        el("td", { class: "rank", text: String(r.rank) }),
+        chain, dmg, inputs, gauge,
+        el("td", {}, pc), el("td", {}, srcs)));
+    }
+    tb.append(tbody);
+    wrap.append(tb);
+    card.append(wrap);
+
+    const open = p.unanswered ?? 0;
+    const mins = Math.round((p.pass_seconds || 0) / 60);
+    card.append(el("div", { class: "pr-next" },
+      el("b", { text: "次のスイープが答えること: " }),
+      open > 0
+        ? `このプランのワークリストにある ${p.pairs} ペアのうち ${open} ペアがまだ未回答です。1回通すとおよそ ${mins} 分（1試行3秒）で、上のルートが実際に繋がるかどうかが決まります。`
+        : `このプランのペアはすべて答えが出ています。`));
+    body.append(card);
+  }
+}
+
 /* --- route finder ------------------------------------------------ */
 // The statuses tools/lua/planner.lua folds out of the evaluations. `verified`
 // is reproduced - ConfirmedEdge stable on the runs the policy counted - not
@@ -709,6 +871,15 @@ function renderFinder() {
     + " で読んだ結果です（質問になっていない試行は数えません）。斜線は、押せない入力を含むペアか、否定の試行が全部除外されたペア。「確定コンボ」はデータベースと同じ規則（ペアは同じ隙間で2回、ルートは数えた試行で2回）。絞り込みの判定は plan.lua と同じもので、ワークリストは上のコマンドで書き出します。"
     + (rv.drc && rv.drc.total
       ? `「DRC を含める」で足されるのは、DRC の辺も入れた2回目の探索（plan.lua --drive-rush と同じ）のうち、DRC を1回以上通る ${rv.drc.total} 件です。ノーゲージは DRC を含むルートを除きます。スイープはまだ DRC を押せません。`
+      : "")
+    // What search produced this list. On the priority character it is not
+    // explore.lua's default one, and a reader comparing the count here with the
+    // count in the offline report has to be able to tell which is which.
+    + `探索: beam ${rv.beam ?? "?"}・最大 ${rv.max_steps ?? "?"} 手${rv.deep ? "（優先キャラのため既定より深い）" : ""}で ${rv.total} 件。`
+    + (rv.complete === true ? "打ち切りはなく、この設定で届くルートは全部載っています。"
+       : `beam が ${rv.beam_dropped ?? "?"} 本の途中ルートを捨てているので、これは一部です。`)
+    + (rv.drc && rv.drc.shallower
+      ? `DRC 側だけは既定の最大 ${rv.drc.max_steps} 手で、深い探索にはしていません（深くしても打ち切られたまま件数だけ膨らむため）。`
       : "");
 }
 
@@ -982,6 +1153,7 @@ function renderAll() {
 
 renderHeader();
 renderCombos();
+renderPractice();
 if (setupFinder()) renderFinder();
 renderPressSummary();
 state.cell = firstInteresting();

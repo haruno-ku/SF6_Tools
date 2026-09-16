@@ -3,13 +3,16 @@
 -- the routes that satisfy them need.
 --
 --   lua tools/lua/plan.lua --character Zangief [--scheme modern]
---       [--starter-button 中 | --starter-notation "2 + 中" | --starter-id 604]
+--       [--starter-button 中 | --starter-buttons L,M
+--        | --starter-notation "2 + 中" | --starter-id 604]
 --       [--starter-neutral] [--input-method manual|simple|assist]
+--       [--first-pair-mechanism cancel,both] [--max-execution-cost N]
 --       [--no-gauge] [--no-super] [--no-drive-rush] [--max-drive-bars N]
 --       [--min-steps N] [--max-steps N] [--min-confidence low|medium|high]
 --       [--sort scaled_damage|damage|simple|confidence] [--top 20]
 --       [--name <plan name>] [--drive-rush] [--include-verified]
 --       [--no-demote-rejected] [--routes N]
+--       [--search-steps N] [--beam N]
 --
 -- Needs Lua 5.4, the catalog and the frame data. Reads the committed trial logs
 -- if there are any. No game, no network.
@@ -59,6 +62,7 @@ local SweepReport = dofile("tools/lua/sweepreport.lua")
 local LabKnown    = dofile("tools/lua/labknown.lua")
 local LabRows     = dofile("tools/lua/labrows.lua")
 local RouteFile   = dofile("tools/lua/routefile.lua")
+local CG          = require("func/ComboExplorer/core/CandidateGenerator")
 local ConfirmedEdge = require("func/ComboExplorer/core/ConfirmedEdge")
 local RouteSearch = require("func/ComboExplorer/core/RouteSearch")
 local Route       = require("func/ComboExplorer/core/Route")
@@ -91,11 +95,12 @@ for k, v in pairs(given) do cond_opt[k] = v end
 
 local cond = Planner.conditions_from(cond_opt)
 local exclusive = 0
-for _, k in ipairs({ "starter_button", "starter_notation", "starter_id" }) do
+for _, k in ipairs({ "starter_button", "starter_buttons", "starter_notation", "starter_id" }) do
     if cond[k] ~= nil then exclusive = exclusive + 1 end
 end
 if exclusive > 1 then
-    Cli.die(TOOL, "give one of --starter-button, --starter-notation and --starter-id, not several")
+    Cli.die(TOOL, "give one of --starter-button, --starter-buttons, --starter-notation and "
+        .. "--starter-id, not several")
 end
 if not Planner.SORTS[opt.sort] then
     Cli.die(TOOL, ("--sort must be scaled_damage, damage, simple or confidence, not %q")
@@ -119,9 +124,22 @@ for _, w in ipairs(ctx.warnings) do io.stderr:write(TOOL .. ": " .. w .. "\n") e
 local gen, gerr = Pipeline.generate(ctx, { drive_rush = opt.drive_rush == true })
 if not gen then Cli.die(TOOL, gerr) end
 
--- A condition asking for longer routes than explore searches widens the search
--- to reach them, and the report says so: those routes are not in explore's list.
-local search_depth = Pipeline.DEFAULTS.max_steps
+-- How deep the search itself goes, before any condition widens it.
+--
+-- `--max-steps` is a CONDITION (line 88 puts the search depth back), so a caller
+-- that wants explore's own depth changed needs a key of its own: --search-steps.
+-- tools/lua/all.lua passes it, with a bigger --beam, for the priority character,
+-- whose search is otherwise cut short by the beam (see Batch.DEEP).
+local base_depth = tonumber(opt.search_steps)
+if opt.search_steps ~= nil and (not base_depth or base_depth < 2) then
+    Cli.die(TOOL, "--search-steps must be a number of 2 or more")
+end
+local deep_search = base_depth ~= nil and base_depth ~= Pipeline.DEFAULTS.max_steps
+if base_depth then ctx.opt.max_steps = base_depth end
+
+-- A condition asking for longer routes than the search reaches widens it, and
+-- the report says so: those routes are not in explore's list.
+local search_depth = base_depth or Pipeline.DEFAULTS.max_steps
 if type(cond.max_steps) == "number" and cond.max_steps > search_depth then
     search_depth = cond.max_steps
 end
@@ -186,8 +204,22 @@ local known = Planner.known_from(edges, model.combos, notation_of, evaluations)
 
 -- --- the plan ------------------------------------------------------------------
 
+-- What a condition needs that is not written on the route. Only the mechanism
+-- today: CandidateGenerator names it on the EDGE and RouteSearch does not copy
+-- it onto the step, so first_pair_mechanism would have nothing to read. By the
+-- edge the step came through when it names one, and by key otherwise - the same
+-- two-step lookup the worklist writer below uses.
+local index = Pipeline.edge_index(ctx)
+local env = {
+    mechanism_of = function(p)
+        local e = (p.edge_id and index.by_id[p.edge_id]) or index.by_key[p.key]
+        if not e then return nil end
+        return CG.mechanism(e)
+    end,
+}
+
 local plan, perr = Planner.plan(routes, {
-    cond = cond, sort = opt.sort, top = top, known = known,
+    cond = cond, sort = opt.sort, top = top, known = known, env = env,
     demote_rejected = opt.demote_rejected ~= false,
     include_verified = opt.include_verified == true,
 })
@@ -195,9 +227,78 @@ if not plan then Cli.die(TOOL, perr) end
 
 local name = opt.name and Planner.slug(opt.name) or Planner.default_name(cond, opt.sort, top)
 
+-- --- how a route reads --------------------------------------------------------------
+
+local function modern_chain(route)
+    local parts = {}
+    for _, s in ipairs(route.steps) do
+        if s.kind == RouteSearch.VIA_DRIVE_RUSH then parts[#parts + 1] = "[DRC]"
+        elseif s.kind ~= nil then parts[#parts + 1] = "[" .. tostring(s.kind) .. "]"
+        else parts[#parts + 1] = tostring(s.notation) end
+    end
+    return table.concat(parts, " → ")
+end
+
+local function classic_chain(route)
+    local parts, any = {}, false
+    for _, s in ipairs(route.steps) do
+        if s.kind ~= nil then parts[#parts + 1] = "DRC"
+        else
+            if s.classic then any = true end
+            parts[#parts + 1] = s.classic and tostring(s.classic) or "?"
+        end
+    end
+    return any and table.concat(parts, " → ") or "-"
+end
+
+local function gauge_of(route)
+    local s = route.offline_score
+    local bits = {}
+    if s.od_steps > 0 then bits[#bits + 1] = ("OD %d"):format(s.od_steps) end
+    if s.super_steps > 0 then bits[#bits + 1] = ("SA %d"):format(s.super_steps) end
+    if (s.drive_rush_cancel_steps or 0) > 0 then
+        bits[#bits + 1] = ("DRC %d"):format(s.drive_rush_cancel_steps)
+    end
+    if s.drive_spend_known then
+        bits[#bits + 1] = ("drive %d"):format(s.predicted_drive_spend)
+    else
+        local floor = route.basis and route.basis.predicted_drive_spend or 0
+        bits[#bits + 1] = ("drive >=%d (%d unknown)"):format(floor, s.drive_spend_unknown_steps or 0)
+    end
+    return table.concat(bits, ", ")
+end
+
+-- What the logs already say about a whole route, in one sentence.
+local function route_status(a)
+    if a.confirmed then return "confirmed combo" end
+    local bits = {}
+    if a.combo_policy == "observed_success" or a.combo_policy == "mixed" then
+        bits[#bits + 1] = "linked once as a combo"
+    elseif a.combo_status == "once" or a.combo_status == "confirmed" then
+        -- The looser count says it linked; the policy did not count enough of
+        -- those runs to call it reproduced. Both are said, because a reader
+        -- comparing this to the page has to see which rule each number is.
+        bits[#bits + 1] = "the logs list links the policy did not count"
+    end
+    if a.all_pairs_verified then
+        bits[#bits + 1] = "every pair reproduced"
+    else
+        bits[#bits + 1] = ("%d/%d pairs reproduced"):format(a.pairs_verified, a.pairs_total)
+    end
+    if #a.linked_once_pairs > 0 then
+        bits[#bits + 1] = ("linked once: %s"):format(table.concat(a.linked_once_pairs, ", "))
+    end
+    if a.has_rejected_pair then
+        bits[#bits + 1] = "REJECTED pair: " .. table.concat(a.rejected_pairs, ", ")
+    end
+    if #a.asked_badly_pairs > 0 then
+        bits[#bits + 1] = ("never asked properly: %s"):format(table.concat(a.asked_badly_pairs, ", "))
+    end
+    return table.concat(bits, "; ")
+end
+
 -- --- the worklist ------------------------------------------------------------------
 
-local index = Pipeline.edge_index(ctx)
 local items, unmatched = {}, {}
 for _, p in ipairs(plan.sweep) do
     -- By the edge the route step came through when it names one, and by key
@@ -216,6 +317,65 @@ for _, p in ipairs(plan.sweep) do
         items[#items + 1] = item
         p.item = item
     end
+end
+
+-- The chosen routes, as numbers another tool can read.
+--
+-- WHY IN THE WORKLIST. The plan's report is prose for a person; the route files
+-- are for the game and carry no prediction at all. Nothing carried "the plan
+-- picked this route, and here is what it predicts" in a form a page could read,
+-- so tools/lua/report.lua re-derived it, badly, by matching notation strings.
+-- It goes in the worklist's `plan` block because the worklist is the document
+-- that already says what this plan is, and because adding a field beside
+-- `pairs` changes nothing for a reader of ce.worklist.v1's pairs.
+--
+-- Every figure here is a PREDICTION from the frame data, the same one the
+-- report prints. `route_file` is named whether or not --routes wrote it - it is
+-- the name plan.lua would give it - and `route_file_written` says which.
+local plan_routes = {}
+for i, a in ipairs(plan.routes) do
+    local r = a.route
+    local s = r.offline_score or {}
+    local steps = {}
+    for _, st in ipairs(r.steps or {}) do
+        if st.kind ~= nil then
+            steps[#steps + 1] = { drc = true }
+        else
+            steps[#steps + 1] = { action_id = st.action_id, notation = st.notation,
+                                  classic = st.classic, input_method = st.input_method }
+        end
+    end
+    local pair_keys = {}
+    for pi, p in ipairs(Planner.route_pairs(r)) do
+        pair_keys[pi] = { key = p.key, status = a.pair_statuses and a.pair_statuses[pi] or nil,
+                          mechanism = env.mechanism_of(p) }
+    end
+    plan_routes[i] = {
+        rank = i,
+        sort_rank = a.sort_rank,
+        id = r.id,
+        notation = modern_chain(r),
+        classic = classic_chain(r),
+        steps = steps,
+        pairs = pair_keys,
+        predicted_damage_scaled = s.predicted_damage_scaled,
+        predicted_damage = s.predicted_damage,
+        predicted_damage_complete = s.predicted_damage_complete,
+        input_count = s.input_count,
+        execution_cost = s.execution_cost,
+        route_length = s.route_length,
+        hardest_motion = s.hardest_motion,
+        gauge = gauge_of(r),
+        od_steps = s.od_steps, super_steps = s.super_steps,
+        drive_rush_cancel_steps = s.drive_rush_cancel_steps,
+        predicted_drive_spend = s.predicted_drive_spend,
+        drive_spend_known = s.drive_spend_known,
+        theoretical_confidence = s.theoretical_confidence,
+        pairs_total = a.pairs_total, pairs_verified = a.pairs_verified,
+        status = route_status(a),
+        route_file = RouteFile.file_name(ctx.char_lc, opt.scheme, name, i),
+        route_file_written = (i <= want_routes) or nil,
+    }
 end
 
 local conditions_doc = {}
@@ -240,6 +400,18 @@ local wl_doc, werr = Pipeline.worklist_doc(ctx, items, {
         -- rank, and a reader expecting explore's confidence order would
         -- misread which pairs were meant to go first.
         order = "route rank: every pair of the best route first, then the next route's new pairs",
+        search = {
+            max_steps = search_depth,
+            beam = ctx.opt.beam,
+            complete = found.stats.complete,
+            beam_dropped = found.stats.beam_dropped_total,
+            truncated_routes = found.stats.truncated_routes,
+            deep = deep_search or nil,
+        },
+        available = plan.available,
+        routes = plan_routes,
+        routes_are_predictions = "every figure on a route here is predicted from the frame "
+            .. "data. Nothing in this file has been run on the game.",
     },
 })
 if not wl_doc then Cli.die(TOOL, werr) end
@@ -349,74 +521,7 @@ end
 local rep = Cli.report()
 local function say(fmt, ...) return rep:say(fmt, ...) end
 
-local function modern_chain(route)
-    local parts = {}
-    for _, s in ipairs(route.steps) do
-        if s.kind == RouteSearch.VIA_DRIVE_RUSH then parts[#parts + 1] = "[DRC]"
-        elseif s.kind ~= nil then parts[#parts + 1] = "[" .. tostring(s.kind) .. "]"
-        else parts[#parts + 1] = tostring(s.notation) end
-    end
-    return table.concat(parts, " → ")
-end
-
-local function classic_chain(route)
-    local parts, any = {}, false
-    for _, s in ipairs(route.steps) do
-        if s.kind ~= nil then parts[#parts + 1] = "DRC"
-        else
-            if s.classic then any = true end
-            parts[#parts + 1] = s.classic and tostring(s.classic) or "?"
-        end
-    end
-    return any and table.concat(parts, " → ") or "-"
-end
-
 local function cell(s) return (tostring(s):gsub("|", "\\|")) end
-
-local function gauge_of(route)
-    local s = route.offline_score
-    local bits = {}
-    if s.od_steps > 0 then bits[#bits + 1] = ("OD %d"):format(s.od_steps) end
-    if s.super_steps > 0 then bits[#bits + 1] = ("SA %d"):format(s.super_steps) end
-    if (s.drive_rush_cancel_steps or 0) > 0 then
-        bits[#bits + 1] = ("DRC %d"):format(s.drive_rush_cancel_steps)
-    end
-    if s.drive_spend_known then
-        bits[#bits + 1] = ("drive %d"):format(s.predicted_drive_spend)
-    else
-        local floor = route.basis and route.basis.predicted_drive_spend or 0
-        bits[#bits + 1] = ("drive >=%d (%d unknown)"):format(floor, s.drive_spend_unknown_steps or 0)
-    end
-    return table.concat(bits, ", ")
-end
-
-local function route_status(a)
-    if a.confirmed then return "confirmed combo" end
-    local bits = {}
-    if a.combo_policy == "observed_success" or a.combo_policy == "mixed" then
-        bits[#bits + 1] = "linked once as a combo"
-    elseif a.combo_status == "once" or a.combo_status == "confirmed" then
-        -- The looser count says it linked; the policy did not count enough of
-        -- those runs to call it reproduced. Both are said, because a reader
-        -- comparing this to the page has to see which rule each number is.
-        bits[#bits + 1] = "the logs list links the policy did not count"
-    end
-    if a.all_pairs_verified then
-        bits[#bits + 1] = "every pair reproduced"
-    else
-        bits[#bits + 1] = ("%d/%d pairs reproduced"):format(a.pairs_verified, a.pairs_total)
-    end
-    if #a.linked_once_pairs > 0 then
-        bits[#bits + 1] = ("linked once: %s"):format(table.concat(a.linked_once_pairs, ", "))
-    end
-    if a.has_rejected_pair then
-        bits[#bits + 1] = "REJECTED pair: " .. table.concat(a.rejected_pairs, ", ")
-    end
-    if #a.asked_badly_pairs > 0 then
-        bits[#bits + 1] = ("never asked properly: %s"):format(table.concat(a.asked_badly_pairs, ", "))
-    end
-    return table.concat(bits, "; ")
-end
 
 local scheme_label = opt.scheme
 say("# Route plan - %s / %s - %s", ctx.opt.character, scheme_label, name)
@@ -440,11 +545,24 @@ else
     for _, k in ipairs(cond_keys) do say("- `%s` = `%s`", k, tostring(cond[k])) end
 end
 say("- sort: `%s`, top %d", opt.sort, top)
+local depth_note = ""
+if deep_search and search_depth > base_depth then
+    depth_note = (" - %d for --search-steps, widened again for the step condition")
+        :format(base_depth)
+elseif deep_search then
+    depth_note = (" - --search-steps, deeper than explore.lua's %d")
+        :format(Pipeline.DEFAULTS.max_steps)
+elseif search_depth ~= Pipeline.DEFAULTS.max_steps then
+    depth_note = (" - widened from %d for the step condition"):format(Pipeline.DEFAULTS.max_steps)
+end
 say("- search: explore.lua's settings (%s -> %s, %s -> %s, max %d moves%s, beam %d, collapse %s)",
     ctx.opt.from_categories, ctx.opt.to_categories, ctx.opt.from_methods, ctx.opt.to_methods,
-    search_depth, search_depth ~= Pipeline.DEFAULTS.max_steps
-        and (" - widened from %d for the step condition"):format(Pipeline.DEFAULTS.max_steps) or "",
-    ctx.opt.beam, tostring(ctx.opt.collapse))
+    search_depth, depth_note, ctx.opt.beam, tostring(ctx.opt.collapse))
+say("- search complete: %s%s", tostring(found.stats.complete),
+    found.stats.complete and " - every route the settings can reach is in the list below"
+        or (" - the beam dropped %d partial route(s) and %d route(s) were not emitted, so "
+            .. "the list below is a sample"):format(found.stats.beam_dropped_total or 0,
+                                                    found.stats.truncated_routes or 0))
 say("- Drive Rush Cancel edges in the search: %s", opt.drive_rush and "yes" or
     "no (pass --drive-rush to route through them)")
 say("- demote routes through a rejected pair: %s", opt.demote_rejected ~= false and "yes" or "no")

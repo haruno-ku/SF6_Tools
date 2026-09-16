@@ -204,8 +204,31 @@ end
 
 local KEEP, REMOVE, FLAG = "keep", "remove", "flag"
 
+-- "cancel,both" -> { cancel = true, both = true }, in the order given. A list of
+-- one is the same thing as a plain value, so a condition that takes a list also
+-- takes a single word.
+local function set_of(want)
+    local set, order = {}, {}
+    for part in tostring(want):gmatch("[^,]+") do
+        local w = part:match("^%s*(.-)%s*$")
+        if w ~= "" and not set[w] then
+            set[w] = true
+            order[#order + 1] = w
+        end
+    end
+    return set, order
+end
+M.set_of = set_of
+
 -- Each returns KEEP, REMOVE, or FLAG plus a reason. FLAG keeps the route: it is
 -- the verdict for "this condition could not be judged on what the source has".
+--
+-- The third argument is the ENV: what a condition needs that is not on the route
+-- itself. Only first_pair_mechanism uses it today - CandidateGenerator names a
+-- mechanism on the EDGE, and RouteSearch does not copy it onto the step - so a
+-- caller with no env gets a flag rather than a guess. tools/lua/plan.lua builds
+-- it from Pipeline.edge_index; the page's route finder does not, and does not
+-- offer the condition.
 local FILTERS = {}
 
 FILTERS.starter_id = function(route, want)
@@ -236,6 +259,26 @@ FILTERS.starter_button = function(route, want)
     local name = button_name(want)
     for _, b in ipairs(parsed.buttons) do
         if b == name then return KEEP end
+    end
+    return REMOVE
+end
+
+-- ANY of the buttons, with any direction: "L,M" keeps 弱, 2 + 弱, 中, 6 + 中 and
+-- drops 强. starter_button is the same rule for one button; this one exists
+-- because "a light or a medium starter" is one condition a player states, and
+-- two runs of starter_button are two plans.
+FILTERS.starter_buttons = function(route, want)
+    local s = first_move(route)
+    if not s then return FLAG, "the route has no first move to compare" end
+    local parsed = InputMask.parse(s.notation or "")
+    if not parsed then
+        return FLAG, ("the first move's notation %q could not be read"):format(tostring(s.notation))
+    end
+    local _, order = set_of(want)
+    local wanted = {}
+    for _, w in ipairs(order) do wanted[button_name(w)] = true end
+    for _, b in ipairs(parsed.buttons) do
+        if wanted[b] then return KEEP end
     end
     return REMOVE
 end
@@ -280,6 +323,50 @@ end
 
 FILTERS.max_steps = function(route, want)
     return (length_of(route) <= want) and KEEP or REMOVE
+end
+
+-- Scoring's execution_cost, at or under a number. The cut a caller usually
+-- passes is tools/lua/practicescore.lua's cheap-route quantile over the whole
+-- roster, which is why this takes a number rather than naming one: the cut is a
+-- measurement of the roster and belongs to whoever computed it.
+--
+-- A route with no execution_cost is kept and flagged. Scoring writes one for
+-- every route it scores, so an absence means the route was not scored, and
+-- "unscored" is not "expensive".
+FILTERS.max_execution_cost = function(route, want)
+    local s = route.offline_score or {}
+    local have = tonumber(s.execution_cost)
+    if not have then return FLAG, "the route carries no execution_cost" end
+    return (have <= want) and KEEP or REMOVE
+end
+
+-- The mechanism of the route's FIRST pair, against a list of them: "cancel" or
+-- "cancel,both". CandidateGenerator.MECHANISM's four words are the vocabulary -
+-- link, cancel, both, unknown - and `both` is a pair that has a cancel AND a
+-- link margin, so a hit-confirm condition usually wants "cancel,both".
+--
+-- Why the first pair: confirming a hit means seeing the starter land and then
+-- cancelling it. A link there is a fixed window you commit to before you can
+-- see anything; a cancel is the one the game holds open while the hit is on
+-- screen. The rest of the route is not part of that question.
+--
+-- Flags rather than removes when it cannot be judged: no env (the caller did not
+-- supply the edges), no pair at all, or an edge nobody could find for the pair.
+-- A DRC pair is judged like any other - its edge has a mechanism too.
+FILTERS.first_pair_mechanism = function(route, want, env)
+    local pairs_list = M.route_pairs(route)
+    local p = pairs_list[1]
+    if not p then return FLAG, "the route has no pair to judge" end
+    local lookup = env and env.mechanism_of
+    if not lookup then
+        return FLAG, "this run supplied no candidate edges, so no pair has a mechanism"
+    end
+    local mech = lookup(p)
+    if mech == nil then
+        return FLAG, ("no candidate edge carries `%s`, so its mechanism is unknown"):format(p.key)
+    end
+    local set = set_of(want)
+    return set[mech] and KEEP or REMOVE
 end
 
 FILTERS.min_confidence = function(route, want)
@@ -356,10 +443,16 @@ end
 -- Applied in this order, so the report reads from the most specific cut to the
 -- broadest and the counts are reproducible.
 M.FILTER_ORDER = {
-    "starter_id", "starter_notation", "starter_button", "starter_neutral",
-    "input_method", "min_steps", "max_steps", "min_confidence",
+    "starter_id", "starter_notation", "starter_button", "starter_buttons", "starter_neutral",
+    "first_pair_mechanism",
+    "input_method", "min_steps", "max_steps", "max_execution_cost", "min_confidence",
     "no_super", "no_drive_rush", "no_gauge", "max_drive_bars",
 }
+
+-- The vocabulary first_pair_mechanism takes, named here rather than imported so
+-- a typo in a preset is refused at the command line instead of removing every
+-- route. CandidateGenerator.MECHANISM is the producer; these are the same four.
+M.MECHANISMS = { link = true, cancel = true, both = true, unknown = true }
 
 -- Refused rather than ignored: a mistyped condition that is silently dropped
 -- runs the plan without it and the report does not say so.
@@ -374,9 +467,25 @@ local function validate(cond)
         if k == "min_confidence" and not Schema.confidence_rank(v) then
             return nil, ("min_confidence must be low, medium or high, not %q"):format(tostring(v))
         end
-        if (k == "max_drive_bars" or k == "min_steps" or k == "max_steps" or k == "starter_id")
-            and type(v) ~= "number" then
+        if (k == "max_drive_bars" or k == "min_steps" or k == "max_steps" or k == "starter_id"
+            or k == "max_execution_cost") and type(v) ~= "number" then
             return nil, ("%s must be a number, not %q"):format(k, tostring(v))
+        end
+        if k == "first_pair_mechanism" then
+            local _, order = set_of(v)
+            if #order == 0 then
+                return nil, "first_pair_mechanism needs at least one mechanism"
+            end
+            for _, w in ipairs(order) do
+                if not M.MECHANISMS[w] then
+                    return nil, ("first_pair_mechanism must be link, cancel, both or unknown, "
+                        .. "not %q"):format(tostring(w))
+                end
+            end
+        end
+        if k == "starter_buttons" then
+            local _, order = set_of(v)
+            if #order == 0 then return nil, "starter_buttons needs at least one button" end
         end
     end
     return true
@@ -384,13 +493,16 @@ end
 
 -- routes : scored ce.route.v1 records (offline_score attached)
 -- cond   : any of FILTER_ORDER. nil or false leaves a condition off.
+-- env    : what a condition needs that is not on the route. Optional; a
+--          condition that needs it and does not have it flags every route.
+--          env.mechanism_of(pair) -> mechanism | nil
 --
 -- Returns kept, report - or nil, err for a condition that is not one.
 --   report.input    how many routes came in
 --   report.kept     how many survived every filter
 --   report.steps    { name, value, before, removed, after, flagged } per filter applied
 --   report.flags    { [route_id] = { { filter, reason }, ... } } for routes kept on a gap
-function M.filter(routes, cond)
+function M.filter(routes, cond, env)
     cond = cond or {}
     local ok, err = validate(cond)
     if not ok then return nil, err end
@@ -405,7 +517,7 @@ function M.filter(routes, cond)
             local fn = FILTERS[name]
             local kept, flagged = {}, 0
             for _, r in ipairs(current) do
-                local verdict, why = fn(r, want)
+                local verdict, why = fn(r, want, env)
                 if verdict ~= REMOVE then
                     kept[#kept + 1] = r
                     if verdict == FLAG then
@@ -1047,7 +1159,7 @@ end
 --                          and demotion moved below it, in sort order
 function M.plan(routes, args)
     args = args or {}
-    local kept, freport = M.filter(routes, args.cond)
+    local kept, freport = M.filter(routes, args.cond, args.env)
     if not kept then return nil, freport end
     local ranked, rinfo = M.rank(kept, args.sort)
     if not ranked then return nil, rinfo end
@@ -1142,7 +1254,12 @@ function M.conditions_from(opt)
             and (M.from_ansi(tostring(opt.starter_notation))) or nil,
         starter_button = opt.starter_button ~= nil
             and (M.from_ansi(tostring(opt.starter_button))) or nil,
+        starter_buttons = opt.starter_buttons ~= nil
+            and (M.from_ansi(tostring(opt.starter_buttons))) or nil,
         starter_neutral = opt.starter_neutral == true or nil,
+        first_pair_mechanism = opt.first_pair_mechanism ~= nil
+            and tostring(opt.first_pair_mechanism) or nil,
+        max_execution_cost = tonumber(opt.max_execution_cost),
         input_method = opt.input_method,
         min_steps = opt.min_steps,
         max_steps = opt.max_steps,
@@ -1180,10 +1297,23 @@ function M.default_name(cond, sort, top)
         parts[#parts + 1] = "starter-" .. spelled
     end
     if cond.starter_button then parts[#parts + 1] = "starter-" .. button_name(cond.starter_button) end
+    if cond.starter_buttons then
+        local _, order = set_of(cond.starter_buttons)
+        local names = {}
+        for i, w in ipairs(order) do names[i] = button_name(w) end
+        parts[#parts + 1] = "starter-" .. table.concat(names, "")
+    end
     if cond.starter_neutral then parts[#parts + 1] = "neutral" end
+    if cond.first_pair_mechanism then
+        local _, order = set_of(cond.first_pair_mechanism)
+        parts[#parts + 1] = "first-" .. table.concat(order, "")
+    end
     if cond.input_method then parts[#parts + 1] = cond.input_method end
     if cond.min_steps then parts[#parts + 1] = "min" .. cond.min_steps end
     if cond.max_steps then parts[#parts + 1] = "max" .. cond.max_steps end
+    if cond.max_execution_cost then
+        parts[#parts + 1] = ("cost%g"):format(cond.max_execution_cost)
+    end
     if cond.min_confidence then parts[#parts + 1] = cond.min_confidence end
     if cond.no_gauge then parts[#parts + 1] = "nogauge" end
     if cond.no_super then parts[#parts + 1] = "nosuper" end

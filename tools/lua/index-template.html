@@ -127,6 +127,20 @@ table.chars { border-collapse: collapse; width: 100%; font-size: 13px; }
 .plans { display: grid; gap: 3px; }
 .plan { font: 12px/1.3 var(--f-mono); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .plan i { font: normal 11px var(--f-body); color: var(--muted); display: inline-block; min-width: 6.5em; }
+/* The priority character. One row, pinned to the top by tools/lua/batch.lua's
+   priority_first, marked so a reader scrolling past knows why it is first. */
+.plan.practice i { color: var(--v-link); }
+tr.pri > td { background: color-mix(in srgb, var(--v-link) 8%, transparent); }
+tr.pri > td:first-child { box-shadow: inset 3px 0 0 var(--v-link); }
+.pri-badge { display: inline-block; font: 600 10px/1.6 var(--f-body); letter-spacing: .08em;
+  padding: 0 6px; margin-bottom: 4px; border-radius: 3px; color: var(--surface);
+  background: var(--v-link); }
+.deep { display: block; font: 11px var(--f-mono); color: var(--muted); }
+.priority-note { border: 1px solid var(--line); border-left: 3px solid var(--v-link);
+  border-radius: 4px; padding: 10px 12px; margin-top: 12px; background: var(--surface); }
+.priority-note b { font-weight: 600; }
+.priority-note ol { margin: 6px 0 0; padding-left: 1.4em; }
+.priority-note li { margin: 2px 0; }
 
 abbr.cut { text-decoration: none; color: var(--v-combo_broke); font-weight: 600; margin-left: 2px; cursor: help; }
 .notes { margin: 0; padding-left: 16px; font-size: 12px; color: var(--muted); display: grid; gap: 2px; min-width: 220px; max-width: 360px; }
@@ -165,6 +179,7 @@ footer { font-size: 12px; color: var(--muted); display: grid; gap: 6px; border-t
     <h1>キャラクター一覧</h1>
     <p>31 キャラクターそれぞれの、スイープに渡すワークリストと候補ルート、そして実機で確かめた結果です。ワークリスト・ルート・プランはフレームデータからの予測で、コンボではありません。「確定」に数えるのはゲームが繋がったと答えたものだけです。</p>
     <p class="alsosee"><a href="practice.html">コンボ操作のラクさ（予測）ランキング →</a> <span class="muted">同じデータから、31 キャラを「コンボを覚えやすそうな順」に並べたもの。計測した難易度ではなく予測です（<a href="practice.md">practice.md</a>）。</span></p>
+<!--__PRIORITY__-->
   </header>
 
   <section class="tiles" aria-label="合計">

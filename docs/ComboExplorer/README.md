@@ -324,10 +324,50 @@ the runbook.
 lua tools/lua/all.lua                 # all 31, 4 processes, about 7 minutes
 lua tools/lua/all.lua --only Ryu,Ken  # just these; the index keeps the rest
 lua tools/lua/all.lua --index-only    # rebuild the index from characters.json
+lua tools/lua/all.lua --no-deep       # nobody gets the priority treatment
 ```
 
 A character that fails is reported and the run carries on; step logs are in
 `candidates/_batch/logs/`. Modern only — Classic is future work.
+
+### The priority character
+
+`--deep <Character>` names the one character somebody is actually practising
+with. It defaults to **Ryu** (`batch.lua`'s `DEFAULT_PRIORITY`), and only that
+character gets:
+
+| | |
+|---|---|
+| a deeper search | beam 60,000 and routes up to 4 moves (`batch.lua`'s `DEEP`), for explore, every plan and the page's route finder, so all three quote the same route list |
+| the practice presets | `easy-damage`, `hit-confirm`, `no-gauge-3` — conditions for learning a character, beside the three for finding the strongest route |
+| route files | the best three routes of each practice preset, written as `ce.route.v1` under `reframework/data/ComboExplorer_data/route/` |
+| a page section | "何を練習するか" on the character's report page, and a pinned row with a badge on the index |
+
+The settings were chosen by measuring, not by rounding up. On Ryu (551
+candidate edges):
+
+| beam | max moves | routes | search | time |
+|---:|---:|---:|---|---:|
+| 4,000 | 3 | 1,092 | **cut short** — 334 partial routes dropped | 4s |
+| 20,000 | 3 | 1,126 | complete | 5s |
+| 20,000 | 4 | 3,528 | **cut short** — 15,462 dropped | 12s |
+| 60,000 | 4 | 4,538 | complete | 13s |
+
+60,000/4 is the first setting that finishes. A deeper search that still
+truncates would leave the route list exactly as unreliable as the default one,
+and nothing on the page would say which. The Drive Rush pass is deliberately
+*not* deepened: at those settings it finds 15,387 rush routes and is still cut
+short, for a mechanic the sweep cannot press yet.
+
+`easy-damage` needs a number `all.lua` does not compute — the roster's
+cheap-route cut, the 25th percentile of every scored route's `execution_cost`
+across all 31 characters. `practice.lua` writes it into `practice.json` at the
+end of a run, so a run reads the previous one's figure and each plan's report
+says which. With no `practice.json` the preset is refused rather than run
+without its cut.
+
+The other 30 characters are untouched: same beam, same depth, same three
+presets, and the batch stays at three to five minutes.
 
 **Regenerating the frame data** (needs `external-data/`, which is not committed):
 

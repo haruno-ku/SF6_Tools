@@ -6,6 +6,7 @@
 --                            [--data reframework/data/ComboExplorer_data]
 --                            [--out docs/ComboExplorer/sweep-report-<char>-<scheme>.html]
 --                            [--no-drive-rush] [--summary <path.json>]
+--                            [--beam N] [--search-steps N]
 --
 -- Needs Lua 5.4 and the logs the sweep wrote. No game, no network. The page it
 -- writes is self-contained: open it in a browser, or publish it as it is.
@@ -154,8 +155,27 @@ local LabKnown  = dofile("tools/lua/labknown.lua")
 local LabRows   = dofile("tools/lua/labrows.lua")
 local RouteView = dofile("tools/lua/routeview.lua")
 
+-- The search the finder runs on. Explore's own settings unless the caller
+-- widens them, which tools/lua/all.lua does for the priority character so the
+-- page's route list is the same list its offline report and its plans are
+-- talking about. A page quoting 1,092 routes beside a report quoting 4,538 is a
+-- page a reader has to reconcile.
+--
+-- The Drive Rush pass is NOT widened, and the page says so. At beam 60,000 and
+-- four moves Ryu's rush search finds 15,387 rush routes and is STILL cut short
+-- by the beam - a page three times the size, no more complete than the cheap
+-- one, for a mechanic nothing can press yet (Schema.RUNTIME_UNKNOWNS.DRIVE_RUSH).
+local FINDER = {
+    beam = tonumber(opt.beam) or Pipeline.DEFAULTS.beam,
+    max_steps = tonumber(opt.search_steps) or Pipeline.DEFAULTS.max_steps,
+}
+if FINDER.max_steps < 2 then Cli.die("report", "--search-steps must be 2 or more") end
+FINDER.deep = (FINDER.beam ~= Pipeline.DEFAULTS.beam)
+    or (FINDER.max_steps ~= Pipeline.DEFAULTS.max_steps)
+
 local function load_pipeline()
-    local ctx, lerr = Pipeline.load({ character = entry.catalog, scheme = opt.scheme })
+    local ctx, lerr = Pipeline.load({ character = entry.catalog, scheme = opt.scheme,
+                                      beam = FINDER.beam })
     if not ctx then error(tostring(lerr), 0) end
     -- Generated once, with the Drive Rush Cancel edges. The plain edges are the
     -- same either way (explore.lua's --drive-rush promise), and a plain search
@@ -289,7 +309,7 @@ local function route_finder()
     if not pipe then return nil, pipeline_error end
     local ctx = pipe.ctx
     if not ctx.idx then return nil, ctx.warnings[1] end
-    local all, found = Pipeline.search(ctx, {})
+    local all, found = Pipeline.search(ctx, { max_steps = FINDER.max_steps })
 
     local function verdict(r, cond)
         local kept, rep = Planner.filter({ r }, cond)
@@ -373,7 +393,8 @@ local function route_finder()
     -- no longer embeds.
     local drc_info
     if opt.drive_rush ~= false then
-        local ok, droutes, dfound = pcall(Pipeline.search, ctx, { drive_rush = true })
+        local ok, droutes, dfound = pcall(Pipeline.search, ctx,
+            { drive_rush = true, max_steps = Pipeline.DEFAULTS.max_steps })
         if ok then
             local only = {}
             for _, r in ipairs(droutes) do
@@ -383,7 +404,9 @@ local function route_finder()
             end
             add_rows((Planner.rank(only, "scaled_damage")))
             drc_info = { total = #only, edges = #(ctx.drc_edges or {}),
-                         complete = dfound.stats.complete }
+                         complete = dfound.stats.complete,
+                         max_steps = Pipeline.DEFAULTS.max_steps,
+                         shallower = FINDER.deep or nil }
         else
             drc_info = { error = tostring(droutes) }
         end
@@ -394,6 +417,9 @@ local function route_finder()
         moves = packed.moves, pairs = packed.pairs, rows = packed.rows,
         starters = starters, total = plain_total,
         complete = found.stats.complete,
+        beam = FINDER.beam, max_steps = FINDER.max_steps, deep = FINDER.deep or nil,
+        beam_dropped = found.stats.beam_dropped_total,
+        truncated_routes = found.stats.truncated_routes,
         drc = drc_info,
         sort_field = rinfo.field, sort_fallback = rinfo.fallback or nil,
         scaling_model = ranked[1] and ranked[1].offline_score
@@ -406,6 +432,92 @@ if ok_rf and finder then
     model.routes_view = finder
 else
     model.routes_view_error = tostring(ok_rf and ferr or finder)
+end
+
+-- --- what to practise ------------------------------------------------------------
+--
+-- The practice plans, if this character has any. Only the priority character
+-- does (tools/lua/all.lua --deep), and the test for "is this the priority
+-- character" is deliberately "are the plan files there" rather than a name
+-- written here: a page built from files on disk should describe the files on
+-- disk. A character with no practice plans gets no section, not an empty one.
+--
+-- Everything read here was WRITTEN by tools/lua/plan.lua, which had the scored
+-- routes in memory. Nothing is re-derived: an earlier draft matched plans to
+-- routes by comparing notation strings, and a page that quietly matched the
+-- wrong route would put a damage figure under a combo that does not produce it.
+--
+-- The route files are read for one thing the plan does not carry: where each
+-- gap's delays came from. That is the per-gap provenance routefile.lua writes -
+-- measured, predicted or default - and on a character with no trials it is
+-- "predicted" or "default" the whole way down, which the page says out loud.
+local function practice_view()
+    local Batch = dofile("tools/lua/batch.lua")
+    local out, any = {}, false
+    for _, p in ipairs(Batch.PRACTICE_PRESETS) do
+        local wl = json.load_file(("%s/worklist/%s-%s-plan-%s.json")
+            :format(opt.data, char_lc, opt.scheme, p.name))
+        local plan = wl and wl.plan
+        if plan and type(plan.routes) == "table" then
+            any = true
+            local routes = {}
+            for _, r in ipairs(plan.routes) do
+                local gaps, sources = nil, nil
+                if r.route_file_written then
+                    local doc = json.load_file(("%s/route/%s.json"):format(opt.data, r.route_file))
+                    if doc and type(doc.gaps) == "table" then
+                        gaps, sources = {}, {}
+                        for gi, g in ipairs(doc.gaps) do
+                            gaps[gi] = { pair = g.pair, source = g.source, why = g.why,
+                                         n = type(g.delays) == "table" and #g.delays or nil }
+                            sources[g.source] = (sources[g.source] or 0) + 1
+                        end
+                    end
+                end
+                routes[#routes + 1] = {
+                    rank = r.rank, notation = r.notation, classic = r.classic,
+                    sd = r.predicted_damage_scaled, d = r.predicted_damage,
+                    dc = r.predicted_damage_complete,
+                    inputs = r.input_count, cost = r.execution_cost,
+                    len = r.route_length, gauge = r.gauge,
+                    od = r.od_steps, sa = r.super_steps, drc = r.drive_rush_cancel_steps,
+                    conf = r.theoretical_confidence,
+                    pairs = r.pairs, status = r.status,
+                    pairs_total = r.pairs_total, pairs_verified = r.pairs_verified,
+                    file = r.route_file_written and r.route_file or nil,
+                    gaps = gaps, gap_sources = sources,
+                }
+            end
+            -- What the next sweep would answer: the pairs in this plan's
+            -- worklist that no counted run has settled yet, and what a pass of
+            -- them costs at the runbook's three seconds a trial.
+            local untested, statuses = 0, {}
+            for _, item in ipairs(wl.pairs or {}) do
+                local s = tostring(item.known_status or "untested")
+                statuses[s] = (statuses[s] or 0) + 1
+                if s ~= "verified" and s ~= "rejected" then untested = untested + 1 end
+            end
+            out[#out + 1] = {
+                name = p.name, label = p.label, why = p.why,
+                conditions = plan.conditions, sort = plan.sort, top = plan.top,
+                search = plan.search, available = plan.available,
+                pairs = wl.count, pair_statuses = statuses, unanswered = untested,
+                pass_seconds = (wl.count or 0) * Batch.SECONDS_PER_TRIAL,
+                plan_page = ("plans/%s-%s-%s.md"):format(char_lc, opt.scheme, p.name),
+                routes = routes,
+            }
+        end
+    end
+    if not any then return nil end
+    return { presets = out, trials = #logs,
+             route_dir = "reframework/data/ComboExplorer_data/route/" }
+end
+
+local ok_pv, practice = pcall(practice_view)
+if ok_pv and practice then
+    model.practice = practice
+elseif not ok_pv then
+    model.practice_error = tostring(practice)
 end
 
 -- --- what a page with no trials does not need --------------------------------

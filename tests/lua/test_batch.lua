@@ -203,12 +203,123 @@ t.ok(perr and perr:find("TOTALS", 1, true), "naming the marker")
 local evil = B.row({ catalog = "<script>", fighter_id = 1 }, "modern", nil, nil, nil, {}, nil, {})
 t.ok(not B.index_rows_html({ evil }):find("<script>", 1, true), "names are escaped")
 
+-- --- the priority character ---------------------------------------------------------
+--
+-- One character gets a deeper search, the practice presets and route files. The
+-- quiet failure worth a test is a row that carries the badge without the
+-- explanation, or a preset whose computed cost cut went missing and ran as "no
+-- condition at all" - a plan of the wrong thing that looks exactly right.
+
+t.group("presets and their variables")
+
+t.eq(#B.presets_for(false), #B.PRESETS, "an ordinary character gets the standard presets")
+t.eq(#B.presets_for(true), #B.PRESETS + #B.PRACTICE_PRESETS, "the priority character gets both sets")
+t.eq(B.presets_for(true)[1].name, B.PRESETS[1].name, "standard first, so the columns do not move")
+
+local names = {}
+for _, p in ipairs(B.PRACTICE_PRESETS) do names[#names + 1] = p.name end
+t.eq_list(names, { "easy-damage", "hit-confirm", "no-gauge-3" }, "the three practice presets")
+for _, p in ipairs(B.PRACTICE_PRESETS) do
+    t.ok(type(p.why) == "string" and #p.why > 0, p.name .. " says what it is for")
+    t.ok(type(p.routes) == "number" and p.routes > 0, p.name .. " asks for route files")
+end
+
+local easy = B.PRACTICE_PRESETS[1]
+local args = B.preset_args(easy, { [B.VAR.CHEAP_CUT] = 6 })
+t.eq_list(args, { "--no-gauge", "--max-execution-cost", "6", "--sort", "scaled_damage", "--top", "20" },
+    "a variable is substituted as the value the command line wants")
+local none, missing = B.preset_args(easy, {})
+t.is_nil(none, "a preset whose variable nobody supplied is refused, not run without it")
+t.eq(missing, B.VAR.CHEAP_CUT, "naming the variable")
+t.eq_list(B.preset_args(B.PRACTICE_PRESETS[3], {}),
+    { "--no-gauge", "--min-steps", "3", "--max-steps", "3", "--sort", "scaled_damage", "--top", "20" },
+    "a preset with no variables needs no table")
+
+t.group("deep search arguments")
+
+t.eq_list(B.deep_args("explore"),
+    { "--beam", tostring(B.DEEP.beam), "--max-steps", tostring(B.DEEP.max_steps) },
+    "explore's --max-steps IS the search depth")
+t.eq_list(B.deep_args("plan"),
+    { "--beam", tostring(B.DEEP.beam), "--search-steps", tostring(B.DEEP.max_steps) },
+    "plan's --max-steps is a condition, so its depth is --search-steps")
+t.eq_list(B.deep_args("report"), B.deep_args("plan"), "the page's finder takes plan's spelling")
+t.eq_list(B.deep_args("something-else"), {}, "an unknown tool gets nothing rather than a guess")
+t.ok(B.DEEP.beam > 4000 and B.DEEP.max_steps > 3, "the deep settings are deeper than explore's")
+
+t.group("a priority row")
+
+local deep_plan = {
+    count = 9,
+    plan = { search = { beam = B.DEEP.beam, max_steps = B.DEEP.max_steps, complete = true },
+             available = 2373 },
+}
+local plans_pri = { ["max-damage"] = { count = 12 }, ["easy-damage"] = deep_plan,
+                    ["hit-confirm"] = { count = 4, plan = { search = { complete = true } } } }
+local pri = B.row({ catalog = "Ryu", fighter_id = 1 }, "modern",
+    { candidates = 551, routes = 4538, frame_data = true }, { count = 551, pairs = {} },
+    nil, plans_pri, nil, nil, { priority = true, route_files = 9 })
+t.ok(pri.priority, "the row says it is the priority character")
+t.eq(pri.practice_plans["easy-damage"], 9, "and carries the practice plans' pair counts")
+t.eq(pri.route_files, 9, "and how many route files the game can run")
+t.eq(pri.deep.beam, B.DEEP.beam, "the deep settings come off the plan that ran, not the constant")
+t.eq(pri.deep.routes, 2373, "with how many routes satisfied its conditions")
+t.eq(pri.plans["max-damage"], 12, "the standard plans are unchanged")
+
+local plain = B.row({ catalog = "Luke", fighter_id = 2 }, "modern", nil, nil, nil, {}, nil, nil)
+t.is_nil(plain.priority, "an ordinary row is not marked")
+t.is_nil(plain.practice_plans, "and carries no practice plans")
+t.is_nil(plain.deep, "and no deep settings")
+
+local cut_short = B.row({ catalog = "Ryu", fighter_id = 1 }, "modern", nil, nil, nil,
+    { ["easy-damage"] = { count = 3, plan = { search = { beam = 60000, max_steps = 4,
+                                                         complete = false } } } },
+    nil, nil, { priority = true })
+local said = table.concat(cut_short.notes, " ")
+t.ok(said:find("打ち切", 1, true), "a deep search that STILL truncates is a note on the priority row")
+t.is_nil(table.concat(pri.notes, " "):find("打ち切", 1, true),
+    "a search that finished is not")
+
+t.group("priority_first")
+
+local ordered = B.priority_first({ plain, pri, { character = "Zangief" } })
+t.eq(ordered[1].character, "Ryu", "the priority character is pinned to the top")
+t.eq(ordered[2].character, "Luke", "and the rest keep the order they came in")
+t.eq(#ordered, 3, "nobody is lost")
+t.eq(B.priority_first({ plain })[1].character, "Luke", "with no priority row nothing moves")
+
+t.group("the index says what priority means")
+
+local pri_tpl = "<t><!--__TOTALS__--></t><p><!--__PRIORITY__--></p><r><!--__ROWS__--></r>"
+local pri_page = B.render_index(pri_tpl, { plain, pri })
+t.ok(pri_page:find("優先キャラ: Ryu", 1, true), "the note names the character")
+t.ok(pri_page:find("beam 60,000", 1, true), "and the search it ran")
+t.ok(pri_page:find("easy-damage", 1, true), "and the practice presets")
+t.ok(pri_page:find("9 本", 1, true), "and how many route files are ready")
+t.ok(pri_page:find('<tr class="pri">', 1, true), "the row is marked")
+t.ok(pri_page:find("pri-badge", 1, true), "with a badge")
+t.ok(pri_page:find("Ryu", 1, true) < pri_page:find("Luke", 1, true), "and drawn first")
+
+t.eq(B.priority_note_html({ plain }), "", "no priority row, no explanation")
+local plain_page = B.render_index("<t><!--__TOTALS__--></t><r><!--__ROWS__--></r>", { plain })
+t.ok(plain_page ~= nil, "a template with no priority marker is fine when nothing is priority")
+local refused, rerr = B.render_index("<t><!--__TOTALS__--></t><r><!--__ROWS__--></r>", { pri })
+t.is_nil(refused, "but a priority row with nowhere to explain it is refused")
+t.ok(rerr and rerr:find("PRIORITY", 1, true), "naming the marker")
+
 t.group("characters.md")
 
 local md = B.render_characters_md({ row, failed }, "modern")
 t.ok(md:find("[Ryu](sweep-report-ryu-modern.html)", 1, true), "links the page")
 t.ok(md:find("[12](plans/ryu-modern-max-damage.md)", 1, true), "links a plan with its pair count")
 t.ok(md:find("**Guile**", 1, true), "lists a character with notes")
+t.ok(not md:find("★", 1, true), "no star when no character is the priority one")
+
+local pri_md = B.render_characters_md({ failed, pri }, "modern")
+t.ok(pri_md:find("★ ", 1, true), "the priority character is starred")
+t.ok(pri_md:find("`★` 優先キャラ", 1, true), "and the star is explained")
+t.ok(pri_md:find("plans/ryu-modern-easy-damage.md", 1, true), "linking each practice plan")
+t.ok(pri_md:find("★ ", 1, true) < pri_md:find("| Guile", 1, true), "and listed first")
 
 t.group("runbook table")
 

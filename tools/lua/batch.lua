@@ -28,6 +28,122 @@ M.PRESETS = {
     { name = "starter-chu", label = "中始動", args = { "--starter-button", "M", "--top", "20" } },
 }
 
+-- --- the priority character ---------------------------------------------------------
+--
+-- One character the offline pipeline is tuned for, because somebody is actually
+-- practising with them. Everything below is what "priority" buys, and the index
+-- page says the same three things in the same order:
+--
+--   1. a deeper search (M.DEEP), run to completion rather than cut by the beam
+--   2. the practice presets (M.PRACTICE_PRESETS) beside the three standard ones
+--   3. route files the game can run, for the practice presets' best routes
+--
+-- Nothing here changes what the other 30 characters get. A deep run costs about
+-- 15 seconds a plan against 4, and six presets instead of three, so one deep
+-- character adds roughly a minute and a half to a batch that runs four lanes in
+-- parallel - the batch stays the three to five minutes it was.
+M.DEFAULT_PRIORITY = "Ryu"
+
+-- MEASURED on Ryu (551 candidate edges), Lua 5.4, one lane:
+--
+--   beam  4000, max 3 moves   1092 routes, INCOMPLETE (334 partials dropped)   4s
+--   beam 20000, max 3 moves   1126 routes, complete                            5s
+--   beam 20000, max 4 moves   3528 routes, INCOMPLETE (15462 dropped)         12s
+--   beam 60000, max 4 moves   4538 routes, complete                           13s
+--
+-- 60000/4 is the first setting that finishes: no partial route is dropped and
+-- no route goes unemitted, so "4538" is every route the generation rules can
+-- reach rather than a sample of them. It is chosen for that and not for being
+-- big - a deeper search that still truncates would leave the route list exactly
+-- as unreliable as the default one, and the reader could not tell.
+M.DEEP = { beam = 60000, max_steps = 4 }
+
+-- A plan preset's `args` can name a value the batch computes rather than one
+-- written here. Today only the cheap-route cut, which is a measurement OF THE
+-- WHOLE ROSTER (tools/lua/practicescore.lua's 25th percentile of every scored
+-- route's execution_cost, which tools/lua/practice.lua writes into
+-- practice.json as settings.cheap_threshold). Writing 6.00 here would freeze
+-- last month's roster into a preset.
+M.VAR = { CHEAP_CUT = "@cheap-cut" }
+
+-- Plans for LEARNING a character, as against the three above, which are for
+-- finding the strongest thing on the list. Run for the priority character only.
+--
+-- Each says what a person would be asking for out loud, and the conditions are
+-- the whole of the answer - nothing is hand-picked afterwards.
+M.PRACTICE_PRESETS = {
+    {
+        name = "easy-damage", label = "簡単・高火力", routes = 3,
+        why = "no gauge, and only routes the roster's own cheap cut calls cheap to "
+            .. "execute, ordered by predicted scaled damage. The most damage available "
+            .. "from the easy half of what this character can do.",
+        args = { "--no-gauge", "--max-execution-cost", M.VAR.CHEAP_CUT,
+                 "--sort", "scaled_damage", "--top", "20" },
+    },
+    {
+        name = "hit-confirm", label = "ヒット確認", routes = 3,
+        why = "the first pair is a cancel (or a cancel with a link window beside it) "
+            .. "off a light or medium starter - the shape you can start, see hit, and "
+            .. "then finish. A link there is a window you commit to blind.",
+        args = { "--first-pair-mechanism", "cancel,both", "--starter-buttons", "L,M",
+                 "--sort", "scaled_damage", "--top", "20" },
+    },
+    {
+        name = "no-gauge-3", label = "ノーゲージ3段", routes = 3,
+        why = "exactly three moves and no OD, no Super and no Drive Rush Cancel: the "
+            .. "bread-and-butter length, with nothing spent, ordered by predicted "
+            .. "scaled damage.",
+        args = { "--no-gauge", "--min-steps", "3", "--max-steps", "3",
+                 "--sort", "scaled_damage", "--top", "20" },
+    },
+}
+
+-- Every preset a character gets, standard first. `practice` marks the ones only
+-- the priority character runs, so a caller does not have to know the two lists.
+function M.presets_for(is_priority)
+    local out = {}
+    for _, p in ipairs(M.PRESETS) do out[#out + 1] = p end
+    if is_priority then
+        for _, p in ipairs(M.PRACTICE_PRESETS) do out[#out + 1] = p end
+    end
+    return out
+end
+
+-- A preset's args with the batch's variables substituted.
+--
+-- Returns args, or nil and the name of the variable nothing supplied. Refused
+-- rather than dropped: a preset that quietly lost its cost cut would run as
+-- "every no-gauge route", produce a plan, and look right.
+function M.preset_args(preset, vars)
+    local out = {}
+    for _, a in ipairs(preset.args or {}) do
+        if type(a) == "string" and a:sub(1, 1) == "@" then
+            local v = (vars or {})[a]
+            if v == nil then return nil, a end
+            out[#out + 1] = tostring(v)
+        else
+            out[#out + 1] = a
+        end
+    end
+    return out
+end
+
+-- The extra arguments a deep run adds to explore.lua and plan.lua. The two
+-- tools spell the search depth differently: explore's --max-steps IS the depth,
+-- plan's --max-steps is a condition on route length and its depth is
+-- --search-steps. Getting that backwards would run plan.lua at depth 3 with a
+-- "at most 4 moves" condition that removes nothing.
+-- report.lua takes the same two keys as plan.lua, for the same reason: its own
+-- --max-steps would be ambiguous next to a condition of that name on the page.
+function M.deep_args(tool)
+    if tool == "explore" then
+        return { "--beam", tostring(M.DEEP.beam), "--max-steps", tostring(M.DEEP.max_steps) }
+    elseif tool == "plan" or tool == "report" then
+        return { "--beam", tostring(M.DEEP.beam), "--search-steps", tostring(M.DEEP.max_steps) }
+    end
+    return {}
+end
+
 -- Modern only, and no longer because classic cannot be built.
 --
 -- `explore.lua --scheme classic` now builds a real classic catalog and a real
@@ -166,7 +282,10 @@ end
 --   plans    : { [preset name] = plan worklist doc }
 --   summary  : report.lua's ce.report_summary.v1, or nil
 --   errors   : { { step, message } }
-function M.row(entry, scheme, explore, worklist, drc, plans, summary, errors)
+--   opts     : { priority = true, route_files = N }, for the priority character.
+--              The deep search's own numbers are not passed - they are read off
+--              the plans, which carry what the search actually did.
+function M.row(entry, scheme, explore, worklist, drc, plans, summary, errors, opts)
     local lc = entry.catalog:lower()
     local row = {
         character = entry.catalog, fighter_id = entry.fighter_id, lc = lc,
@@ -200,6 +319,25 @@ function M.row(entry, scheme, explore, worklist, drc, plans, summary, errors)
     for _, p in ipairs(M.PRESETS) do
         local doc = plans and plans[p.name]
         row.plans[p.name] = doc and doc.count or nil
+    end
+    opts = opts or {}
+    if opts.priority then
+        row.priority = true
+        row.practice_plans = {}
+        for _, p in ipairs(M.PRACTICE_PRESETS) do
+            local doc = plans and plans[p.name]
+            row.practice_plans[p.name] = doc and doc.count or nil
+            -- The search settings the plan actually ran under, taken from the
+            -- first practice plan that carries them rather than from M.DEEP:
+            -- what the constant says and what the run did are two things, and
+            -- the index should print the one that happened.
+            local s = doc and doc.plan and doc.plan.search
+            if s and not row.deep then
+                row.deep = { beam = s.beam, max_steps = s.max_steps,
+                             complete = s.complete, routes = doc.plan.available }
+            end
+        end
+        row.route_files = opts.route_files
     end
     row.notes = M.notes(row)
     return row
@@ -236,7 +374,31 @@ function M.notes(row)
             out[#out + 1] = ("プラン %s に確かめるペアがない"):format(p.name)
         end
     end
+    for _, p in ipairs(M.PRACTICE_PRESETS) do
+        if row.practice_plans and row.practice_plans[p.name] == 0 then
+            out[#out + 1] = ("練習プラン %s に確かめるペアがない"):format(p.name)
+        end
+    end
+    -- On the priority character an incomplete search IS a note. The whole point
+    -- of the deeper run is that the route list is all of them; if it still cuts
+    -- short, the one row on this page whose numbers could be trusted cannot be.
+    if row.priority and row.deep and row.deep.complete == false then
+        out[#out + 1] = ("優先キャラだが探索が打ち切られた (beam %s, 最大 %s 手): ルート一覧は一部")
+            :format(tostring(row.deep.beam), tostring(row.deep.max_steps))
+    end
     return out
+end
+
+-- The priority character first, then everybody else in the order given. A row
+-- pinned to the top of a 31-row table is the only placement a reader does not
+-- have to be told about.
+function M.priority_first(rows)
+    local top, rest = {}, {}
+    for _, r in ipairs(rows or {}) do
+        if r.priority then top[#top + 1] = r else rest[#rest + 1] = r end
+    end
+    for _, r in ipairs(rest) do top[#top + 1] = r end
+    return top
 end
 
 -- Rows from this run replace the same characters' rows from the last one; the
@@ -370,7 +532,7 @@ end
 
 function M.index_rows_html(rows)
     local out = {}
-    for _, r in ipairs(rows) do
+    for _, r in ipairs(M.priority_first(rows)) do
         local name = r.page
             and ('<a href="%s">%s</a>'):format(H(r.page), H(r.character))
             or H(r.character)
@@ -390,6 +552,13 @@ function M.index_rows_html(rows)
             plans[#plans + 1] = ('<span class="plan" title="%s"><i>%s</i> %s</span>')
                 :format(H(p.name), H(p.label), v == nil and "-" or tostring(v))
         end
+        for _, p in ipairs(M.PRACTICE_PRESETS) do
+            local v = r.practice_plans and r.practice_plans[p.name]
+            if v ~= nil or r.priority then
+                plans[#plans + 1] = ('<span class="plan practice" title="%s - %s"><i>%s</i> %s</span>')
+                    :format(H(p.name), H(p.why), H(p.label), v == nil and "-" or tostring(v))
+            end
+        end
         local notes = ""
         if r.notes and #r.notes > 0 then
             local li = {}
@@ -401,10 +570,20 @@ function M.index_rows_html(rows)
             routes = routes .. '<abbr class="cut" title="探索が beam の上限で打ち切られた。載っていないルートがある">*</abbr>'
         end
         if r.routes_drc then routes = routes .. ('<small>+DRC %s</small>'):format(M.thousands(r.routes_drc)) end
+        if r.priority and r.deep then
+            routes = routes .. ('<small class="deep">beam %s · 最大 %s 手%s</small>')
+                :format(M.thousands(r.deep.beam), tostring(r.deep.max_steps),
+                        r.deep.complete and " · 完走" or " · 打ち切り")
+        end
+        local who = ('<div class="who">%s</div><div class="sub mono">#%s</div>')
+            :format(name, dash(r.fighter_id))
+        if r.priority then
+            who = '<div class="pri-badge" title="優先キャラ: 探索を深く、練習プランあり、ルートファイル生成済み">'
+                .. '優先</div>' .. who
+        end
         out[#out + 1] = table.concat({
-            "<tr>",
-            td("キャラ", ('<div class="who">%s</div><div class="sub mono">#%s</div>')
-                :format(name, dash(r.fighter_id)), "who-cell"),
+            r.priority and '<tr class="pri">' or "<tr>",
+            td("キャラ", who, "who-cell"),
             td("状態", state),
             td("ワークリスト", ('<b class="num">%s</b><small>1パス %s</small>')
                 :format(n_or_dash(r.worklist_pairs), H(M.pass_time(r.worklist_pairs))), "n"),
@@ -436,10 +615,55 @@ function M.index_totals_html(t)
     }, "\n")
 end
 
+-- The paragraph that says what the badge on the top row means. Empty when no
+-- row is the priority character: an explanation of a badge nobody can see is
+-- worse than no explanation.
+function M.priority_note_html(rows)
+    local pri
+    for _, r in ipairs(rows or {}) do
+        if r.priority then pri = r break end
+    end
+    if not pri then return "" end
+    local deep = pri.deep
+    local search = deep
+        and ("beam %s・最大 %s 手で探索し、%s（候補ルート %s）")
+            :format(M.thousands(deep.beam), tostring(deep.max_steps),
+                    deep.complete and "打ち切りなしで完走" or "それでも打ち切られた",
+                    n_or_dash(deep.routes))
+        or ("beam %s・最大 %s 手"):format(M.thousands(M.DEEP.beam), tostring(M.DEEP.max_steps))
+    local names = {}
+    for _, p in ipairs(M.PRACTICE_PRESETS) do names[#names + 1] = p.name end
+    return table.concat({
+        '<div class="priority-note">',
+        ('<b>優先キャラ: %s</b> — 実際に練習している 1 人だけ、オフラインの扱いを厚くしています。'):format(H(pri.character)),
+        "<ol>",
+        ("<li>深い探索: %s。ほかの 30 キャラは既定のまま（beam 4,000・最大 3 手）です。</li>"):format(H(search)),
+        ("<li>練習用プラン: 通常の 3 プリセットに加えて <code>%s</code>。覚えるための条件で絞ったものです。</li>")
+            :format(H(table.concat(names, "</code>, <code>"))),
+        ("<li>ルートファイル: 練習プランの上位ルートを %s に書き出し済み。ゲーム側の ROUTE から走らせられます。</li>")
+            :format(pri.route_files and ("%d 本"):format(pri.route_files) or "route/"),
+        "</ol>",
+        '<p class="muted" style="margin:6px 0 0">優先キャラでも、オフラインで出る数字はすべて予測です。'
+            .. '実機で確かめた回数は上の表の「確定 / 試行」列が示します。</p>',
+        "</div>",
+    }, "\n")
+end
+
 function M.render_index(template, rows)
     local t = M.totals(rows)
     local page, err = M.fill(template, "<!--__TOTALS__-->", M.index_totals_html(t))
     if not page then return nil, err end
+    -- The priority marker is optional while no row is the priority character:
+    -- a template with no place to put the explanation and nothing to explain is
+    -- not a broken template. With a priority row it is required, because the
+    -- badge on that row would otherwise appear with nothing saying what it means.
+    local note = M.priority_note_html(rows)
+    local with_note, nerr = M.fill(page, "<!--__PRIORITY__-->", note)
+    if with_note then
+        page = with_note
+    elseif note ~= "" then
+        return nil, nerr
+    end
     page, err = M.fill(page, "<!--__ROWS__-->", M.index_rows_html(rows))
     if not page then return nil, err end
     return page
@@ -471,7 +695,7 @@ function M.render_characters_md(rows, scheme)
     say("| キャラ | ワークリスト | high / med / low | DRC | ルート | +DRC | %s | 確定 | 試行 | 1パス |",
         table.concat(plan_heads, " | "))
     say("|---|---:|---|---:|---:|---:|%s---:|---:|---|", ("---:|"):rep(#M.PRESETS))
-    for _, r in ipairs(rows) do
+    for _, r in ipairs(M.priority_first(rows)) do
         local c = r.worklist_confidence
         local plans = {}
         for _, p in ipairs(M.PRESETS) do
@@ -480,7 +704,8 @@ function M.render_characters_md(rows, scheme)
                 or ("[%d](plans/%s-%s-%s.md)"):format(v, r.lc, r.control_scheme, p.name)
         end
         say("| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |",
-            r.page and ("[%s](%s)"):format(r.character, r.page) or r.character,
+            (r.priority and "★ " or "")
+                .. (r.page and ("[%s](%s)"):format(r.character, r.page) or r.character),
             dash(r.worklist_pairs),
             c and ("%d / %d / %d"):format(c.high, c.medium, c.low) or "-",
             dash(r.drc_pairs), dash(r.routes) .. (r.routes_complete == false and "\\*" or ""),
@@ -491,6 +716,32 @@ function M.render_characters_md(rows, scheme)
     say("")
     say("`*` ルート探索が beam の上限で打ち切られたキャラ。載っていないルートがあります（explore.lua と同じ設定）。")
     say("")
+    local pri
+    for _, r in ipairs(rows) do if r.priority then pri = r break end end
+    if pri then
+        local names = {}
+        for _, p in ipairs(M.PRACTICE_PRESETS) do
+            local v = pri.practice_plans and pri.practice_plans[p.name]
+            names[#names + 1] = v == nil and ("`" .. p.name .. "`")
+                or ("[%s](plans/%s-%s-%s.md) %d ペア")
+                    :format(p.name, pri.lc, pri.control_scheme, p.name, v)
+        end
+        say("`★` 優先キャラ。%s だけ扱いが厚く、3 点だけ違います。", pri.character)
+        say("")
+        say("1. **深い探索** — %s、%s。ほかの 30 キャラは既定（beam 4,000・最大 3 手）のままです。",
+            pri.deep and ("beam %s・最大 %s 手"):format(M.thousands(pri.deep.beam),
+                                                        tostring(pri.deep.max_steps))
+                or ("beam %s・最大 %s 手"):format(M.thousands(M.DEEP.beam),
+                                                  tostring(M.DEEP.max_steps)),
+            (pri.deep and pri.deep.complete) and "打ち切りなしで完走" or "打ち切りあり")
+        say("2. **練習用プラン** — %s。", table.concat(names, " / "))
+        say("3. **ルートファイル** — 練習プランの上位ルートを `reframework/data/ComboExplorer_data/route/` に%s。",
+            pri.route_files and ("%d 本書き出し済み"):format(pri.route_files) or "書き出し済み")
+        say("")
+        say("それでも数字は全部予測です。%s の実機ログは %s 件。",
+            pri.character, dash(pri.trials))
+        say("")
+    end
     local noted = {}
     for _, r in ipairs(rows) do if r.notes and #r.notes > 0 then noted[#noted + 1] = r end end
     say("## 注意が要るキャラ")

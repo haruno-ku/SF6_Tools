@@ -3,6 +3,7 @@
 --
 --   lua tools/lua/all.lua [--only Ryu,Ken] [--jobs 4] [--scheme modern]
 --                         [--no-index] [--index-only]
+--                         [--deep Ryu | --no-deep]
 --
 -- Needs Lua 5.4, the catalogs and data/frame-data. Reads the committed trial
 -- logs. No game, no network. Run from the repo root, like every other tool.
@@ -29,6 +30,34 @@
 --   docs/ComboExplorer/practice.html      its page, and practice.json, the numbers
 --                                         behind both (tools/lua/practice.lua; always
 --                                         all 31 characters, since it is a ranking)
+--
+-- THE PRIORITY CHARACTER
+--
+-- --deep names the character somebody is actually practising with, and defaults
+-- to Batch.DEFAULT_PRIORITY. That character, and only that character, gets:
+--
+--   a deeper search       Batch.DEEP - beam 60,000 and routes up to 4 moves,
+--                         measured as the first setting where Ryu's search
+--                         finishes instead of being cut by the beam. explore
+--                         and every plan run at it, so the report, the route
+--                         list and the plans are all talking about the same
+--                         routes. The search's own truncation numbers are in
+--                         the offline report and in each plan's `search` block.
+--   the practice presets  Batch.PRACTICE_PRESETS, beside the standard three:
+--                         easy-damage, hit-confirm, no-gauge-3
+--   route files           the best routes of each practice preset, written as
+--                         ce.route.v1 under .../route/ for the game to run
+--
+-- --no-deep turns it off, which is what a run that wants the plain 31 does.
+-- Everybody else is untouched: same beam, same depth, same three presets, so
+-- the batch is still three to five minutes.
+--
+-- easy-damage needs a number all.lua does not compute: the roster's cheap-route
+-- cut, which is the 25th percentile of the execution_cost of every scored route
+-- on every character. practice.lua writes it into practice.json at the end of
+-- the run, so this reads the LAST run's figure and the plan's report says which
+-- one it used. With no practice.json the preset is refused, not run without its
+-- cut - "every no-gauge route" would produce a plausible plan of the wrong thing.
 --
 -- A character that fails does not stop the run. Its row says which step failed
 -- and the step's log is under candidates/_batch/logs/. The exit code is 1 when
@@ -86,6 +115,7 @@ local opt = Cli.args(TOOL, argv, {
     scheme = "modern",
     jobs = default_jobs(),
     index = true,
+    deep = Batch.DEFAULT_PRIORITY,
     lua = arg[-1] or "lua",
     batch_dir = "candidates/_batch",
     docs = "docs/ComboExplorer",
@@ -100,6 +130,16 @@ end
 
 local all_entries, aerr = Characters.all()
 if not all_entries then Cli.die(TOOL, aerr) end
+
+-- Which characters are priority, by catalog name. --no-deep leaves it empty.
+-- An unknown name is refused here rather than silently running nobody deep -
+-- the one thing worse than no deep run is a run that says it did one.
+local PRIORITY = {}
+if opt.deep ~= false and opt.deep ~= nil and opt.deep ~= "" then
+    local picked, perr = Batch.select(tostring(opt.deep), all_entries, Characters.resolve)
+    if not picked then Cli.die(TOOL, "--deep: " .. tostring(perr)) end
+    for _, e in ipairs(picked) do PRIORITY[e.catalog] = true end
+end
 
 local LOG_DIR = opt.batch_dir .. "/logs"
 
@@ -143,9 +183,21 @@ local function run_step(entry, step, args)
     return false, ("%s (exit %s; %s)"):format(last, tostring(code or how), log)
 end
 
+-- The roster's cheap-route cut, from the last run's practice.json. See the
+-- header: it is a measurement of all 31 characters, so it cannot be computed
+-- before the per-character runs that feed it.
+local function cheap_cut()
+    local doc = json.load_file(opt.docs .. "/practice.json")
+    local v = doc and doc.settings and tonumber(doc.settings.cheap_threshold)
+    return v
+end
+local CHEAP_CUT = cheap_cut()
+local PRESET_VARS = { [Batch.VAR.CHEAP_CUT] = CHEAP_CUT }
+
 local function run_character(entry)
     local lc = entry.catalog:lower()
     local scheme = opt.scheme
+    local priority = PRIORITY[entry.catalog] == true
     local errors, secs = {}, {}
     local t0 = now()
 
@@ -158,8 +210,12 @@ local function run_character(entry)
     end
 
     -- explore, and its report copied to where the committed copy lives
-    if step("explore", { "tools/lua/explore.lua", "--character", entry.catalog,
-                         "--scheme", scheme, "--worklist", "--drive-rush" }) then
+    local explore_args = { "tools/lua/explore.lua", "--character", entry.catalog,
+                           "--scheme", scheme, "--worklist", "--drive-rush" }
+    if priority then
+        for _, a in ipairs(Batch.deep_args("explore")) do explore_args[#explore_args + 1] = a end
+    end
+    if step("explore", explore_args) then
         local src = ("candidates/%s/%s/report.md"):format(lc, scheme)
         local text = read(src)
         if text then
@@ -169,17 +225,40 @@ local function run_character(entry)
         end
     end
 
-    for _, p in ipairs(Batch.PRESETS) do
-        local args = { "tools/lua/plan.lua", "--character", entry.catalog, "--scheme", scheme,
-                       "--name", p.name }
-        for _, a in ipairs(p.args) do args[#args + 1] = a end
-        step("plan-" .. p.name, args)
+    for _, p in ipairs(Batch.presets_for(priority)) do
+        local extra, missing = Batch.preset_args(p, PRESET_VARS)
+        if not extra then
+            errors[#errors + 1] = { step = "plan-" .. p.name, message =
+                ("%s needs %s, and %s/practice.json does not carry it. Run all.lua once with "
+                 .. "the index on to build it."):format(p.name, tostring(missing), opt.docs) }
+        else
+            local args = { "tools/lua/plan.lua", "--character", entry.catalog, "--scheme", scheme,
+                           "--name", p.name }
+            for _, a in ipairs(extra) do args[#args + 1] = a end
+            if priority then
+                for _, a in ipairs(Batch.deep_args("plan")) do args[#args + 1] = a end
+                -- Route files for the practice presets only. The standard three
+                -- are for choosing what to sweep; these are for running.
+                if p.routes then
+                    args[#args + 1] = "--routes"
+                    args[#args + 1] = tostring(p.routes)
+                end
+            end
+            step("plan-" .. p.name, args)
+        end
     end
 
     local summary_path = ("%s/%s-report.json"):format(opt.batch_dir, lc)
     os.remove(summary_path)
-    step("report", { "tools/lua/report.lua", "--character", entry.catalog, "--scheme", scheme,
-                     "--summary", summary_path })
+    local report_args = { "tools/lua/report.lua", "--character", entry.catalog, "--scheme", scheme,
+                          "--summary", summary_path }
+    if priority then
+        -- The page's route finder searches at the same settings, so the count
+        -- on the page, the count in the offline report and the count the plans
+        -- filtered are one number and not three.
+        for _, a in ipairs(Batch.deep_args("report")) do report_args[#report_args + 1] = a end
+    end
+    step("report", report_args)
 
     -- the row, from what the steps left on disk
     local wl_dir = opt.data .. "/worklist"
@@ -187,11 +266,27 @@ local function run_character(entry)
     local worklist = json.load_file(("%s/%s-%s.json"):format(wl_dir, lc, scheme))
     local drc = json.load_file(("%s/%s-%s-drc.json"):format(wl_dir, lc, scheme))
     local plans = {}
-    for _, p in ipairs(Batch.PRESETS) do
+    for _, p in ipairs(Batch.presets_for(priority)) do
         plans[p.name] = json.load_file(("%s/%s-%s-plan-%s.json"):format(wl_dir, lc, scheme, p.name))
     end
     local summary = json.load_file(summary_path)
-    local row = Batch.row(entry, scheme, explore, worklist, drc, plans, summary, errors)
+    -- Counted off the disk, not from what the presets asked for: a route the
+    -- writer refused (a Drive Rush Cancel step it cannot name) leaves no file,
+    -- and the index should say how many the game can actually run.
+    local route_files = 0
+    if priority then
+        local prefix = ("%s-%s-"):format(lc, scheme)
+        for _, p in ipairs(Batch.PRACTICE_PRESETS) do
+            for _, fname in ipairs(Cli.list_dir(opt.data .. "/route")) do
+                if fname:match("%.json$") and fname:sub(1, #prefix + #p.name + 1)
+                    == (prefix .. p.name .. "-") then
+                    route_files = route_files + 1
+                end
+            end
+        end
+    end
+    local row = Batch.row(entry, scheme, explore, worklist, drc, plans, summary, errors,
+        { priority = priority, route_files = priority and route_files or nil })
 
     local result = { row = row, seconds = now() - t0, step_seconds = secs }
     json.save_file(("%s/%s.json"):format(opt.batch_dir, lc), result, { indent = "  " })
@@ -238,6 +333,24 @@ local started = now()
 local jobs = math.max(1, math.floor(tonumber(opt.jobs) or 1))
 print(("all: %d character(s), %s, %d job(s). Step logs in %s/"):format(
     #targets, opt.scheme, math.min(jobs, #targets), LOG_DIR))
+do
+    local names = {}
+    for _, e in ipairs(all_entries) do
+        if PRIORITY[e.catalog] then names[#names + 1] = e.catalog end
+    end
+    if #names > 0 then
+        print(("  priority: %s - beam %d, up to %d moves, %d standard + %d practice preset(s), "
+            .. "route files for the practice ones"):format(
+            table.concat(names, ", "), Batch.DEEP.beam, Batch.DEEP.max_steps,
+            #Batch.PRESETS, #Batch.PRACTICE_PRESETS))
+        print(("  cheap-route cut for easy-damage: %s"):format(
+            CHEAP_CUT and ("execution_cost <= %.2f (from %s/practice.json)")
+                :format(CHEAP_CUT, opt.docs)
+                or "MISSING - no practice.json, so easy-damage will be refused"))
+    else
+        print("  priority: none (--no-deep) - every character on explore.lua's own settings")
+    end
+end
 
 if #targets == 0 then
     -- --index-only: nothing to run.
@@ -254,9 +367,21 @@ else
         local names = {}
         for _, e in ipairs(lane) do names[#names + 1] = e.catalog end
         local log = ("%s/lane-%d.log"):format(LOG_DIR, i)
+        local deep_names = {}
+        for _, e in ipairs(lane) do
+            if PRIORITY[e.catalog] then deep_names[#deep_names + 1] = e.catalog end
+        end
         local args = { "tools/lua/all.lua", "--lane", table.concat(names, ","),
                        "--scheme", opt.scheme, "--lua", opt.lua,
                        "--batch-dir", opt.batch_dir, "--docs", opt.docs, "--data", opt.data }
+        -- Only the priority characters IN THIS LANE, so a lane without one does
+        -- not have to resolve a name it will never run.
+        if #deep_names > 0 then
+            args[#args + 1] = "--deep"
+            args[#args + 1] = table.concat(deep_names, ",")
+        else
+            args[#args + 1] = "--no-deep"
+        end
         print(("  lane %d: %s"):format(i, table.concat(names, ", ")))
         handles[i] = io.popen(Batch.command(opt.lua, args, log, WIN), "r")
     end

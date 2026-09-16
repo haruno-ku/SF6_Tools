@@ -175,6 +175,103 @@ t.is_nil((P.filter(S, { min_confidence = "certain" })), "so is a confidence that
 kept, rep = P.filter(G, { no_gauge = true, starter_id = 999 })
 t.eq(next(rep.flags), nil, "flags on routes a later filter removed are dropped with them")
 
+-- --- the practice conditions ------------------------------------------------------
+--
+-- Three conditions written for LEARNING a character rather than for finding the
+-- strongest route: the roster's cheap-execution cut, a light-or-medium starter,
+-- and a first pair the game cancels for you. Each has to hold the rule the rest
+-- of the filters hold - a value the source does not carry flags the route, it
+-- never removes it - because a practice plan that silently dropped every route
+-- with a gap in its data would be a short, confident, wrong list.
+
+t.group("filters: max_execution_cost")
+
+local CHEAP = route("cheap", { mv(604, CHU), mv(637, KYO) }, { execution_cost = 4 })
+local EXACT = route("exact", { mv(604, CHU), mv(638, KYO) }, { execution_cost = 6 })
+local DEAR = route("dear", { mv(604, CHU), mv(639, KYO) }, { execution_cost = 9.5 })
+-- `route` fills in an execution_cost, so the unscored one has to have it taken
+-- back out: a nil in the override table is not an override.
+local NOCOST = route("nocost", { mv(604, CHU), mv(642, KYO) })
+NOCOST.offline_score.execution_cost = nil
+local C = { CHEAP, EXACT, DEAR, NOCOST }
+
+kept, rep = P.filter(C, { max_execution_cost = 6 })
+t.eq_list(ids(kept), { "cheap", "exact", "nocost" }, "at or under the cut is kept; over it goes")
+t.eq(rep.steps[1].removed, 1, "one removed")
+t.ok(rep.flags["nocost"] ~= nil, "a route with no execution_cost is kept and flagged, not removed")
+t.eq(rep.steps[1].flagged, 1, "and counted as kept on a gap")
+t.is_nil(rep.flags["exact"], "a route exactly on the cut is not a gap")
+t.eq(#(P.filter(C, { max_execution_cost = 3 })), 1, "a cut under everything leaves only the gap")
+local bad2, err2 = P.filter(C, { max_execution_cost = "cheap" })
+t.is_nil(bad2, "a cut that is not a number is refused")
+t.ok(tostring(err2):find("max_execution_cost", 1, true), "by name")
+
+t.group("filters: starter_buttons")
+
+local LJ = route("lj", { mv(601, JAKU), mv(637, KYO) })
+local MC = route("mc", { mv(604, "2 + " .. CHU), mv(637, KYO) })
+local HK = route("hk", { mv(637, KYO), mv(604, CHU) })
+local UNREADABLE = route("ur", { mv(999, ""), mv(604, CHU) })
+local BTN = { LJ, MC, HK, UNREADABLE }
+
+kept, rep = P.filter(BTN, { starter_buttons = "L,M" })
+t.eq_list(ids(kept), { "lj", "mc", "ur" }, "any of the listed buttons keeps, with any direction")
+t.eq(rep.steps[1].removed, 1, "the heavy starter goes")
+t.ok(rep.flags["ur"] ~= nil, "an unreadable first notation is kept and flagged, as starter_button does")
+t.eq_list(ids((P.filter(BTN, { starter_buttons = "H" }))), { "hk", "ur" },
+    "a list of one is the same thing as --starter-button")
+t.eq_list(ids((P.filter(BTN, { starter_buttons = " L , L , M " }))), { "lj", "mc", "ur" },
+    "spaces and duplicates in the list do not change the answer")
+t.eq_list(ids((P.filter(BTN, { starter_buttons = JAKU .. "," .. CHU }))), { "lj", "mc", "ur" },
+    "and the Japanese button names resolve the same way")
+t.is_nil((P.filter(BTN, { starter_buttons = "" })), "an empty list is refused")
+
+t.group("filters: first_pair_mechanism")
+
+-- The mechanism lives on the candidate EDGE, not on the route step, so the
+-- filter reads it out of the env the caller builds. plan.lua builds it from
+-- Pipeline.edge_index; a caller that builds none gets flags.
+local CANCEL = route("cancel", { mv(604, CHU), mv(1200, "236 + SP") })
+local LINK = route("link", { mv(605, CHU), mv(1200, "236 + SP") })
+local BOTH = route("both", { mv(606, CHU), mv(1200, "236 + SP") })
+local NOEDGE = route("noedge", { mv(607, CHU), mv(1200, "236 + SP") })
+local MECH = { CANCEL, LINK, BOTH, NOEDGE }
+local BY_STARTER = { [604] = "cancel", [605] = "link", [606] = "both" }
+local ENV = { mechanism_of = function(p) return BY_STARTER[p.a.id] end }
+
+kept, rep = P.filter(MECH, { first_pair_mechanism = "cancel" }, ENV)
+t.eq_list(ids(kept), { "cancel", "noedge" }, "only the cancel survives, plus the pair nobody can judge")
+t.ok(rep.flags["noedge"] ~= nil, "a pair no edge carries is kept and flagged")
+t.eq_list(ids((P.filter(MECH, { first_pair_mechanism = "cancel,both" }, ENV))),
+    { "cancel", "both", "noedge" },
+    "`both` is a cancel with a link window beside it, and a hit-confirm wants it")
+t.eq_list(ids((P.filter(MECH, { first_pair_mechanism = "link" }, ENV))), { "link", "noedge" },
+    "the other way round too")
+
+kept, rep = P.filter(MECH, { first_pair_mechanism = "cancel" })
+t.eq(#kept, 4, "with no env nothing is removed")
+t.eq(rep.steps[1].flagged, 4, "every route is flagged instead")
+t.ok(tostring(rep.flags["cancel"][1].reason):find("no candidate edges", 1, true),
+    "and the reason says the caller supplied none")
+
+-- Only the FIRST pair. A three-move route whose second pair is a link is still
+-- a hit-confirm: what you confirm on is the starter.
+local SECOND = route("second", { mv(604, CHU), mv(605, CHU), mv(637, KYO) })
+t.eq(#(P.filter({ SECOND }, { first_pair_mechanism = "cancel" }, ENV)), 1,
+    "the second pair's mechanism is not the condition")
+
+local bad3, err3 = P.filter(MECH, { first_pair_mechanism = "cancel,chain" }, ENV)
+t.is_nil(bad3, "a word that is not a mechanism is refused")
+t.ok(tostring(err3):find("chain", 1, true), "by name, so a typo in a preset fails loudly")
+t.is_nil((P.filter(MECH, { first_pair_mechanism = "" }, ENV)), "an empty list is refused")
+
+t.group("the practice conditions travel through plan()")
+
+local plan_env = P.plan(MECH, { cond = { first_pair_mechanism = "cancel" }, env = ENV, top = 10 })
+t.eq(#plan_env.routes, 2, "plan passes its env to the filter")
+local plan_noenv = P.plan(MECH, { cond = { first_pair_mechanism = "cancel" }, top = 10 })
+t.eq(#plan_noenv.routes, 4, "and without one the condition removes nothing")
+
 -- --- ranking -----------------------------------------------------------------------------
 
 t.group("rank")
