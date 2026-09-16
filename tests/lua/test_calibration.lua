@@ -1301,4 +1301,163 @@ do
          "so the capability it gates does not close again on the next load")
 end
 
+-- =========================================================
+t.group("a sweep runs in whichever scheme its catalog was built in")
+
+-- Every notation in a classic catalog is written in the other display, and the
+-- Modern tokeniser does not fail on one - it finds no button token, keeps the
+-- digits, and hands back a direction. So a session that read a classic catalog
+-- the Modern way would find no single-button group at all, conclude nothing,
+-- and report it as a clean failure to measure. Nothing would raise.
+
+local function classic_catalog() return (Catalog.build(RAW, { scheme = "classic" })) end
+
+local function classic_session(reg)
+    local s, err = Calibration.new({ catalog = classic_catalog(), provenance = reg })
+    t.ok(s ~= nil, "a session builds off a classic catalog: " .. tostring(err))
+    return s
+end
+
+do
+    local s = classic_session()
+    t.eq(s.scheme, "classic", "the session takes its scheme from the catalog")
+    t.eq(s.bits_key, "classic_button_bits",
+         "and with it the register entry the answer lands in")
+    t.eq(new_session().bits_key, "modern_button_bits", "the Modern one is unchanged")
+end
+
+do
+    -- The catalog decides, and a caller who thinks otherwise is refused rather
+    -- than obeyed: six real bits filed under the wrong entry is the one mistake
+    -- here that later reads as a perfectly plausible map.
+    local bad, err = Calibration.new({ catalog = fresh_catalog(), scheme = "classic" })
+    t.is_nil(bad, "a Modern catalog will not run a classic sweep")
+    t.ok(tostring(err):find("classic") ~= nil and tostring(err):find("modern") ~= nil,
+         "naming both schemes: " .. tostring(err))
+
+    local ok = Calibration.new({ catalog = classic_catalog(), scheme = "classic" })
+    t.ok(ok ~= nil, "and agreeing with the catalog is fine")
+end
+
+do
+    -- The six are all findable: every one of LP/MP/HP/LK/MK/HK has a bare
+    -- single-button notation on Zangief, which is what lets a bit be named.
+    local s = classic_session()
+    local steps = Calibration.plan(s)
+    local by_phase = {}
+    for _, st in ipairs(steps) do by_phase[st.phase] = (by_phase[st.phase] or 0) + 1 end
+
+    -- Twelve, not zero. classic_button_bits carries no guess - the register has
+    -- nowhere to take one from - so there is no list of bits to check and the
+    -- phase sweeps the whole button field instead. Sweeping the empty guess
+    -- would emit no button step at all, and the run would complete having
+    -- measured none of the six with no error anywhere.
+    t.eq(by_phase.button_bits, 12, "one step per bit in InputMask.BTN_BITS")
+    for _, st in ipairs(steps) do
+        if st.phase == "button_bits" then
+            t.eq(st.tests[1], "classic_button_bits",
+                 ("step %s says which entry it is testing"):format(st.id))
+            break
+        end
+    end
+end
+
+-- The action id each bare classic notation produces, read off the catalog so
+-- the test cannot disagree with it about what "LP" is.
+local CLASSIC_BITS = { LP = 0x10, LK = 0x20, MK = 0x40, MP = 0x80,
+                       HP = 0x100, HK = 0x200 }
+
+local function classic_ids()
+    local ids = {}
+    for _, g in pairs(classic_catalog().groups) do
+        ids[g.notation] = (g.action_ids or {})[1]
+    end
+    return ids
+end
+
+local function run_classic_bits(s, omit)
+    local ids = classic_ids()
+    local produced = {}
+    for name, bit in pairs(CLASSIC_BITS) do
+        if not (omit and omit[name]) then produced[bit] = ids[name] end
+    end
+    for _, st in ipairs(Calibration.plan(s)) do
+        if st.phase == "neutral" then
+            Calibration.observe(s, st.id, { action_id = 1 })
+        elseif st.phase == "button_bits" then
+            Calibration.observe(s, st.id, { action_id = produced[st.bit] or 1 })
+        end
+    end
+    return Calibration.conclude(s)
+end
+
+do
+    local s = classic_session()
+    local rep = run_classic_bits(s)
+    local v = rep.values.classic_button_bits
+
+    t.ok(v ~= nil, "a classic sweep settles the classic entry")
+    t.is_nil(rep.values.modern_button_bits,
+             "and writes nothing at all into the Modern one")
+
+    if v then
+        for name, bit in pairs(CLASSIC_BITS) do
+            t.eq(v.value[name], bit, ("%s is 0x%X"):format(name, bit))
+        end
+        -- VERIFIED, not refuted. The entry's value is an empty map because
+        -- there was no guess to make, and "the guess was wrong" is not a thing
+        -- that can be said about a guess nobody made.
+        t.eq(v.status, "verified", "all six witnessed, and no guess was contradicted")
+        t.is_nil(v.unwitnessed, "so there is nothing it could not witness")
+        t.ok(tostring(v.note):find("classic controls") ~= nil,
+             "and the note says which pad: " .. tostring(v.note))
+    end
+end
+
+do
+    -- Four of six. The register's own unwitnessed list is built from the GUESS's
+    -- keys, and the classic guess has none - so without the catalog's list the
+    -- two missing buttons would vanish and the entry would read verified.
+    local s = classic_session()
+    local rep = run_classic_bits(s, { HK = true, MK = true })
+    local v = rep.values.classic_button_bits
+
+    t.ok(v ~= nil, "a partial classic sweep is reported, not thrown away")
+    if v then
+        t.eq(v.status, "partial", "as partial - measured as far as it went")
+        t.eq(v.value.LP, 0x10, "what was witnessed is in the map")
+        t.is_nil(v.value.HK, "and what was not is absent rather than guessed")
+        t.eq_list(v.unwitnessed, { "HK", "MK" }, "named, so a consumer can find out")
+    end
+end
+
+do
+    -- End to end: the register after a classic run. The classic capability
+    -- opens, the Modern one is exactly where it was, and the profile the
+    -- Explorer would press with can express all six.
+    local reg = Provenance.new()
+    local before = Provenance.get(reg, "modern_button_bits").status
+
+    local rep = run_classic_bits(classic_session(reg))
+    local applied = Provenance.apply_calibration(reg, {
+        calibration_id = "classic-test", game_patch = "24176760",
+        values = rep.values,
+    })
+    t.ok(#applied > 0, "the profile applies")
+    t.eq(Provenance.get(reg, "modern_button_bits").status, before,
+         "and the Modern entry is untouched by a classic run")
+    t.is_nil(next(Provenance.value(reg, "modern_button_bits") or {}),
+             "Provenance.value still withholds the Modern guess")
+
+    local bits = Provenance.value(reg, "classic_button_bits")
+    t.ok(type(bits) == "table" and bits.HP == 0x100,
+         "while the classic map is now a MEASURED value, read the same way")
+
+    local prof = InputMask.profile_from_provenance(Provenance, reg, "classic")
+    t.ok(prof ~= nil and prof.buttons.LK == 0x20, "and the classic profile carries it")
+    t.eq(InputMask.button_mask({ "HP" }, prof), 0x100,
+         "so a classic notation finally has a mask")
+end
+
+
 return t.finish()

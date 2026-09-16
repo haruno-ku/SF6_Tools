@@ -463,10 +463,20 @@ function M.start(opts)
     -- delay_for would find A's frames and happily predict a gap for a press
     -- that cannot be made, and a predicted gap on a pair that never ran is a
     -- number that looks like it meant something.
+    -- The measured Classic map, or nil. Provenance.value withholds the
+    -- provisional value on purpose, so this is nil on every build where no
+    -- calibration has run under Classic - and then every classic pair is set
+    -- aside by name, which is what it was before one could be. After such a run
+    -- it is the six bits that were witnessed, and a classic pair is set aside
+    -- only when it presses a button that is not among them.
+    local classic_bits = opts.provenance
+        and Provenance.value(opts.provenance, "classic_button_bits") or nil
+
     local playable, unplayable = {}, {}
     for _, p in ipairs(worklist.pairs or {}) do
         local found = SequenceCompiler.unplayable(pair_route(worklist, p),
-                                                  { context_known = p.context_known == true })
+                                                  { context_known = p.context_known == true,
+                                                    button_bits = classic_bits })
         if #found == 0 then
             playable[#playable + 1] = p
         else

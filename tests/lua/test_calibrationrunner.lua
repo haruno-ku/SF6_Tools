@@ -258,7 +258,10 @@ local function with_fake_dump(opts, fn)
     local saved = JsonIO.dump
     JsonIO.dump = function(path, tbl, dirs)
         seen[#seen + 1] = { path = path, tbl = tbl, dirs = dirs }
-        local is_latest = tostring(path):find("latest.json", 1, true) ~= nil
+        -- "/latest", not "latest.json": the classic profile's stable name is
+        -- latest-classic.json, and a helper that only knew the Modern one would
+        -- treat it as a record copy and test the wrong branch.
+        local is_latest = tostring(path):find("/latest", 1, true) ~= nil
         if opts.fail_record and not is_latest then return false, "disk is full" end
         if opts.fail_latest and is_latest then return false, "latest.json is locked" end
         return true
@@ -429,5 +432,70 @@ do
     -- are on disk, only the convenience copy is stale.
     CalRunner.stop({ force = true })
 end
+
+-- --- the two schemes are two profiles ------------------------------------------
+
+t.group("a classic run does not land on the Modern profile's name")
+
+do
+    -- The whole of #2's safety. Modern has three attack buttons and Classic
+    -- six, and a measured Modern map says nothing about four of Classic's - so
+    -- these are two measurements, and two files. Writing both to latest.json
+    -- would mean the second run of the day silently replaced the first, and the
+    -- only thing that told them apart is which pad was in the operator's hands.
+    CalRunner.stop({ force = true })
+    local ad = adapter()
+    local run, err = CalRunner.start(Provenance.new(), {
+        adapter = ad, catalog_raw = RAW, scheme = "classic",
+        identity = identity(), settle_ticks = 2,
+    })
+    t.ok(run ~= nil, "a classic run starts: " .. tostring(err))
+    t.eq(run and run.scheme, "classic", "and knows which pad it is measuring")
+    t.eq(CalRunner.progress().scheme, "classic", "which the panel can read")
+
+    local seen = with_fake_dump(nil, function()
+        local path, werr = CalRunner.write_profile(identity(), VALUES)
+        t.eq(type(path), "string", "it writes: " .. tostring(path))
+        t.is_nil(werr, "with no error")
+        t.ok(tostring(path):find("-classic-", 1, true) ~= nil,
+             "the record says classic in its name: " .. tostring(path))
+    end)
+
+    t.eq(seen[2].path, "ComboExplorer_data/calibration/latest-classic.json",
+         "and the stable copy is the classic one, not latest.json")
+
+    -- The DOCUMENT says classic too, whatever the caller's identity said. The
+    -- panel's control_scheme comes from the training menu; the run's comes from
+    -- the catalog it actually swept, and the document has to describe what was
+    -- measured because that is what decides where it is read back into.
+    t.eq(seen[2].tbl.control_scheme, "classic",
+         "the document names the scheme that was swept, not the one it was asked for")
+
+    CalRunner.stop({ force = true })
+end
+
+do
+    -- And the Modern path is byte-for-byte where it was: the historical name,
+    -- so every profile already on disk still loads.
+    CalRunner.stop({ force = true })
+    local run, err = start({ identity = identity() })
+    t.ok(run ~= nil, tostring(err))
+    t.eq(run and run.scheme, "modern", "no scheme given means modern")
+
+    local seen = with_fake_dump(nil, function()
+        local path = CalRunner.write_profile(identity(), VALUES)
+        t.ok(tostring(path):find("-modern-", 1, true) ~= nil,
+             "the Modern record still says modern: " .. tostring(path))
+    end)
+    t.eq(seen[2].path, "ComboExplorer_data/calibration/latest.json",
+         "and still writes latest.json")
+    t.eq(CalRunner.latest_name("modern"), "latest.json", "which is what the name says")
+    t.eq(CalRunner.latest_name("classic"), "latest-classic.json", "and the other one")
+    t.eq(CalRunner.latest_name(nil), "latest.json",
+         "an unstated scheme is modern - that is what every profile on disk is")
+
+    CalRunner.stop({ force = true })
+end
+
 
 return t.finish()

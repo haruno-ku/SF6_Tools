@@ -96,6 +96,14 @@
 -- classic worklist is set aside before the first trial, under one name, and the
 -- panel's unplayable count says why.
 --
+-- It is a fact about THIS BUILD, not about Classic, and the difference is
+-- `opts.button_bits`. A caller holding a measured classic map passes it, and a
+-- step is then set aside only when it names a button that map has no bit for -
+-- the same question InputMask.button_mask asks, asked before the sweep starts
+-- instead of one pair into it. With no map the answer is the same for every
+-- classic step, which is why that is still the default: nothing may assume a
+-- measurement it was not handed.
+--
 -- CHARGE MOTIONS
 --
 -- "[4]6" means hold back, then forward. Both displays spell it that way and
@@ -258,6 +266,21 @@ end
 -- Unreadable notation is not reported here. compile says why, in more detail,
 -- and a check that duplicated it would be a second place for the wording to
 -- drift.
+-- Whether every button in `names` has a bit in `bits`.
+--
+-- `bits` is the MEASURED classic map - Provenance.value(reg,
+-- "classic_button_bits"), which is nil until a calibration has run under
+-- Classic and never returns the register's empty placeholder. So "no map" and
+-- "a map with nothing in it" both come out false, which is the answer that
+-- keeps a pair from being swept on a bit nobody witnessed.
+function M.classic_buttons_measured(names, bits)
+    if type(bits) ~= "table" then return false end
+    for _, n in ipairs(names or {}) do
+        if type(bits[n]) ~= "number" then return false end
+    end
+    return #(names or {}) > 0
+end
+
 function M.unplayable(route, opts)
     opts = opts or {}
     local out = {}
@@ -273,7 +296,8 @@ function M.unplayable(route, opts)
             out[#out + 1] = { index = index, notation = notation, kind = M.UNPLAYABLE.DRIVE_RUSH,
                 reason = ("step %d is a Drive Rush Cancel - %s")
                     :format(index, M.DRIVE_RUSH_UNMEASURED) }
-        elseif parsed and scheme == M.CLASSIC_SCHEME and #parsed.buttons > 0 then
+        elseif parsed and scheme == M.CLASSIC_SCHEME and #parsed.buttons > 0
+            and not M.classic_buttons_measured(parsed.buttons, opts.button_bits) then
             -- Named per step, and only for a step that actually presses one of
             -- the six. A classic route of pure directions - "66" into "236" -
             -- needs no button bit and is not set aside by this rule, which is

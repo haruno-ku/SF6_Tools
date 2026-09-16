@@ -364,10 +364,13 @@ local function write_worklist(wl_path, items)
 
     -- A classic worklist says on its face that nothing in it can be pressed.
     --
-    -- runtime/Sweep.lua would set every pair aside anyway - SequenceCompiler's
-    -- classic_buttons_unmeasured rule fires on any step naming one of the six -
-    -- and that is the gate that matters, because it is the one the runner
-    -- actually consults. This is for the reader: a file of 3000 candidate pairs
+    -- runtime/Sweep.lua sets every pair aside on a machine where no calibration
+    -- has run under Classic - SequenceCompiler's classic_buttons_unmeasured rule
+    -- fires on any step naming a button with no measured bit - and that is the
+    -- gate that matters, because it is the one the runner actually consults. It
+    -- is also the gate that will stop firing, one button at a time, as a classic
+    -- calibration witnesses them; this note describes the file as generated, not
+    -- the machine it will be read on. For the reader: a file of 3000 candidate pairs
     -- with no note on it looks like work waiting to be done, and somebody would
     -- reasonably spend an evening finding out why the sweep kept refusing.
     if opt.scheme == "classic" then

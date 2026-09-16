@@ -144,6 +144,13 @@ function M.install_error() return install_error end
 
 -- opts.character : catalog key, for the document identity
 -- opts.game_patch / ac_sha256 / bcm_sha256 : required by Calibration.document
+-- opts.scheme        : which control scheme the pad is set to, "modern"
+--                      (default) or "classic". It chooses how the catalog is
+--                      BUILT, which in turn chooses the tokeniser, the button
+--                      names and the register entry the answer lands in - see
+--                      the header of core/Calibration.lua. Nothing here reads
+--                      the scheme off the game: the operator says it, because
+--                      the run has to press what they are holding.
 -- opts.adapter       : substituted by tests. Defaults to GameAdapter.
 -- opts.identity      : the identity the finished profile is written under.
 --                      Held from the start rather than collected at the end,
@@ -176,7 +183,13 @@ function M.start(reg, opts)
     local raw, err = opts.catalog_raw, nil
     if raw == nil then raw, err = M.load_catalog(info) end
     if not raw then return nil, err end
-    local cat, problems = Catalog.build(raw)
+
+    -- The scheme reaches Calibration through the CATALOG and only through it.
+    -- Building a Modern catalog and telling the session "classic" would be two
+    -- statements that can disagree, and Calibration.new refuses that pair on
+    -- purpose; here there is one statement.
+    local scheme = opts.scheme or "modern"
+    local cat, problems = Catalog.build(raw, { scheme = scheme })
     if not cat then
         return nil, "could not build a catalog: "
             .. tostring(problems and problems[1] and problems[1].reason)
@@ -185,6 +198,7 @@ function M.start(reg, opts)
     local session, serr = Calibration.new({
         provenance = reg,
         catalog = cat,
+        scheme = scheme,
         hold_ticks = opts.hold_ticks,
     })
     if not session then return nil, serr end
@@ -217,6 +231,7 @@ function M.start(reg, opts)
         session = session,
         fsm = fsm,
         catalog = cat,
+        scheme = session.scheme,
         character = cat.character or info.name,
         started_at = os.clock(),
         writes = 0,
@@ -364,6 +379,10 @@ function M.progress()
     p.ticks = run.ticks
     p.note = run.last_note
     p.character = run.character
+    -- So the panel can say which pad this run is about. A sweep that is
+    -- measuring the wrong scheme looks exactly like one measuring the right
+    -- one until the profile is written.
+    p.scheme = run.scheme
     return p
 end
 
@@ -379,9 +398,29 @@ end
 -- that happened to share a directory could then be handed the same name.
 local utc = Config.utc
 
+-- The stable name startup loads, per control scheme.
+--
+-- ONE FILE PER SCHEME, and this is the whole of #2's safety. Modern and Classic
+-- are two different measurements of two different pads: Modern has three attack
+-- buttons and Classic six, and a measured Modern map says nothing about four of
+-- Classic's. Writing both to latest.json would mean the second run of the day
+-- silently replaced the first one's file, and the only difference between them
+-- - which pad was in the operator's hands - is the one thing the filename would
+-- not have said. Modern keeps the historical name so that every profile already
+-- on disk still loads.
+M.LATEST = {
+    modern = "latest.json",
+    classic = "latest-classic.json",
+}
+
+function M.latest_name(scheme)
+    return M.LATEST[scheme or "modern"] or M.LATEST.modern
+end
+
 -- Writes two copies under calibration/: a stamped record named
--- <Character>-<scheme>-<patch>-<stamp>.json, and latest.json, the file
--- ComboExplorer.lua loads at startup and Provenance.apply_calibration reads.
+-- <Character>-<scheme>-<patch>-<stamp>.json, and the scheme's stable name
+-- (latest.json, or latest-classic.json), which is what ComboExplorer.lua loads
+-- at startup and Provenance.apply_calibration reads.
 --
 -- The split is Config.write_diag's, for its reason: the record must survive a
 -- re-run, because a later sweep that measures fewer values must not be the only
@@ -425,6 +464,12 @@ function M.write_profile(identity, probe_values)
     identity.ac_sha256 = identity.ac_sha256 or run.catalog.ac_sha256
     identity.bcm_sha256 = identity.bcm_sha256 or run.catalog.bcm_sha256
     identity.generated_at = identity.generated_at or utc("!%Y-%m-%dT%H:%M:%SZ")
+    -- OVERWRITTEN, not defaulted. The caller's idea of the scheme comes from the
+    -- panel, which reads the training menu; the run's comes from the catalog it
+    -- actually swept. If those two ever disagree the document must say what was
+    -- measured, because the scheme is what decides which file this lands in and
+    -- which register entry it is read back into.
+    identity.control_scheme = run.scheme or identity.control_scheme
 
     local blocks = {}
     if probe_values then blocks[#blocks + 1] = probe_values end
@@ -459,8 +504,9 @@ function M.write_values(identity, blocks)
     local dir = "ComboExplorer_data/calibration"
     local dirs = { "ComboExplorer_data", dir }
     local char = tostring(identity.character):gsub("[^%w_]", "")
-    local base = ("%s-%s-%s"):format(char,
-        tostring(identity.control_scheme or "modern"), tostring(identity.game_patch))
+    local scheme = identity.control_scheme or "modern"
+    local latest = dir .. "/" .. M.latest_name(scheme)
+    local base = ("%s-%s-%s"):format(char, tostring(scheme), tostring(identity.game_patch))
 
     local path = Config.record_path(dir, base)
     local ok, werr = JsonIO.dump(path, doc, dirs)
@@ -481,11 +527,11 @@ function M.write_values(identity, blocks)
     -- still comes back, because the record IS there and the operator can copy
     -- it over by hand; the error comes back beside it so no caller can read the
     -- pair as success.
-    local lok, lerr = JsonIO.dump(dir .. "/latest.json", doc, dirs)
+    local lok, lerr = JsonIO.dump(latest, doc, dirs)
     if not lok then
-        return path, ("the record was written to %s, but %s/latest.json was not (%s) - "
-            .. "startup will keep loading the previous profile until it is")
-            :format(path, dir, tostring(lerr or "write failed"))
+        return path, ("the record was written to %s, but %s was not (%s) - "
+            .. "startup will keep loading the previous %s profile until it is")
+            :format(path, latest, tostring(lerr or "write failed"), tostring(scheme))
     end
     return path, nil
 end

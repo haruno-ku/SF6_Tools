@@ -77,23 +77,53 @@ local function current() return _G._ce_gen == GEN end
 local reg = Provenance.new()
 
 local CAL_DIR = "ComboExplorer_data/calibration"
-local CAL_LATEST = CAL_DIR .. "/latest.json"
 
 local calibration_status = "none found"
 
+-- Both stable names, because there are two pads to measure and they are two
+-- files: CalibrationRunner.LATEST. A machine can have one, the other, or both.
+--
+-- APPLIED OLDEST FIRST. The two documents overlap - a classic profile written
+-- from this panel carries the register's Modern findings along with it, because
+-- probe_values_now() lays the whole register underneath the sweep so a profile
+-- never loses what an earlier session measured. That overlap is only safe if
+-- the newest file has the last word: applied in filename order instead, a
+-- classic run from last week would put its stale copy of modern_button_bits
+-- over a Modern run from this morning, and nothing would say so.
 local function load_calibration()
-    local loaded
-    if type(_G.safe_load_json) == "function" then
-        local ok, r = pcall(_G.safe_load_json, CAL_LATEST)
-        loaded = ok and r or nil
-    end
-    if type(loaded) ~= "table" then
+    if type(_G.safe_load_json) ~= "function" then
         calibration_status = "none found - every value is unverified"
         return
     end
-    local applied, rejected = reg:apply_calibration(loaded)
-    calibration_status = ("%s: %d value(s) applied, %d rejected")
-        :format(tostring(loaded.calibration_id or "unnamed"), #applied, #rejected)
+
+    local docs = {}
+    for _, scheme in ipairs({ "modern", "classic" }) do
+        local path = CAL_DIR .. "/" .. CalRunner.latest_name(scheme)
+        local ok, r = pcall(_G.safe_load_json, path)
+        if ok and type(r) == "table" then
+            docs[#docs + 1] = { scheme = scheme, doc = r,
+                                -- A document with no stamp is the oldest thing
+                                -- here: it predates the field.
+                                at = tostring(r.generated_at or "") }
+        end
+    end
+    if #docs == 0 then
+        calibration_status = "none found - every value is unverified"
+        return
+    end
+    table.sort(docs, function(a, b)
+        if a.at ~= b.at then return a.at < b.at end
+        return a.scheme < b.scheme
+    end)
+
+    local parts = {}
+    for _, d in ipairs(docs) do
+        local applied, rejected = reg:apply_calibration(d.doc)
+        parts[#parts + 1] = ("%s %s: %d applied, %d rejected")
+            :format(d.scheme, tostring(d.doc.calibration_id or "unnamed"),
+                    #applied, #rejected)
+    end
+    calibration_status = table.concat(parts, " | ")
 end
 load_calibration()
 
@@ -116,6 +146,11 @@ i18n.register("combo_explorer", {
                     .. "down: whatever you hold is ORed in on top. It will ask you to swap sides.",
         calib_start  = "START SWEEP",
         calib_write  = "WRITE PROFILE",
+        calib_scheme = "which pad am I on",
+        calib_scheme_help = "Set the pad in the game FIRST, then say so here. Modern and Classic "
+                    .. "are two separate measurements - three attack buttons against six - and "
+                    .. "each is written to its own profile. Nothing reads this off the game: the "
+                    .. "sweep presses what you are holding.",
         probe_c_help = "Leave this running and reset the stage from the training menu a dozen "
                     .. "times. It times how long a reset actually takes to settle - which is "
                     .. "what decides how big the brute-force sweep can be.",
@@ -189,6 +224,10 @@ i18n.register("combo_explorer", {
                     .. "而不是在使用它。请放开手柄：你按住的任何键都会被叠加进去。中途会要求你换边。",
         calib_start  = "开始扫描",
         calib_write  = "写入配置",
+        calib_scheme = "现在用的是哪种操作类型",
+        calib_scheme_help = "请先在游戏里切换手柄设置，再在这里选择。Modern 与 Classic 是两次"
+                    .. "独立的测量（3 个攻击键对 6 个），各自写入各自的配置文件。"
+                    .. "本面板不会从游戏读取这一项：扫描按的是你手上的那套键。",
         probe_c_help = "保持运行，并从训练菜单重置场景十余次。它会测量一次重置真正稳定下来所需的时间。",
         probe_d_help = "加载 1P 角色的招式目录，并与游戏实际产生的 action id 比对。请先运行探针 A 一段时间。",
         load_catalog = "加载目录",
@@ -289,7 +328,30 @@ local function load_catalog()
     probe_d.catalog = cat
     probe_d.problems = problems
     probe_d.catalog_path = path
+    probe_d.raw = decoded
+    probe_d.by_scheme = { modern = cat }
     probe_d.load_error = cat and nil or (problems and problems[1] and problems[1].reason)
+end
+
+-- The same file, read in the other scheme's display.
+--
+-- Built on demand and kept, because it is not the same catalog: Catalog.build
+-- under classic reads classic_command instead of the Modern one, so the
+-- notations, the rows and the groups all differ. PAD WATCH names a bit through
+-- the notation of the action a press produced, and naming a classic press
+-- through a Modern notation would produce a bit called "H" when what was
+-- pressed was HP.
+local function catalog_for(scheme)
+    scheme = scheme or "modern"
+    local have = probe_d.by_scheme and probe_d.by_scheme[scheme]
+    if have then return have end
+    if type(probe_d.raw) ~= "table" then return nil end
+    local cat = Catalog.build(probe_d.raw, { scheme = scheme })
+    if cat then
+        probe_d.by_scheme = probe_d.by_scheme or {}
+        probe_d.by_scheme[scheme] = cat
+    end
+    return cat
 end
 
 -- The name the worklist and the trial log are FILED under.
@@ -845,18 +907,55 @@ end
 
 -- The sweep. Kept beside the probes rather than in its own tree so the panel
 -- reads in the order the runbook does: measure, then calibrate.
-local calib = { last_status = nil }
+-- `scheme` is the operator's answer to "which pad am I on", and it defaults to
+-- modern because that is what every profile on disk was taken under. It is NOT
+-- read off live.p1_control: the training menu's reading is a second opinion,
+-- shown beside this when the two disagree, and a sweep that silently followed
+-- it would change which register entry a run writes into without the operator
+-- having said anything.
+local calib = { last_status = nil, scheme = "modern" }
 
 -- Both of these were inlined in the WRITE PROFILE button. They are named now
 -- because the START button needs them too: a run that writes itself at the end
 -- has to be told who it is at the beginning.
-local function calibration_identity()
+local function calibration_identity(scheme)
     return {
         calibration_id = ("%s-%s"):format(tostring(live.p1_char and live.p1_char.key),
                                           os.date("!%Y%m%dT%H%M%SZ")),
         game_patch = reg.game_patch or Config.data.game_patch or "unknown",
-        control_scheme = live.p1_control or "modern",
+        control_scheme = scheme or calib.scheme or "modern",
     }
+end
+
+-- What each scheme's button entry says right now: how many bits are in the map,
+-- what status it carries, and which buttons it still cannot press.
+--
+-- Shown for BOTH schemes at once, always, because the question the operator is
+-- about to answer is "which of these two is worth a run", and a panel that only
+-- showed the selected one would make a finished measurement look missing the
+-- moment they flicked the switch.
+local function scheme_bits_line(scheme)
+    local key = InputMask.BITS_KEY[scheme]
+    local e = key and Provenance.get(reg, key)
+    if not e then return "no register entry", UIKit.COLORS.Red end
+
+    local names = {}
+    for name in pairs(type(e.value) == "table" and e.value or {}) do
+        names[#names + 1] = name
+    end
+    table.sort(names)
+
+    local text = ("%s  [%s]"):format(
+        #names > 0 and table.concat(names, " ") or "no bit measured", tostring(e.status))
+    for _, u in ipairs(e.unwitnessed or {}) do
+        text = text .. ("  -%s"):format(tostring(u))
+    end
+
+    local colour = UIKit.COLORS.Orange
+    if Provenance.is_measured(reg, key) then
+        colour = (#(e.unwitnessed or {}) == 0) and UIKit.COLORS.Green or UIKit.COLORS.Yellow
+    end
+    return text, colour
 end
 
 -- What a new profile should carry besides the sweep's own findings.
@@ -888,6 +987,38 @@ local function draw_calibration()
     local ierr = CalRunner.install_error()
     if ierr then imgui.text_colored(ierr, UIKit.COLORS.Red) end
 
+    -- The scheme, and what each one has already measured.
+    imgui.text_colored(T("calib_scheme_help"), UIKit.COLORS.Grey)
+    for _, scheme in ipairs({ "modern", "classic" }) do
+        local chosen = (calib.scheme == scheme)
+        if CalRunner.running() then
+            -- Not a control while a run is going: the run's scheme was fixed
+            -- when its catalog was built, and a switch here would change only
+            -- the label on it.
+            imgui.text_colored(("  %s %s"):format(chosen and "[x]" or "[ ]", scheme),
+                               UIKit.COLORS.DarkGrey)
+        else
+            if UIKit.styled_button(("%s %s##ce_cal_scheme_%s")
+                    :format(chosen and "[x]" or "[ ]", scheme, scheme),
+                    chosen and THEME.go or THEME.neutral, UIKit.COLORS.White) then
+                calib.scheme = scheme
+            end
+        end
+        imgui.same_line()
+        local text, colour = scheme_bits_line(scheme)
+        imgui.text_colored("  " .. text, colour)
+    end
+
+    -- The training menu's own reading, shown only when it disagrees. It is not
+    -- obeyed - the operator says which pad they are on - but a sweep run under
+    -- the wrong one measures six real bits and files them as the other scheme's,
+    -- which is the one mistake here that later reads as a plausible map.
+    if live.p1_control and live.p1_control ~= calib.scheme then
+        imgui.text_colored(("  the training menu says P1 is on %s, and this is set to %s - "
+            .. "one of the two is wrong, and the sweep will believe this one")
+            :format(tostring(live.p1_control), tostring(calib.scheme)), UIKit.COLORS.Red)
+    end
+
     if CalRunner.running() then
         if UIKit.styled_button(T("stop") .. "##ce_cal", THEME.stop, UIKit.COLORS.White) then
             -- Refuses once when there are observations and no profile written,
@@ -917,10 +1048,13 @@ local function draw_calibration()
             -- supply them then. The same two things the WRITE PROFILE button
             -- below assembles.
             local r, err = CalRunner.start(reg, {
+                scheme = calib.scheme,
                 identity = calibration_identity(),
                 probe_values = probe_values_now(),
             })
-            calib.last_status = r and "sweep started" or ("could not start: " .. tostring(err))
+            calib.last_status = r
+                and ("sweep started under " .. tostring(calib.scheme) .. " controls")
+                or ("could not start: " .. tostring(err))
         end
     end
     imgui.same_line()
@@ -939,6 +1073,10 @@ local function draw_calibration()
 
     local p = CalRunner.progress()
     if p then
+        -- The run's own scheme, not the selector's: they are the same until
+        -- somebody changes the selector mid-run, and then this is the one that
+        -- says what is being pressed.
+        kv("scheme", tostring(p.scheme), UIKit.COLORS.Cyan)
         kv("step", ("%d / %d  [%s]"):format(p.index, p.total, tostring(p.state)),
            p.done and UIKit.COLORS.Green or UIKit.COLORS.Cyan)
         if p.purpose then imgui.text_colored("  " .. p.purpose, UIKit.COLORS.White) end
@@ -971,6 +1109,10 @@ end
 -- reproducible and because it writes no input at all.
 local function draw_pad_watch()
     imgui.text_colored(T("pad_help"), UIKit.COLORS.Grey)
+    -- Which scheme DERIVE will name these masks in. Set in the CALIBRATION
+    -- panel, said here so the operator does not have to remember where it is.
+    imgui.text_colored(("  naming masks under %s controls (set in CALIBRATION)")
+        :format(tostring(calib.scheme)), UIKit.COLORS.DarkGrey)
 
     if pad.on then
         if UIKit.styled_button(T("pad_stop") .. "##ce_pad", THEME.stop, UIKit.COLORS.White) then
@@ -993,14 +1135,24 @@ local function draw_pad_watch()
     -- same profile, by the same writer, so there is one spelling of it.
     if UIKit.styled_button(T("pad_derive") .. "##ce_pad_derive", THEME.go, UIKit.COLORS.White) then
         pad.status = nil
-        if not probe_d.catalog then
+        -- The scheme the CALIBRATION panel is set to. A press is named through a
+        -- notation, the notation is the catalog's, and the catalog's display
+        -- depends on which pad is in the operator's hands - so this panel cannot
+        -- have a second answer to that question.
+        local scheme = calib.scheme or "modern"
+        local bits_key = InputMask.BITS_KEY[scheme]
+        local cat = catalog_for(scheme)
+        if not cat then
             pad.status = "load the catalog in PROBE D first - a mask names a "
                 .. "button only through the notation of the action it produced"
+        elseif not bits_key then
+            pad.status = ("no button-bit register entry for control scheme %q")
+                :format(tostring(scheme))
         else
-            local known = Provenance.value(reg, "modern_button_bits") or {}
+            local known = Provenance.value(reg, bits_key) or {}
             local rep = PadWatch.report(pad.watch)
             local derived, evidence, problems =
-                Calibration.bits_from_pad(rep and rep.rows or {}, probe_d.catalog, known)
+                Calibration.bits_from_pad(rep and rep.rows or {}, cat, known)
 
             local n = 0
             local merged = {}
@@ -1012,14 +1164,15 @@ local function draw_pad_watch()
                     :format(rep and #rep.rows or 0,
                             #problems > 0 and (" - " .. tostring(problems[1].reason)) or "")
             else
-                local note = "measured on the operator's pad, in pl_input_new:"
+                local note = ("measured on the operator's pad under %s controls, in "
+                    .. "pl_input_new:"):format(scheme)
                 for _, e in ipairs(evidence) do
                     note = note .. (" mask 0x%X produced action %d, whose notation is %q, "
                         .. "and every other button it names already had a measured bit in "
                         .. "that mask - so 0x%X is %s;"):format(
                         e.mask, e.action_id, tostring(e.notation), e.bit, e.button)
                 end
-                local values = { modern_button_bits = {
+                local values = { [bits_key] = {
                     status = Provenance.STATUS.PARTIAL,
                     value = merged,
                     note = note,
@@ -1028,10 +1181,10 @@ local function draw_pad_watch()
                 -- except against the catalog it was read from - and the bits
                 -- above were named through one. Calibration.document refuses
                 -- without them, which is how this was found.
-                local identity = calibration_identity()
-                identity.character = probe_d.catalog.character
-                identity.ac_sha256 = probe_d.catalog.ac_sha256
-                identity.bcm_sha256 = probe_d.catalog.bcm_sha256
+                local identity = calibration_identity(scheme)
+                identity.character = cat.character
+                identity.ac_sha256 = cat.ac_sha256
+                identity.bcm_sha256 = cat.bcm_sha256
                 local path, werr = CalRunner.write_values(identity,
                     { Calibration.from_register(reg), values })
                 -- Applied live whenever the record landed: the values are

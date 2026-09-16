@@ -44,6 +44,22 @@
 -- stops and the entry stays unverified with the reason attached. A calibration
 -- that guesses at one bit is worse than no calibration at all, because the
 -- register would then report INJECTION as available.
+--
+-- WHICH SCHEME IT IS MEASURING
+--
+-- A sweep is a sweep of ONE control scheme, and which one is the CATALOG's -
+-- Catalog.build decided it, and every notation in the catalog is written in
+-- that scheme's display. So the scheme is read off `catalog.scheme` rather than
+-- taken as an argument that could disagree with it: the tokeniser, the button
+-- names the bits are matched against, and the register entry the answer is
+-- written into (modern_button_bits or classic_button_bits) all follow from it.
+--
+-- Getting that wrong does not raise. A classic notation handed to the Modern
+-- tokeniser finds no button token, keeps the digits, and comes back as a
+-- direction - so every single-button group would vanish, the button phase would
+-- conclude nothing, and the run would report a clean failure to measure
+-- anything. Writing the answer into the wrong entry would be worse: six bits
+-- measured on a Classic pad, filed as the Modern map.
 
 local Provenance = require("func/ComboExplorer/core/Provenance")
 local InputMask  = require("func/ComboExplorer/core/InputMask")
@@ -83,6 +99,37 @@ local function sorted_keys(t)
     return out
 end
 
+-- The reading a catalog's notations were written in. See the header.
+--
+-- Taken from the catalog rather than passed around, because every caller below
+-- already has the catalog and none of them should be able to hand a Modern
+-- reading to a Classic catalog by forgetting an argument.
+local function parse_opts(catalog)
+    if type(catalog) == "table" and catalog.scheme == "classic" then
+        return { scheme = "classic" }
+    end
+    return nil
+end
+
+-- A notation, read in its own catalog's scheme.
+local function parse_in(catalog, notation)
+    return InputMask.parse(notation, parse_opts(catalog))
+end
+
+-- The rows a sweep could be built from, in whichever scheme this catalog is.
+--
+-- The method names differ per scheme and always have: Modern rows are manual /
+-- simple / assist and classic rows are classic, one method, because there is no
+-- shortcut button to be a second one. Asking a classic catalog for its "manual"
+-- rows is not an error - it is an empty list, and an empty list is how the
+-- unwitnessed report quietly stopped naming anything: no rows, no buttons the
+-- catalog needs, nothing missing, and a four-of-six map reading as complete.
+local function probeable_rows(catalog)
+    local methods = Catalog.SCHEME_METHODS[
+        (type(catalog) == "table" and catalog.scheme) or "modern"]
+    return Catalog.probeable(catalog, { input_methods = methods })
+end
+
 -- verified when the measurement matched the guess, refuted when it did not.
 -- An entry whose provisional value was nil has nothing to be wrong about, so a
 -- measurement of it is verified rather than refuted - "refuted" is a statement
@@ -107,6 +154,15 @@ end
 -- said the value had a certain shape and it did not.
 local function verdict_status(provisional, measured)
     if provisional == nil then return Provenance.STATUS.VERIFIED end
+    -- An empty map is the same situation as a nil one, and classic_button_bits
+    -- is deliberately empty: the register carries a guess for every other entry
+    -- and has nowhere to take one from for that one. Without this line the
+    -- comparison below reaches the second loop, finds six measured keys the
+    -- "guess" does not have, and returns REFUTED - which says a guess was
+    -- wrong when there was no guess to be wrong.
+    if type(provisional) == "table" and next(provisional) == nil then
+        return Provenance.STATUS.VERIFIED
+    end
     if type(provisional) ~= type(measured) then return Provenance.STATUS.REFUTED end
     if type(provisional) ~= "table" then
         return provisional == measured and Provenance.STATUS.VERIFIED or Provenance.STATUS.REFUTED
@@ -299,6 +355,9 @@ end
 -- opts.provenance : the register, for the provisional values being tested
 -- opts.catalog    : a built catalog, for deriving what an observed id means
 -- opts.hold_ticks : how long each single input is held (default 3)
+-- opts.scheme     : optional, and only ever a CHECK. The scheme is the
+--                   catalog's; passing one that disagrees is refused rather
+--                   than obeyed.
 --
 -- Returns session, reason.
 function M.new(opts)
@@ -308,13 +367,35 @@ function M.new(opts)
     end
     local reg = opts.provenance or Provenance.new()
 
-    local profile, perr = InputMask.profile_from_provenance(Provenance, reg, opts.scheme)
+    -- Read off the catalog, not off the caller. Everything the sweep concludes
+    -- is a name taken from a notation in this catalog, so a run that thought it
+    -- was measuring the other scheme would file six real measurements under the
+    -- wrong register entry - the one failure here that a later reader cannot
+    -- detect, because the bits would look perfectly plausible.
+    local scheme = opts.catalog.scheme or "modern"
+    if opts.scheme ~= nil and opts.scheme ~= scheme then
+        return nil, ("this catalog was built under %q and the run asked for %q - a sweep "
+            .. "names a bit off the notation of the action it produced, so the catalog and "
+            .. "the scheme have to be the same one"):format(tostring(scheme), tostring(opts.scheme))
+    end
+
+    -- Which register entry the answer lands in. Same table InputMask chooses a
+    -- button map with, so the profile the sweep writes from and the entry it
+    -- writes into can never be for two different schemes.
+    local bits_key = InputMask.BITS_KEY[scheme]
+    if bits_key == nil then
+        return nil, ("no button-bit register entry for control scheme %q"):format(tostring(scheme))
+    end
+
+    local profile, perr = InputMask.profile_from_provenance(Provenance, reg, scheme)
     if not profile then return nil, "could not build an input profile: " .. tostring(perr) end
 
     return {
         schema = M.SCHEMA,
         provenance = reg,
         catalog = opts.catalog,
+        scheme = scheme,
+        bits_key = bits_key,
         profile = profile,
         hold_ticks = tonumber(opts.hold_ticks) or M.DEFAULT_HOLD_TICKS,
         steps = nil,
@@ -337,8 +418,8 @@ end
 function M.rows_needing(catalog, button)
     if type(catalog) ~= "table" or type(button) ~= "string" then return 0 end
     local n = 0
-    for _, row in ipairs(Catalog.probeable(catalog, { input_methods = { "manual", "simple" } })) do
-        local parsed = InputMask.parse(row.notation)
+    for _, row in ipairs(probeable_rows(catalog)) do
+        local parsed = parse_in(catalog, row.notation)
         for _, b in ipairs(parsed and parsed.buttons or {}) do
             if b == button then n = n + 1 break end
         end
@@ -349,7 +430,7 @@ end
 local function single_button_groups(catalog)
     local by_button = {}
     for _, g in pairs(catalog.groups or {}) do
-        local parsed = InputMask.parse(g.notation)
+        local parsed = parse_in(catalog, g.notation)
         if parsed and not parsed.followup and not parsed.air and not parsed.any_button
             and parsed.dirs == "" and #parsed.buttons == 1 then
             local name = parsed.buttons[1]
@@ -398,8 +479,8 @@ end
 -- the entry quietly stops saying what it cannot press.
 local function needed_buttons(catalog)
     local names = {}
-    for _, row in ipairs(Catalog.probeable(catalog, { input_methods = { "manual", "simple" } })) do
-        local parsed = InputMask.parse(row.notation)
+    for _, row in ipairs(probeable_rows(catalog)) do
+        local parsed = parse_in(catalog, row.notation)
         for _, b in ipairs(parsed and parsed.buttons or {}) do names[b] = true end
     end
     return names
@@ -424,7 +505,7 @@ end
 local function paired_button_groups(catalog)
     local by_pair = {}
     for _, g in pairs(catalog.groups or {}) do
-        local parsed = InputMask.parse(g.notation)
+        local parsed = parse_in(catalog, g.notation)
         if parsed and not parsed.followup and not parsed.air and not parsed.any_button
             and parsed.dirs == "" and #parsed.buttons == 2 then
             local a, b = parsed.buttons[1], parsed.buttons[2]
@@ -531,7 +612,7 @@ function M.bits_from_pad(rows, catalog, known)
         local seen = r.from_idle and (r.first_non_idle or r.action_id) or nil
         if r.settled and seen then
             local g = lookup(seen)
-            local parsed = g and InputMask.parse(g.notation)
+            local parsed = g and parse_in(catalog, g.notation)
             local names = parsed and parsed.buttons or nil
             if names and #names == #r.bits and not parsed.any_button then
                 local unknown, accounted = {}, 0
@@ -616,8 +697,9 @@ function M.plan(session)
     -- the button names: the point is to find out which bit is which button, and
     -- sweeping by name would assume the answer.
     local bits = {}
+    local bits_from_guess = true
     do
-        local buttons = Provenance.provisional(session.provenance, "modern_button_bits") or {}
+        local buttons = Provenance.provisional(session.provenance, session.bits_key) or {}
         local seen = {}
         for _, bit in pairs(buttons) do
             if type(bit) == "number" and not seen[bit] then
@@ -626,6 +708,20 @@ function M.plan(session)
             end
         end
         table.sort(bits)
+
+        -- An entry with NO guess has nothing for this phase to check, and
+        -- sweeping an empty list would emit zero button steps and conclude
+        -- nothing - the classic run would run to completion and measure not one
+        -- of its six bits, with no error anywhere. classic_button_bits is
+        -- deliberately empty (Provenance: every other entry carries a guess from
+        -- somewhere and that one has nowhere to take one from), so the phase
+        -- sweeps the whole button field instead. That is the same move the
+        -- paired phase already makes, and for the same reason: looking for a bit
+        -- no guess holds means considering every bit there is.
+        if #bits == 0 then
+            bits = candidate_bits()
+            bits_from_guess = false
+        end
     end
     for _, bit in ipairs(bits) do
         add {
@@ -637,8 +733,10 @@ function M.plan(session)
             -- because the writer's default is what broke the direction phase.
             mirror = false,
             hold_ticks = session.hold_ticks,
-            purpose = ("hold bit 0x%X alone and record what came out"):format(bit),
-            tests = { "modern_button_bits" },
+            purpose = ("hold bit 0x%X alone and record what came out%s"):format(bit,
+                bits_from_guess and "" or " (no guess names this bit - the whole "
+                    .. "button field is being swept)"),
+            tests = { session.bits_key },
         }
     end
 
@@ -654,7 +752,7 @@ function M.plan(session)
     -- producing a wrong answer.
     do
         local singles = single_button_groups(session.catalog)
-        local provisional = Provenance.provisional(session.provenance, "modern_button_bits") or {}
+        local provisional = Provenance.provisional(session.provenance, session.bits_key) or {}
         for _, name in ipairs(sorted_keys(needed_buttons(session.catalog))) do
             if not singles[name] then
                 local pair, partner = witnessing_pair(session.catalog, name, singles)
@@ -677,7 +775,7 @@ function M.plan(session)
                                 purpose = ("hold bit 0x%X with %s's 0x%X and see whether "
                                     .. "%s + %s came out"):format(bit, partner, partner_bit,
                                                                   name, partner),
-                                tests = { "modern_button_bits" },
+                                tests = { session.bits_key },
                             }
                         end
                     end
@@ -782,7 +880,7 @@ function M.plan(session)
     end
 
     for _, g in ipairs(Catalog.ambiguous_groups(session.catalog)) do
-        local parsed = InputMask.parse(g.notation)
+        local parsed = parse_in(session.catalog, g.notation)
         if not parsed then
             cannot(g, "the notation carries no input")
         elseif parsed.followup then
@@ -1170,8 +1268,35 @@ function M.conclude(session)
     local values, notes = {}, {}
 
     local function skip(key, why) notes[#notes + 1] = { key = key, reason = why } end
-    local function settle(key, measured, note)
+
+    -- `also_unwitnessed` is a list of names the CATALOG asked for and the sweep
+    -- never saw. verdict_status can only report the keys the guess had, and an
+    -- entry with no guess has none - so a classic map that witnessed four of its
+    -- six buttons would otherwise come back verified with nothing recording
+    -- which two are missing, and apply_calibration would drop the register's own
+    -- list of six along with it.
+    local function settle(key, measured, note, also_unwitnessed)
         local status, unwitnessed = verdict_status(Provenance.provisional(reg, key), measured)
+        -- Not on a REFUTED verdict. There the disagreement IS the finding and
+        -- verdict_status stops at it deliberately; listing what else was missing
+        -- beside it would read as a partial success.
+        if also_unwitnessed and #also_unwitnessed > 0
+            and status ~= Provenance.STATUS.REFUTED then
+            local seen, merged = {}, {}
+            for _, n in ipairs(unwitnessed or {}) do
+                if not seen[n] then seen[n] = true; merged[#merged + 1] = n end
+            end
+            for _, n in ipairs(also_unwitnessed) do
+                if not seen[n] then seen[n] = true; merged[#merged + 1] = n end
+            end
+            table.sort(merged)
+            unwitnessed = merged
+            -- Measured as far as it went, which is what partial means. Calling
+            -- it verified would say the missing bits were measured.
+            if status == Provenance.STATUS.VERIFIED then
+                status = Provenance.STATUS.PARTIAL
+            end
+        end
         values[key] = {
             status = status,
             value = copy(measured),
@@ -1190,7 +1315,8 @@ function M.conclude(session)
             if s.phase == M.PHASE.BUTTON_BITS then n_single = n_single + 1
             elseif s.phase == M.PHASE.PAIRED_BUTTON then n_paired = n_paired + 1 end
         end
-        local note = ("derived from %d single-bit step(s)"):format(n_single)
+        local note = ("%s controls: derived from %d single-bit step(s)")
+            :format(session.scheme, n_single)
         if n_paired > 0 then
             note = note .. (" and %d paired step(s)"):format(n_paired)
         end
@@ -1198,13 +1324,15 @@ function M.conclude(session)
         -- asks the profile to press one of them, and carrying what each one
         -- costs. The map genuinely does not contain these; the reader needs to
         -- know whether that is one route or six hundred.
+        local names = {}
         for _, u in ipairs(unwitnessed or {}) do
             note = note .. ("; no bit for %s (%s) - %d probeable row(s) need it")
                 :format(u.button, u.why, u.probeable_rows)
+            names[#names + 1] = u.button
         end
-        settle("modern_button_bits", bits, note)
+        settle(session.bits_key, bits, note, names)
     else
-        skip("modern_button_bits", bit_err or "not measured")
+        skip(session.bits_key, bit_err or "not measured")
     end
 
     local dirs, polarity, dir_problems, dir_err = conclude_direction(session, steps)

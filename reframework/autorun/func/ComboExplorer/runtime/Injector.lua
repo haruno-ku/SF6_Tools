@@ -258,14 +258,29 @@ function M.start(opts)
     end
 
     -- THE GATE. First caller in the project's history.
-    local allowed, blockers = Provenance.can(reg, Provenance.CAPABILITY.INJECTION)
+    --
+    -- Which gate depends on which pad the route is written for. Modern and
+    -- Classic are two measurements of two different button sets and the register
+    -- keeps them apart (Provenance: a measured Modern map says nothing about
+    -- four of Classic's six), so a classic route asks the classic capability and
+    -- gets the classic profile. Asking INJECTION for a classic route would let a
+    -- build with a measured Modern map through, and then the very next thing -
+    -- button_mask against a Modern profile - would refuse "LP" one pair at a
+    -- time, in the middle of a sweep.
+    local scheme = (type(opts.route) == "table" and opts.route.control_scheme)
+        or opts.scheme or "modern"
+    local capability = (scheme == "classic")
+        and Provenance.CAPABILITY.INJECTION_CLASSIC
+        or Provenance.CAPABILITY.INJECTION
+
+    local allowed, blockers = Provenance.can(reg, capability)
     if not allowed then
         local names = {}
         for _, b in ipairs(blockers or {}) do
             names[#names + 1] = tostring(type(b) == "table" and b.key or b)
         end
-        return nil, ("injection is blocked until these are measured: %s")
-            :format(#names > 0 and table.concat(names, ", ") or "unknown")
+        return nil, ("%s injection is blocked until these are measured: %s")
+            :format(scheme, #names > 0 and table.concat(names, ", ") or "unknown")
     end
 
     -- The operator's own off switch, after the register rather than instead of
@@ -285,9 +300,9 @@ function M.start(opts)
     -- It is deliberately not covered by a test. There is no register that
     -- passes one and fails the other, so any test of it would have to fake one
     -- of the two - which would be a test of the fake.
-    local profile = InputMask.profile_from_provenance(Provenance, reg)
+    local profile = InputMask.profile_from_provenance(Provenance, reg, scheme)
     if not profile then
-        return nil, "no input profile could be built from the register"
+        return nil, ("no %s input profile could be built from the register"):format(scheme)
     end
     if profile.measured ~= true then
         return nil, "the register says injection is available but the profile it "

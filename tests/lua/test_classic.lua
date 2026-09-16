@@ -395,4 +395,57 @@ local o3 = { scheme = "modern", from_methods = "manual", to_methods = "manual,si
 Pipeline.apply_scheme_defaults(o3, {})
 t.eq(o3.from_methods, "manual", "a Modern run is untouched")
 
+-- --- and what one Classic calibration changes --------------------------------
+
+t.group("once the six bits are measured, the same route is no longer set aside")
+
+do
+    -- The refusal above is a fact about THIS BUILD, not about Classic, and the
+    -- difference is a measured map. `button_bits` is what a caller holding one
+    -- passes; with none - which is every caller before a classic run - the
+    -- answer is exactly what it was.
+    local measured = { LP = 0x10, MP = 0x80, HP = 0x100,
+                       LK = 0x20, MK = 0x40, HK = 0x200 }
+    local still = SC.unplayable(route, { button_bits = measured })
+    local classic_kinds = 0
+    for _, f in ipairs(still) do
+        if f.kind == SC.UNPLAYABLE.CLASSIC_BUTTONS then classic_kinds = classic_kinds + 1 end
+    end
+    t.eq(classic_kinds, 0, "no step is set aside for an unwitnessed button any more")
+
+    -- A map missing one button sets aside only the steps that press it, which
+    -- is the difference between "this scheme cannot be pressed" and "this step
+    -- cannot be pressed".
+    local partial = { MP = 0x80, HP = 0x100, LK = 0x20, MK = 0x40, HK = 0x200 }
+    local some = SC.unplayable(route, { button_bits = partial })
+    t.eq(#some, 2, "both LP steps come back")
+    t.eq(some[1].kind, SC.UNPLAYABLE.CLASSIC_BUTTONS, "still under the same name")
+
+    t.eq(SC.classic_buttons_measured({ "LP" }, nil), false,
+         "no map at all is not a measurement")
+    t.eq(SC.classic_buttons_measured({ "LP" }, {}), false,
+         "and neither is an empty one - which is what the register carries")
+end
+
+t.group("a classic profile from a register with only Modern bits still refuses")
+
+do
+    -- The register above has a verified Modern map and nothing classic. The
+    -- profile built for classic from it must not borrow the Modern bits: L is
+    -- 0x10 there, and LP and LK would both have to be 0x10 for that to work,
+    -- which is exactly the confusion command_display's raw_button_mask already
+    -- makes.
+    local prof = InputMask.profile_from_provenance(P, reg, "classic")
+    t.ok(prof ~= nil, "the profile builds")
+    t.is_nil(prof and prof.buttons.LP, "with no bit for LP")
+    t.is_nil(prof and prof.buttons.L, "and no Modern name smuggled in either")
+    t.eq(prof and prof.measured, false, "and it says it is not measured")
+
+    local mask, why = InputMask.button_mask({ "LK" }, prof)
+    t.is_nil(mask, "so LK produces no mask")
+    t.ok(tostring(why):find("LK", 1, true) ~= nil,
+         "and the refusal names the button: " .. tostring(why))
+end
+
+
 return t.finish()
