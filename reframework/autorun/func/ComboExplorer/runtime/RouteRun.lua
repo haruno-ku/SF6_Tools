@@ -35,8 +35,141 @@
 
 local Route = require("func/ComboExplorer/core/Route")
 local Catalog = require("func/ComboExplorer/core/Catalog")
+local JsonIO = require("func/ComboExplorer/runtime/JsonIO")
 
 local M = { name = "ComboExplorer.RouteRun" }
+
+-- --- the files on offer ----------------------------------------------------------
+--
+-- WHY THE PANEL CANNOT JUST HOLD A LIST
+--
+-- It did: two paths in a table in ComboExplorer.lua, cycled by a button. Both
+-- were written by hand for #48, and while they were the only two that was
+-- honest. tools/lua/plan.lua --routes now writes one file per plan route, so
+-- the list is whatever is on disk and a hard-coded pair of names is a list that
+-- silently hides everything generated since.
+--
+-- Same shape as runtime/Sweep.list_worklists, and here rather than there for
+-- the reason Sweep is not RouteRun: a worklist is pairs and a route is a route,
+-- and the only thing they share is that the panel needs a picker for each.
+--
+-- A generated file is named "<char>-<scheme>-<plan>-<rank>.json" (plan.lua), so
+-- one for THIS character and scheme is labelled with its plan and rank and put
+-- first. Anything else in the directory is offered too, under its own name: the
+-- hand-written ground truths are exactly that, and a file nobody can pick is a
+-- file nobody runs.
+
+M.ROUTE_KINDS = { plan = 1, named = 2 }
+
+-- dir      : data-relative, forward slashes ("ComboExplorer_data/route")
+-- char_lc  : the character key in lower case, or nil for "label nothing as mine"
+-- scheme   : "modern"
+-- fs_      : { glob = function(regex) -> { path, ... } }. JsonIO when nil.
+--
+-- Returns the entries, plus a reason when the directory could not be listed.
+-- Never raises, and never returns nil: an empty list is the honest answer when
+-- there are no files, and the panel says so rather than showing a stale name.
+function M.list_routes(dir, char_lc, scheme, fs_)
+    local glob
+    if fs_ == nil then
+        glob = JsonIO.can_glob() and JsonIO.glob or nil
+    else
+        glob = fs_.glob
+    end
+    dir = tostring(dir or ""):gsub("[/\\]+$", "")
+    local stem = (tostring(char_lc or ""):lower()) .. "-" .. (tostring(scheme or ""):lower())
+
+    if not glob then
+        return {}, "fs.glob is unavailable, so the route files cannot be listed"
+    end
+
+    -- See Sweep.list_worklists: four backslashes here is one escaped separator
+    -- in fs.glob's regex.
+    local pattern = dir:gsub("/", "\\\\") .. "\\\\.*json"
+    local ok, files = pcall(glob, pattern)
+    if not ok or type(files) ~= "table" then
+        return {}, "could not list " .. dir
+    end
+
+    local mine, others, seen = {}, {}, {}
+    for _, p in ipairs(files) do
+        local base = type(p) == "string" and p:match("([^/\\]+)$") or nil
+        local lower = base and base:lower()
+        if lower and not seen[lower] and lower:sub(-5) == ".json" then
+            seen[lower] = true
+            local e = { path = dir .. "/" .. base, name = base, kind = "named",
+                        label = base:sub(1, -6) }
+            -- Plain comparisons, not patterns: a character key could one day
+            -- carry a character that means something to string.match.
+            if #stem > 1 and lower:sub(1, #stem + 1) == stem .. "-" then
+                local rest = base:sub(#stem + 2, -6)
+                local plan, rank = rest:match("^(.-)%-(%d+)$")
+                if plan and plan ~= "" then
+                    e.kind, e.plan_name, e.rank = "plan", plan, tonumber(rank)
+                    e.label = ("plan: %s #%d"):format(plan, e.rank)
+                    mine[#mine + 1] = e
+                else
+                    others[#others + 1] = e
+                end
+            else
+                others[#others + 1] = e
+            end
+        end
+    end
+
+    table.sort(mine, function(a, b)
+        if a.plan_name ~= b.plan_name then return a.plan_name < b.plan_name end
+        return (a.rank or 0) < (b.rank or 0)
+    end)
+    table.sort(others, function(a, b) return a.name < b.name end)
+    for _, e in ipairs(others) do mine[#mine + 1] = e end
+    return mine
+end
+
+-- What is in one listed file. Read ONCE per entry - the result is kept on it -
+-- because the panel draws every frame.
+--
+-- Never raises. A file that will not read, or reads as something core/Route
+-- refuses, stays in the list with `error` set: the operator sees it is there
+-- and why it cannot run. `mismatch` is a warning rather than a refusal - the
+-- file naming another character is checked against the loaded catalog at LOAD,
+-- which is where it has to be, because the name in the file is not evidence.
+function M.describe_route(e, io_)
+    if type(e) ~= "table" then return e end
+    if e.described then return e end
+    e.described = true
+    io_ = io_ or JsonIO
+    local ok, doc = pcall(io_.load, e.path)
+    if not ok then
+        e.error = "could not be read: " .. tostring(doc)
+        return e
+    end
+    if type(doc) ~= "table" then
+        e.error = "not a readable JSON document"
+        return e
+    end
+    e.id = type(doc.id) == "string" and doc.id or nil
+    e.character = doc.character
+    e.control_scheme = doc.control_scheme
+    e.note = doc.note
+    local built, why = Route.build(doc)
+    if not built then
+        e.error = tostring(why)
+        return e
+    end
+    e.steps = #built.steps
+    e.gaps = #built.steps - 1
+    local grid, grid_note = Route.delay_grid(e.gaps, built.delays)
+    e.combinations = #grid
+    e.grid_note = grid_note
+    -- What the file's own gaps say about themselves, when plan.lua wrote them.
+    if type(doc.gaps) == "table" then
+        local sources = {}
+        for _, g in ipairs(doc.gaps) do sources[#sources + 1] = tostring(g.source) end
+        e.gap_sources = table.concat(sources, ", ")
+    end
+    return e
+end
 
 local _injector = nil
 local function default_injector()

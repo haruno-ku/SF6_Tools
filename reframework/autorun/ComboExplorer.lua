@@ -364,17 +364,18 @@ local sweep = {
     running_path = nil,
 }
 local WORKLIST_DIR = "ComboExplorer_data/worklist"
--- The routes on disk, cycled through by a button rather than typed: the panel
--- has no text input, and a run has to be able to ask about one gap at a time.
--- Measured why: the three-step route came back "move B never appeared" at all
--- 144 combinations, and two gaps searched together cannot say which of them is
--- wrong.
-local ROUTE_FILES = {
-    "ComboExplorer_data/route/ground-truth-ab.json",
-    "ComboExplorer_data/route/ground-truth.json",
+local ROUTE_DIR = "ComboExplorer_data/route"
+-- The routes on disk, picked from a list the same way a worklist is
+-- (RouteRun.list_routes / Sweep.list_worklists). This was two hard-coded paths
+-- cycled by a button, which was honest while the two hand-written ground truths
+-- were the only files there; tools/lua/plan.lua --routes now writes one per plan
+-- route, and a fixed pair of names hides every one of them.
+local route = {
+    built = nil, report = nil, status = nil,
+    -- Listed once per character+scheme, and on REFRESH: fs.glob and a read of
+    -- every file is not a frame's work.
+    key = nil, files = nil, list_note = nil, choice = {}, path = nil,
 }
-local route = { which = 1, built = nil, report = nil, status = nil }
-route.path = ROUTE_FILES[1]
 
 -- WHERE THE FIGHTERS STAND FOR A TRIAL  (measured 2026-09-12, build 24176760)
 --
@@ -1395,20 +1396,81 @@ end
 -- One route somebody wrote down, at every gap.
 local function draw_route()
     imgui.text_colored(T("route_help"), UIKit.COLORS.Grey)
-    kv("file", route.path)
 
-    if UIKit.styled_button("NEXT FILE##ce_route_next", THEME.neutral, UIKit.COLORS.White) then
-        route.which = (route.which % #ROUTE_FILES) + 1
-        route.path = ROUTE_FILES[route.which]
-        route.built, route.report, route.status = nil, nil, nil
+    local rchar = character_file_key()
+    local rscheme = live.p1_control or "modern"
+    local rkey = (rchar and rchar:lower() or "?") .. "-" .. rscheme
+    if rkey ~= route.key then
+        route.key = rkey
+        route.files, route.list_note =
+            RouteRun.list_routes(ROUTE_DIR, rchar and rchar:lower() or nil, rscheme)
+        for _, e in ipairs(route.files) do RouteRun.describe_route(e) end
     end
-    imgui.same_line()
+
+    local chosen, chosen_idx = nil, 1
+    for i, e in ipairs(route.files or {}) do
+        if e.path == route.choice[rkey] then chosen, chosen_idx = e, i end
+    end
+    chosen = chosen or (route.files or {})[1]
+    route.path = chosen and chosen.path or nil
+
+    if RouteRun.running() then
+        kv("file", tostring(route.path))
+    elseif not chosen then
+        imgui.text_colored("  no route files under " .. ROUTE_DIR
+            .. (route.list_note and ("  (" .. route.list_note .. ")") or "")
+            .. " - write some with `lua tools/lua/plan.lua --routes N`", UIKit.COLORS.Orange)
+    else
+        local labels = {}
+        for i, e in ipairs(route.files) do
+            local what = e.error and ("! " .. e.error)
+                or ("%d steps, %s gap combinations"):format(e.steps or 0,
+                                                            tostring(e.combinations or "?"))
+            labels[i] = ("%s  (%s)  %s"):format(e.label, what, e.name)
+        end
+        imgui.text("route: ")
+        imgui.same_line()
+        imgui.push_item_width(420)
+        local changed, idx = imgui.combo("##ce_route_file", chosen_idx, labels)
+        imgui.pop_item_width()
+        if changed and route.files[idx] then
+            chosen = route.files[idx]
+            route.path = chosen.path
+            route.choice[rkey] = route.path
+            route.built, route.report, route.status = nil, nil, nil
+        end
+        imgui.same_line()
+        if UIKit.styled_button("REFRESH##ce_route_list", THEME.neutral, UIKit.COLORS.White) then
+            route.key = nil      -- listed again on the next frame
+        end
+        kv("file", route.path)
+        if chosen.id then kv("id", tostring(chosen.id)) end
+        if chosen.character then
+            kv("written for", ("%s / %s"):format(tostring(chosen.character),
+                                                 tostring(chosen.control_scheme)),
+               (rchar and chosen.character ~= rchar) and UIKit.COLORS.Orange
+               or UIKit.COLORS.White)
+        end
+        if chosen.gap_sources then
+            -- Where each gap's delays came from: measured beats predicted beats
+            -- the default range (tools/lua/routefile.lua). A grid of defaults is
+            -- a long run that measured nothing about the timing.
+            kv("gap delays", tostring(chosen.gap_sources), UIKit.COLORS.Cyan)
+        end
+        if chosen.grid_note then
+            imgui.text_colored("  " .. tostring(chosen.grid_note), UIKit.COLORS.Orange)
+        end
+        if chosen.error then
+            imgui.text_colored("  " .. tostring(chosen.error), UIKit.COLORS.Red)
+        end
+    end
+
     if UIKit.styled_button(T("route_load") .. "##ce_route_load", THEME.neutral,
                            UIKit.COLORS.White) then
         route.built, route.report, route.status = nil, nil, nil
-        local doc = JsonIO.load(route.path)
+        local doc = route.path and JsonIO.load(route.path) or nil
         if type(doc) ~= "table" then
-            route.status = "no route at " .. route.path
+            route.status = "no route at " .. tostring(route.path)
         else
             -- Checked against the catalog the GAME loaded, not the name in the
             -- file: a route written for one character run against another

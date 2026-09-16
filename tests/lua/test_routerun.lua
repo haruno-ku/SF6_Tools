@@ -536,4 +536,105 @@ do
     RR.stop()
 end
 
+-- --- the files on offer --------------------------------------------------------
+
+t.group("list_routes: the panel's picker, not two hard-coded paths")
+
+do
+    local asked = nil
+    local files = {
+        "reframework/data/ComboExplorer_data/route/zangief-modern-max-damage-2.json",
+        -- A backslash separator, as fs.glob reports one on Windows.
+        "reframework/data/ComboExplorer_data/route\\zangief-modern-max-damage-1.json",
+        "reframework/data/ComboExplorer_data/route/zangief-modern-no-gauge-1.json",
+        "reframework/data/ComboExplorer_data/route/ground-truth.json",
+        "reframework/data/ComboExplorer_data/route/ground-truth-ab.json",
+        "reframework/data/ComboExplorer_data/route/ryu-modern-max-damage-1.json",
+        "reframework/data/ComboExplorer_data/route/notes.txt",
+    }
+    local list, note = RR.list_routes("ComboExplorer_data/route", "Zangief", "modern", {
+        glob = function(p) asked = p return files end,
+    })
+    t.is_nil(note, "a listing that worked carries no note")
+    t.eq(asked, "ComboExplorer_data\\\\route\\\\.*json",
+         "the glob has two backslashes per separator at runtime, like Sweep.list_worklists")
+
+    local names = {}
+    for i, e in ipairs(list) do names[i] = e.name end
+    t.eq_list(names, {
+        "zangief-modern-max-damage-1.json",
+        "zangief-modern-max-damage-2.json",
+        "zangief-modern-no-gauge-1.json",
+        "ground-truth-ab.json",
+        "ground-truth.json",
+        "ryu-modern-max-damage-1.json",
+    }, "this character's plan routes by plan then rank, then everything else by name; not the .txt")
+
+    t.eq(list[1].kind, "plan", "a generated file is recognised by its name")
+    t.eq(list[1].plan_name, "max-damage", "with the plan it came from")
+    t.eq(list[1].rank, 1, "and the rank")
+    t.ok(list[1].label:find("max-damage", 1, true) ~= nil, "which the label says: " .. list[1].label)
+    t.eq(list[1].path, "ComboExplorer_data/route/zangief-modern-max-damage-1.json",
+         "the path is rebuilt from the directory the panel passed, whatever separators glob reported")
+    t.eq(list[4].kind, "named", "a hand-written route is offered too")
+    t.eq(list[4].label, "ground-truth-ab", "under its own name")
+    t.eq(list[6].kind, "named",
+         "another character's file is listed, not labelled as this character's plan")
+
+    local none, why = RR.list_routes("ComboExplorer_data/route", "zangief", "modern", {})
+    t.eq(#none, 0, "a machine that cannot list gets nothing, and says so")
+    t.ok(tostring(why):find("fs.glob") ~= nil, tostring(why))
+
+    local boom, bwhy = RR.list_routes("ComboExplorer_data/route", "zangief", "modern",
+                                      { glob = function() error("listing exploded") end })
+    t.eq(#boom, 0, "a listing that raises does not take the panel down")
+    t.ok(tostring(bwhy):find("could not list") ~= nil, tostring(bwhy))
+end
+
+t.group("describe_route: read once, and a bad file stays listed")
+
+do
+    local reads = 0
+    local docs = {
+        ["a.json"] = { schema = "ce.route.v1", id = "r", character = "Zangief",
+                       control_scheme = "modern",
+                       steps = { { action_id = 1, input_method = "manual", notation = "a" },
+                                 { action_id = 2, input_method = "manual", notation = "b" },
+                                 { action_id = 3, input_method = "manual", notation = "c" } },
+                       delays = { { 40, 44 }, { 2, 4, 6 } },
+                       gaps = { { source = "measured" }, { source = "predicted" } } },
+        ["b.json"] = { schema = "ce.route.v1", id = "one",
+                       steps = { { action_id = 1, input_method = "manual", notation = "a" } } },
+    }
+    local io_ = { load = function(path)
+        reads = reads + 1
+        local base = path:match("([^/]+)$")
+        if base == "boom.json" then error("disk on fire") end
+        return docs[base]
+    end }
+
+    local e = RR.describe_route({ path = "d/a.json" }, io_)
+    t.eq(e.steps, 3, "the step count")
+    t.eq(e.gaps, 2, "the number of gaps")
+    t.eq(e.combinations, 6, "and the grid core/Route.delay_grid would run")
+    t.eq(e.gap_sources, "measured, predicted",
+         "where each gap's delays came from, as plan.lua wrote it")
+    t.eq(e.character, "Zangief", "and who the file says it is for")
+    RR.describe_route(e, io_)
+    t.eq(reads, 1, "a described entry is not read again: the panel draws every frame")
+
+    local bad = RR.describe_route({ path = "d/b.json" }, io_)
+    t.ok(tostring(bad.error):find("two steps") ~= nil,
+         "a file core/Route.build refuses stays in the list with the refusal on it: "
+         .. tostring(bad.error))
+    t.is_nil(bad.steps, "and offers no step count")
+
+    local missing = RR.describe_route({ path = "d/c.json" }, io_)
+    t.ok(tostring(missing.error):find("readable") ~= nil, tostring(missing.error))
+
+    local boom = RR.describe_route({ path = "d/boom.json" }, io_)
+    t.ok(tostring(boom.error):find("could not be read") ~= nil,
+         "a reader that raises does not take the panel down: " .. tostring(boom.error))
+end
+
 return t.finish()

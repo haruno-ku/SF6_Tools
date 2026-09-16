@@ -85,6 +85,8 @@ local SUITES = {
     "tests.lua.test_practicescore",
     "tests.lua.test_labrows",
     "tests.lua.test_labeval",
+    "tests.lua.test_labknown",
+    "tests.lua.test_routefile",
 }
 
 local total_passed, total_failed = 0, 0

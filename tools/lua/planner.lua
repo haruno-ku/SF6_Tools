@@ -33,6 +33,19 @@
 -- its pairs are asked again rather than skipped. A planner that quietly
 -- trusted every old "no" would inherit every old bug.
 --
+-- AND NOW IT DOES NOT HAVE TO GUESS WHICH "NO" TO BELIEVE
+--
+-- tools/lua/labeval.lua (policy ce-eval-v1, the one the lab database applies)
+-- decides that per run rather than per experiment: a negative is a conclusive
+-- failure only when the run carried none of fixed_delay_4, unplayable_input,
+-- link_timing_on_cancel_pair or motion_button_late; a superseded re-run is left
+-- out unless it linked; a link always counts. M.known_from takes the
+-- evaluations that policy produces and reads a pair's status off the EVALUATION
+-- RESULT, so `rejected` here now means "the question was asked properly and the
+-- answer was no" - which is what makes demoting a route through one fair. A
+-- pair whose only negatives were thrown out is `asked_badly`, and a route
+-- through it is not demoted: nobody has asked yet.
+--
 -- Every filter counts what it removed. A plan that says "20 routes" without
 -- saying it started from 917 and which condition cut how many cannot be
 -- checked by anyone reading it.
@@ -542,11 +555,69 @@ end
 -- --- what the game has already said -----------------------------------------------
 
 M.KNOWN = {
+    -- Reproduced: ConfirmedEdge says stable on the runs the policy counted.
     VERIFIED = "verified",
+    -- It linked, and it was never reproduced at one delay. A real observation
+    -- and not a confirmation - so the plan still asks it again.
+    LINKED_ONCE = "linked_once",
+    -- Counted failures and no link: the question was asked properly and the
+    -- answer was no. The only status that demotes a route.
     REJECTED = "rejected",
+    -- Negatives exist and the policy threw every one of them out. Not
+    -- "rejected", not "pending": the difference is that trials were spent
+    -- asking the wrong question, which is worth seeing.
+    ASKED_BADLY = "asked_badly",
     PENDING = "pending",
     UNTESTED = "untested",
 }
+
+-- A status that has to be asked again even when every route needing it is
+-- already a confirmed combo. A conclusive "no" beside a confirmed route is a
+-- question about that pair's experiment; a pair nobody asked properly is a
+-- question nobody asked.
+M.RE_ASK = { [M.KNOWN.REJECTED] = true, [M.KNOWN.ASKED_BADLY] = true }
+
+-- --- one pair's tally, over cohorts and over ids -------------------------------------
+--
+-- Folding several cohorts - or several action ids with the same buttons - adds
+-- the counts and settles once, which takes the strongest answer: a link
+-- somewhere is an observation a whiff elsewhere cannot undo.
+
+local function new_tally()
+    return { cohorts = 0, reproduced = 0, linked = 0, failed = 0,
+             successes = 0, failures = 0, unanswered = 0,
+             excluded = 0, excluded_negatives = 0 }
+end
+
+local function add_tally(t, other)
+    for _, f in ipairs({ "cohorts", "reproduced", "linked", "failed", "successes",
+                         "failures", "unanswered", "excluded", "excluded_negatives" }) do
+        t[f] = (t[f] or 0) + (other[f] or 0)
+    end
+end
+
+-- The status and the result the tally comes to. Checked in this order, which is
+-- the order of what the plan does about each: stop asking, ask once more, stop
+-- believing the route, ask properly for the first time, ask.
+local function settle_policy(t)
+    if t.reproduced > 0 then
+        t.status, t.result = M.KNOWN.VERIFIED, "reproduced"
+    elseif t.linked > 0 then
+        t.status = M.KNOWN.LINKED_ONCE
+        t.result = (t.failures > 0) and "mixed" or "observed_success"
+    elseif t.failed > 0 then
+        t.status, t.result = M.KNOWN.REJECTED, "no_success_observed"
+    elseif t.excluded_negatives > 0 then
+        t.status, t.result = M.KNOWN.ASKED_BADLY, "pending"
+    else
+        t.status, t.result = M.KNOWN.PENDING, "pending"
+    end
+    t.mixed = (t.successes > 0 and t.failures > 0)
+    return t
+end
+M.settle_policy = settle_policy
+
+-- --- what the whole set says -----------------------------------------------------------
 
 -- edges  : ce.confirmed_edge.v1 records from ConfirmedEdge.from_trials - one per
 --          pair PER COHORT, over every log for the character
@@ -554,28 +625,45 @@ M.KNOWN = {
 -- notation_of : optional, "id:method" -> notation (a table, or a function of
 --          id, method), so an answer can be found under the buttons as well as
 --          the id - see "the same buttons under another action id" below
+-- evaluations : optional, tools/lua/labeval.lua's evaluations over the same
+--          logs (tools/lua/labknown.lua builds them). WITH them, a pair's
+--          status is read off the evaluation result and the quality policy
+--          decides which runs counted. WITHOUT them the old rule applies - any
+--          cohort's raw "no" makes the pair rejected - and `policy` is nil, so
+--          a caller can tell which of the two it is looking at.
 --
 -- Returns known = { pairs = { [key] = entry }, groups = { [group key] = entry },
 --                   combos = { [combo_key] = combo },
---                   combos_by_inputs = { [notations joined by ">"] = combo } }.
+--                   combos_by_inputs = { [notations joined by ">"] = combo },
+--                   combo_policy = { [moves key] = tally },
+--                   combo_policy_by_inputs = { [notations joined by ">"] = tally },
+--                   route_policy = { [route id] = tally },
+--                   uses_policy = whether evaluations were given,
+--                   reclassified = { total, pairs, moves = { ["a -> b"] = n } } }.
 --
--- A pair measured under several cohorts gets one status here, and the rule is
--- chosen for what the plan does with it: VERIFIED if any cohort linked it,
--- else REJECTED if any cohort answered no, else PENDING. A link is a positive
--- observation that a later broken experiment cannot un-observe; a "no" from one
--- cohort next to a link from another is exactly the #46 shape, and is marked
--- `mixed` so the report can say so. Every cohort's own answer stays in
--- `cohorts`.
-function M.known_from(edges, combos, notation_of)
-    local known = { pairs = {}, combos = {} }
+-- Every pair entry carries BOTH answers: `status` (the policy's, or the raw one
+-- when no evaluations were given) and `raw_status` (always the old rule), so a
+-- report can say how many pairs the policy moved. Each cohort's own numbers
+-- stay in `cohorts`, and the policy's per-cohort results in `evaluations`.
+function M.known_from(edges, combos, notation_of, evaluations)
+    local known = { pairs = {}, combos = {}, combo_policy = {},
+                    combo_policy_by_inputs = {}, route_policy = {} }
+
+    local function entry(key)
+        local k = known.pairs[key]
+        if not k then
+            k = { cohorts = {}, evaluations = {},
+                  verified = 0, rejected = 0, pending = 0, stable = false,
+                  policy = new_tally() }
+            known.pairs[key] = k
+        end
+        return k
+    end
+
     for _, e in ipairs(edges or {}) do
         local key = e.edge_id
         if type(key) == "string" then
-            local k = known.pairs[key]
-            if not k then
-                k = { cohorts = {}, verified = 0, rejected = 0, pending = 0, stable = false }
-                known.pairs[key] = k
-            end
+            local k = entry(key)
             local st = e.status
             if st == Schema.STATUS.VERIFIED then
                 k.verified = k.verified + 1
@@ -593,11 +681,90 @@ function M.known_from(edges, combos, notation_of)
             }
         end
     end
+
+    -- --- the policy's own reading of the same runs -----------------------------------
+    --
+    -- One evaluation per subject per cohort. A pair's tally is over its cohorts;
+    -- a combo's is over every subject whose moves spell it, so the two-move
+    -- combo "660>655" is answered by the pair evaluation and the three-move
+    -- "660>655>900" by the route's.
+    local function combo_tally(map, key)
+        local t = map[key]
+        if not t then t = new_tally() map[key] = t end
+        return t
+    end
+
+    for _, ev in ipairs(evaluations or {}) do
+        local one = new_tally()
+        one.cohorts = 1
+        one.successes = ev.successful_runs or 0
+        one.failures = ev.conclusive_failures or 0
+        one.unanswered = ev.unanswered_runs or 0
+        one.excluded = ev.excluded_runs or 0
+        for _, r in ipairs(ev.runs or {}) do
+            if r.inclusion == "excluded" and r.answer == "negative" then
+                one.excluded_negatives = one.excluded_negatives + 1
+            end
+        end
+        if ev.result == "reproduced" then one.reproduced = 1 end
+        if one.successes > 0 then one.linked = 1 end
+        if ev.result == "no_success_observed" then one.failed = 1 end
+
+        if ev.subject_kind == "edge" then
+            local k = entry(ev.subject_id)
+            add_tally(k.policy, one)
+            local ms = ev.measured_summary or {}
+            k.evaluations[#k.evaluations + 1] = {
+                result = ev.result, cohort_key = ev.cohort_key,
+                successes = one.successes, failures = one.failures,
+                unanswered = one.unanswered, excluded = one.excluded,
+                excluded_negatives = one.excluded_negatives,
+                excluded_by_reason = ms.excluded_by_reason,
+                window = ms.window, linked_gaps = ms.linked_gaps,
+                stable = ms.stable, damage = ms.damage,
+            }
+        else
+            add_tally(combo_tally(known.route_policy, ev.subject_id), one)
+        end
+
+        local c = ev.combo
+        if c and type(c.moves_key) == "string" and c.moves_key ~= "" then
+            add_tally(combo_tally(known.combo_policy, c.moves_key), one)
+            local names, all = {}, true
+            for i, s in ipairs(c.steps or {}) do
+                names[i] = s.notation
+                if type(s.notation) ~= "string" then all = false end
+            end
+            if all and #names > 0 then
+                add_tally(combo_tally(known.combo_policy_by_inputs,
+                                      table.concat(names, ">")), one)
+            end
+        end
+    end
+
+    for _, t in pairs(known.combo_policy) do settle_policy(t) end
+    for _, t in pairs(known.combo_policy_by_inputs) do settle_policy(t) end
+    for _, t in pairs(known.route_policy) do settle_policy(t) end
+
+    local use_policy = evaluations ~= nil
+
+    -- The old rule, kept on every entry under `raw_*` whether or not it is the
+    -- one being used: the report says how many pairs the policy moved, and it
+    -- cannot say that from one answer.
     local function settle(k)
-        if k.verified > 0 then k.status = M.KNOWN.VERIFIED
-        elseif k.rejected > 0 then k.status = M.KNOWN.REJECTED
-        else k.status = M.KNOWN.PENDING end
-        k.mixed = (k.verified > 0 and k.rejected > 0)
+        if k.verified > 0 then k.raw_status = M.KNOWN.VERIFIED
+        elseif k.rejected > 0 then k.raw_status = M.KNOWN.REJECTED
+        else k.raw_status = M.KNOWN.PENDING end
+        k.raw_mixed = (k.verified > 0 and k.rejected > 0)
+        settle_policy(k.policy)
+        if use_policy then
+            k.status = k.policy.status
+            k.result = k.policy.result
+            k.mixed = k.policy.mixed
+        else
+            k.status = k.raw_status
+            k.mixed = k.raw_mixed
+        end
     end
     for _, k in pairs(known.pairs) do settle(k) end
 
@@ -636,7 +803,9 @@ function M.known_from(edges, combos, notation_of)
                 local gkey = M.group_pair_key(am, an, bm, bn, via)
                 local g = known.groups[gkey]
                 if not g then
-                    g = { keys = {}, verified = 0, rejected = 0, pending = 0, stable = false }
+                    g = { keys = {}, verified = 0, rejected = 0, pending = 0,
+                          stable = false, cohorts = {}, evaluations = {},
+                          policy = new_tally() }
                     known.groups[gkey] = g
                 end
                 g.keys[#g.keys + 1] = key
@@ -644,6 +813,8 @@ function M.known_from(edges, combos, notation_of)
                 g.rejected = g.rejected + k.rejected
                 g.pending = g.pending + k.pending
                 if k.stable then g.stable = true end
+                add_tally(g.policy, k.policy)
+                for _, e in ipairs(k.evaluations) do g.evaluations[#g.evaluations + 1] = e end
             end
         end
         for _, g in pairs(known.groups) do
@@ -661,7 +832,31 @@ function M.known_from(edges, combos, notation_of)
             known.combos_by_inputs[table.concat(names, ">")] = c
         end
     end
+
+    -- How far the policy moved the answers, pair by pair.
+    local moved = { total = 0, moves = {}, pairs = 0 }
+    for _, k in pairs(known.pairs) do
+        moved.pairs = moved.pairs + 1
+        if use_policy and k.status ~= k.raw_status then
+            moved.total = moved.total + 1
+            local m = ("%s -> %s"):format(k.raw_status, k.status)
+            moved.moves[m] = (moved.moves[m] or 0) + 1
+        end
+    end
+    known.reclassified = moved
+    known.uses_policy = use_policy
     return known
+end
+
+-- The policy's verdict on a combo, by its moves and by the notations it was
+-- pressed with - the two spellings sweepreport files a combo under.
+function M.combo_policy_of(known, moves_key, notation_chain)
+    if not known then return nil end
+    local t = moves_key and known.combo_policy and known.combo_policy[moves_key]
+    if not t and notation_chain and known.combo_policy_by_inputs then
+        t = known.combo_policy_by_inputs[notation_chain]
+    end
+    return t
 end
 
 -- A pair keyed by what is pressed rather than by action id:
@@ -702,28 +897,40 @@ end
 --
 -- Marks, and returns { pairs, routes }:
 --
---   pair.known_status   verified | rejected | pending | untested
+--   pair.known_status   verified | linked_once | rejected | asked_badly |
+--                       pending | untested
 --   pair.known          the folded entry, when there is one
 --   pair.known_as       when the answer was found under another action id with
 --                       the same buttons, the keys it was recorded under
 --   pair.skip          nil, or why the pair is left out of the sweep:
---                       "verified" - the game has said it connects
+--                       "verified" - the game has said it connects, twice at
+--                       one delay
 --                       "route_confirmed" - every route needing it is already a
 --                       confirmed combo, so nothing waits on it
 --
 --   route annotation    { rank, id, route, pair_keys, pair_statuses,
 --                         pairs_total, pairs_verified, all_pairs_verified,
 --                         rejected_pairs, has_rejected_pair,
---                         combo_key, combo_status, confirmed }
+--                         asked_badly_pairs, linked_once_pairs,
+--                         combo_key, combo_status, combo_policy, confirmed }
 --
--- Rejected pairs are never skipped. See the header: some of the committed
--- rejections are from experiments later found broken.
+-- Rejected pairs are never skipped. See the header: they are the ones the
+-- policy says were asked properly, and asking one again is how a "no" stops
+-- being the last word. A pair whose negatives were all thrown out is not
+-- skipped either, for the opposite reason: it has not been asked yet.
+--
+-- `confirmed` is the lab database's rule (lab.confirmed_combos) when the known
+-- set carries evaluations: a pair reproduced under ConfirmedEdge, a route with
+-- at least SweepReport.CONFIRM_LINKS counted links. Without them it falls back
+-- to sweepreport's looser count, which counts links across input methods,
+-- cohorts and gaps, and includes runs the policy would have left out.
 function M.annotate(pairs_list, routes, known, opts)
     opts = opts or {}
     local anns = {}
     for rank, r in ipairs(routes or {}) do
         local a = { rank = rank, id = r.id, route = r, pair_keys = {}, pair_statuses = {},
-                    pairs_total = 0, pairs_verified = 0, rejected_pairs = {} }
+                    pairs_total = 0, pairs_verified = 0, rejected_pairs = {},
+                    asked_badly_pairs = {}, linked_once_pairs = {} }
         for _, p in ipairs(M.route_pairs(r)) do
             local st = pair_status(known, p)
             a.pair_keys[#a.pair_keys + 1] = p.key
@@ -731,17 +938,29 @@ function M.annotate(pairs_list, routes, known, opts)
             a.pairs_total = a.pairs_total + 1
             if st == M.KNOWN.VERIFIED then a.pairs_verified = a.pairs_verified + 1 end
             if st == M.KNOWN.REJECTED then a.rejected_pairs[#a.rejected_pairs + 1] = p.key end
+            if st == M.KNOWN.ASKED_BADLY then
+                a.asked_badly_pairs[#a.asked_badly_pairs + 1] = p.key
+            end
+            if st == M.KNOWN.LINKED_ONCE then
+                a.linked_once_pairs[#a.linked_once_pairs + 1] = p.key
+            end
         end
         a.all_pairs_verified = a.pairs_total > 0 and a.pairs_verified == a.pairs_total
         a.has_rejected_pair = #a.rejected_pairs > 0
         a.combo_key = M.combo_key(r)
+        local chain = notation_chain(r)
         local combo = a.combo_key and known and known.combos and known.combos[a.combo_key]
         if not combo and known and known.combos_by_inputs then
-            local chain = notation_chain(r)
             combo = chain and known.combos_by_inputs[chain] or nil
         end
         a.combo_status = combo and combo.status or nil
-        a.confirmed = (a.combo_status == "confirmed")
+        local pol = M.combo_policy_of(known, a.combo_key, chain)
+        a.combo_policy = pol and pol.result or nil
+        if known and known.uses_policy then
+            a.confirmed = (pol ~= nil and pol.status == M.KNOWN.VERIFIED)
+        else
+            a.confirmed = (a.combo_status == "confirmed")
+        end
         anns[rank] = a
     end
 
@@ -753,7 +972,7 @@ function M.annotate(pairs_list, routes, known, opts)
         p.skip = nil
         if st == M.KNOWN.VERIFIED and not opts.include_verified then
             p.skip = "verified"
-        elseif st ~= M.KNOWN.REJECTED then
+        elseif not M.RE_ASK[st] then
             local open = false
             for _, rank in ipairs(p.needed_by_ranks or {}) do
                 if not (anns[rank] and anns[rank].confirmed) then open = true break end
@@ -771,6 +990,11 @@ end
 -- its pairs was answered on its own: the whole combo linking, twice, is the
 -- stronger observation, and a pair rejected beside it is a question about that
 -- pair's experiment rather than about the route.
+--
+-- `has_rejected_pair` is CONCLUSIVE failures only (annotate, above). A route
+-- through a pair whose every negative the policy threw out is not demoted:
+-- before ce-eval-v1 it was, and on the committed Zangief logs that was most of
+-- the plan - twenty routes demoted for answers that never asked the question.
 function M.demote(anns)
     local clean, flagged = {}, {}
     for _, a in ipairs(anns) do

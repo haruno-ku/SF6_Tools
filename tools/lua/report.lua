@@ -129,6 +129,145 @@ local model = SweepReport.build(worklist, logs, routes, classic)
 model.generated_at = os.date("!%Y-%m-%dT%H:%M:%SZ")
 model.sources = { worklist = wl_path, data = opt.data }
 
+-- --- the two rules a combo can be confirmed under ---------------------------------
+--
+-- The list above counts a link wherever it happened: any input method, any
+-- cohort, any gap, and a row from a file that was re-run after a defect was
+-- fixed counts beside the re-run's. That is "which combos has this game ever
+-- shown me", and it is worth keeping - it is the only list that says a combo
+-- has been SEEN.
+--
+-- It is not the list the lab database publishes. tools/lua/labeval.lua's policy
+-- ce-eval-v1 counts a run only when it asked the question (no fixed gap 4
+-- inside A's animation, no link timing on a cancel-only pair, no button pressed
+-- a motion's worth of ticks late, no input today's compiler would refuse), and
+-- leaves out a superseded re-run unless it linked. A pair is confirmed when
+-- ConfirmedEdge calls it stable on what is left; a route when at least
+-- SweepReport.CONFIRM_LINKS of its counted runs linked.
+--
+-- Both go on the page, each labelled with the rule it passed, and the headline
+-- is the policy's. Two numbers with no rule beside them is what made the page
+-- say seven where the database said six.
+local Pipeline  = dofile("tools/lua/pipeline.lua")
+local Planner   = dofile("tools/lua/planner.lua")
+local LabKnown  = dofile("tools/lua/labknown.lua")
+local LabRows   = dofile("tools/lua/labrows.lua")
+local RouteView = dofile("tools/lua/routeview.lua")
+
+local function load_pipeline()
+    local ctx, lerr = Pipeline.load({ character = entry.catalog, scheme = opt.scheme })
+    if not ctx then error(tostring(lerr), 0) end
+    -- Generated once, with the Drive Rush Cancel edges. The plain edges are the
+    -- same either way (explore.lua's --drive-rush promise), and a plain search
+    -- only ever reads the plain ones.
+    local gen, gerr = Pipeline.generate(ctx, { drive_rush = opt.drive_rush ~= false })
+    if not gen then error(tostring(gerr), 0) end
+    return { ctx = ctx, gen = gen }
+end
+
+local ok_pipe, pipe = pcall(load_pipeline)
+local pipeline_error = (not ok_pipe) and tostring(pipe) or nil
+if not ok_pipe then pipe = nil end
+
+-- The trial rows as tools/db/lab-import.mjs builds them, and the evaluations
+-- ce-eval-v1 makes of them. Needs the catalog and the generator for a pair's
+-- mechanism and notations, and nothing else: a page whose pipeline would not
+-- load keeps the looser list and says the policy could not be applied.
+local function policy_view()
+    local ctx = pipe and pipe.ctx
+    if not ctx then error(pipeline_error or "no catalog", 0) end
+    local notation_of = {}
+    for _, row in ipairs(ctx.cat.rows) do
+        notation_of[("%s:%s"):format(row.action_id, row.input_method)] = row.notation
+    end
+    local files = LabKnown.load_trials(opt.data, char_lc, Cli.list_dir)
+    local lookup = LabKnown.lookup(entry.catalog, opt.scheme,
+        LabRows.pair_index(ctx.plain_edges, pipe.gen and pipe.gen.excluded,
+                           Pipeline.edge_pair_key),
+        notation_of, routes)
+    local evaluations, problems, policy, counts = LabKnown.from_files(files, lookup, {
+        keep = function(rec)
+            return rec.control_scheme == nil or rec.control_scheme == opt.scheme
+        end,
+    })
+    return { evaluations = evaluations, problems = problems, policy = policy,
+             counts = counts, notation_of = notation_of,
+             exclusions = LabKnown.exclusions(evaluations) }
+end
+
+local ok_pol, pol = pcall(policy_view)
+if not ok_pol then
+    model.policy_error = tostring(pol)
+    pol = nil
+end
+
+-- The whole known set, folded once: the page's chips, the combo labels and the
+-- finder all read it, and two foldings of the same logs would be two answers.
+--
+-- Both readings go in. The evaluations decide every status the page shows; the
+-- raw ConfirmedEdge fold is kept beside them so a pair the policy has no
+-- evaluation for still appears, and so `raw_status` is there to compare against.
+-- With no policy (no catalog) the raw fold is all there is, which is the page
+-- this was before ce-eval-v1.
+local ConfirmedEdge = require("func/ComboExplorer/core/ConfirmedEdge")
+local records = {}
+for _, log in ipairs(logs) do
+    for _, rec in ipairs(log.records) do
+        if rec.control_scheme == nil or rec.control_scheme == opt.scheme then
+            records[#records + 1] = rec
+        end
+    end
+end
+local known = Planner.known_from(ConfirmedEdge.from_trials(records), model.combos,
+    pol and pol.notation_of or nil, pol and pol.evaluations or nil)
+
+-- Every combo the looser list holds, labelled with what the policy made of the
+-- same moves. `policy = nil` on a row means no counted run is about it at all.
+local policy_confirmed, policy_seen = 0, 0
+for _, c in ipairs(model.combos) do
+    local names = (c.inputs or {})[1]
+    local t = Planner.combo_policy_of(known, c.key, names and table.concat(names, ">") or nil)
+    if t then
+        c.policy = {
+            status = t.status, result = t.result,
+            links = t.successes, failures = t.failures,
+            unanswered = t.unanswered, excluded = t.excluded,
+            excluded_negatives = t.excluded_negatives, cohorts = t.cohorts,
+        }
+        if t.status == Planner.KNOWN.VERIFIED then policy_confirmed = policy_confirmed + 1
+        elseif t.successes and t.successes > 0 then policy_seen = policy_seen + 1 end
+    end
+end
+
+if pol then
+    local pairs_confirmed, routes_confirmed = 0, 0
+    for _, ev in ipairs(pol.evaluations) do
+        if ev.result == "reproduced" then
+            if ev.subject_kind == "edge" then pairs_confirmed = pairs_confirmed + 1
+            else routes_confirmed = routes_confirmed + 1 end
+        end
+    end
+    local by_status = {}
+    for _, k in pairs(known.pairs) do
+        by_status[k.status] = (by_status[k.status] or 0) + 1
+    end
+    model.policy = {
+        key = pol.policy and pol.policy.key, version = pol.policy and pol.policy.version,
+        description = pol.policy and pol.policy.description,
+        runs = pol.exclusions.counted + pol.exclusions.excluded,
+        counted = pol.exclusions.counted, excluded = pol.exclusions.excluded,
+        excluded_negatives = pol.exclusions.negatives_excluded,
+        by_reason = pol.exclusions.by_reason,
+        evaluations = #pol.evaluations,
+        -- lab.confirmed_combos: an evaluation whose result is `reproduced`,
+        -- counted per subject per cohort, pairs and routes apart.
+        confirmed_pairs = pairs_confirmed, confirmed_routes = routes_confirmed,
+        confirmed_combos = policy_confirmed, seen_combos = policy_seen,
+        pairs_by_status = by_status,
+        problems = #(pol.problems or {}),
+    }
+end
+
 -- --- the route finder -----------------------------------------------------------
 --
 -- Every candidate route explore.lua finds, with what the logs say about each of
@@ -144,40 +283,13 @@ model.sources = { worklist = wl_path, data = opt.data }
 -- Optional. The route search needs the frame data under data/, which the page
 -- can live without: a report run where it is missing still draws the map and
 -- the combo list, and says why the finder is empty.
-local Planner = dofile("tools/lua/planner.lua")
-
-local RouteView = dofile("tools/lua/routeview.lua")
-
 local function route_finder()
-    local Pipeline = dofile("tools/lua/pipeline.lua")
-    local ConfirmedEdge = require("func/ComboExplorer/core/ConfirmedEdge")
     local InputMask = require("func/ComboExplorer/core/InputMask")
 
-    local ctx, lerr = Pipeline.load({ character = entry.catalog, scheme = opt.scheme })
-    if not ctx then return nil, lerr end
+    if not pipe then return nil, pipeline_error end
+    local ctx = pipe.ctx
     if not ctx.idx then return nil, ctx.warnings[1] end
-    -- Generated once, with the Drive Rush Cancel edges. The plain edges are the
-    -- same either way (explore.lua's --drive-rush promise), and a plain search
-    -- only ever reads the plain ones.
-    local gen, gerr = Pipeline.generate(ctx, { drive_rush = opt.drive_rush ~= false })
-    if not gen then return nil, gerr end
     local all, found = Pipeline.search(ctx, {})
-
-    -- The same folding plan.lua does, so a status here is the status there.
-    local records = {}
-    for _, log in ipairs(logs) do
-        for _, rec in ipairs(log.records) do
-            if rec.control_scheme == nil or rec.control_scheme == opt.scheme then
-                records[#records + 1] = rec
-            end
-        end
-    end
-    local edges = ConfirmedEdge.from_trials(records)
-    local notation_of = {}
-    for _, row in ipairs(ctx.cat.rows) do
-        notation_of[("%s:%s"):format(row.action_id, row.input_method)] = row.notation
-    end
-    local known = Planner.known_from(edges, model.combos, notation_of)
 
     local function verdict(r, cond)
         local kept, rep = Planner.filter({ r }, cond)
@@ -232,7 +344,11 @@ local function route_finder()
                 no_gauge = verdict(r, { no_gauge = true }),
                 no_super = verdict(r, { no_super = true }),
                 pairs = pairs_out, rej = a.has_rejected_pair or nil,
+                -- `confirmed` is the policy's rule (lab.confirmed_combos);
+                -- `combo` is the looser list's, kept beside it so a reader can
+                -- see a combo the game has linked that the policy did not count.
                 confirmed = a.confirmed or nil, combo = a.combo_status,
+                combo_policy = a.combo_policy,
             }
         end
     end
@@ -352,9 +468,23 @@ local function classic_of(c)
     return chain(names)
 end
 
+local POLICY_MD = {
+    verified = "確定", linked_once = "1回だけ", rejected = "繋がらなかった",
+    asked_badly = "質問できていない", pending = "未回答",
+}
+
+local function policy_cell(c)
+    local p = c.policy
+    if not p then return "対象外" end
+    return ("%s（数えた試行 繋がった %d・否定 %d・未回答 %d／除外 %d）")
+        :format(POLICY_MD[p.status] or p.status, p.links or 0, p.failures or 0,
+                p.unanswered or 0, p.excluded or 0)
+end
+
 local function combo_rows(list)
-    line("| コンボ（Modern） | Classic | 繋がった | 試行の内訳 | 繋がった隙間 (tick) | ダメージ |")
-    line("|---|---|---|---|---|---|")
+    line("| コンボ（Modern） | Classic | 方針 %s | 繋がった | 試行の内訳 | 繋がった隙間 (tick) | ダメージ |",
+        tostring(model.policy and model.policy.key or "（未適用）"))
+    line("|---|---|---|---|---|---|---|")
     for _, c in ipairs(list) do
         local inputs = {}
         for i, names in ipairs(c.inputs) do inputs[i] = chain(names) end
@@ -368,8 +498,8 @@ local function combo_rows(list)
                 damage = damage .. (" (体力差と不一致 %d)"):format(c.damage_disagreements)
             end
         end
-        line("| %s | %s | %d 回 | 試行 %d・否定 %d・未回答 %d | %s | %s |",
-            table.concat(inputs, "<br>"), classic_of(c), c.links, c.attempts,
+        line("| %s | %s | %s | %d 回 | 試行 %d・否定 %d・未回答 %d | %s | %s |",
+            table.concat(inputs, "<br>"), classic_of(c), policy_cell(c), c.links, c.attempts,
             c.negatives, c.unanswered, table.concat(c.linked_gaps, ", "), damage)
     end
 end
@@ -379,15 +509,37 @@ line("")
 line("`lua tools/lua/report.lua` が試行ログから書き出す一覧です。手で編集しないでください —")
 line("実機でログが増えたら、同じコマンドで書き直します。")
 line("")
-line("- **確定**: %d 回以上の試行で繋がった", SweepReport.CONFIRM_LINKS)
-line("- **1回だけ**: 繋がったのは1回。再試行で確かめるまで確定にしない")
+line("二つの規則が並んでいます。見出しの分け方はログの緩いほうの規則、`方針` の列は")
+line("データベースが公開している規則です。")
+line("")
+line("- **ログ上の確定**: どこかで %d 回以上繋がった。入力方法・コホート・隙間をまたいで数え、",
+    SweepReport.CONFIRM_LINKS)
+line("  欠陥が見つかって再実行されたファイルの行も数えます。「ゲームがこれを見せた」という一覧です")
+line("- **方針 `%s`**: 質問になっていない試行を数えません（gap 4 で A の動作中に押した、",
+    tostring(model.policy and model.policy.key or "ce-eval-v1"))
+line("  キャンセル専用のペアを A の回復後に押した、B のボタンがコマンド分だけ遅れた、")
+line("  今のコンパイラでは押せない入力。再実行で置き換えられた行は繋がった場合だけ数えます）。")
+line("  残った試行で ConfirmedEdge が stable と言えばペアは確定、ルートは数えた試行で %d 回繋がれば確定",
+    SweepReport.CONFIRM_LINKS)
 line("- **ダメージ**は繋がった試行で測った `mComboDamage`。この記録を始める前のログには無く「未計測」になります。公開用の `ce.verified_combo.v1` は実測ダメージを必須にしています（#17, #36）")
 line("")
-line("## 確定 (%d)", #confirmed)
+if model.policy then
+    local p = model.policy
+    line("方針が数えた試行 %d / 全 %d（除外 %d、うち否定 %d）。`lab.confirmed_combos` は被験体で",
+        p.counted, p.runs, p.excluded, p.excluded_negatives)
+    line("数えるのでペア %d + ルート %d = %d 件、この一覧は技で束ねるので %d 行が確定です。",
+        p.confirmed_pairs, p.confirmed_routes, p.confirmed_pairs + p.confirmed_routes,
+        p.confirmed_combos)
+else
+    line("**方針を適用できませんでした**（%s）ので、`方針` の列は空です。",
+        tostring(model.policy_error))
+end
+line("")
+line("## ログ上の確定 (%d)", #confirmed)
 line("")
 if #confirmed > 0 then combo_rows(confirmed) else line("まだありません。") end
 line("")
-line("## 1回だけ繋がった (%d)", #once)
+line("## ログ上は1回だけ繋がった (%d)", #once)
 line("")
 if #once > 0 then combo_rows(once) else line("ありません。") end
 line("")
@@ -405,9 +557,21 @@ rep:say("# Sweep report - %s / %s", entry.catalog, opt.scheme)
 rep:say("")
 rep:say("worklist pairs   %d  (pressable %d / repeated direction %d / follow-up %d)",
     model.worklist.count, model.press.single, model.press["repeat"], model.press.followup)
-rep:say("combos           %d confirmed / %d seen once", #confirmed, #once)
+rep:say("combos           %d confirmed / %d seen once  (the looser list: any input "
+    .. "method, cohort or gap)", #confirmed, #once)
+if model.policy then
+    local p = model.policy
+    rep:say("policy %-10s %d of %d runs counted (%d excluded, %d of them negatives)",
+        tostring(p.key), p.counted, p.runs, p.excluded, p.excluded_negatives)
+    rep:say("                 confirmed: %d pair(s) + %d route(s) = %d subject(s), %d row(s) here",
+        p.confirmed_pairs, p.confirmed_routes, p.confirmed_pairs + p.confirmed_routes,
+        p.confirmed_combos)
+else
+    rep:say("policy           not applied: %s", tostring(model.policy_error))
+end
 for _, c in ipairs(confirmed) do
-    rep:say("  %-40s  %s  (%d/%d)", chain(c.inputs[1]), classic_of(c), c.links, c.attempts)
+    rep:say("  %-40s  %s  (%d/%d)  policy: %s", chain(c.inputs[1]), classic_of(c),
+        c.links, c.attempts, c.policy and tostring(c.policy.result) or "no counted run")
 end
 for _, l in ipairs(model.pair_logs) do
     local v = l.counts.verdicts
@@ -449,6 +613,7 @@ if opt.summary then
         logs = #logs, pair_logs = #model.pair_logs, route_logs = #model.route_logs,
         trials = trials, unreadable_lines = bad_lines,
         combos_confirmed = #confirmed, combos_once = #once,
+        policy = model.policy, policy_error = model.policy_error,
         pairs_embedded = not model.pairs_omitted,
         routes = rv and rv.total or nil,
         routes_complete = rv and rv.complete,

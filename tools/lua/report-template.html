@@ -207,6 +207,9 @@ footer { font-size: 12px; color: var(--muted); display: grid; gap: 6px; border-t
 .status { font: 600 12px/1 var(--f-body); padding: 5px 0; border-radius: 4px; text-align: center; letter-spacing: .04em; }
 .status.confirmed { background: var(--v-link); color: var(--surface); }
 .status.once { background: transparent; color: var(--v-combo_broke); box-shadow: inset 0 0 0 1.5px var(--v-combo_broke); }
+.status.uncounted { background: transparent; color: var(--muted); box-shadow: inset 0 0 0 1px var(--rule); }
+.combo .verdicts { display: grid; gap: 4px; }
+.combo .loose { font: 11px/1.4 var(--f-body); color: var(--muted); text-align: center; }
 .combo .moves { display: grid; gap: 6px; min-width: 0; }
 .combo .chain { font-size: 19px; }
 .combo .classic { font: 500 13px var(--f-mono); color: var(--muted); }
@@ -246,7 +249,12 @@ table.rt { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 
 .chip.gauge { color: var(--v-combo_broke); box-shadow: inset 0 0 0 1px var(--v-combo_broke); background: transparent; }
 .pchip { position: relative; font: 500 11px/1 var(--f-mono); padding: 3px 6px; border-radius: 3px; color: var(--surface); white-space: nowrap; }
 .pchip.verified { background: var(--v-link); }
+.pchip.linked_once { background: transparent; color: var(--v-link); box-shadow: inset 0 0 0 1.5px var(--v-link); }
 .pchip.rejected { background: var(--v-whiff); }
+/* Negatives exist and the policy threw every one of them out: trials were
+   spent and the question was never asked. Hatched like an unpressable pair,
+   because both mean "do not believe this cell". */
+.pchip.asked_badly { background: transparent; color: var(--v-whiff); box-shadow: inset 0 0 0 1.5px var(--v-whiff); background-image: repeating-linear-gradient(135deg, var(--hatch) 0 1.5px, transparent 1.5px 5px); }
 .pchip.pending { background: var(--v-a_failed); }
 .pchip.untested { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--rule); }
 .pchip.bad { background-image: repeating-linear-gradient(135deg, var(--hatch) 0 1.5px, transparent 1.5px 5px); text-shadow: 0 0 2px var(--ink); }
@@ -412,12 +420,46 @@ function renderHeader() {
   item("レポート生成", fmtTime(MODEL.generated_at));
 }
 
-/* --- combo list -------------------------------------------------- */
+/* --- combo list --------------------------------------------------
+ *
+ * Two rules, both on the page, each labelled.
+ *
+ *   the list        every trial that linked, keyed by the MOVES: any input
+ *                   method, any cohort, any gap, and a row from a file that
+ *                   was later re-run counts beside the re-run's. "This game
+ *                   has shown me this combo."
+ *   the policy      tools/lua/labeval.lua's ce-eval-v1, the rule the lab
+ *                   database publishes (lab.confirmed_combos): a run counts
+ *                   only when it asked the question, and a pair is confirmed
+ *                   when ConfirmedEdge calls it stable on what is left.
+ *
+ * The headline is the policy's. Before this the page printed the looser number
+ * alone and said seven where the database said six.
+ */
+const POLICY_LABEL = {
+  verified: "確定", linked_once: "1回だけ", rejected: "繋がらなかった",
+  asked_badly: "未確認（質問できていない）", pending: "未回答",
+};
+
 function renderCombos() {
   const list = $("combos");
   const combos = MODEL.combos || [];
-  const confirmed = combos.filter(c => c.status === "confirmed").length;
-  $("combo-rule").textContent = `確定 ${confirmed} 件 · 1回だけ ${combos.length - confirmed} 件 — 2回以上の試行で繋がったものを確定としています`;
+  const loose = combos.filter(c => c.status === "confirmed").length;
+  const pol = MODEL.policy;
+  if (pol) {
+    const rows = combos.filter(c => c.policy && c.policy.status === "verified").length;
+    $("combo-rule").textContent =
+      `確定 ${rows} 件（方針 ${pol.key}）· ログ上で2回以上繋がった ${loose} 件 — `
+      + `方針は「質問になっていない試行」を数えません（${pol.runs} 試行のうち ${pol.excluded} 件を除外、`
+      + `うち否定 ${pol.excluded_negatives}）。`
+      + `lab.confirmed_combos は被験体で数えるのでペア ${pol.confirmed_pairs} + ルート ${pol.confirmed_routes} = `
+      + `${pol.confirmed_pairs + pol.confirmed_routes} 件、この一覧は技で束ねるので ${rows} 行です。`;
+  } else {
+    $("combo-rule").textContent =
+      `ログ上で2回以上繋がった ${loose} 件 · 1回だけ ${combos.length - loose} 件 — `
+      + `評価方針を適用できませんでした（${MODEL.policy_error || "理由不明"}）ので、`
+      + `ここにあるのは緩いほうの規則だけです。`;
+  }
   list.replaceChildren();
   if (!combos.length) {
     const noLogs = !MODEL.pair_logs.length && !MODEL.route_logs.length;
@@ -449,14 +491,46 @@ function renderCombos() {
       c.damage_measured
         ? el("div", { class: "breakdown", text: `ダメージ ${c.damage_min === c.damage_max ? c.damage_min : `${c.damage_min}–${c.damage_max}`}${c.damage_disagreements ? `（体力差と不一致 ${c.damage_disagreements}）` : ""}` })
         : el("div", { class: "dmg", text: "ダメージ未計測" }));
+    // The policy's verdict is the headline; the looser list's is beneath it,
+    // named, so a row the game linked and the policy did not count reads as
+    // exactly that rather than as a disagreement nobody explains.
+    const p = c.policy;
+    const cls = !p ? "uncounted" : p.status === "verified" ? "confirmed"
+      : (p.links > 0 ? "once" : "uncounted");
+    const head = !p ? "対象外" : (POLICY_LABEL[p.status] || p.status);
+    const title = !p
+      ? "この技の並びについて、方針が数えた試行が1件もありません"
+      : `方針が数えた試行: 繋がった ${p.links} / 繋がらなかった ${p.failures} / 未回答 ${p.unanswered}`
+        + `（除外 ${p.excluded}、うち否定 ${p.excluded_negatives}）`;
     list.append(el("li", { class: "combo" },
-      el("div", { class: `status ${c.status}`, text: c.status === "confirmed" ? "確定" : "1回だけ" }),
+      el("div", { class: "verdicts" },
+        el("div", { class: `status ${cls}`, title, text: head }),
+        el("div", { class: "loose", text: `ログ上 ${c.status === "confirmed" ? "確定" : "1回だけ"}` })),
       moves, stats));
   }
 }
 
 /* --- route finder ------------------------------------------------ */
-const PAIR_LABEL = { verified: "繋がった", rejected: "繋がらなかった", pending: "未回答", untested: "未試行" };
+// The statuses tools/lua/planner.lua folds out of the evaluations. `verified`
+// is reproduced - ConfirmedEdge stable on the runs the policy counted - not
+// "linked once", which is its own state now; `rejected` is a conclusive no, and
+// only it demotes a route; `asked_badly` is a pair whose every negative the
+// policy threw out, which is a question nobody has asked yet.
+const PAIR_LABEL = {
+  verified: "繋がった（再現）", linked_once: "1回だけ繋がった",
+  rejected: "繋がらなかった", asked_badly: "タイミングが合っていない試行のみ",
+  pending: "未回答", untested: "未試行",
+};
+const PAIR_HELP = {
+  verified: "同じ隙間で2回以上繋がりました（ConfirmedEdge の stable）",
+  linked_once: "繋がりましたが、同じ隙間で2回は出ていません。もう1回で確定します",
+  rejected: "押せる入力を答えの出るタイミングで押して、繋がりませんでした",
+  asked_badly: "否定の試行はありますが、方針 ce-eval-v1 はその全部を除外しました（gap 4 で A の動作中に押した、キャンセル専用のペアを A の回復後に押した、B のボタンがコマンド分だけ遅れた、今のコンパイラでは押せない入力）。まだ質問できていません",
+  pending: "試行はありましたが、どれも答えになっていません",
+  untested: "まだ試していません",
+};
+// Still open: the plan would ask these again.
+const PAIR_OPEN = { pending: true, untested: true, asked_badly: true };
 const BTN_JA = { L: "弱", M: "中", H: "强" };
 const BTN_CLI = { L: "L", M: "M", H: "H" };
 const finder = { starter: "", nogauge: false, nosuper: false, drc: false, rej: "demote", sort: "sd", top: 20 };
@@ -553,12 +627,22 @@ function renderFinder() {
   const needed = [...need.values()].filter(e => e.open);
   const unpressable = needed.filter(e => e.p.press && e.p.press !== "single").length;
   const rejected = needed.filter(e => e.p.st === "rejected").length;
+  const once = needed.filter(e => e.p.st === "linked_once").length;
+  // "Still unanswered" is the policy's: never tried, tried and never answered,
+  // or tried only in ways ce-eval-v1 does not count. A conclusive "no" is an
+  // answer, and is counted apart.
+  const open = needed.filter(e => PAIR_OPEN[e.p.st]).length;
+  const badly = needed.filter(e => e.p.st === "asked_badly").length;
   const rv = MODEL.routes_view;
   const pool = rv.total + (finder.drc && rv.drc && rv.drc.total ? rv.drc.total : 0);
   $("finder-summary").replaceChildren(
     el("span", {}, el("b", { text: String(all.length) }), `件が条件に合う（全 ${pool} 件${finder.drc && rv.drc && rv.drc.total ? `、うち DRC 経由 ${rv.drc.total}` : ""}）`),
     el("span", {}, el("b", { text: String(shown.length) }), "件を表示"),
-    el("span", {}, el("b", { text: String(needed.length) }), `ペアを確かめれば表示中のルートに答えが出る（うち繋がらなかったペアの再確認 ${rejected}、押せない ${unpressable}）`),
+    el("span", {}, el("b", { text: String(needed.length) }), `ペアを確かめれば表示中のルートに答えが出る`),
+    el("span", { title: "未試行・答えの出なかった試行だけ・方針が数えなかった試行だけ、の合計" },
+      el("b", { text: String(open) }), `ペアはまだ答えが出ていない（うち質問になっていない試行だけ ${badly}）`),
+    el("span", {}, el("b", { text: String(rejected + once) }), `ペアは答えがある（繋がらなかった ${rejected}、1回だけ繋がった ${once}）`),
+    el("span", {}, el("b", { text: String(unpressable) }), "ペアは今のコンパイラでは押せない"),
   );
 
   const args = ["lua tools/lua/plan.lua", `--character ${MODEL.character}`];
@@ -588,8 +672,12 @@ function renderFinder() {
     if (r.c && r.c.some(Boolean)) route.append(el("div", { class: "classic", text: r.c.map(x => x || "?").join(" → ") }));
 
     const state = el("td", {});
-    if (r.confirmed) state.append(el("span", { class: "badge confirmed", text: "確定コンボ" }));
+    // `confirmed` is lab.confirmed_combos' rule, not the looser list's: the
+    // policy counted enough runs to call the whole combo reproduced.
+    if (r.confirmed) state.append(el("span", { class: "badge confirmed", title: `方針 ${(MODEL.policy || {}).key || "ce-eval-v1"} が確定とした組み合わせです（ペアは同じ隙間で2回、ルートは数えた試行で2回繋がった）`, text: "確定コンボ" }));
+    else if (r.combo_policy === "observed_success" || r.combo_policy === "mixed") state.append(el("span", { class: "badge open", title: "方針が数えた試行で繋がりましたが、確定の回数には届いていません", text: "1回だけ繋がった" }));
     else if (r.rej) state.append(el("span", { class: "badge rej", text: "繋がらなかったペアあり" }));
+    else if (r.combo === "confirmed" || r.combo === "once") state.append(el("span", { class: "badge open", title: "ログには繋がった試行がありますが、方針はその試行を数えていません", text: "ログでは繋がった" }));
     else state.append(el("span", { class: "badge open", text: "未確認" }));
     if (finder.nogauge && r.no_gauge === "flag") state.append(el("div", {}, el("span", { class: "badge flag", title: "ドライブ消費が分からない技を含むため、ノーゲージとは言い切れず残しています", text: "ゲージ不明" })));
 
@@ -602,7 +690,7 @@ function renderFinder() {
     const pc = el("div", { class: "chips" });
     for (const p of r.pairs) {
       const bad = p.press && p.press !== "single";
-      pc.append(el("span", { class: `pchip ${p.st}${bad ? " bad" : ""}`, title: `${p.k}\n${PAIR_LABEL[p.st] || p.st}${bad ? "\n今のコンパイラでは押せない入力を含む (#49)" : ""}${p.drc ? "\nDRC 経由のペア。スイープはまだ DRC を押せないので、ワークリストに入っても試行されません" : ""}`, text: `${p.drc ? "DRC " : ""}${PAIR_LABEL[p.st] || p.st}` }));
+      pc.append(el("span", { class: `pchip ${p.st}${bad ? " bad" : ""}`, title: `${p.k}\n${PAIR_LABEL[p.st] || p.st}: ${PAIR_HELP[p.st] || ""}${bad ? "\n今のコンパイラでは押せない入力を含む (#49)" : ""}${p.drc ? "\nDRC 経由のペア。スイープはまだ DRC を押せないので、ワークリストに入っても試行されません" : ""}`, text: `${p.drc ? "DRC " : ""}${PAIR_LABEL[p.st] || p.st}` }));
     }
 
     const dmg = el("td", { class: "dmg" },
@@ -616,7 +704,9 @@ function renderFinder() {
   const sm = MODEL.routes_view.scaling_model;
   $("finder-note").textContent = "予測ダメージ（補正後）は公開情報の補正ルールによる未実測のモデルで、並べ替えにだけ使います"
     + (sm && sm.not_modelled ? `（未反映: ${sm.not_modelled.length} 項目。即時補正・カウンターなど）` : "")
-    + "。ペアの色は既存ログの結果です。斜線は今のコンパイラでは押せない入力を含むペア。絞り込みの判定は plan.lua と同じもので、ワークリストは上のコマンドで書き出します。"
+    + "。ペアの色は既存ログを方針 "
+    + ((MODEL.policy || {}).key || "ce-eval-v1")
+    + " で読んだ結果です（質問になっていない試行は数えません）。斜線は、押せない入力を含むペアか、否定の試行が全部除外されたペア。「確定コンボ」はデータベースと同じ規則（ペアは同じ隙間で2回、ルートは数えた試行で2回）。絞り込みの判定は plan.lua と同じもので、ワークリストは上のコマンドで書き出します。"
     + (rv.drc && rv.drc.total
       ? `「DRC を含める」で足されるのは、DRC の辺も入れた2回目の探索（plan.lua --drive-rush と同じ）のうち、DRC を1回以上通る ${rv.drc.total} 件です。ノーゲージは DRC を含むルートを除きます。スイープはまだ DRC を押せません。`
       : "");

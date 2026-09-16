@@ -58,7 +58,7 @@ M.round = round
 --   starter = { n, b }     the first move and its buttons
 --   no_gauge, no_super     "keep" | "flag" | "remove"
 --   pairs = { { k, st, press, drc } }
---   rej, confirmed, combo
+--   rej, confirmed, combo, combo_policy
 --
 -- Returns { moves, pairs, rows }, indices 0-based for the page.
 function M.compact(rows)
@@ -113,6 +113,7 @@ function M.compact(rows)
             rej = r.rej and true or nil,
             cf = r.confirmed and true or nil,
             cb = r.combo,
+            cp = r.combo_policy,
         }
         -- Assigned apart: `x and false or nil` is always nil in Lua.
         if r.dc == false then row.dc = false end
@@ -146,6 +147,7 @@ function M.expand(packed)
             starter = { n = first.n, b = first.b or {} },
             no_gauge = M.VERDICT_NAME[r.ng], no_super = M.VERDICT_NAME[r.ns],
             pairs = ps, rej = r.rej == true, confirmed = r.cf == true, combo = r.cb,
+            combo_policy = r.cp,
         }
     end
     return rows
