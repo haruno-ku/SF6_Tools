@@ -76,7 +76,13 @@ Ryu で1回測り直します。
 
 ## 5. クラシックのボタンビット（10分）
 
-操作方法をクラシックにして、パネル → CALIBRATION → scheme を Classic → 実行。
+1. トレーニングの操作タイプを **クラシック** にする
+2. パネル → CALIBRATION → `[x] classic` を押す（既定は modern）。両方の scheme の
+   現在のビットが並んで表示され、ゲーム側の設定と食い違っていれば赤字で出ます
+3. パッドから手を離して START SWEEP → 放置
+
+ボタンの推測値を持たないので、全ビットを1つずつ押して確かめます（12ステップ）。
+書き込み先は `calibration/latest-classic.json` で、**モダンの校正には触りません**。
 
 **得られるもの:** LP/MP/HP/LK/MK/HK の6ビット。これが入ると
 `explore.lua --scheme classic` の出力が掃引できるようになり、
