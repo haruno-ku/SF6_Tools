@@ -1,6 +1,6 @@
 # Route plan - MBison / modern - starter-chu
 
-Generated 2026-09-16T00:27:05Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-16T02:33:55Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -11,6 +11,7 @@ game say whether these routes connect.
 - `starter_button` = `M`
 - sort: `scaled_damage`, top 20
 - search: explore.lua's settings (normal,command_normal -> normal,command_normal,special,od_special,super, manual -> manual,simple, max 3 moves, beam 4000, collapse true)
+- search complete: false - the beam dropped 3257 partial route(s) and 0 route(s) were not emitted, so the list below is a sample
 - Drive Rush Cancel edges in the search: no (pass --drive-rush to route through them)
 - demote routes through a rejected pair: yes
 
@@ -148,5 +149,5 @@ same calibration and conditions are skipped, and the other way round.
 
 ## Written
 
-- reframework/data/ComboExplorer_data/worklist/mbison-modern-plan-starter-chu.json  (20 pairs, 11613 bytes)
+- reframework/data/ComboExplorer_data/worklist/mbison-modern-plan-starter-chu.json  (20 pairs, 38417 bytes)
 - docs/ComboExplorer/plans/mbison-modern-starter-chu.md

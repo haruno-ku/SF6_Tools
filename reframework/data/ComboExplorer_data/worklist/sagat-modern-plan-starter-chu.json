@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 22,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:27:08Z",
+  "generated_at": "2026-09-16T02:34:12Z",
   "pairs": [
     {
       "a_active": "3",
@@ -523,15 +523,1148 @@
     }
   ],
   "plan": {
+    "available": 79,
     "conditions": {
       "starter_button": "M"
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:27:08Z",
+    "generated_at": "2026-09-16T02:34:12Z",
     "include_verified": false,
     "name": "starter-chu",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "2+MK → LP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "640:manual>601:manual>1228:manual",
+        "input_count": 10,
+        "notation": "2 + 中 → 弱 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->1228:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 4900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4100.0,
+        "rank": 1,
+        "route_file": "sagat-modern-starter-chu-1",
+        "route_length": 3,
+        "sort_rank": 1,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1228,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MK → 2+LP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "640:manual>622:manual>1228:manual",
+        "input_count": 11,
+        "notation": "2 + 中 → 2 + 弱 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->1228:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 4900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4100.0,
+        "rank": 2,
+        "route_file": "sagat-modern-starter-chu-2",
+        "route_length": 3,
+        "sort_rank": 2,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1228,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MK → LP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "640:manual>601:manual>1228:simple",
+        "input_count": 6,
+        "notation": "2 + 中 → 弱 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->1228:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 4900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3460.0000000000005,
+        "rank": 3,
+        "route_file": "sagat-modern-starter-chu-3",
+        "route_length": 3,
+        "sort_rank": 3,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1228,
+            "classic": "236236+K",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MK → 2+LP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "640:manual>622:manual>1228:simple",
+        "input_count": 7,
+        "notation": "2 + 中 → 2 + 弱 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->1228:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 4900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3460.0000000000005,
+        "rank": 4,
+        "route_file": "sagat-modern-starter-chu-4",
+        "route_length": 3,
+        "sort_rank": 4,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1228,
+            "classic": "236236+K",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MK → LP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "640:manual>601:manual>1208:manual",
+        "input_count": 10,
+        "notation": "2 + 中 → 弱 → 214214 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->1208:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2260.0,
+        "rank": 5,
+        "route_file": "sagat-modern-starter-chu-5",
+        "route_length": 3,
+        "sort_rank": 5,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1208,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "640:manual>622:manual>1208:manual",
+        "input_count": 11,
+        "notation": "2 + 中 → 2 + 弱 → 214214 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->1208:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2260.0,
+        "rank": 6,
+        "route_file": "sagat-modern-starter-chu-6",
+        "route_length": 3,
+        "sort_rank": 6,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1208,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → LP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.7000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "640:manual>601:manual>922:manual",
+        "input_count": 7,
+        "notation": "2 + 中 → 弱 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->922:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2180.0,
+        "predicted_drive_spend": 0,
+        "rank": 7,
+        "route_file": "sagat-modern-starter-chu-7",
+        "route_length": 3,
+        "sort_rank": 7,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 922,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "640:manual>622:manual>922:manual",
+        "input_count": 8,
+        "notation": "2 + 中 → 2 + 弱 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->922:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2180.0,
+        "predicted_drive_spend": 0,
+        "rank": 8,
+        "route_file": "sagat-modern-starter-chu-8",
+        "route_length": 3,
+        "sort_rank": 8,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 922,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → LP → 623+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.7000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "640:manual>601:manual>921:manual",
+        "input_count": 7,
+        "notation": "2 + 中 → 弱 → 623 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->921:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2300,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2020.0,
+        "predicted_drive_spend": 0,
+        "rank": 9,
+        "route_file": "sagat-modern-starter-chu-9",
+        "route_length": 3,
+        "sort_rank": 9,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 921,
+            "classic": "623+MP",
+            "input_method": "manual",
+            "notation": "623 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 623+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "640:manual>622:manual>921:manual",
+        "input_count": 8,
+        "notation": "2 + 中 → 2 + 弱 → 623 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->921:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2300,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2020.0,
+        "predicted_drive_spend": 0,
+        "rank": 10,
+        "route_file": "sagat-modern-starter-chu-10",
+        "route_length": 3,
+        "sort_rank": 10,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 921,
+            "classic": "623+MP",
+            "input_method": "manual",
+            "notation": "623 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → LP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "640:manual>601:manual>1208:simple",
+        "input_count": 6,
+        "notation": "2 + 中 → 弱 → 4 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->1208:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1988.0000000000002,
+        "rank": 11,
+        "route_file": "sagat-modern-starter-chu-11",
+        "route_length": 3,
+        "sort_rank": 11,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1208,
+            "classic": "214214+K",
+            "input_method": "simple",
+            "notation": "4 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "640:manual>622:manual>1208:simple",
+        "input_count": 7,
+        "notation": "2 + 中 → 2 + 弱 → 4 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->1208:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1988.0000000000002,
+        "rank": 12,
+        "route_file": "sagat-modern-starter-chu-12",
+        "route_length": 3,
+        "sort_rank": 12,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1208,
+            "classic": "214214+K",
+            "input_method": "simple",
+            "notation": "4 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → LP → 623+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.7000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "640:manual>601:manual>920:manual",
+        "input_count": 7,
+        "notation": "2 + 中 → 弱 → 623 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->920:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1780.0,
+        "predicted_drive_spend": 0,
+        "rank": 13,
+        "route_file": "sagat-modern-starter-chu-13",
+        "route_length": 3,
+        "sort_rank": 13,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 920,
+            "classic": "623+LP",
+            "input_method": "manual",
+            "notation": "623 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 623+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "640:manual>622:manual>920:manual",
+        "input_count": 8,
+        "notation": "2 + 中 → 2 + 弱 → 623 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->920:manual",
+            "mechanism": "both",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1780.0,
+        "predicted_drive_spend": 0,
+        "rank": 14,
+        "route_file": "sagat-modern-starter-chu-14",
+        "route_length": 3,
+        "sort_rank": 14,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 920,
+            "classic": "623+LP",
+            "input_method": "manual",
+            "notation": "623 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → LP → 236+MK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.7000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "640:manual>601:manual>941:manual",
+        "input_count": 7,
+        "notation": "2 + 中 → 弱 → 236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->941:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1700.0,
+        "predicted_drive_spend": 0,
+        "rank": 15,
+        "route_file": "sagat-modern-starter-chu-15",
+        "route_length": 3,
+        "sort_rank": 15,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 941,
+            "classic": "236+MK",
+            "input_method": "manual",
+            "notation": "236 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 236+MK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "640:manual>622:manual>941:manual",
+        "input_count": 8,
+        "notation": "2 + 中 → 2 + 弱 → 236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->941:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1700.0,
+        "predicted_drive_spend": 0,
+        "rank": 16,
+        "route_file": "sagat-modern-starter-chu-16",
+        "route_length": 3,
+        "sort_rank": 16,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 941,
+            "classic": "236+MK",
+            "input_method": "manual",
+            "notation": "236 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 623+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.2000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "640:manual>920:manual",
+        "input_count": 6,
+        "notation": "2 + 中 → 623 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->920:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 1700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1700.0,
+        "predicted_drive_spend": 0,
+        "rank": 17,
+        "route_file": "sagat-modern-starter-chu-17",
+        "route_length": 2,
+        "sort_rank": 17,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 920,
+            "classic": "623+LP",
+            "input_method": "manual",
+            "notation": "623 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → LP → 2+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.5,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "640:manual>601:manual>643:manual",
+        "input_count": 5,
+        "notation": "2 + 中 → 弱 → 3 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->643:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1620.0,
+        "predicted_drive_spend": 0,
+        "rank": 18,
+        "route_file": "sagat-modern-starter-chu-18",
+        "route_length": 3,
+        "sort_rank": 18,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → LP → 6+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.5,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "640:manual>601:manual>673:manual",
+        "input_count": 5,
+        "notation": "2 + 中 → 弱 → 6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->673:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1620.0,
+        "predicted_drive_spend": 0,
+        "rank": 19,
+        "route_file": "sagat-modern-starter-chu-19",
+        "route_length": 3,
+        "sort_rank": 19,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 673,
+            "classic": "6+HK",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 2+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "640:manual>622:manual>643:manual",
+        "input_count": 6,
+        "notation": "2 + 中 → 2 + 弱 → 3 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->643:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1620.0,
+        "predicted_drive_spend": 0,
+        "rank": 20,
+        "route_file": "sagat-modern-starter-chu-20",
+        "route_length": 3,
+        "sort_rank": 20,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 0,
+      "complete": true,
+      "max_steps": 3,
+      "routes_found": 979,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 17,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:26:45Z",
+  "generated_at": "2026-09-16T02:31:56Z",
   "pairs": [
     {
       "a_active": "4",
@@ -414,15 +414,1092 @@
     }
   ],
   "plan": {
+    "available": 145,
     "conditions": {
       "starter_button": "M"
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:26:45Z",
+    "generated_at": "2026-09-16T02:31:56Z",
     "include_verified": false,
     "name": "starter-chu",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "MP → 214214+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.4000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "603:manual>1215:manual",
+        "input_count": 8,
+        "notation": "中 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->1215:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4700.0,
+        "rank": 1,
+        "route_file": "ehonda-modern-starter-chu-1",
+        "route_length": 2,
+        "sort_rank": 1,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1215,
+            "classic": "214214+P",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → LP → 214214+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "603:manual>600:manual>1215:manual",
+        "input_count": 9,
+        "notation": "中 → 弱 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1215:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4200.0,
+        "rank": 2,
+        "route_file": "ehonda-modern-starter-chu-2",
+        "route_length": 3,
+        "sort_rank": 2,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1215,
+            "classic": "214214+P",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → 2+LP → 214214+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "603:manual>615:manual>1215:manual",
+        "input_count": 10,
+        "notation": "中 → 2 + 弱 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->615:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "615:manual->1215:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4200.0,
+        "rank": 3,
+        "route_file": "ehonda-modern-starter-chu-3",
+        "route_length": 3,
+        "sort_rank": 3,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 615,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1215,
+            "classic": "214214+P",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MK → LP → 214214+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "633:manual>600:manual>1215:manual",
+        "input_count": 10,
+        "notation": "2 + 中 → 弱 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "633:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1215:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4000.0,
+        "rank": 4,
+        "route_file": "ehonda-modern-starter-chu-4",
+        "route_length": 3,
+        "sort_rank": 4,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 633,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1215,
+            "classic": "214214+P",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MK → 2+LP → 214214+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "633:manual>615:manual>1215:manual",
+        "input_count": 11,
+        "notation": "2 + 中 → 2 + 弱 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "633:manual->615:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "615:manual->1215:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4000.0,
+        "rank": 5,
+        "route_file": "ehonda-modern-starter-chu-5",
+        "route_length": 3,
+        "sort_rank": 5,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 633,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 615,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1215,
+            "classic": "214214+P",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → 214214+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "603:manual>1215:simple",
+        "input_count": 4,
+        "notation": "中 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->1215:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3900.0,
+        "rank": 6,
+        "route_file": "ehonda-modern-starter-chu-6",
+        "route_length": 2,
+        "sort_rank": 6,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1215,
+            "classic": "214214+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → LP → 214214+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 7.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "603:manual>600:manual>1215:simple",
+        "input_count": 5,
+        "notation": "中 → 弱 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1215:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3560.0000000000005,
+        "rank": 7,
+        "route_file": "ehonda-modern-starter-chu-7",
+        "route_length": 3,
+        "sort_rank": 7,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1215,
+            "classic": "214214+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → 2+LP → 214214+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "603:manual>615:manual>1215:simple",
+        "input_count": 6,
+        "notation": "中 → 2 + 弱 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->615:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "615:manual->1215:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3560.0000000000005,
+        "rank": 8,
+        "route_file": "ehonda-modern-starter-chu-8",
+        "route_length": 3,
+        "sort_rank": 8,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 615,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1215,
+            "classic": "214214+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "603:manual>1203:manual",
+        "input_count": 6,
+        "notation": "中 → [4]646 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->1203:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3550,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3550.0,
+        "rank": 9,
+        "route_file": "ehonda-modern-starter-chu-9",
+        "route_length": 2,
+        "sort_rank": 9,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1203,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+MK → LP → 214214+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "633:manual>600:manual>1215:simple",
+        "input_count": 6,
+        "notation": "2 + 中 → 弱 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "633:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1215:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3360.0000000000005,
+        "rank": 10,
+        "route_file": "ehonda-modern-starter-chu-10",
+        "route_length": 3,
+        "sort_rank": 10,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 633,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1215,
+            "classic": "214214+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MK → 2+LP → 214214+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "633:manual>615:manual>1215:simple",
+        "input_count": 7,
+        "notation": "2 + 中 → 2 + 弱 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "633:manual->615:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "615:manual->1215:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3360.0000000000005,
+        "rank": 11,
+        "route_file": "ehonda-modern-starter-chu-11",
+        "route_length": 3,
+        "sort_rank": 11,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 633,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 615,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1215,
+            "classic": "214214+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → LP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.0999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "603:manual>600:manual>1203:manual",
+        "input_count": 7,
+        "notation": "中 → 弱 → [4]646 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1203:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3850,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3280.0,
+        "rank": 12,
+        "route_file": "ehonda-modern-starter-chu-12",
+        "route_length": 3,
+        "sort_rank": 12,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1203,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "MP → 2+LP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "603:manual>615:manual>1203:manual",
+        "input_count": 8,
+        "notation": "中 → 2 + 弱 → [4]646 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->615:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "615:manual->1203:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3850,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3280.0,
+        "rank": 13,
+        "route_file": "ehonda-modern-starter-chu-13",
+        "route_length": 3,
+        "sort_rank": 13,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 615,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1203,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → LP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "633:manual>600:manual>1203:manual",
+        "input_count": 8,
+        "notation": "2 + 中 → 弱 → [4]646 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "633:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1203:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3650,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3080.0,
+        "rank": 14,
+        "route_file": "ehonda-modern-starter-chu-14",
+        "route_length": 3,
+        "sort_rank": 14,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 633,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1203,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.0999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "633:manual>615:manual>1203:manual",
+        "input_count": 9,
+        "notation": "2 + 中 → 2 + 弱 → [4]646 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "633:manual->615:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "615:manual->1203:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3650,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3080.0,
+        "rank": 15,
+        "route_file": "ehonda-modern-starter-chu-15",
+        "route_length": 3,
+        "sort_rank": 15,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 633,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 615,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1203,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "MP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "603:manual>1203:simple",
+        "input_count": 4,
+        "notation": "中 → [4] + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->1203:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3550,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2980.0,
+        "rank": 16,
+        "route_file": "ehonda-modern-starter-chu-16",
+        "route_length": 2,
+        "sort_rank": 16,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1203,
+            "classic": "[4]646+K",
+            "input_method": "simple",
+            "notation": "[4] + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "MP → LP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 7.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "603:manual>600:manual>1203:simple",
+        "input_count": 5,
+        "notation": "中 → 弱 → [4] + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1203:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3850,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2824.0000000000005,
+        "rank": 17,
+        "route_file": "ehonda-modern-starter-chu-17",
+        "route_length": 3,
+        "sort_rank": 17,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1203,
+            "classic": "[4]646+K",
+            "input_method": "simple",
+            "notation": "[4] + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "MP → 2+LP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "603:manual>615:manual>1203:simple",
+        "input_count": 6,
+        "notation": "中 → 2 + 弱 → [4] + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->615:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "615:manual->1203:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3850,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2824.0000000000005,
+        "rank": 18,
+        "route_file": "ehonda-modern-starter-chu-18",
+        "route_length": 3,
+        "sort_rank": 18,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 615,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1203,
+            "classic": "[4]646+K",
+            "input_method": "simple",
+            "notation": "[4] + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "MP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.4000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "603:manual>1200:manual",
+        "input_count": 8,
+        "notation": "中 → 236236 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "603:manual->1200:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2700.0,
+        "rank": 19,
+        "route_file": "ehonda-modern-starter-chu-19",
+        "route_length": 2,
+        "sort_rank": 19,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 603,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1200,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 弱"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+MK → LP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "633:manual>600:manual>1203:simple",
+        "input_count": 6,
+        "notation": "2 + 中 → 弱 → [4] + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "633:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1203:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3650,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2624.0000000000005,
+        "rank": 20,
+        "route_file": "ehonda-modern-starter-chu-20",
+        "route_length": 3,
+        "sort_rank": 20,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 633,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1203,
+            "classic": "[4]646+K",
+            "input_method": "simple",
+            "notation": "[4] + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 0,
+      "complete": true,
+      "max_steps": 3,
+      "routes_found": 565,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

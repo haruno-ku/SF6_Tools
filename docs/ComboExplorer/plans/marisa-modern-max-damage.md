@@ -1,6 +1,6 @@
 # Route plan - Marisa / modern - max-damage
 
-Generated 2026-09-16T00:26:18Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-16T02:30:27Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -11,6 +11,7 @@ game say whether these routes connect.
 - none: every route the search found
 - sort: `scaled_damage`, top 20
 - search: explore.lua's settings (normal,command_normal -> normal,command_normal,special,od_special,super, manual -> manual,simple, max 3 moves, beam 4000, collapse true)
+- search complete: true - every route the settings can reach is in the list below
 - Drive Rush Cancel edges in the search: no (pass --drive-rush to route through them)
 - demote routes through a rejected pair: yes
 
@@ -138,5 +139,5 @@ same calibration and conditions are skipped, and the other way round.
 
 ## Written
 
-- reframework/data/ComboExplorer_data/worklist/marisa-modern-plan-max-damage.json  (21 pairs, 11871 bytes)
+- reframework/data/ComboExplorer_data/worklist/marisa-modern-plan-max-damage.json  (21 pairs, 43315 bytes)
 - docs/ComboExplorer/plans/marisa-modern-max-damage.md

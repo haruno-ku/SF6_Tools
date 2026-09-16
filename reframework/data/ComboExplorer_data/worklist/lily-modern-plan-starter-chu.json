@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 6,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:25:58Z",
+  "generated_at": "2026-09-16T02:23:49Z",
   "pairs": [
     {
       "a_active": "3",
@@ -152,15 +152,295 @@
     }
   ],
   "plan": {
+    "available": 6,
     "conditions": {
       "starter_button": "M"
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:25:58Z",
+    "generated_at": "2026-09-16T02:23:49Z",
     "include_verified": false,
     "name": "starter-chu",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "2+MP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "620:manual>1206:manual",
+        "input_count": 9,
+        "notation": "2 + 中 → 236236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "620:manual->1206:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3300,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3300.0,
+        "rank": 1,
+        "route_file": "lily-modern-starter-chu-1",
+        "route_length": 2,
+        "sort_rank": 1,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 620,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1206,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "620:manual>1200:manual",
+        "input_count": 9,
+        "notation": "2 + 中 → 236236 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "620:manual->1200:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2900.0,
+        "rank": 2,
+        "route_file": "lily-modern-starter-chu-2",
+        "route_length": 2,
+        "sort_rank": 2,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 620,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1200,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 弱"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+MP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "620:manual>1206:simple",
+        "input_count": 5,
+        "notation": "2 + 中 → 4 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "620:manual->1206:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3300,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2780.0,
+        "rank": 3,
+        "route_file": "lily-modern-starter-chu-3",
+        "route_length": 2,
+        "sort_rank": 3,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 620,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1206,
+            "classic": "236236+K",
+            "input_method": "simple",
+            "notation": "4 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "620:manual>1200:simple",
+        "input_count": 4,
+        "notation": "2 + 中 → SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "620:manual->1200:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2460.0,
+        "rank": 4,
+        "route_file": "lily-modern-starter-chu-4",
+        "route_length": 2,
+        "sort_rank": 4,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 620,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1200,
+            "classic": "236236+P",
+            "input_method": "simple",
+            "notation": "SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "MP → >j.MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 3.0,
+        "gauge": "drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "604:manual>636:manual",
+        "input_count": 2,
+        "notation": "中 → > 空中 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "604:manual->636:manual",
+            "mechanism": "unknown",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 800,
+        "predicted_damage_complete": false,
+        "rank": 5,
+        "route_file": "lily-modern-starter-chu-5",
+        "route_length": 2,
+        "sort_rank": 5,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 604,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 636,
+            "classic": ">j.MP",
+            "input_method": "manual",
+            "notation": "> 空中 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MP → >j.MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 3.5,
+        "gauge": "drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "620:manual>636:manual",
+        "input_count": 3,
+        "notation": "2 + 中 → > 空中 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "620:manual->636:manual",
+            "mechanism": "unknown",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 700,
+        "predicted_damage_complete": false,
+        "rank": 6,
+        "route_file": "lily-modern-starter-chu-6",
+        "route_length": 2,
+        "sort_rank": 6,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 620,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 636,
+            "classic": ">j.MP",
+            "input_method": "manual",
+            "notation": "> 空中 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 0,
+      "complete": true,
+      "max_steps": 3,
+      "routes_found": 725,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

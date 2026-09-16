@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 25,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:25:06Z",
+  "generated_at": "2026-09-16T02:16:23Z",
   "pairs": [
     {
       "a_active": "3",
@@ -582,15 +582,1167 @@
     }
   ],
   "plan": {
+    "available": 365,
     "conditions": {
       "no_gauge": true
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:25:06Z",
+    "generated_at": "2026-09-16T02:16:23Z",
     "include_verified": false,
     "name": "no-gauge",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "2+HK → 2+HP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>626:manual>957:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 强 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->626:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "626:manual->957:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2740.0,
+        "predicted_drive_spend": 0,
+        "rank": 1,
+        "route_file": "luke-modern-no-gauge-1",
+        "route_length": 3,
+        "sort_rank": 1,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 626,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 957,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>662:manual>957:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 4 + 强 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->662:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "662:manual->957:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2740.0,
+        "predicted_drive_spend": 0,
+        "rank": 2,
+        "route_file": "luke-modern-no-gauge-2",
+        "route_length": 3,
+        "sort_rank": 2,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 662,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 957,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 623+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>626:manual>956:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 强 → 623 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->626:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "626:manual->956:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2580.0,
+        "predicted_drive_spend": 0,
+        "rank": 3,
+        "route_file": "luke-modern-no-gauge-3",
+        "route_length": 3,
+        "sort_rank": 3,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 626,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 956,
+            "classic": "623+MP",
+            "input_method": "manual",
+            "notation": "623 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 623+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>662:manual>956:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 4 + 强 → 623 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->662:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "662:manual->956:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2580.0,
+        "predicted_drive_spend": 0,
+        "rank": 4,
+        "route_file": "luke-modern-no-gauge-4",
+        "route_length": 3,
+        "sort_rank": 4,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 662,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 956,
+            "classic": "623+MP",
+            "input_method": "manual",
+            "notation": "623 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 214+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>626:manual>929:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 强 → 214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->626:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "626:manual->929:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2500.0,
+        "predicted_drive_spend": 0,
+        "rank": 5,
+        "route_file": "luke-modern-no-gauge-5",
+        "route_length": 3,
+        "sort_rank": 5,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 626,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 929,
+            "classic": "214+HP",
+            "input_method": "manual",
+            "notation": "214 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 623+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>626:manual>955:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 强 → 623 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->626:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "626:manual->955:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2500.0,
+        "predicted_drive_spend": 0,
+        "rank": 6,
+        "route_file": "luke-modern-no-gauge-6",
+        "route_length": 3,
+        "sort_rank": 6,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 626,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 955,
+            "classic": "623+LP",
+            "input_method": "manual",
+            "notation": "623 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 214+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>662:manual>929:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 4 + 强 → 214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->662:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "662:manual->929:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2500.0,
+        "predicted_drive_spend": 0,
+        "rank": 7,
+        "route_file": "luke-modern-no-gauge-7",
+        "route_length": 3,
+        "sort_rank": 7,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 662,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 929,
+            "classic": "214+HP",
+            "input_method": "manual",
+            "notation": "214 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 623+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>662:manual>955:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 4 + 强 → 623 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->662:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "662:manual->955:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2500.0,
+        "predicted_drive_spend": 0,
+        "rank": 8,
+        "route_file": "luke-modern-no-gauge-8",
+        "route_length": 3,
+        "sort_rank": 8,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 662,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 955,
+            "classic": "623+LP",
+            "input_method": "manual",
+            "notation": "623 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+MK → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>634:manual>957:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 中 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->634:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "634:manual->957:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2440.0,
+        "predicted_drive_spend": 0,
+        "rank": 9,
+        "route_file": "luke-modern-no-gauge-9",
+        "route_length": 3,
+        "sort_rank": 9,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 634,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 957,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 214+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>626:manual>924:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 强 → 214 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->626:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "626:manual->924:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2420.0,
+        "predicted_drive_spend": 0,
+        "rank": 10,
+        "route_file": "luke-modern-no-gauge-10",
+        "route_length": 3,
+        "sort_rank": 10,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 626,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 924,
+            "classic": "214+MP",
+            "input_method": "manual",
+            "notation": "214 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 214+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>662:manual>924:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 4 + 强 → 214 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->662:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "662:manual->924:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2420.0,
+        "predicted_drive_spend": 0,
+        "rank": 11,
+        "route_file": "luke-modern-no-gauge-11",
+        "route_length": 3,
+        "sort_rank": 11,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 662,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 924,
+            "classic": "214+MP",
+            "input_method": "manual",
+            "notation": "214 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 623+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "637:manual>626:manual>956:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 2 + 强 → 6 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->626:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "626:manual->956:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2404.0,
+        "predicted_drive_spend": 0,
+        "rank": 12,
+        "route_file": "luke-modern-no-gauge-12",
+        "route_length": 3,
+        "sort_rank": 12,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 626,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 956,
+            "classic": "623+MP",
+            "input_method": "simple",
+            "notation": "6 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 623+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "637:manual>662:manual>956:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 4 + 强 → 6 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->662:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "662:manual->956:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2404.0,
+        "predicted_drive_spend": 0,
+        "rank": 13,
+        "route_file": "luke-modern-no-gauge-13",
+        "route_length": 3,
+        "sort_rank": 13,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 662,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 956,
+            "classic": "623+MP",
+            "input_method": "simple",
+            "notation": "6 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+MK → 623+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>634:manual>956:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 中 → 623 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->634:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "634:manual->956:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2280.0,
+        "predicted_drive_spend": 0,
+        "rank": 14,
+        "route_file": "luke-modern-no-gauge-14",
+        "route_length": 3,
+        "sort_rank": 14,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 634,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 956,
+            "classic": "623+MP",
+            "input_method": "manual",
+            "notation": "623 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 214+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "637:manual>626:manual>924:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 2 + 强 → 4 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->626:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "626:manual->924:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2276.0,
+        "predicted_drive_spend": 0,
+        "rank": 15,
+        "route_file": "luke-modern-no-gauge-15",
+        "route_length": 3,
+        "sort_rank": 15,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 626,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 924,
+            "classic": "214+MP",
+            "input_method": "simple",
+            "notation": "4 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 214+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "637:manual>662:manual>924:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 4 + 强 → 4 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->662:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "662:manual->924:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2276.0,
+        "predicted_drive_spend": 0,
+        "rank": 16,
+        "route_file": "luke-modern-no-gauge-16",
+        "route_length": 3,
+        "sort_rank": 16,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 662,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 924,
+            "classic": "214+MP",
+            "input_method": "simple",
+            "notation": "4 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 214+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>626:manual>920:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 强 → 214 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->626:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "626:manual->920:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2260.0,
+        "predicted_drive_spend": 0,
+        "rank": 17,
+        "route_file": "luke-modern-no-gauge-17",
+        "route_length": 3,
+        "sort_rank": 17,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 626,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 920,
+            "classic": "214+LP",
+            "input_method": "manual",
+            "notation": "214 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 214+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>662:manual>920:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 4 + 强 → 214 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->662:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "662:manual->920:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2260.0,
+        "predicted_drive_spend": 0,
+        "rank": 18,
+        "route_file": "luke-modern-no-gauge-18",
+        "route_length": 3,
+        "sort_rank": 18,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 662,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 920,
+            "classic": "214+LP",
+            "input_method": "manual",
+            "notation": "214 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → LP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.7000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>600:manual>957:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 弱 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->957:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2240.0,
+        "predicted_drive_spend": 0,
+        "rank": 19,
+        "route_file": "luke-modern-no-gauge-19",
+        "route_length": 3,
+        "sort_rank": 19,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 957,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+LP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "637:manual>618:manual>957:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 弱 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "637:manual->618:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "618:manual->957:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2240.0,
+        "predicted_drive_spend": 0,
+        "rank": 20,
+        "route_file": "luke-modern-no-gauge-20",
+        "route_length": 3,
+        "sort_rank": 20,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 637,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 618,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 957,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 0,
+      "complete": true,
+      "max_steps": 3,
+      "routes_found": 623,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

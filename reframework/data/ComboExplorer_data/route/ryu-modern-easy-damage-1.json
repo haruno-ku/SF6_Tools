@@ -29,7 +29,7 @@
       "max_execution_cost": 6.0,
       "no_gauge": true
     },
-    "generated_at": "2026-09-16T01:53:05Z",
+    "generated_at": "2026-09-16T02:17:27Z",
     "name": "easy-damage",
     "rank": 1,
     "sort": "scaled_damage",

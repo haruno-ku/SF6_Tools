@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 23,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:25:36Z",
+  "generated_at": "2026-09-16T02:20:04Z",
   "pairs": [
     {
       "a_active": "16",
@@ -542,15 +542,1167 @@
     }
   ],
   "plan": {
+    "available": 1755,
     "conditions": {
       "no_gauge": true
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:25:36Z",
+    "generated_at": "2026-09-16T02:20:04Z",
     "include_verified": false,
     "name": "no-gauge",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "2+HK → 4+HP → 63214+MK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>656:manual>938:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 4 + 强 → 2 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->656:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "656:manual->938:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2568.0,
+        "predicted_drive_spend": 0,
+        "rank": 1,
+        "route_file": "dhalsim-modern-no-gauge-1",
+        "route_length": 3,
+        "sort_rank": 1,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 938,
+            "classic": "63214+MK",
+            "input_method": "simple",
+            "notation": "2 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 63214+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>656:manual>939:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 4 + 强 → 3 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->656:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "656:manual->939:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2568.0,
+        "predicted_drive_spend": 0,
+        "rank": 2,
+        "route_file": "dhalsim-modern-no-gauge-2",
+        "route_length": 3,
+        "sort_rank": 2,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 939,
+            "classic": "63214+HK",
+            "input_method": "simple",
+            "notation": "3 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 1+HP → 63214+MK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>654:manual>938:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 1 + 强 → 2 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->654:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "654:manual->938:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2468.0,
+        "predicted_drive_spend": 0,
+        "rank": 3,
+        "route_file": "dhalsim-modern-no-gauge-3",
+        "route_length": 3,
+        "sort_rank": 3,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 654,
+            "classic": "1+HP",
+            "input_method": "manual",
+            "notation": "1 + 强"
+          },
+          {
+            "action_id": 938,
+            "classic": "63214+MK",
+            "input_method": "simple",
+            "notation": "2 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 1+HP → 63214+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>654:manual>939:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 1 + 强 → 3 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->654:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "654:manual->939:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2468.0,
+        "predicted_drive_spend": 0,
+        "rank": 4,
+        "route_file": "dhalsim-modern-no-gauge-4",
+        "route_length": 3,
+        "sort_rank": 4,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 654,
+            "classic": "1+HP",
+            "input_method": "manual",
+            "notation": "1 + 强"
+          },
+          {
+            "action_id": 939,
+            "classic": "63214+HK",
+            "input_method": "simple",
+            "notation": "3 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 63214+LK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>656:manual>937:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 4 + 强 → 1 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->656:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "656:manual->937:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2440.0,
+        "predicted_drive_spend": 0,
+        "rank": 5,
+        "route_file": "dhalsim-modern-no-gauge-5",
+        "route_length": 3,
+        "sort_rank": 5,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 937,
+            "classic": "63214+LK",
+            "input_method": "simple",
+            "notation": "1 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 63214+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 10.0,
+        "gauge": "drive 0",
+        "hardest_motion": 5,
+        "id": "659:manual>656:manual>966:manual",
+        "input_count": 10,
+        "notation": "3 + 强 → 4 + 强 → 63214 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->656:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "656:manual->966:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2440.0,
+        "predicted_drive_spend": 0,
+        "rank": 6,
+        "route_file": "dhalsim-modern-no-gauge-6",
+        "route_length": 3,
+        "sort_rank": 6,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 966,
+            "classic": "63214+LP",
+            "input_method": "manual",
+            "notation": "63214 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+MP → 63214+MK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>655:manual>938:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 4 + 中 → 2 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->655:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "655:manual->938:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2368.0,
+        "predicted_drive_spend": 0,
+        "rank": 7,
+        "route_file": "dhalsim-modern-no-gauge-7",
+        "route_length": 3,
+        "sort_rank": 7,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 655,
+            "classic": "4+MP",
+            "input_method": "manual",
+            "notation": "4 + 中"
+          },
+          {
+            "action_id": 938,
+            "classic": "63214+MK",
+            "input_method": "simple",
+            "notation": "2 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+MP → 63214+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>655:manual>939:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 4 + 中 → 3 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->655:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "655:manual->939:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2368.0,
+        "predicted_drive_spend": 0,
+        "rank": 8,
+        "route_file": "dhalsim-modern-no-gauge-8",
+        "route_length": 3,
+        "sort_rank": 8,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 655,
+            "classic": "4+MP",
+            "input_method": "manual",
+            "notation": "4 + 中"
+          },
+          {
+            "action_id": 939,
+            "classic": "63214+HK",
+            "input_method": "simple",
+            "notation": "3 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 1+HP → 63214+LK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>654:manual>937:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 1 + 强 → 1 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->654:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "654:manual->937:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2340.0,
+        "predicted_drive_spend": 0,
+        "rank": 9,
+        "route_file": "dhalsim-modern-no-gauge-9",
+        "route_length": 3,
+        "sort_rank": 9,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 654,
+            "classic": "1+HP",
+            "input_method": "manual",
+            "notation": "1 + 强"
+          },
+          {
+            "action_id": 937,
+            "classic": "63214+LK",
+            "input_method": "simple",
+            "notation": "1 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 1+HP → 63214+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 10.0,
+        "gauge": "drive 0",
+        "hardest_motion": 5,
+        "id": "659:manual>654:manual>966:manual",
+        "input_count": 10,
+        "notation": "3 + 强 → 1 + 强 → 63214 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->654:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "654:manual->966:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2340.0,
+        "predicted_drive_spend": 0,
+        "rank": 10,
+        "route_file": "dhalsim-modern-no-gauge-10",
+        "route_length": 3,
+        "sort_rank": 10,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 654,
+            "classic": "1+HP",
+            "input_method": "manual",
+            "notation": "1 + 强"
+          },
+          {
+            "action_id": 966,
+            "classic": "63214+LP",
+            "input_method": "manual",
+            "notation": "63214 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 63214+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>656:manual>966:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 4 + 强 → 4 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->656:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "656:manual->966:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2312.0,
+        "predicted_drive_spend": 0,
+        "rank": 11,
+        "route_file": "dhalsim-modern-no-gauge-11",
+        "route_length": 3,
+        "sort_rank": 11,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 966,
+            "classic": "63214+LP",
+            "input_method": "simple",
+            "notation": "4 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 236+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "659:manual>656:manual>900:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 4 + 强 → 236 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->656:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "656:manual->900:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2280.0,
+        "predicted_drive_spend": 0,
+        "rank": 12,
+        "route_file": "dhalsim-modern-no-gauge-12",
+        "route_length": 3,
+        "sort_rank": 12,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 900,
+            "classic": "236+LP",
+            "input_method": "manual",
+            "notation": "236 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 236+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "659:manual>656:manual>904:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 4 + 强 → 236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->656:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "656:manual->904:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2280.0,
+        "predicted_drive_spend": 0,
+        "rank": 13,
+        "route_file": "dhalsim-modern-no-gauge-13",
+        "route_length": 3,
+        "sort_rank": 13,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 904,
+            "classic": "236+MP",
+            "input_method": "manual",
+            "notation": "236 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 236+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "659:manual>656:manual>908:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 4 + 强 → 236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->656:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "656:manual->908:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2280.0,
+        "predicted_drive_spend": 0,
+        "rank": 14,
+        "route_file": "dhalsim-modern-no-gauge-14",
+        "route_length": 3,
+        "sort_rank": 14,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 908,
+            "classic": "236+HP",
+            "input_method": "manual",
+            "notation": "236 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+MP → 63214+LK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>655:manual>937:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 4 + 中 → 1 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->655:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "655:manual->937:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2240.0,
+        "predicted_drive_spend": 0,
+        "rank": 15,
+        "route_file": "dhalsim-modern-no-gauge-15",
+        "route_length": 3,
+        "sort_rank": 15,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 655,
+            "classic": "4+MP",
+            "input_method": "manual",
+            "notation": "4 + 中"
+          },
+          {
+            "action_id": 937,
+            "classic": "63214+LK",
+            "input_method": "simple",
+            "notation": "1 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+MP → 63214+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 10.0,
+        "gauge": "drive 0",
+        "hardest_motion": 5,
+        "id": "659:manual>655:manual>966:manual",
+        "input_count": 10,
+        "notation": "3 + 强 → 4 + 中 → 63214 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->655:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "655:manual->966:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2240.0,
+        "predicted_drive_spend": 0,
+        "rank": 16,
+        "route_file": "dhalsim-modern-no-gauge-16",
+        "route_length": 3,
+        "sort_rank": 16,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 655,
+            "classic": "4+MP",
+            "input_method": "manual",
+            "notation": "4 + 中"
+          },
+          {
+            "action_id": 966,
+            "classic": "63214+LP",
+            "input_method": "manual",
+            "notation": "63214 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 1+HP → 63214+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>654:manual>966:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 1 + 强 → 4 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->654:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "654:manual->966:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2212.0,
+        "predicted_drive_spend": 0,
+        "rank": 17,
+        "route_file": "dhalsim-modern-no-gauge-17",
+        "route_length": 3,
+        "sort_rank": 17,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 654,
+            "classic": "1+HP",
+            "input_method": "manual",
+            "notation": "1 + 强"
+          },
+          {
+            "action_id": 966,
+            "classic": "63214+LP",
+            "input_method": "simple",
+            "notation": "4 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 236+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "659:manual>656:manual>900:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 4 + 强 → 6 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->656:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "656:manual->900:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2184.0,
+        "predicted_drive_spend": 0,
+        "rank": 18,
+        "route_file": "dhalsim-modern-no-gauge-18",
+        "route_length": 3,
+        "sort_rank": 18,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 900,
+            "classic": "236+LP",
+            "input_method": "simple",
+            "notation": "6 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 1+HP → 236+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "659:manual>654:manual>900:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 1 + 强 → 236 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->654:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "654:manual->900:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2300,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2180.0,
+        "predicted_drive_spend": 0,
+        "rank": 19,
+        "route_file": "dhalsim-modern-no-gauge-19",
+        "route_length": 3,
+        "sort_rank": 19,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 654,
+            "classic": "1+HP",
+            "input_method": "manual",
+            "notation": "1 + 强"
+          },
+          {
+            "action_id": 900,
+            "classic": "236+LP",
+            "input_method": "manual",
+            "notation": "236 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 1+HP → 236+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "659:manual>654:manual>904:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 1 + 强 → 236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "659:manual->654:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "654:manual->904:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2300,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2180.0,
+        "predicted_drive_spend": 0,
+        "rank": 20,
+        "route_file": "dhalsim-modern-no-gauge-20",
+        "route_length": 3,
+        "sort_rank": 20,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 659,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 654,
+            "classic": "1+HP",
+            "input_method": "manual",
+            "notation": "1 + 强"
+          },
+          {
+            "action_id": 904,
+            "classic": "236+MP",
+            "input_method": "manual",
+            "notation": "236 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 1576,
+      "complete": false,
+      "max_steps": 3,
+      "routes_found": 2681,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

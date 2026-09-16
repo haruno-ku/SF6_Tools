@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 24,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:25:05Z",
+  "generated_at": "2026-09-16T02:17:20Z",
   "pairs": [
     {
       "a_active": "6",
@@ -546,13 +546,991 @@
     }
   ],
   "plan": {
+    "available": 1157,
     "conditions": {},
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:25:05Z",
+    "generated_at": "2026-09-16T02:17:20Z",
     "include_verified": false,
     "name": "max-damage",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "2+HK → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "614:manual>1218:manual",
+        "input_count": 9,
+        "notation": "3 + 强 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "614:manual->1218:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4900.0,
+        "rank": 1,
+        "route_file": "chunli-modern-max-damage-1",
+        "route_length": 2,
+        "sort_rank": 1,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 614,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "4+HP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "626:manual>1218:manual",
+        "input_count": 9,
+        "notation": "4 + 强 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "626:manual->1218:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4800.0,
+        "rank": 2,
+        "route_file": "chunli-modern-max-damage-2",
+        "route_length": 2,
+        "sort_rank": 2,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 626,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.4000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "601:manual>1218:manual",
+        "input_count": 8,
+        "notation": "中 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "601:manual->1218:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4600.0,
+        "rank": 3,
+        "route_file": "chunli-modern-max-damage-3",
+        "route_length": 2,
+        "sort_rank": 3,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 601,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "6+MP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.199999999999999,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "625:manual>1218:manual",
+        "input_count": 10,
+        "notation": "6 或 4 + 中 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "625:manual->1218:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4600.0,
+        "rank": 4,
+        "route_file": "chunli-modern-max-damage-4",
+        "route_length": 2,
+        "sort_rank": 4,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 625,
+            "classic": "6+MP",
+            "input_method": "manual",
+            "notation": "6 或 4 + 中"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MK → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "613:manual>1218:manual",
+        "input_count": 9,
+        "notation": "2 + 中 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "613:manual->1218:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4500.0,
+        "rank": 5,
+        "route_file": "chunli-modern-max-damage-5",
+        "route_length": 2,
+        "sort_rank": 5,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 613,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "610:manual>1218:manual",
+        "input_count": 9,
+        "notation": "2 + 强 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "610:manual->1218:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4450,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4450.0,
+        "rank": 6,
+        "route_file": "chunli-modern-max-damage-6",
+        "route_length": 2,
+        "sort_rank": 6,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 610,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "614:manual>1218:simple",
+        "input_count": 5,
+        "notation": "3 + 强 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "614:manual->1218:simple",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4100.0,
+        "rank": 7,
+        "route_file": "chunli-modern-max-damage-7",
+        "route_length": 2,
+        "sort_rank": 7,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 614,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "4+HP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "626:manual>1218:simple",
+        "input_count": 5,
+        "notation": "4 + 强 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "626:manual->1218:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4000.0,
+        "rank": 8,
+        "route_file": "chunli-modern-max-damage-8",
+        "route_length": 2,
+        "sort_rank": 8,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 626,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "601:manual>1218:simple",
+        "input_count": 4,
+        "notation": "中 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "601:manual->1218:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3800.0,
+        "rank": 9,
+        "route_file": "chunli-modern-max-damage-9",
+        "route_length": 2,
+        "sort_rank": 9,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 601,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "6+MP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 7.7999999999999998,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 2,
+        "id": "625:manual>1218:simple",
+        "input_count": 6,
+        "notation": "6 或 4 + 中 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "625:manual->1218:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3800.0,
+        "rank": 10,
+        "route_file": "chunli-modern-max-damage-10",
+        "route_length": 2,
+        "sort_rank": 10,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 625,
+            "classic": "6+MP",
+            "input_method": "manual",
+            "notation": "6 或 4 + 中"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MK → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "613:manual>1218:simple",
+        "input_count": 5,
+        "notation": "2 + 中 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "613:manual->1218:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3700.0,
+        "rank": 11,
+        "route_file": "chunli-modern-max-damage-11",
+        "route_length": 2,
+        "sort_rank": 11,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 613,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "610:manual>1218:simple",
+        "input_count": 5,
+        "notation": "2 + 强 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "610:manual->1218:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4450,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3650.0,
+        "rank": 12,
+        "route_file": "chunli-modern-max-damage-12",
+        "route_length": 2,
+        "sort_rank": 12,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 610,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "LP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.4000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "600:manual>1218:manual",
+        "input_count": 8,
+        "notation": "弱 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "600:manual->1218:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4300,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3500.0,
+        "rank": 13,
+        "route_file": "chunli-modern-max-damage-13",
+        "route_length": 2,
+        "sort_rank": 13,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+LK → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "612:manual>1218:manual",
+        "input_count": 9,
+        "notation": "2 + 弱 → 214214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "612:manual->1218:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4200,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3400.0,
+        "rank": 14,
+        "route_file": "chunli-modern-max-damage-14",
+        "route_length": 2,
+        "sort_rank": 14,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 612,
+            "classic": "2+LK",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1218,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 4+HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "614:manual>626:manual>1215:manual",
+        "input_count": 11,
+        "notation": "3 + 强 → 4 + 强 → 236236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "614:manual->626:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "626:manual->1215:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3300.0,
+        "rank": 15,
+        "route_file": "chunli-modern-max-damage-15",
+        "route_length": 3,
+        "sort_rank": 15,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 614,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 626,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1215,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → MP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "614:manual>601:manual>1215:manual",
+        "input_count": 10,
+        "notation": "3 + 强 → 中 → 236236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "614:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->1215:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3100.0,
+        "rank": 16,
+        "route_file": "chunli-modern-max-damage-16",
+        "route_length": 3,
+        "sort_rank": 16,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 614,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 601,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1215,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 6+MP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 12.199999999999999,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "614:manual>625:manual>1215:manual",
+        "input_count": 12,
+        "notation": "3 + 强 → 6 或 4 + 中 → 236236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "614:manual->625:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "625:manual->1215:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3100.0,
+        "rank": 17,
+        "route_file": "chunli-modern-max-damage-17",
+        "route_length": 3,
+        "sort_rank": 17,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 614,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 625,
+            "classic": "6+MP",
+            "input_method": "manual",
+            "notation": "6 或 4 + 中"
+          },
+          {
+            "action_id": 1215,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+MK → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "614:manual>613:manual>1215:manual",
+        "input_count": 11,
+        "notation": "3 + 强 → 2 + 中 → 236236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "614:manual->613:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "613:manual->1215:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3000.0,
+        "rank": 18,
+        "route_file": "chunli-modern-max-damage-18",
+        "route_length": 3,
+        "sort_rank": 18,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 614,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 613,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1215,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "4+HP → MP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "626:manual>601:manual>1215:manual",
+        "input_count": 10,
+        "notation": "4 + 强 → 中 → 236236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "626:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->1215:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3000.0,
+        "rank": 19,
+        "route_file": "chunli-modern-max-damage-19",
+        "route_length": 3,
+        "sort_rank": 19,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 626,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 601,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1215,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "614:manual>626:manual>1215:simple",
+        "input_count": 7,
+        "notation": "3 + 强 → 4 + 强 → 4 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "614:manual->626:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "626:manual->1215:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2980.0,
+        "rank": 20,
+        "route_file": "chunli-modern-max-damage-20",
+        "route_length": 3,
+        "sort_rank": 20,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 614,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 626,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1215,
+            "classic": "236236+K",
+            "input_method": "simple",
+            "notation": "4 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 1991,
+      "complete": false,
+      "max_steps": 3,
+      "routes_found": 1157,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

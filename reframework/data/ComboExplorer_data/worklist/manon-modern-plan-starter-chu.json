@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 22,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:25:36Z",
+  "generated_at": "2026-09-16T02:21:12Z",
   "pairs": [
     {
       "a_active": "4",
@@ -519,15 +519,1100 @@
     }
   ],
   "plan": {
+    "available": 70,
     "conditions": {
       "starter_button": "M"
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:25:36Z",
+    "generated_at": "2026-09-16T02:21:12Z",
     "include_verified": false,
     "name": "starter-chu",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "MP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.4000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "605:manual>1210:manual",
+        "input_count": 8,
+        "notation": "中 → 214214 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "605:manual->1210:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3400.0,
+        "rank": 1,
+        "route_file": "manon-modern-starter-chu-1",
+        "route_length": 2,
+        "sort_rank": 1,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 605,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1210,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+MK → LP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "640:manual>600:manual>1210:manual",
+        "input_count": 10,
+        "notation": "2 + 中 → 弱 → 214214 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1210:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3140.0,
+        "rank": 2,
+        "route_file": "manon-modern-starter-chu-2",
+        "route_length": 3,
+        "sort_rank": 2,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1210,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "640:manual>625:manual>1210:manual",
+        "input_count": 11,
+        "notation": "2 + 中 → 2 + 弱 → 214214 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->625:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "625:manual->1210:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3140.0,
+        "rank": 3,
+        "route_file": "manon-modern-starter-chu-3",
+        "route_length": 3,
+        "sort_rank": 3,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 625,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1210,
+            "classic": "214214+K",
+            "input_method": "manual",
+            "notation": "214214 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "MP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "605:manual>1210:simple",
+        "input_count": 4,
+        "notation": "中 → 4 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "605:manual->1210:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2840.0,
+        "rank": 4,
+        "route_file": "manon-modern-starter-chu-4",
+        "route_length": 2,
+        "sort_rank": 4,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 605,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1210,
+            "classic": "214214+K",
+            "input_method": "simple",
+            "notation": "4 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+MK → LP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "640:manual>600:manual>1210:simple",
+        "input_count": 6,
+        "notation": "2 + 中 → 弱 → 4 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1210:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2692.0000000000005,
+        "rank": 5,
+        "route_file": "manon-modern-starter-chu-5",
+        "route_length": 3,
+        "sort_rank": 5,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1210,
+            "classic": "214214+K",
+            "input_method": "simple",
+            "notation": "4 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 214214+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "640:manual>625:manual>1210:simple",
+        "input_count": 7,
+        "notation": "2 + 中 → 2 + 弱 → 4 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->625:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "625:manual->1210:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2692.0000000000005,
+        "rank": 6,
+        "route_file": "manon-modern-starter-chu-6",
+        "route_length": 3,
+        "sort_rank": 6,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 625,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1210,
+            "classic": "214214+K",
+            "input_method": "simple",
+            "notation": "4 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "MP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.4000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "605:manual>1200:manual",
+        "input_count": 8,
+        "notation": "中 → 236236 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "605:manual->1200:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2600.0,
+        "rank": 7,
+        "route_file": "manon-modern-starter-chu-7",
+        "route_length": 2,
+        "sort_rank": 7,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 605,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1200,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 弱"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+MK → LP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "640:manual>600:manual>1200:manual",
+        "input_count": 10,
+        "notation": "2 + 中 → 弱 → 236236 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1200:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2500.0,
+        "rank": 8,
+        "route_file": "manon-modern-starter-chu-8",
+        "route_length": 3,
+        "sort_rank": 8,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1200,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 弱"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "640:manual>625:manual>1200:manual",
+        "input_count": 11,
+        "notation": "2 + 中 → 2 + 弱 → 236236 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->625:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "625:manual->1200:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2500.0,
+        "rank": 9,
+        "route_file": "manon-modern-starter-chu-9",
+        "route_length": 3,
+        "sort_rank": 9,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 625,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1200,
+            "classic": "236236+K",
+            "input_method": "manual",
+            "notation": "236236 + 弱"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "MP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 5.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "605:manual>1200:simple",
+        "input_count": 3,
+        "notation": "中 → SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "605:manual->1200:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2200.0,
+        "rank": 10,
+        "route_file": "manon-modern-starter-chu-10",
+        "route_length": 2,
+        "sort_rank": 10,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 605,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1200,
+            "classic": "236236+K",
+            "input_method": "simple",
+            "notation": "SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+MK → LP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 7.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "640:manual>600:manual>1200:simple",
+        "input_count": 5,
+        "notation": "2 + 中 → 弱 → SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1200:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2180.0,
+        "rank": 11,
+        "route_file": "manon-modern-starter-chu-11",
+        "route_length": 3,
+        "sort_rank": 11,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1200,
+            "classic": "236236+K",
+            "input_method": "simple",
+            "notation": "SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 236236+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "640:manual>625:manual>1200:simple",
+        "input_count": 6,
+        "notation": "2 + 中 → 2 + 弱 → SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->625:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "625:manual->1200:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2180.0,
+        "rank": 12,
+        "route_file": "manon-modern-starter-chu-12",
+        "route_length": 3,
+        "sort_rank": 12,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 625,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1200,
+            "classic": "236236+K",
+            "input_method": "simple",
+            "notation": "SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → LP → 214+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.7000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "640:manual>600:manual>1003:manual",
+        "input_count": 7,
+        "notation": "2 + 中 → 弱 → 214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1003:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1700.0,
+        "predicted_drive_spend": 0,
+        "rank": 13,
+        "route_file": "manon-modern-starter-chu-13",
+        "route_length": 3,
+        "sort_rank": 13,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1003,
+            "classic": "214+HK",
+            "input_method": "manual",
+            "notation": "214 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 214+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "640:manual>625:manual>1003:manual",
+        "input_count": 8,
+        "notation": "2 + 中 → 2 + 弱 → 214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->625:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "625:manual->1003:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1700.0,
+        "predicted_drive_spend": 0,
+        "rank": 14,
+        "route_file": "manon-modern-starter-chu-14",
+        "route_length": 3,
+        "sort_rank": 14,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 625,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1003,
+            "classic": "214+HK",
+            "input_method": "manual",
+            "notation": "214 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → LP → 2+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.5,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "640:manual>600:manual>643:manual",
+        "input_count": 5,
+        "notation": "2 + 中 → 弱 → 3 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->643:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1620.0,
+        "predicted_drive_spend": 0,
+        "rank": 15,
+        "route_file": "manon-modern-starter-chu-15",
+        "route_length": 3,
+        "sort_rank": 15,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → 2+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "640:manual>625:manual>643:manual",
+        "input_count": 6,
+        "notation": "2 + 中 → 2 + 弱 → 3 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->625:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "625:manual->643:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1620.0,
+        "predicted_drive_spend": 0,
+        "rank": 16,
+        "route_file": "manon-modern-starter-chu-16",
+        "route_length": 3,
+        "sort_rank": 16,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 625,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "MP → 214+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.7000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "605:manual>1003:manual",
+        "input_count": 5,
+        "notation": "中 → 214 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "605:manual->1003:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 1600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1600.0,
+        "predicted_drive_spend": 0,
+        "rank": 17,
+        "route_file": "manon-modern-starter-chu-17",
+        "route_length": 2,
+        "sort_rank": 17,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 605,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1003,
+            "classic": "214+HK",
+            "input_method": "manual",
+            "notation": "214 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+MK → LP → HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "640:manual>600:manual>609:manual",
+        "input_count": 4,
+        "notation": "2 + 中 → 弱 → 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->609:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1540.0,
+        "predicted_drive_spend": 0,
+        "rank": 18,
+        "route_file": "manon-modern-starter-chu-18",
+        "route_length": 3,
+        "sort_rank": 18,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 609,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → LP → 4+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.5,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "640:manual>600:manual>665:manual",
+        "input_count": 5,
+        "notation": "2 + 中 → 弱 → 4 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->665:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1540.0,
+        "predicted_drive_spend": 0,
+        "rank": 19,
+        "route_file": "manon-modern-starter-chu-19",
+        "route_length": 3,
+        "sort_rank": 19,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 665,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+MK → 2+LP → HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.5,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "640:manual>625:manual>609:manual",
+        "input_count": 5,
+        "notation": "2 + 中 → 2 + 弱 → 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "640:manual->625:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "625:manual->609:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 1700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1540.0,
+        "predicted_drive_spend": 0,
+        "rank": 20,
+        "route_file": "manon-modern-starter-chu-20",
+        "route_length": 3,
+        "sort_rank": 20,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 625,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 609,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 0,
+      "complete": true,
+      "max_steps": 3,
+      "routes_found": 490,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

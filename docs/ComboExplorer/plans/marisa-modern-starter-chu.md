@@ -1,6 +1,6 @@
 # Route plan - Marisa / modern - starter-chu
 
-Generated 2026-09-16T00:26:24Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-16T02:31:14Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -11,6 +11,7 @@ game say whether these routes connect.
 - `starter_button` = `M`
 - sort: `scaled_damage`, top 20
 - search: explore.lua's settings (normal,command_normal -> normal,command_normal,special,od_special,super, manual -> manual,simple, max 3 moves, beam 4000, collapse true)
+- search complete: true - every route the settings can reach is in the list below
 - Drive Rush Cancel edges in the search: no (pass --drive-rush to route through them)
 - demote routes through a rejected pair: yes
 
@@ -145,5 +146,5 @@ same calibration and conditions are skipped, and the other way round.
 
 ## Written
 
-- reframework/data/ComboExplorer_data/worklist/marisa-modern-plan-starter-chu.json  (21 pairs, 12193 bytes)
+- reframework/data/ComboExplorer_data/worklist/marisa-modern-plan-starter-chu.json  (21 pairs, 42364 bytes)
 - docs/ComboExplorer/plans/marisa-modern-starter-chu.md

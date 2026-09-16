@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 22,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:26:23Z",
+  "generated_at": "2026-09-16T02:28:25Z",
   "pairs": [
     {
       "a_active": "5",
@@ -516,13 +516,1057 @@
     }
   ],
   "plan": {
+    "available": 1178,
     "conditions": {},
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:26:23Z",
+    "generated_at": "2026-09-16T02:28:25Z",
     "include_verified": false,
     "name": "max-damage",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "2+HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 7.0999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "629:manual>1240:manual",
+        "input_count": 7,
+        "notation": "2 + 强 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4900.0,
+        "rank": 1,
+        "route_file": "guile-modern-max-damage-1",
+        "route_length": 2,
+        "sort_rank": 1,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HK → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "618:manual>1240:manual",
+        "input_count": 6,
+        "notation": "强 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "618:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4800.0,
+        "rank": 2,
+        "route_file": "guile-modern-max-damage-2",
+        "route_length": 2,
+        "sort_rank": 2,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 618,
+            "classic": "HK",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "4+HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 7.0999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "656:manual>1240:manual",
+        "input_count": 7,
+        "notation": "4 + 强 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "656:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4800.0,
+        "rank": 3,
+        "route_file": "guile-modern-max-damage-3",
+        "route_length": 2,
+        "sort_rank": 3,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "1216:manual>1240:manual",
+        "input_count": 6,
+        "notation": "中 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "1216:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4600.0,
+        "rank": 4,
+        "route_file": "guile-modern-max-damage-4",
+        "route_length": 2,
+        "sort_rank": 4,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 1216,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "641:manual>1217:manual>1240:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 强 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "641:manual->1217:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "1217:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5350,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4550.0,
+        "rank": 5,
+        "route_file": "guile-modern-max-damage-5",
+        "route_length": 3,
+        "sort_rank": 5,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 641,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1217,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.0999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "641:manual>629:manual>1240:manual",
+        "input_count": 9,
+        "notation": "3 + 强 → 2 + 强 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "641:manual->629:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "629:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5350,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4550.0,
+        "rank": 6,
+        "route_file": "guile-modern-max-damage-6",
+        "route_length": 3,
+        "sort_rank": 6,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 641,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 629,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 7.0999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "641:manual>1240:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "641:manual->1240:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4450,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4450.0,
+        "rank": 7,
+        "route_file": "guile-modern-max-damage-7",
+        "route_length": 2,
+        "sort_rank": 7,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 641,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 4+HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.0999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "641:manual>656:manual>1240:manual",
+        "input_count": 9,
+        "notation": "3 + 强 → 4 + 强 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "641:manual->656:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "656:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5250,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4450.0,
+        "rank": 8,
+        "route_file": "guile-modern-max-damage-8",
+        "route_length": 3,
+        "sort_rank": 8,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 641,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HK → 2+LP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "618:manual>621:manual>1240:manual",
+        "input_count": 8,
+        "notation": "强 → 2 + 弱 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "618:manual->621:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "621:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4300.0,
+        "rank": 9,
+        "route_file": "guile-modern-max-damage-9",
+        "route_length": 3,
+        "sort_rank": 9,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 618,
+            "classic": "HK",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 621,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "6+HP → LP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "668:manual>1215:manual>1240:manual",
+        "input_count": 8,
+        "notation": "6 + 强 → 弱 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "668:manual->1215:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "1215:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4300.0,
+        "rank": 10,
+        "route_file": "guile-modern-max-damage-10",
+        "route_length": 3,
+        "sort_rank": 10,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 668,
+            "classic": "6+HP",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 1215,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "6+HP → 2+LP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.0999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "668:manual>621:manual>1240:manual",
+        "input_count": 9,
+        "notation": "6 + 强 → 2 + 弱 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "668:manual->621:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "621:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4300.0,
+        "rank": 11,
+        "route_file": "guile-modern-max-damage-11",
+        "route_length": 3,
+        "sort_rank": 11,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 668,
+            "classic": "6+HP",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 621,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → MP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "641:manual>1216:manual>1240:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 中 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "641:manual->1216:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "1216:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5050,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4250.0,
+        "rank": 12,
+        "route_file": "guile-modern-max-damage-12",
+        "route_length": 3,
+        "sort_rank": 12,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 641,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1216,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "629:manual>1240:simple",
+        "input_count": 5,
+        "notation": "2 + 强 → [2] + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->1240:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4100.0,
+        "rank": 13,
+        "route_file": "guile-modern-max-damage-13",
+        "route_length": 2,
+        "sort_rank": 13,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "simple",
+            "notation": "[2] + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HK → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "618:manual>1240:simple",
+        "input_count": 4,
+        "notation": "强 → [2] + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "618:manual->1240:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4000.0,
+        "rank": 14,
+        "route_file": "guile-modern-max-damage-14",
+        "route_length": 2,
+        "sort_rank": 14,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 618,
+            "classic": "HK",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "simple",
+            "notation": "[2] + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "4+HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "656:manual>1240:simple",
+        "input_count": 5,
+        "notation": "4 + 强 → [2] + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "656:manual->1240:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 4800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4000.0,
+        "rank": 15,
+        "route_file": "guile-modern-max-damage-15",
+        "route_length": 2,
+        "sort_rank": 15,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 656,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "simple",
+            "notation": "[2] + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "641:manual>1217:manual>1240:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 强 → [2] + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "641:manual->1217:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "1217:manual->1240:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5350,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3910.0000000000005,
+        "rank": 16,
+        "route_file": "guile-modern-max-damage-16",
+        "route_length": 3,
+        "sort_rank": 16,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 641,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1217,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "simple",
+            "notation": "[2] + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "641:manual>629:manual>1240:simple",
+        "input_count": 7,
+        "notation": "3 + 强 → 2 + 强 → [2] + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "641:manual->629:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "629:manual->1240:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5350,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3910.0000000000005,
+        "rank": 17,
+        "route_file": "guile-modern-max-damage-17",
+        "route_length": 3,
+        "sort_rank": 17,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 641,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 629,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "simple",
+            "notation": "[2] + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "LP → HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.0999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "1215:manual>1217:manual>1240:manual",
+        "input_count": 7,
+        "notation": "弱 → 强 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "1215:manual->1217:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "1217:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5200,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3820.0,
+        "rank": 18,
+        "route_file": "guile-modern-max-damage-18",
+        "route_length": 3,
+        "sort_rank": 18,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 1215,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1217,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "LP → 2+HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "1215:manual>629:manual>1240:manual",
+        "input_count": 8,
+        "notation": "弱 → 2 + 强 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "1215:manual->629:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "629:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5200,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3820.0,
+        "rank": 19,
+        "route_file": "guile-modern-max-damage-19",
+        "route_length": 3,
+        "sort_rank": 19,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 1215,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 629,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+LP → HP → [4]646+K",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.5999999999999996,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 4,
+        "id": "621:manual>1217:manual>1240:manual",
+        "input_count": 8,
+        "notation": "2 + 弱 → 强 → [4]646 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "621:manual->1217:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          },
+          {
+            "key": "1217:manual->1240:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5200,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3820.0,
+        "rank": 20,
+        "route_file": "guile-modern-max-damage-20",
+        "route_length": 3,
+        "sort_rank": 20,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 621,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1217,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1240,
+            "classic": "[4]646+K",
+            "input_method": "manual",
+            "notation": "[4]646 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 78139,
+      "complete": false,
+      "max_steps": 3,
+      "routes_found": 1178,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

@@ -1,6 +1,6 @@
 # Route plan - JP / modern - no-gauge
 
-Generated 2026-09-16T00:25:33Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-16T02:22:31Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -11,6 +11,7 @@ game say whether these routes connect.
 - `no_gauge` = `true`
 - sort: `scaled_damage`, top 20
 - search: explore.lua's settings (normal,command_normal -> normal,command_normal,special,od_special,super, manual -> manual,simple, max 3 moves, beam 4000, collapse true)
+- search complete: false - the beam dropped 1307 partial route(s) and 0 route(s) were not emitted, so the list below is a sample
 - Drive Rush Cancel edges in the search: no (pass --drive-rush to route through them)
 - demote routes through a rejected pair: yes
 
@@ -152,5 +153,5 @@ same calibration and conditions are skipped, and the other way round.
 
 ## Written
 
-- reframework/data/ComboExplorer_data/worklist/jp-modern-plan-no-gauge.json  (23 pairs, 13112 bytes)
+- reframework/data/ComboExplorer_data/worklist/jp-modern-plan-no-gauge.json  (23 pairs, 46181 bytes)
 - docs/ComboExplorer/plans/jp-modern-no-gauge.md

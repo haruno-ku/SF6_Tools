@@ -1,6 +1,6 @@
 # Route plan - Zangief / modern - starter-chu
 
-Generated 2026-09-16T00:28:59Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-16T02:19:06Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -11,6 +11,7 @@ game say whether these routes connect.
 - `starter_button` = `M`
 - sort: `scaled_damage`, top 20
 - search: explore.lua's settings (normal,command_normal -> normal,command_normal,special,od_special,super, manual -> manual,simple, max 3 moves, beam 4000, collapse true)
+- search complete: true - every route the settings can reach is in the list below
 - Drive Rush Cancel edges in the search: no (pass --drive-rush to route through them)
 - demote routes through a rejected pair: yes
 
@@ -146,25 +147,6 @@ buttons. The catalog lists Modern 弱 as 601, 602 and 611; the search keeps one 
 them, and the sweep folds every pair onto the id the calibration measured (611)
 before pressing it, so that is the id its trials carry.
 
-## Route files for the next session: 3
-
-`--routes 3` wrote the plan's best routes where the panel's ROUTE section reads
-them. A route run presses the whole combo and records every gap combination, which
-is what a verified combo with measured damage needs (#36, #37) and what a pair
-sweep cannot give.
-
-| # | route | file | grid | gap delays (where each came from) |
-|---:|---|---|---:|---|
-| 1 | 3 + 中 → 236236 + 中 | `zangief-modern-starter-chu-1.json` | 1 | gap 1 4 (measured) |
-| 2 | 2 + 中 → 236236 + 中 | `zangief-modern-starter-chu-2.json` | 1 | gap 1 4 (measured) |
-| 3 | 3 + 中 → 4 + SP + 强 | `zangief-modern-starter-chu-3.json` | 1 | gap 1 4 (measured) |
-
-`measured` is the gaps the policy's counted runs linked that pair at; `predicted`
-is runtime/Sweep.plan_for's own grid from the frame data, a link gap widened to the
-window the input buffer covers (`input_buffer_ticks` = 4, unverified); `default` is
-core/Route.DEFAULT_DELAYS, which measures nothing and says so. No gap is ever
-given a single invented number.
-
 ## Running it
 
 Copy the worklist to the game machine (`scripts/install-dev.ps1` syncs
@@ -175,8 +157,5 @@ same calibration and conditions are skipped, and the other way round.
 
 ## Written
 
-- reframework/data/ComboExplorer_data/worklist/zangief-modern-plan-starter-chu.json  (11 pairs, 6947 bytes)
-- reframework/data/ComboExplorer_data/route/zangief-modern-starter-chu-1.json  (2 step(s), 1 gap combination(s), 1505 bytes)
-- reframework/data/ComboExplorer_data/route/zangief-modern-starter-chu-2.json  (2 step(s), 1 gap combination(s), 1499 bytes)
-- reframework/data/ComboExplorer_data/route/zangief-modern-starter-chu-3.json  (2 step(s), 1 gap combination(s), 1505 bytes)
+- reframework/data/ComboExplorer_data/worklist/zangief-modern-plan-starter-chu.json  (11 pairs, 24379 bytes)
 - docs/ComboExplorer/plans/zangief-modern-starter-chu.md

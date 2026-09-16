@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 26,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:26:45Z",
+  "generated_at": "2026-09-16T02:33:23Z",
   "pairs": [
     {
       "a_active": "3",
@@ -592,15 +592,1103 @@
     }
   ],
   "plan": {
+    "available": 371,
     "conditions": {
       "starter_button": "M"
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:26:45Z",
+    "generated_at": "2026-09-16T02:33:23Z",
     "include_verified": false,
     "name": "starter-chu",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "2+KK → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.4000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "666:manual>1211:manual",
+        "input_count": 10,
+        "notation": "2 + 中 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->1211:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 5100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 5100.0,
+        "rank": 1,
+        "route_file": "jamie-modern-starter-chu-1",
+        "route_length": 2,
+        "sort_rank": 1,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 2+HP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 11.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "666:manual>628:manual>1211:manual",
+        "input_count": 12,
+        "notation": "2 + 中 + 强 → 2 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->628:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "628:manual->1211:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 5100.0,
+        "rank": 2,
+        "route_file": "jamie-modern-starter-chu-2",
+        "route_length": 3,
+        "sort_rank": 2,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 628,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 6+HK → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 11.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "666:manual>679:manual>1211:manual",
+        "input_count": 12,
+        "notation": "2 + 中 + 强 → 6 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->679:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "679:manual->1211:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 5100.0,
+        "rank": 3,
+        "route_file": "jamie-modern-starter-chu-3",
+        "route_length": 3,
+        "sort_rank": 3,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 679,
+            "classic": "6+HK",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MK → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "635:manual>1211:manual",
+        "input_count": 9,
+        "notation": "2 + 中 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "635:manual->1211:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 5000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 5000.0,
+        "rank": 4,
+        "route_file": "jamie-modern-starter-chu-4",
+        "route_length": 2,
+        "sort_rank": 4,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 635,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 4+HP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 11.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "666:manual>673:manual>1211:manual",
+        "input_count": 12,
+        "notation": "2 + 中 + 强 → 4 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->673:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "673:manual->1211:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 5000.0,
+        "rank": 5,
+        "route_file": "jamie-modern-starter-chu-5",
+        "route_length": 3,
+        "sort_rank": 5,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 673,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 2+MK → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 11.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "666:manual>635:manual>1211:manual",
+        "input_count": 12,
+        "notation": "2 + 中 + 强 → 2 + 中 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->635:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "635:manual->1211:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4700.0,
+        "rank": 6,
+        "route_file": "jamie-modern-starter-chu-6",
+        "route_length": 3,
+        "sort_rank": 6,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 635,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 2+HK → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 11.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "666:manual>638:manual>1211:manual",
+        "input_count": 12,
+        "notation": "2 + 中 + 强 → 3 + 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->638:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "638:manual->1211:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4600.0,
+        "rank": 7,
+        "route_file": "jamie-modern-starter-chu-7",
+        "route_length": 3,
+        "sort_rank": 7,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 638,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → LP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "608:manual>600:manual>1211:manual",
+        "input_count": 9,
+        "notation": "中 → 弱 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "608:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1211:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5370,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4470.0,
+        "rank": 8,
+        "route_file": "jamie-modern-starter-chu-8",
+        "route_length": 3,
+        "sort_rank": 8,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 608,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → LP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "666:manual>600:manual>1211:manual",
+        "input_count": 11,
+        "notation": "2 + 中 + 强 → 弱 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1211:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5370,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4470.0,
+        "rank": 9,
+        "route_file": "jamie-modern-starter-chu-9",
+        "route_length": 3,
+        "sort_rank": 9,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → 2+LP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "608:manual>622:manual>1211:manual",
+        "input_count": 10,
+        "notation": "中 → 2 + 弱 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "608:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->1211:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5350,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4450.0,
+        "rank": 10,
+        "route_file": "jamie-modern-starter-chu-10",
+        "route_length": 3,
+        "sort_rank": 10,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 608,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 2+LP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 11.4,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "666:manual>622:manual>1211:manual",
+        "input_count": 12,
+        "notation": "2 + 中 + 强 → 2 + 弱 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->1211:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5350,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4450.0,
+        "rank": 11,
+        "route_file": "jamie-modern-starter-chu-11",
+        "route_length": 3,
+        "sort_rank": 11,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 2+HP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "666:manual>628:manual>1211:simple",
+        "input_count": 8,
+        "notation": "2 + 中 + 强 → 2 + 强 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->628:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "628:manual->1211:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4380.0,
+        "rank": 12,
+        "route_file": "jamie-modern-starter-chu-12",
+        "route_length": 3,
+        "sort_rank": 12,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 628,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 6+HK → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "666:manual>679:manual>1211:simple",
+        "input_count": 8,
+        "notation": "2 + 中 + 强 → 6 + 强 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->679:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "679:manual->1211:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 6000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4380.0,
+        "rank": 13,
+        "route_file": "jamie-modern-starter-chu-13",
+        "route_length": 3,
+        "sort_rank": 13,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 679,
+            "classic": "6+HK",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → HP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "608:manual>610:manual>1211:manual",
+        "input_count": 9,
+        "notation": "中 → 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "608:manual->610:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "610:manual->1211:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5200,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4300.0,
+        "rank": 14,
+        "route_file": "jamie-modern-starter-chu-14",
+        "route_length": 3,
+        "sort_rank": 14,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 608,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 610,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → HP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 10.9,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "666:manual>610:manual>1211:manual",
+        "input_count": 11,
+        "notation": "2 + 中 + 强 → 强 → 236236 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->610:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "610:manual->1211:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5200,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4300.0,
+        "rank": 15,
+        "route_file": "jamie-modern-starter-chu-15",
+        "route_length": 3,
+        "sort_rank": 15,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 610,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 4+HP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "666:manual>673:manual>1211:simple",
+        "input_count": 8,
+        "notation": "2 + 中 + 强 → 4 + 强 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->673:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "673:manual->1211:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4280.0,
+        "rank": 16,
+        "route_file": "jamie-modern-starter-chu-16",
+        "route_length": 3,
+        "sort_rank": 16,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 673,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 7.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "666:manual>1211:simple",
+        "input_count": 6,
+        "notation": "2 + 中 + 强 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->1211:simple",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 5100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4200.0,
+        "rank": 17,
+        "route_file": "jamie-modern-starter-chu-17",
+        "route_length": 2,
+        "sort_rank": 17,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MK → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "635:manual>1211:simple",
+        "input_count": 5,
+        "notation": "2 + 中 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "635:manual->1211:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 5000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 4100.0,
+        "rank": 18,
+        "route_file": "jamie-modern-starter-chu-18",
+        "route_length": 2,
+        "sort_rank": 18,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 635,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 2+MK → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "666:manual>635:manual>1211:simple",
+        "input_count": 8,
+        "notation": "2 + 中 + 强 → 2 + 中 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->635:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "635:manual->1211:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3980.0000000000005,
+        "rank": 19,
+        "route_file": "jamie-modern-starter-chu-19",
+        "route_length": 3,
+        "sort_rank": 19,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 635,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+KK → 2+HK → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 9.0,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "666:manual>638:manual>1211:simple",
+        "input_count": 8,
+        "notation": "2 + 中 + 强 → 3 + 强 → 2 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "666:manual->638:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "638:manual->1211:simple",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 5500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3880.0000000000005,
+        "rank": 20,
+        "route_file": "jamie-modern-starter-chu-20",
+        "route_length": 3,
+        "sort_rank": 20,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 666,
+            "classic": "2+KK",
+            "input_method": "manual",
+            "notation": "2 + 中 + 强"
+          },
+          {
+            "action_id": 638,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1211,
+            "classic": "236236+P",
+            "input_method": "simple",
+            "notation": "2 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "low"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 0,
+      "complete": true,
+      "max_steps": 3,
+      "routes_found": 1079,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

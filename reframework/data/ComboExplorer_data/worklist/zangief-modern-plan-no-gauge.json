@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 21,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:28:57Z",
+  "generated_at": "2026-09-16T02:18:51Z",
   "pairs": [
     {
       "a_active": "7(5)",
@@ -517,15 +517,1090 @@
     }
   ],
   "plan": {
+    "available": 347,
     "conditions": {
       "no_gauge": true
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:28:57Z",
+    "generated_at": "2026-09-16T02:18:51Z",
     "include_verified": false,
     "name": "no-gauge",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "6+HK → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "662:manual>785:manual",
+        "input_count": 5,
+        "notation": "6 + 强 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "662:manual->785:manual",
+            "mechanism": "link",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3700.0,
+        "predicted_drive_spend": 0,
+        "rank": 1,
+        "route_file": "zangief-modern-no-gauge-1",
+        "route_length": 2,
+        "sort_rank": 10,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 662,
+            "classic": "6+HK",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "623:manual>785:manual",
+        "input_count": 5,
+        "notation": "2 + 强 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "623:manual->785:manual",
+            "mechanism": "link",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3400.0,
+        "predicted_drive_spend": 0,
+        "rank": 2,
+        "route_file": "zangief-modern-no-gauge-2",
+        "route_length": 2,
+        "sort_rank": 15,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 623,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "633:manual>785:manual",
+        "input_count": 5,
+        "notation": "3 + 强 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "633:manual->785:manual",
+            "mechanism": "link",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3400.0,
+        "predicted_drive_spend": 0,
+        "rank": 3,
+        "route_file": "zangief-modern-no-gauge-3",
+        "route_length": 2,
+        "sort_rank": 16,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 633,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "3+MP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "655:manual>785:manual",
+        "input_count": 5,
+        "notation": "3 + 中 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "655:manual->785:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3200,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3200.0,
+        "predicted_drive_spend": 0,
+        "rank": 4,
+        "route_file": "zangief-modern-no-gauge-4",
+        "route_length": 2,
+        "sort_rank": 22,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 655,
+            "classic": "3+MP",
+            "input_method": "manual",
+            "notation": "3 + 中"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "LP → 6+HK → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "601:manual>662:manual>785:manual",
+        "input_count": 6,
+        "notation": "弱 → 6 + 强 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "601:manual->662:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          },
+          {
+            "key": "662:manual->785:manual",
+            "mechanism": "link",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 4100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3120.0,
+        "predicted_drive_spend": 0,
+        "rank": 5,
+        "route_file": "zangief-modern-no-gauge-5",
+        "route_length": 3,
+        "sort_rank": 23,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 662,
+            "classic": "6+HK",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "621:manual>785:manual",
+        "input_count": 5,
+        "notation": "2 + 中 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "621:manual->785:manual",
+            "mechanism": "cancel",
+            "status": "asked_badly"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3100.0,
+        "predicted_drive_spend": 0,
+        "rank": 6,
+        "route_file": "zangief-modern-no-gauge-6",
+        "route_length": 2,
+        "sort_rank": 24,
+        "status": "0/1 pairs reproduced; never asked properly: 621:manual->785:manual",
+        "steps": [
+          {
+            "action_id": 621,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+LP → 6+HK → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "617:manual>662:manual>785:manual",
+        "input_count": 7,
+        "notation": "2 + 弱 → 6 + 强 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "617:manual->662:manual",
+            "mechanism": "cancel",
+            "status": "asked_badly"
+          },
+          {
+            "key": "662:manual->785:manual",
+            "mechanism": "link",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 4000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3020.0,
+        "predicted_drive_spend": 0,
+        "rank": 7,
+        "route_file": "zangief-modern-no-gauge-7",
+        "route_length": 3,
+        "sort_rank": 33,
+        "status": "0/2 pairs reproduced; never asked properly: 617:manual->662:manual",
+        "steps": [
+          {
+            "action_id": 617,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 662,
+            "classic": "6+HK",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "LP → 2+HP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "601:manual>623:manual>785:manual",
+        "input_count": 6,
+        "notation": "弱 → 2 + 强 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "601:manual->623:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          },
+          {
+            "key": "623:manual->785:manual",
+            "mechanism": "link",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2880.0,
+        "predicted_drive_spend": 0,
+        "rank": 8,
+        "route_file": "zangief-modern-no-gauge-8",
+        "route_length": 3,
+        "sort_rank": 38,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 623,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "LP → 2+HK → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "601:manual>633:manual>785:manual",
+        "input_count": 6,
+        "notation": "弱 → 3 + 强 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "601:manual->633:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          },
+          {
+            "key": "633:manual->785:manual",
+            "mechanism": "link",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2880.0,
+        "predicted_drive_spend": 0,
+        "rank": 9,
+        "route_file": "zangief-modern-no-gauge-9",
+        "route_length": 3,
+        "sort_rank": 39,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 633,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+LP → 2+HP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "617:manual>623:manual>785:manual",
+        "input_count": 7,
+        "notation": "2 + 弱 → 2 + 强 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "617:manual->623:manual",
+            "mechanism": "cancel",
+            "status": "asked_badly"
+          },
+          {
+            "key": "623:manual->785:manual",
+            "mechanism": "link",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2780.0,
+        "predicted_drive_spend": 0,
+        "rank": 10,
+        "route_file": "zangief-modern-no-gauge-10",
+        "route_length": 3,
+        "sort_rank": 56,
+        "status": "0/2 pairs reproduced; never asked properly: 617:manual->623:manual",
+        "steps": [
+          {
+            "action_id": 617,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 623,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+LP → 2+HK → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "617:manual>633:manual>785:manual",
+        "input_count": 7,
+        "notation": "2 + 弱 → 3 + 强 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "617:manual->633:manual",
+            "mechanism": "cancel",
+            "status": "asked_badly"
+          },
+          {
+            "key": "633:manual->785:manual",
+            "mechanism": "link",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2780.0,
+        "predicted_drive_spend": 0,
+        "rank": 11,
+        "route_file": "zangief-modern-no-gauge-11",
+        "route_length": 3,
+        "sort_rank": 57,
+        "status": "0/2 pairs reproduced; never asked properly: 617:manual->633:manual",
+        "steps": [
+          {
+            "action_id": 617,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 633,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "LP → 3+MP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "601:manual>655:manual>785:manual",
+        "input_count": 6,
+        "notation": "弱 → 3 + 中 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "601:manual->655:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          },
+          {
+            "key": "655:manual->785:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2720.0,
+        "predicted_drive_spend": 0,
+        "rank": 12,
+        "route_file": "zangief-modern-no-gauge-12",
+        "route_length": 3,
+        "sort_rank": 59,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 655,
+            "classic": "3+MP",
+            "input_method": "manual",
+            "notation": "3 + 中"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "LP → 2+MP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "601:manual>621:manual>785:manual",
+        "input_count": 6,
+        "notation": "弱 → 2 + 中 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "601:manual->621:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          },
+          {
+            "key": "621:manual->785:manual",
+            "mechanism": "cancel",
+            "status": "asked_badly"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2640.0,
+        "predicted_drive_spend": 0,
+        "rank": 13,
+        "route_file": "zangief-modern-no-gauge-13",
+        "route_length": 3,
+        "sort_rank": 63,
+        "status": "0/2 pairs reproduced; never asked properly: 621:manual->785:manual",
+        "steps": [
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 621,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+LP → 3+MP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "617:manual>655:manual>785:manual",
+        "input_count": 7,
+        "notation": "2 + 弱 → 3 + 中 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "617:manual->655:manual",
+            "mechanism": "cancel",
+            "status": "asked_badly"
+          },
+          {
+            "key": "655:manual->785:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2620.0,
+        "predicted_drive_spend": 0,
+        "rank": 14,
+        "route_file": "zangief-modern-no-gauge-14",
+        "route_length": 3,
+        "sort_rank": 67,
+        "status": "0/2 pairs reproduced; never asked properly: 617:manual->655:manual",
+        "steps": [
+          {
+            "action_id": 617,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 655,
+            "classic": "3+MP",
+            "input_method": "manual",
+            "notation": "3 + 中"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+LP → 2+MP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "617:manual>621:manual>785:manual",
+        "input_count": 7,
+        "notation": "2 + 弱 → 2 + 中 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "617:manual->621:manual",
+            "mechanism": "cancel",
+            "status": "asked_badly"
+          },
+          {
+            "key": "621:manual->785:manual",
+            "mechanism": "cancel",
+            "status": "asked_badly"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2540.0,
+        "predicted_drive_spend": 0,
+        "rank": 15,
+        "route_file": "zangief-modern-no-gauge-15",
+        "route_length": 3,
+        "sort_rank": 79,
+        "status": "0/2 pairs reproduced; never asked properly: 617:manual->621:manual, 621:manual->785:manual",
+        "steps": [
+          {
+            "action_id": 617,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 621,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "LP → LP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "601:manual>601:manual>785:manual",
+        "input_count": 5,
+        "notation": "弱 → 弱 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "601:manual->601:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          },
+          {
+            "key": "601:manual->785:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3200,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2400.0,
+        "predicted_drive_spend": 0,
+        "rank": 16,
+        "route_file": "zangief-modern-no-gauge-16",
+        "route_length": 3,
+        "sort_rank": 95,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "LP → 2+LP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "601:manual>617:manual>785:manual",
+        "input_count": 6,
+        "notation": "弱 → 2 + 弱 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "601:manual->617:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          },
+          {
+            "key": "617:manual->785:manual",
+            "mechanism": "both",
+            "status": "asked_badly"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2320.0,
+        "predicted_drive_spend": 0,
+        "rank": 17,
+        "route_file": "zangief-modern-no-gauge-17",
+        "route_length": 3,
+        "sort_rank": 105,
+        "status": "0/2 pairs reproduced; never asked properly: 617:manual->785:manual",
+        "steps": [
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 617,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "LP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 4.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "601:manual>785:manual",
+        "input_count": 4,
+        "notation": "弱 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "601:manual->785:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2320.0,
+        "predicted_drive_spend": 0,
+        "rank": 18,
+        "route_file": "zangief-modern-no-gauge-18",
+        "route_length": 2,
+        "sort_rank": 106,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+LP → LP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "617:manual>601:manual>785:manual",
+        "input_count": 6,
+        "notation": "2 + 弱 → 弱 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "617:manual->601:manual",
+            "mechanism": "cancel",
+            "status": "asked_badly"
+          },
+          {
+            "key": "601:manual->785:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2300.0,
+        "predicted_drive_spend": 0,
+        "rank": 19,
+        "route_file": "zangief-modern-no-gauge-19",
+        "route_length": 3,
+        "sort_rank": 109,
+        "status": "0/2 pairs reproduced; never asked properly: 617:manual->601:manual",
+        "steps": [
+          {
+            "action_id": 617,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "6+HK → HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 3.5,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "662:manual>637:manual",
+        "input_count": 3,
+        "notation": "6 + 强 → 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "662:manual->637:manual",
+            "mechanism": "unknown",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2300,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2300.0,
+        "predicted_drive_spend": 0,
+        "rank": 20,
+        "route_file": "zangief-modern-no-gauge-20",
+        "route_length": 2,
+        "sort_rank": 113,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 662,
+            "classic": "6+HK",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 637,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 0,
+      "complete": true,
+      "max_steps": 3,
+      "routes_found": 423,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

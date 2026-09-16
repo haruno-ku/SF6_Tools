@@ -186,7 +186,7 @@
           "unknown_share": 0.050847457627118647
         }
       },
-      "score": 65.377042034551664,
+      "score": 65.377042034551678,
       "signals": {
         "data_quality": {
           "confident_share": 0.66222987288135593,
@@ -321,7 +321,7 @@
       "components": {
         "data_quality": 0.85953458621485479,
         "easy_damage": 0.697176684881603,
-        "input_shape": 0.55419221129747454,
+        "input_shape": 0.55419221129747442,
         "route_availability": 0.53118554911094151,
         "timing_comfort": 0.903922360543571
       },
@@ -606,7 +606,7 @@
           "unknown_share": 0.050314465408805034
         }
       },
-      "score": 69.604177565201852,
+      "score": 69.604177565201866,
       "signals": {
         "data_quality": {
           "confident_share": 0.82712264150943404,
@@ -745,7 +745,7 @@
       "components": {
         "data_quality": 0.56312950304102427,
         "easy_damage": 0.36448262575311757,
-        "input_shape": 0.58383458646616548,
+        "input_shape": 0.58383458646616537,
         "route_availability": 1.0,
         "timing_comfort": 0.29315201984408212
       },
@@ -961,7 +961,7 @@
       "components": {
         "data_quality": 0.74189081865622974,
         "easy_damage": 0.697176684881603,
-        "input_shape": 0.56301523038365153,
+        "input_shape": 0.56301523038365142,
         "route_availability": 0.091904565962953447,
         "timing_comfort": 0.93394439967767906
       },
@@ -1354,7 +1354,7 @@
           "unknown_share": 0.18787878787878787
         }
       },
-      "score": 47.191559850855832,
+      "score": 47.191559850855825,
       "signals": {
         "data_quality": {
           "confident_share": 0.63905303030303029,
@@ -1385,7 +1385,7 @@
       "components": {
         "data_quality": 0.77750145084384215,
         "easy_damage": 0.36448262575311757,
-        "input_shape": 0.51399074609600925,
+        "input_shape": 0.51399074609600914,
         "route_availability": 0.29255236201720181,
         "timing_comfort": 0.76945038621509199
       },
@@ -1493,7 +1493,7 @@
       "components": {
         "data_quality": 0.49654767291759333,
         "easy_damage": 0.76653355751716412,
-        "input_shape": 0.38199537304800468,
+        "input_shape": 0.38199537304800463,
         "route_availability": 0.81064883356588535,
         "timing_comfort": 0.11776868642193714
       },
@@ -1682,7 +1682,7 @@
           "unknown_share": 0.10469011725293133
         }
       },
-      "score": 65.760737885070753,
+      "score": 65.760737885070768,
       "signals": {
         "data_quality": {
           "confident_share": 0.31895152847571195,
@@ -1713,7 +1713,7 @@
       "components": {
         "data_quality": 0.78282140412075385,
         "easy_damage": 0.36759142496847425,
-        "input_shape": 0.42106998264893003,
+        "input_shape": 0.42106998264893009,
         "route_availability": 0.29158440797278545,
         "timing_comfort": 0.88702311595564742
       },
@@ -2008,7 +2008,7 @@
           "unknown_share": 0.16071428571428573
         }
       },
-      "score": 71.467078656017208,
+      "score": 71.467078656017193,
       "signals": {
         "data_quality": {
           "confident_share": 0.68640252976190474,
@@ -2439,7 +2439,7 @@
           "unknown_share": 0.0
         }
       },
-      "score": 58.817482595524872,
+      "score": 58.817482595524886,
       "signals": {
         "data_quality": {
           "confident_share": 0.79984830097087378,
@@ -2551,7 +2551,7 @@
           "unknown_share": 0.33141210374639768
         }
       },
-      "score": 65.458361495992705,
+      "score": 65.458361495992733,
       "signals": {
         "data_quality": {
           "confident_share": 0.29036833573487036,
@@ -2582,7 +2582,7 @@
       "components": {
         "data_quality": 0.78288586755360479,
         "easy_damage": 0.77288251366120209,
-        "input_shape": 0.56301523038365153,
+        "input_shape": 0.56301523038365142,
         "route_availability": 0.20558124829870378,
         "timing_comfort": 1.0
       },
@@ -2655,7 +2655,7 @@
           "unknown_share": 0.0
         }
       },
-      "score": 72.146527327950437,
+      "score": 72.146527327950423,
       "signals": {
         "data_quality": {
           "confident_share": 0.77597799511002441,
@@ -3017,7 +3017,7 @@
       "components": {
         "data_quality": 0.69124295412392045,
         "easy_damage": 0.92429417122040081,
-        "input_shape": 0.41563524195103146,
+        "input_shape": 0.41563524195103141,
         "route_availability": 0.24821256108177864,
         "timing_comfort": 0.89085875090777045
       },
@@ -3318,7 +3318,7 @@
           "unknown_share": 0.330150068212824
         }
       },
-      "score": 48.417946656999554,
+      "score": 48.417946656999561,
       "signals": {
         "data_quality": {
           "confident_share": 0.0,
@@ -3350,7 +3350,7 @@
     "best_cheap_damage": 0.5,
     "best_pareto_ratio": 0.5
   },
-  "generated_at": "2026-09-16T01:54:41Z",
+  "generated_at": "2026-09-16T02:37:27Z",
   "lab": {
     "characters": 31,
     "confirmed": 7,

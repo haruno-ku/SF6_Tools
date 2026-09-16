@@ -387,4 +387,4 @@ Inside the components:
   data says is worth a trial. None of them is known to combo.
 - **Min-max is relative.** A 0 in a column means "last of these 31", not "none".
 
-Page version: [practice.html](practice.html). Numbers: `practice.json`. Generated 2026-09-16T01:54:41Z.
+Page version: [practice.html](practice.html). Numbers: `practice.json`. Generated 2026-09-16T02:37:27Z.

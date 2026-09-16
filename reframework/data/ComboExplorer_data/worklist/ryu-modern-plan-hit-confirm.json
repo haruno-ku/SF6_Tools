@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 19,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T01:53:17Z",
+  "generated_at": "2026-09-16T02:17:48Z",
   "pairs": [
     {
       "a_active": "4",
@@ -468,7 +468,7 @@
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T01:53:17Z",
+    "generated_at": "2026-09-16T02:17:48Z",
     "include_verified": false,
     "name": "hit-confirm",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",

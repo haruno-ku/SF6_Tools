@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 11,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:28:59Z",
+  "generated_at": "2026-09-16T02:19:06Z",
   "pairs": [
     {
       "a_active": "3",
@@ -258,15 +258,619 @@
     }
   ],
   "plan": {
+    "available": 13,
     "conditions": {
       "starter_button": "M"
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:28:59Z",
+    "generated_at": "2026-09-16T02:19:06Z",
     "include_verified": false,
     "name": "starter-chu",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "3+MP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "655:manual>1206:manual",
+        "input_count": 9,
+        "notation": "3 + 中 → 236236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "655:manual->1206:manual",
+            "mechanism": "cancel",
+            "status": "linked_once"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3960,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3960.0,
+        "rank": 1,
+        "route_file": "zangief-modern-starter-chu-1",
+        "route_length": 2,
+        "sort_rank": 1,
+        "status": "linked once as a combo; 0/1 pairs reproduced; linked once: 655:manual->1206:manual",
+        "steps": [
+          {
+            "action_id": 655,
+            "classic": "3+MP",
+            "input_method": "manual",
+            "notation": "3 + 中"
+          },
+          {
+            "action_id": 1206,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+MP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 8.9000000000000004,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 6,
+        "id": "621:manual>1206:manual",
+        "input_count": 9,
+        "notation": "2 + 中 → 236236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "621:manual->1206:manual",
+            "mechanism": "cancel",
+            "status": "linked_once"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3860,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3860.0,
+        "rank": 2,
+        "route_file": "zangief-modern-starter-chu-2",
+        "route_length": 2,
+        "sort_rank": 2,
+        "status": "confirmed combo",
+        "steps": [
+          {
+            "action_id": 621,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1206,
+            "classic": "236236+P",
+            "input_method": "manual",
+            "notation": "236236 + 中"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "3+MP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "655:manual>1206:simple",
+        "input_count": 5,
+        "notation": "3 + 中 → 4 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "655:manual->1206:simple",
+            "mechanism": "cancel",
+            "status": "linked_once"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3960,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3328.0,
+        "rank": 3,
+        "route_file": "zangief-modern-starter-chu-3",
+        "route_length": 2,
+        "sort_rank": 3,
+        "status": "linked once as a combo; 0/1 pairs reproduced; linked once: 655:manual->1206:simple",
+        "steps": [
+          {
+            "action_id": 655,
+            "classic": "3+MP",
+            "input_method": "manual",
+            "notation": "3 + 中"
+          },
+          {
+            "action_id": 1206,
+            "classic": "236236+P",
+            "input_method": "simple",
+            "notation": "4 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+MP → 236236+P",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 6.5,
+        "gauge": "SA 1, drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "621:manual>1206:simple",
+        "input_count": 5,
+        "notation": "2 + 中 → 4 + SP + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "621:manual->1206:simple",
+            "mechanism": "cancel",
+            "status": "verified"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 1,
+        "predicted_damage": 3860,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3228.0,
+        "rank": 4,
+        "route_file": "zangief-modern-starter-chu-4",
+        "route_length": 2,
+        "sort_rank": 4,
+        "status": "confirmed combo",
+        "steps": [
+          {
+            "action_id": 621,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1206,
+            "classic": "236236+P",
+            "input_method": "simple",
+            "notation": "4 + SP + 强"
+          }
+        ],
+        "super_steps": 1,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "3+MP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "655:manual>785:manual",
+        "input_count": 5,
+        "notation": "3 + 中 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "655:manual->785:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3200,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3200.0,
+        "predicted_drive_spend": 0,
+        "rank": 5,
+        "route_file": "zangief-modern-starter-chu-5",
+        "route_length": 2,
+        "sort_rank": 5,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 655,
+            "classic": "3+MP",
+            "input_method": "manual",
+            "notation": "3 + 中"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MP → 22+HK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "621:manual>785:manual",
+        "input_count": 5,
+        "notation": "2 + 中 → 22 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "621:manual->785:manual",
+            "mechanism": "cancel",
+            "status": "asked_badly"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 3100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3100.0,
+        "predicted_drive_spend": 0,
+        "rank": 6,
+        "route_file": "zangief-modern-starter-chu-6",
+        "route_length": 2,
+        "sort_rank": 6,
+        "status": "0/1 pairs reproduced; never asked properly: 621:manual->785:manual",
+        "steps": [
+          {
+            "action_id": 621,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 785,
+            "classic": "22+HK",
+            "input_method": "manual",
+            "notation": "22 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "3+MP → HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 3.5,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "655:manual>637:manual",
+        "input_count": 3,
+        "notation": "3 + 中 → 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "655:manual->637:manual",
+            "mechanism": "unknown",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 1800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1800.0,
+        "predicted_drive_spend": 0,
+        "rank": 7,
+        "route_file": "zangief-modern-starter-chu-7",
+        "route_length": 2,
+        "sort_rank": 7,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 655,
+            "classic": "3+MP",
+            "input_method": "manual",
+            "notation": "3 + 中"
+          },
+          {
+            "action_id": 637,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "MP → HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 3.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "604:manual>637:manual",
+        "input_count": 2,
+        "notation": "中 → 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "604:manual->637:manual",
+            "mechanism": "unknown",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 1700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1700.0,
+        "predicted_drive_spend": 0,
+        "rank": 8,
+        "route_file": "zangief-modern-starter-chu-8",
+        "route_length": 2,
+        "sort_rank": 8,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 604,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 637,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+MP → HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 3.5,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "621:manual>637:manual",
+        "input_count": 3,
+        "notation": "2 + 中 → 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "621:manual->637:manual",
+            "mechanism": "unknown",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 1700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1700.0,
+        "predicted_drive_spend": 0,
+        "rank": 9,
+        "route_file": "zangief-modern-starter-chu-9",
+        "route_length": 2,
+        "sort_rank": 9,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 621,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 637,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "6+MK → HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 3.5,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "682:manual>637:manual",
+        "input_count": 3,
+        "notation": "6 + 中 → 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "682:manual->637:manual",
+            "mechanism": "unknown",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 1700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1700.0,
+        "predicted_drive_spend": 0,
+        "rank": 10,
+        "route_file": "zangief-modern-starter-chu-10",
+        "route_length": 2,
+        "sort_rank": 10,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 682,
+            "classic": "6+MK",
+            "input_method": "manual",
+            "notation": "6 + 中"
+          },
+          {
+            "action_id": 637,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "3+MP → 22+MK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "655:manual>678:manual",
+        "input_count": 5,
+        "notation": "3 + 中 → 22 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "655:manual->678:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 1300,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1300.0,
+        "predicted_drive_spend": 0,
+        "rank": 11,
+        "route_file": "zangief-modern-starter-chu-11",
+        "route_length": 2,
+        "sort_rank": 11,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 655,
+            "classic": "3+MP",
+            "input_method": "manual",
+            "notation": "3 + 中"
+          },
+          {
+            "action_id": 678,
+            "classic": "22+MK",
+            "input_method": "manual",
+            "notation": "22 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+MP → 22+MK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "621:manual>678:manual",
+        "input_count": 5,
+        "notation": "2 + 中 → 22 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "621:manual->678:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 1200,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 1200.0,
+        "predicted_drive_spend": 0,
+        "rank": 12,
+        "route_file": "zangief-modern-starter-chu-12",
+        "route_length": 2,
+        "sort_rank": 12,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 621,
+            "classic": "2+MP",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 678,
+            "classic": "22+MK",
+            "input_method": "manual",
+            "notation": "22 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "MP → >MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": false,
+        "execution_cost": 3.0,
+        "gauge": "drive >=0 (1 unknown)",
+        "hardest_motion": 0,
+        "id": "604:manual>605:manual",
+        "input_count": 2,
+        "notation": "中 → > 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "604:manual->605:manual",
+            "mechanism": "cancel",
+            "status": "pending"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 700,
+        "predicted_damage_complete": false,
+        "rank": 13,
+        "route_file": "zangief-modern-starter-chu-13",
+        "route_length": 2,
+        "sort_rank": 13,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 604,
+            "classic": "MP",
+            "input_method": "manual",
+            "notation": "中"
+          },
+          {
+            "action_id": 605,
+            "classic": ">MP",
+            "input_method": "manual",
+            "notation": "> 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 0,
+      "complete": true,
+      "max_steps": 3,
+      "routes_found": 423,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

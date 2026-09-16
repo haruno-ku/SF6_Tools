@@ -1,6 +1,6 @@
 # Route plan - Zangief / modern - max-damage
 
-Generated 2026-09-16T00:28:54Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-16T02:18:31Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -11,6 +11,7 @@ game say whether these routes connect.
 - none: every route the search found
 - sort: `scaled_damage`, top 20
 - search: explore.lua's settings (normal,command_normal -> normal,command_normal,special,od_special,super, manual -> manual,simple, max 3 moves, beam 4000, collapse true)
+- search complete: true - every route the settings can reach is in the list below
 - Drive Rush Cancel edges in the search: no (pass --drive-rush to route through them)
 - demote routes through a rejected pair: yes
 
@@ -184,25 +185,6 @@ buttons. The catalog lists Modern 弱 as 601, 602 and 611; the search keeps one 
 them, and the sweep folds every pair onto the id the calibration measured (611)
 before pressing it, so that is the id its trials carry.
 
-## Route files for the next session: 3
-
-`--routes 3` wrote the plan's best routes where the panel's ROUTE section reads
-them. A route run presses the whole combo and records every gap combination, which
-is what a verified combo with measured damage needs (#36, #37) and what a pair
-sweep cannot give.
-
-| # | route | file | grid | gap delays (where each came from) |
-|---:|---|---|---:|---|
-| 1 | 6 + 强 → 236236 + 中 | `zangief-modern-max-damage-1.json` | 5 | gap 1 60/61/62/63/64 (predicted) |
-| 2 | 2 + 强 → 236236 + 中 | `zangief-modern-max-damage-2.json` | 5 | gap 1 56/57/58/59/60 (predicted) |
-| 3 | 3 + 强 → 236236 + 中 | `zangief-modern-max-damage-3.json` | 5 | gap 1 44/45/46/47/48 (predicted) |
-
-`measured` is the gaps the policy's counted runs linked that pair at; `predicted`
-is runtime/Sweep.plan_for's own grid from the frame data, a link gap widened to the
-window the input buffer covers (`input_buffer_ticks` = 4, unverified); `default` is
-core/Route.DEFAULT_DELAYS, which measures nothing and says so. No gap is ever
-given a single invented number.
-
 ## Running it
 
 Copy the worklist to the game machine (`scripts/install-dev.ps1` syncs
@@ -213,8 +195,5 @@ same calibration and conditions are skipped, and the other way round.
 
 ## Written
 
-- reframework/data/ComboExplorer_data/worklist/zangief-modern-plan-max-damage.json  (18 pairs, 10812 bytes)
-- reframework/data/ComboExplorer_data/route/zangief-modern-max-damage-1.json  (2 step(s), 5 gap combination(s), 1638 bytes)
-- reframework/data/ComboExplorer_data/route/zangief-modern-max-damage-2.json  (2 step(s), 5 gap combination(s), 1638 bytes)
-- reframework/data/ComboExplorer_data/route/zangief-modern-max-damage-3.json  (2 step(s), 5 gap combination(s), 1629 bytes)
+- reframework/data/ComboExplorer_data/worklist/zangief-modern-plan-max-damage.json  (18 pairs, 40700 bytes)
 - docs/ComboExplorer/plans/zangief-modern-max-damage.md

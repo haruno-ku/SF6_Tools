@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 25,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:27:05Z",
+  "generated_at": "2026-09-16T02:34:04Z",
   "pairs": [
     {
       "a_active": "3",
@@ -576,15 +576,1145 @@
     }
   ],
   "plan": {
+    "available": 709,
     "conditions": {
       "no_gauge": true
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:27:05Z",
+    "generated_at": "2026-09-16T02:34:04Z",
     "include_verified": false,
     "name": "no-gauge",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "2+HK → 2+HP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>633:manual>922:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 强 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->633:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "633:manual->922:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3300,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2980.0,
+        "predicted_drive_spend": 0,
+        "rank": 1,
+        "route_file": "sagat-modern-no-gauge-1",
+        "route_length": 3,
+        "sort_rank": 1,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 633,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 922,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 623+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>633:manual>921:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 强 → 623 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->633:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "633:manual->921:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2820.0,
+        "predicted_drive_spend": 0,
+        "rank": 2,
+        "route_file": "sagat-modern-no-gauge-2",
+        "route_length": 3,
+        "sort_rank": 2,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 633,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 921,
+            "classic": "623+MP",
+            "input_method": "manual",
+            "notation": "623 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 6+HK → 623+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>673:manual>920:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 6 + 强 → 623 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->673:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "673:manual->920:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2680.0,
+        "predicted_drive_spend": 0,
+        "rank": 3,
+        "route_file": "sagat-modern-no-gauge-3",
+        "route_length": 3,
+        "sort_rank": 3,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 673,
+            "classic": "6+HK",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 920,
+            "classic": "623+LP",
+            "input_method": "manual",
+            "notation": "623 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 623+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>633:manual>920:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 强 → 623 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->633:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "633:manual->920:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2580.0,
+        "predicted_drive_spend": 0,
+        "rank": 4,
+        "route_file": "sagat-modern-no-gauge-4",
+        "route_length": 3,
+        "sort_rank": 4,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 633,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 920,
+            "classic": "623+LP",
+            "input_method": "manual",
+            "notation": "623 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 6+HK → 623+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "643:manual>673:manual>920:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 6 + 强 → 6 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->673:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "673:manual->920:simple",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2504.0,
+        "predicted_drive_spend": 0,
+        "rank": 5,
+        "route_file": "sagat-modern-no-gauge-5",
+        "route_length": 3,
+        "sort_rank": 5,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 673,
+            "classic": "6+HK",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 920,
+            "classic": "623+LP",
+            "input_method": "simple",
+            "notation": "6 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 236+MK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>633:manual>941:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 强 → 236 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->633:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "633:manual->941:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2500.0,
+        "predicted_drive_spend": 0,
+        "rank": 6,
+        "route_file": "sagat-modern-no-gauge-6",
+        "route_length": 3,
+        "sort_rank": 6,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 633,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 941,
+            "classic": "236+MK",
+            "input_method": "manual",
+            "notation": "236 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.2000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>922:manual",
+        "input_count": 6,
+        "notation": "3 + 强 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->922:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2500.0,
+        "predicted_drive_spend": 0,
+        "rank": 7,
+        "route_file": "sagat-modern-no-gauge-7",
+        "route_length": 2,
+        "sort_rank": 7,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 922,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → LP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.7000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>601:manual>922:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 弱 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->922:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2480.0,
+        "predicted_drive_spend": 0,
+        "rank": 8,
+        "route_file": "sagat-modern-no-gauge-8",
+        "route_length": 3,
+        "sort_rank": 8,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 922,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+LP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>622:manual>922:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 弱 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->922:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2480.0,
+        "predicted_drive_spend": 0,
+        "rank": 9,
+        "route_file": "sagat-modern-no-gauge-9",
+        "route_length": 3,
+        "sort_rank": 9,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 922,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "6+HK → LP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.7000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "673:manual>601:manual>922:manual",
+        "input_count": 7,
+        "notation": "6 + 强 → 弱 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "673:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->922:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2480.0,
+        "predicted_drive_spend": 0,
+        "rank": 10,
+        "route_file": "sagat-modern-no-gauge-10",
+        "route_length": 3,
+        "sort_rank": 10,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 673,
+            "classic": "6+HK",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 922,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "6+HK → 2+LP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "673:manual>622:manual>922:manual",
+        "input_count": 8,
+        "notation": "6 + 强 → 2 + 弱 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "673:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->922:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2480.0,
+        "predicted_drive_spend": 0,
+        "rank": 11,
+        "route_file": "sagat-modern-no-gauge-11",
+        "route_length": 3,
+        "sort_rank": 11,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 673,
+            "classic": "6+HK",
+            "input_method": "manual",
+            "notation": "6 + 强"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 922,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+HK → 2+HP → 623+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "643:manual>633:manual>920:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 2 + 强 → 6 + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->633:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "633:manual->920:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2404.0,
+        "predicted_drive_spend": 0,
+        "rank": 12,
+        "route_file": "sagat-modern-no-gauge-12",
+        "route_length": 3,
+        "sort_rank": 12,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 633,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 920,
+            "classic": "623+LP",
+            "input_method": "simple",
+            "notation": "6 + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.2000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "633:manual>922:manual",
+        "input_count": 6,
+        "notation": "2 + 强 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "633:manual->922:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2400.0,
+        "predicted_drive_spend": 0,
+        "rank": 13,
+        "route_file": "sagat-modern-no-gauge-13",
+        "route_length": 2,
+        "sort_rank": 13,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 633,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 922,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "high"
+      },
+      {
+        "classic": "2+HK → 2+MK → 623+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>640:manual>920:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 中 → 623 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->640:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "640:manual->920:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2380.0,
+        "predicted_drive_spend": 0,
+        "rank": 14,
+        "route_file": "sagat-modern-no-gauge-14",
+        "route_length": 3,
+        "sort_rank": 14,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 640,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 920,
+            "classic": "623+LP",
+            "input_method": "manual",
+            "notation": "623 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 4+HP → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>669:manual>922:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 4 + 强 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->669:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "669:manual->922:manual",
+            "mechanism": "both",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2380.0,
+        "predicted_drive_spend": 0,
+        "rank": 15,
+        "route_file": "sagat-modern-no-gauge-15",
+        "route_length": 3,
+        "sort_rank": 15,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 669,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 922,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "4+HP → 2+HK → 623+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "669:manual>643:manual>922:manual",
+        "input_count": 8,
+        "notation": "4 + 强 → 3 + 强 → 623 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "669:manual->643:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "643:manual->922:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2380.0,
+        "predicted_drive_spend": 0,
+        "rank": 16,
+        "route_file": "sagat-modern-no-gauge-16",
+        "route_length": 3,
+        "sort_rank": 16,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 669,
+            "classic": "4+HP",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 922,
+            "classic": "623+HP",
+            "input_method": "manual",
+            "notation": "623 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 236+LK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>633:manual>939:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 强 → 236 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->633:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "633:manual->939:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2340.0,
+        "predicted_drive_spend": 0,
+        "rank": 17,
+        "route_file": "sagat-modern-no-gauge-17",
+        "route_length": 3,
+        "sort_rank": 17,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 633,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 939,
+            "classic": "236+LK",
+            "input_method": "manual",
+            "notation": "236 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+HP → 236+MK",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.5,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "643:manual>633:manual>941:simple",
+        "input_count": 5,
+        "notation": "3 + 强 → 2 + 强 → SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->633:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "633:manual->941:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2340.0,
+        "predicted_drive_spend": 0,
+        "rank": 18,
+        "route_file": "sagat-modern-no-gauge-18",
+        "route_length": 3,
+        "sort_rank": 18,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 633,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 941,
+            "classic": "236+MK",
+            "input_method": "simple",
+            "notation": "SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → LP → 623+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.7000000000000002,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>601:manual>921:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 弱 → 623 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->601:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "601:manual->921:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2320.0,
+        "predicted_drive_spend": 0,
+        "rank": 19,
+        "route_file": "sagat-modern-no-gauge-19",
+        "route_length": 3,
+        "sort_rank": 19,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 601,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 921,
+            "classic": "623+MP",
+            "input_method": "manual",
+            "notation": "623 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      },
+      {
+        "classic": "2+HK → 2+LP → 623+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.1999999999999993,
+        "gauge": "drive 0",
+        "hardest_motion": 3,
+        "id": "643:manual>622:manual>921:manual",
+        "input_count": 8,
+        "notation": "3 + 强 → 2 + 弱 → 623 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "643:manual->622:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "622:manual->921:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2600,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2320.0,
+        "predicted_drive_spend": 0,
+        "rank": 20,
+        "route_file": "sagat-modern-no-gauge-20",
+        "route_length": 3,
+        "sort_rank": 20,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 643,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 622,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 921,
+            "classic": "623+MP",
+            "input_method": "manual",
+            "notation": "623 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "medium"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 0,
+      "complete": true,
+      "max_steps": 3,
+      "routes_found": 979,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

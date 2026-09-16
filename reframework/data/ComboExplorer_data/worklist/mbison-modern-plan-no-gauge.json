@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 23,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-16T00:27:01Z",
+  "generated_at": "2026-09-16T02:33:45Z",
   "pairs": [
     {
       "a_active": "3",
@@ -536,15 +536,1134 @@
     }
   ],
   "plan": {
+    "available": 768,
     "conditions": {
       "no_gauge": true
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-16T00:27:01Z",
+    "generated_at": "2026-09-16T02:33:45Z",
     "include_verified": false,
     "name": "no-gauge",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",
+    "routes": [
+      {
+        "classic": "2+HK → 2+HP → [4]6+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "629:manual>621:manual>1030:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 2 + 强 → [4]6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->621:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "621:manual->1030:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 3080.0,
+        "predicted_drive_spend": 0,
+        "rank": 1,
+        "route_file": "mbison-modern-no-gauge-1",
+        "route_length": 3,
+        "sort_rank": 1,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 621,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1030,
+            "classic": "[4]6+HP",
+            "input_method": "manual",
+            "notation": "[4]6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 4+HK → [4]6+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "629:manual>651:manual>1030:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 4 + 强 → [4]6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->651:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "651:manual->1030:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3300,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2980.0,
+        "predicted_drive_spend": 0,
+        "rank": 2,
+        "route_file": "mbison-modern-no-gauge-2",
+        "route_length": 3,
+        "sort_rank": 2,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 651,
+            "classic": "4+HK",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1030,
+            "classic": "[4]6+HP",
+            "input_method": "manual",
+            "notation": "[4]6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+HP → [4]6+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "629:manual>621:manual>1024:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 2 + 强 → [4]6 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->621:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "621:manual->1024:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3200,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2920.0,
+        "predicted_drive_spend": 0,
+        "rank": 3,
+        "route_file": "mbison-modern-no-gauge-3",
+        "route_length": 3,
+        "sort_rank": 3,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 621,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1024,
+            "classic": "[4]6+MP",
+            "input_method": "manual",
+            "notation": "[4]6 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 4+HK → [4]6+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "629:manual>651:manual>1024:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 4 + 强 → [4]6 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->651:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "651:manual->1024:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3100,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2820.0,
+        "predicted_drive_spend": 0,
+        "rank": 4,
+        "route_file": "mbison-modern-no-gauge-4",
+        "route_length": 3,
+        "sort_rank": 4,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 651,
+            "classic": "4+HK",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1024,
+            "classic": "[4]6+MP",
+            "input_method": "manual",
+            "notation": "[4]6 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+HP → [4]6+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "629:manual>621:manual>1018:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 2 + 强 → [4]6 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->621:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "621:manual->1018:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2760.0,
+        "predicted_drive_spend": 0,
+        "rank": 5,
+        "route_file": "mbison-modern-no-gauge-5",
+        "route_length": 3,
+        "sort_rank": 5,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 621,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1018,
+            "classic": "[4]6+LP",
+            "input_method": "manual",
+            "notation": "[4]6 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+MK → [4]6+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "629:manual>627:manual>1030:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 2 + 中 → [4]6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->627:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "627:manual->1030:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2680.0,
+        "predicted_drive_spend": 0,
+        "rank": 6,
+        "route_file": "mbison-modern-no-gauge-6",
+        "route_length": 3,
+        "sort_rank": 6,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 627,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1030,
+            "classic": "[4]6+HP",
+            "input_method": "manual",
+            "notation": "[4]6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 4+HK → [4]6+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "629:manual>651:manual>1018:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 4 + 强 → [4]6 + 弱",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->651:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "651:manual->1018:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2660.0,
+        "predicted_drive_spend": 0,
+        "rank": 7,
+        "route_file": "mbison-modern-no-gauge-7",
+        "route_length": 3,
+        "sort_rank": 7,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 651,
+            "classic": "4+HK",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1018,
+            "classic": "[4]6+LP",
+            "input_method": "manual",
+            "notation": "[4]6 + 弱"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HP → LP → [4]6+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "606:manual>600:manual>1030:manual",
+        "input_count": 5,
+        "notation": "强 → 弱 → [4]6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "606:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1030:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2580.0,
+        "predicted_drive_spend": 0,
+        "rank": 8,
+        "route_file": "mbison-modern-no-gauge-8",
+        "route_length": 3,
+        "sort_rank": 8,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 606,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1030,
+            "classic": "[4]6+HP",
+            "input_method": "manual",
+            "notation": "[4]6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HP → 2+LP → [4]6+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "606:manual>614:manual>1030:manual",
+        "input_count": 6,
+        "notation": "强 → 2 + 弱 → [4]6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "606:manual->614:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "614:manual->1030:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2580.0,
+        "predicted_drive_spend": 0,
+        "rank": 9,
+        "route_file": "mbison-modern-no-gauge-9",
+        "route_length": 3,
+        "sort_rank": 9,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 606,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 614,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1030,
+            "classic": "[4]6+HP",
+            "input_method": "manual",
+            "notation": "[4]6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+HP → [4]6+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "629:manual>621:manual>1018:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 2 + 强 → [4] + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->621:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "621:manual->1018:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 3000,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2568.0,
+        "predicted_drive_spend": 0,
+        "rank": 10,
+        "route_file": "mbison-modern-no-gauge-10",
+        "route_length": 3,
+        "sort_rank": 10,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 621,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1018,
+            "classic": "[4]6+LP",
+            "input_method": "simple",
+            "notation": "[4] + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+MK → [4]6+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "629:manual>627:manual>1024:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 2 + 中 → [4]6 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->627:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "627:manual->1024:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2520.0,
+        "predicted_drive_spend": 0,
+        "rank": 11,
+        "route_file": "mbison-modern-no-gauge-11",
+        "route_length": 3,
+        "sort_rank": 11,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 627,
+            "classic": "2+MK",
+            "input_method": "manual",
+            "notation": "2 + 中"
+          },
+          {
+            "action_id": 1024,
+            "classic": "[4]6+MP",
+            "input_method": "manual",
+            "notation": "[4]6 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HP → [4]6+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "621:manual>1030:manual",
+        "input_count": 5,
+        "notation": "2 + 强 → [4]6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "621:manual->1030:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2500.0,
+        "predicted_drive_spend": 0,
+        "rank": 12,
+        "route_file": "mbison-modern-no-gauge-12",
+        "route_length": 2,
+        "sort_rank": 12,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 621,
+            "classic": "2+HP",
+            "input_method": "manual",
+            "notation": "2 + 强"
+          },
+          {
+            "action_id": 1030,
+            "classic": "[4]6+HP",
+            "input_method": "manual",
+            "notation": "[4]6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → [4]6+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "629:manual>1030:manual",
+        "input_count": 5,
+        "notation": "3 + 强 → [4]6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->1030:manual",
+            "mechanism": "link",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2500,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2500.0,
+        "predicted_drive_spend": 0,
+        "rank": 13,
+        "route_file": "mbison-modern-no-gauge-13",
+        "route_length": 2,
+        "sort_rank": 13,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 1030,
+            "classic": "[4]6+HP",
+            "input_method": "manual",
+            "notation": "[4]6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → LP → [4]6+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "629:manual>600:manual>1030:manual",
+        "input_count": 6,
+        "notation": "3 + 强 → 弱 → [4]6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1030:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2480.0,
+        "predicted_drive_spend": 0,
+        "rank": 14,
+        "route_file": "mbison-modern-no-gauge-14",
+        "route_length": 3,
+        "sort_rank": 14,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1030,
+            "classic": "[4]6+HP",
+            "input_method": "manual",
+            "notation": "[4]6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 2+LP → [4]6+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "629:manual>614:manual>1030:manual",
+        "input_count": 7,
+        "notation": "3 + 强 → 2 + 弱 → [4]6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->614:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "614:manual->1030:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2800,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2480.0,
+        "predicted_drive_spend": 0,
+        "rank": 15,
+        "route_file": "mbison-modern-no-gauge-15",
+        "route_length": 3,
+        "sort_rank": 15,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 614,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1030,
+            "classic": "[4]6+HP",
+            "input_method": "manual",
+            "notation": "[4]6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "2+HK → 4+HK → [4]6+LP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 8.0,
+        "gauge": "drive 0",
+        "hardest_motion": 0,
+        "id": "629:manual>651:manual>1018:simple",
+        "input_count": 6,
+        "notation": "3 + 强 → 4 + 强 → [4] + SP",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "629:manual->651:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "651:manual->1018:simple",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2900,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2468.0,
+        "predicted_drive_spend": 0,
+        "rank": 16,
+        "route_file": "mbison-modern-no-gauge-16",
+        "route_length": 3,
+        "sort_rank": 16,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 629,
+            "classic": "2+HK",
+            "input_method": "manual",
+            "notation": "3 + 强"
+          },
+          {
+            "action_id": 651,
+            "classic": "4+HK",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1018,
+            "classic": "[4]6+LP",
+            "input_method": "simple",
+            "notation": "[4] + SP"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HP → LP → [4]6+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "606:manual>600:manual>1024:manual",
+        "input_count": 5,
+        "notation": "强 → 弱 → [4]6 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "606:manual->600:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "600:manual->1024:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2420.0,
+        "predicted_drive_spend": 0,
+        "rank": 17,
+        "route_file": "mbison-modern-no-gauge-17",
+        "route_length": 3,
+        "sort_rank": 17,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 606,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 600,
+            "classic": "LP",
+            "input_method": "manual",
+            "notation": "弱"
+          },
+          {
+            "action_id": 1024,
+            "classic": "[4]6+MP",
+            "input_method": "manual",
+            "notation": "[4]6 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "HP → 2+LP → [4]6+MP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 6.7999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "606:manual>614:manual>1024:manual",
+        "input_count": 6,
+        "notation": "强 → 2 + 弱 → [4]6 + 中",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "606:manual->614:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "614:manual->1024:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2420.0,
+        "predicted_drive_spend": 0,
+        "rank": 18,
+        "route_file": "mbison-modern-no-gauge-18",
+        "route_length": 3,
+        "sort_rank": 18,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 606,
+            "classic": "HP",
+            "input_method": "manual",
+            "notation": "强"
+          },
+          {
+            "action_id": 614,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1024,
+            "classic": "[4]6+MP",
+            "input_method": "manual",
+            "notation": "[4]6 + 中"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "4+HK → [4]6+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 5.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "651:manual>1030:manual",
+        "input_count": 5,
+        "notation": "4 + 强 → [4]6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "651:manual->1030:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 1,
+        "pairs_verified": 0,
+        "predicted_damage": 2400,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2400.0,
+        "predicted_drive_spend": 0,
+        "rank": 19,
+        "route_file": "mbison-modern-no-gauge-19",
+        "route_length": 2,
+        "sort_rank": 19,
+        "status": "0/1 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 651,
+            "classic": "4+HK",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 1030,
+            "classic": "[4]6+HP",
+            "input_method": "manual",
+            "notation": "[4]6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      },
+      {
+        "classic": "4+HK → 2+LP → [4]6+HP",
+        "drive_rush_cancel_steps": 0,
+        "drive_spend_known": true,
+        "execution_cost": 7.2999999999999998,
+        "gauge": "drive 0",
+        "hardest_motion": 2,
+        "id": "651:manual>614:manual>1030:manual",
+        "input_count": 7,
+        "notation": "4 + 强 → 2 + 弱 → [4]6 + 强",
+        "od_steps": 0,
+        "pairs": [
+          {
+            "key": "651:manual->614:manual",
+            "mechanism": "link",
+            "status": "untested"
+          },
+          {
+            "key": "614:manual->1030:manual",
+            "mechanism": "cancel",
+            "status": "untested"
+          }
+        ],
+        "pairs_total": 2,
+        "pairs_verified": 0,
+        "predicted_damage": 2700,
+        "predicted_damage_complete": true,
+        "predicted_damage_scaled": 2380.0,
+        "predicted_drive_spend": 0,
+        "rank": 20,
+        "route_file": "mbison-modern-no-gauge-20",
+        "route_length": 3,
+        "sort_rank": 20,
+        "status": "0/2 pairs reproduced",
+        "steps": [
+          {
+            "action_id": 651,
+            "classic": "4+HK",
+            "input_method": "manual",
+            "notation": "4 + 强"
+          },
+          {
+            "action_id": 614,
+            "classic": "2+LP",
+            "input_method": "manual",
+            "notation": "2 + 弱"
+          },
+          {
+            "action_id": 1030,
+            "classic": "[4]6+HP",
+            "input_method": "manual",
+            "notation": "[4]6 + 强"
+          }
+        ],
+        "super_steps": 0,
+        "theoretical_confidence": "low"
+      }
+    ],
+    "routes_are_predictions": "every figure on a route here is predicted from the frame data. Nothing in this file has been run on the game.",
+    "search": {
+      "beam": 4000,
+      "beam_dropped": 3257,
+      "complete": false,
+      "max_steps": 3,
+      "routes_found": 1368,
+      "truncated_routes": 0
+    },
     "sort": "scaled_damage",
     "sort_field": "predicted_damage_scaled",
     "top": 20

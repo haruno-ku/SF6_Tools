@@ -19,7 +19,7 @@ not combos that are known to work.
 - catalog rows            110
 - starting moves          11  (normal,command_normal / manual)
 - target moves            39  (normal,command_normal,special,od_special,super / manual,simple)
-- excluded from probing   64  (classic-only, air, throws, system, follow-ups)
+- excluded from probing   64  (followup 36, system 11, air 7, any_button 4, assist_combo 2, throw 2, unclassified 2)
 - frame data coverage     39 of 75 (52%)  over every row this run uses
     starters      11 of  11 (100%)
     targets       39 of  39 (100%)

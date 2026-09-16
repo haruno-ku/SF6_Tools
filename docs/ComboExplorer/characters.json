@@ -71,7 +71,7 @@
       "notes": [],
       "offline_report": "luke-offline-report.md",
       "page": "sweep-report-luke-modern.html",
-      "page_bytes": 218777,
+      "page_bytes": 229516,
       "plans": {
         "max-damage": 20,
         "no-gauge": 25,
@@ -109,7 +109,7 @@
       "notes": [],
       "offline_report": "kimberly-offline-report.md",
       "page": "sweep-report-kimberly-modern.html",
-      "page_bytes": 232374,
+      "page_bytes": 243113,
       "plans": {
         "max-damage": 19,
         "no-gauge": 25,
@@ -147,7 +147,7 @@
       "notes": [],
       "offline_report": "chunli-offline-report.md",
       "page": "sweep-report-chunli-modern.html",
-      "page_bytes": 297950,
+      "page_bytes": 308692,
       "plans": {
         "max-damage": 24,
         "no-gauge": 25,
@@ -185,7 +185,7 @@
       "notes": [],
       "offline_report": "manon-offline-report.md",
       "page": "sweep-report-manon-modern.html",
-      "page_bytes": 161201,
+      "page_bytes": 171940,
       "plans": {
         "max-damage": 20,
         "no-gauge": 24,
@@ -223,7 +223,7 @@
       "notes": [],
       "offline_report": "zangief-offline-report.md",
       "page": "sweep-report-zangief-modern.html",
-      "page_bytes": 303892,
+      "page_bytes": 314631,
       "plans": {
         "max-damage": 18,
         "no-gauge": 21,
@@ -261,7 +261,7 @@
       "notes": [],
       "offline_report": "jp-offline-report.md",
       "page": "sweep-report-jp-modern.html",
-      "page_bytes": 273824,
+      "page_bytes": 284566,
       "plans": {
         "max-damage": 21,
         "no-gauge": 23,
@@ -299,7 +299,7 @@
       "notes": [],
       "offline_report": "dhalsim-offline-report.md",
       "page": "sweep-report-dhalsim-modern.html",
-      "page_bytes": 447914,
+      "page_bytes": 458656,
       "plans": {
         "max-damage": 19,
         "no-gauge": 23,
@@ -337,7 +337,7 @@
       "notes": [],
       "offline_report": "cammy-offline-report.md",
       "page": "sweep-report-cammy-modern.html",
-      "page_bytes": 328925,
+      "page_bytes": 339666,
       "plans": {
         "max-damage": 22,
         "no-gauge": 21,
@@ -375,7 +375,7 @@
       "notes": [],
       "offline_report": "ken-offline-report.md",
       "page": "sweep-report-ken-modern.html",
-      "page_bytes": 188112,
+      "page_bytes": 198851,
       "plans": {
         "max-damage": 20,
         "no-gauge": 24,
@@ -415,7 +415,7 @@
       ],
       "offline_report": "deejay-offline-report.md",
       "page": "sweep-report-deejay-modern.html",
-      "page_bytes": 209560,
+      "page_bytes": 220303,
       "plans": {
         "max-damage": 23,
         "no-gauge": 22,
@@ -453,7 +453,7 @@
       "notes": [],
       "offline_report": "lily-offline-report.md",
       "page": "sweep-report-lily-modern.html",
-      "page_bytes": 222845,
+      "page_bytes": 233584,
       "plans": {
         "max-damage": 17,
         "no-gauge": 23,
@@ -491,7 +491,7 @@
       "notes": [],
       "offline_report": "aki-offline-report.md",
       "page": "sweep-report-aki-modern.html",
-      "page_bytes": 127560,
+      "page_bytes": 138299,
       "plans": {
         "max-damage": 20,
         "no-gauge": 20,
@@ -529,7 +529,7 @@
       "notes": [],
       "offline_report": "rashid-offline-report.md",
       "page": "sweep-report-rashid-modern.html",
-      "page_bytes": 182835,
+      "page_bytes": 193576,
       "plans": {
         "max-damage": 21,
         "no-gauge": 21,
@@ -569,7 +569,7 @@
       ],
       "offline_report": "blanka-offline-report.md",
       "page": "sweep-report-blanka-modern.html",
-      "page_bytes": 358501,
+      "page_bytes": 369243,
       "plans": {
         "max-damage": 22,
         "no-gauge": 22,
@@ -607,7 +607,7 @@
       "notes": [],
       "offline_report": "juri-offline-report.md",
       "page": "sweep-report-juri-modern.html",
-      "page_bytes": 205117,
+      "page_bytes": 215860,
       "plans": {
         "max-damage": 23,
         "no-gauge": 22,
@@ -645,7 +645,7 @@
       "notes": [],
       "offline_report": "marisa-offline-report.md",
       "page": "sweep-report-marisa-modern.html",
-      "page_bytes": 214661,
+      "page_bytes": 225400,
       "plans": {
         "max-damage": 21,
         "no-gauge": 21,
@@ -686,7 +686,7 @@
       ],
       "offline_report": "guile-offline-report.md",
       "page": "sweep-report-guile-modern.html",
-      "page_bytes": 284053,
+      "page_bytes": 294796,
       "plans": {
         "max-damage": 22,
         "no-gauge": 22,
@@ -724,7 +724,7 @@
       "notes": [],
       "offline_report": "ed-offline-report.md",
       "page": "sweep-report-ed-modern.html",
-      "page_bytes": 270014,
+      "page_bytes": 280753,
       "plans": {
         "max-damage": 18,
         "no-gauge": 24,
@@ -762,7 +762,7 @@
       "notes": [],
       "offline_report": "ehonda-offline-report.md",
       "page": "sweep-report-ehonda-modern.html",
-      "page_bytes": 177077,
+      "page_bytes": 187816,
       "plans": {
         "max-damage": 20,
         "no-gauge": 21,
@@ -803,7 +803,7 @@
       ],
       "offline_report": "jamie-offline-report.md",
       "page": "sweep-report-jamie-modern.html",
-      "page_bytes": 297777,
+      "page_bytes": 308516,
       "plans": {
         "max-damage": 21,
         "no-gauge": 20,
@@ -841,7 +841,7 @@
       "notes": [],
       "offline_report": "akuma-offline-report.md",
       "page": "sweep-report-akuma-modern.html",
-      "page_bytes": 400363,
+      "page_bytes": 411105,
       "plans": {
         "max-damage": 23,
         "no-gauge": 22,
@@ -879,7 +879,7 @@
       "notes": [],
       "offline_report": "sagat-offline-report.md",
       "page": "sweep-report-sagat-modern.html",
-      "page_bytes": 212606,
+      "page_bytes": 223345,
       "plans": {
         "max-damage": 21,
         "no-gauge": 25,
@@ -919,7 +919,7 @@
       ],
       "offline_report": "mbison-offline-report.md",
       "page": "sweep-report-mbison-modern.html",
-      "page_bytes": 244368,
+      "page_bytes": 255110,
       "plans": {
         "max-damage": 21,
         "no-gauge": 23,
@@ -957,7 +957,7 @@
       "notes": [],
       "offline_report": "terry-offline-report.md",
       "page": "sweep-report-terry-modern.html",
-      "page_bytes": 208644,
+      "page_bytes": 219383,
       "plans": {
         "max-damage": 20,
         "no-gauge": 24,
@@ -997,7 +997,7 @@
       ],
       "offline_report": "mai-offline-report.md",
       "page": "sweep-report-mai-modern.html",
-      "page_bytes": 122859,
+      "page_bytes": 133598,
       "plans": {
         "max-damage": 17,
         "no-gauge": 22,
@@ -1038,7 +1038,7 @@
       ],
       "offline_report": "elena-offline-report.md",
       "page": "sweep-report-elena-modern.html",
-      "page_bytes": 226475,
+      "page_bytes": 237218,
       "plans": {
         "max-damage": 22,
         "no-gauge": 24,
@@ -1076,7 +1076,7 @@
       "notes": [],
       "offline_report": "cviper-offline-report.md",
       "page": "sweep-report-cviper-modern.html",
-      "page_bytes": 164584,
+      "page_bytes": 175323,
       "plans": {
         "max-damage": 20,
         "no-gauge": 22,
@@ -1114,7 +1114,7 @@
       "notes": [],
       "offline_report": "alex-offline-report.md",
       "page": "sweep-report-alex-modern.html",
-      "page_bytes": 191346,
+      "page_bytes": 202088,
       "plans": {
         "max-damage": 22,
         "no-gauge": 22,
@@ -1154,7 +1154,7 @@
       ],
       "offline_report": "ingrid-offline-report.md",
       "page": "sweep-report-ingrid-modern.html",
-      "page_bytes": 365201,
+      "page_bytes": 375943,
       "plans": {
         "max-damage": 21,
         "no-gauge": 24,
@@ -1194,7 +1194,7 @@
       ],
       "offline_report": "yasmine-offline-report.md",
       "page": "sweep-report-yasmine-modern.html",
-      "page_bytes": 290284,
+      "page_bytes": 301026,
       "plans": {
         "max-damage": 20,
         "no-gauge": 18,
