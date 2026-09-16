@@ -35,6 +35,12 @@ local M = { name = "tools.json" }
 -- A table that must encode as {} even when empty.
 M.EMPTY_OBJECT = setmetatable({}, { __tostring = function() return "{}" end })
 
+-- A value that must encode as `null` rather than vanish. Only for the one thing
+-- a nil cannot say: a key that EXISTS and is empty, which is how a table a human
+-- has to fill in shows them the column. Decoding still turns null into absence
+-- (see the decoder's note): this is a writer's sentinel, not a value.
+M.NULL = setmetatable({}, { __tostring = function() return "null" end })
+
 -- --- encoding ----------------------------------------------------------------
 
 local ESCAPES = {
@@ -92,6 +98,7 @@ local function encode(v, indent, level, seen)
     if t ~= "table" then
         error("cannot encode a " .. t .. " as JSON", 0)
     end
+    if v == M.NULL then return "null" end
 
     if seen[v] then error("cannot encode a table that contains itself", 0) end
     seen[v] = true

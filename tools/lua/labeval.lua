@@ -127,6 +127,20 @@
 --
 -- A pair can be reproduced with failures beside it: stable at one delay, whiffs
 -- at another. That is the window, and measured_summary carries it.
+--
+-- ---------------------------------------------------------------------------
+-- WHAT WAS MEASURED, AS OPPOSED TO WHAT HAPPENED
+--
+-- measured_summary also carries the three quantities the runtime records about
+-- a combo that connected - damage, hit count, and the Drive / Super bars at
+-- both ends of the observation window - each as { samples, min, max } over the
+-- COUNTED LINKS only, and absent entirely when no counted link recorded it.
+-- Never an average: an average of two readings is a number no trial produced,
+-- and min ~= max is the interesting fact, not something to smooth away.
+-- Nothing here interprets them - which part of a gauge change is a spend and
+-- which a gain is not decided in this project yet (RunnerFsm says so where it
+-- writes them) - and tools/lua/verifiedcombo.lua is what turns them into a
+-- publishable record, or refuses to.
 
 local ConfirmedEdge   = require("func/ComboExplorer/core/ConfirmedEdge")
 local ResultCollector = require("func/ComboExplorer/core/ResultCollector")
@@ -399,11 +413,26 @@ local function count_by_delay(runs)
     return by_delay
 end
 
+-- The spread of one measured quantity over the counted links: how many links
+-- recorded it at all, and the lowest and highest reading. Never an average - an
+-- average of two readings is a number no trial produced, and the thing a reader
+-- of a published combo needs to know is whether the runs agreed.
+local function span(acc, v)
+    if type(v) ~= "number" then return acc end
+    acc = acc or { samples = 0 }
+    acc.samples = acc.samples + 1
+    acc.min = math.min(acc.min or v, v)
+    acc.max = math.max(acc.max or v, v)
+    return acc
+end
+
+local GAUGE_ENDS = { "drive_start", "drive_end", "super_start", "super_end" }
+
 local function evaluate_group(policy, g)
     local entries, counted = {}, {}
     local successes, failures, unanswered, excluded = 0, 0, 0, 0
     local excluded_by_reason = {}
-    local dmin, dmax, dn = nil, nil, 0
+    local damage, hits, gauges = nil, nil, nil
 
     table.sort(g.runs, function(a, b) return a.event_key < b.event_key end)
     for _, run in ipairs(g.runs) do
@@ -418,10 +447,16 @@ local function evaluate_group(policy, g)
             counted[#counted + 1] = run
             if run.answers == ANSWERS.POSITIVE then
                 successes = successes + 1
-                if type(run.measured_damage) == "number" then
-                    dn = dn + 1
-                    dmin = math.min(dmin or run.measured_damage, run.measured_damage)
-                    dmax = math.max(dmax or run.measured_damage, run.measured_damage)
+                -- Only from the links, and only from the counted ones: a run
+                -- that did not connect measured a different event, and an
+                -- excluded one is not evidence under this policy.
+                damage = span(damage, run.measured_damage)
+                hits = span(hits, run.measured_hits)
+                if type(run.measured_gauges) == "table" then
+                    gauges = gauges or {}
+                    for _, side in ipairs(GAUGE_ENDS) do
+                        gauges[side] = span(gauges[side], run.measured_gauges[side])
+                    end
                 end
             elseif run.answers == ANSWERS.NEGATIVE then
                 failures = failures + 1
@@ -475,7 +510,11 @@ local function evaluate_group(policy, g)
     end
     table.sort(linked, SweepReport.gap_less)
     summary.linked_gaps = linked
-    if dn > 0 then summary.damage = { samples = dn, min = dmin, max = dmax } end
+    summary.damage = damage
+    summary.hits = hits
+    -- Absent unless a counted link actually read a bar. An empty gauges block
+    -- would read as "both bars were at zero".
+    if gauges and next(gauges) ~= nil then summary.gauges = gauges end
 
     return {
         kind = "evaluation",
@@ -487,6 +526,12 @@ local function evaluate_group(policy, g)
         character = g.character,
         control_scheme = g.control_scheme,
         cohort_key = g.cohort_key,
+        -- Both are IN the cohort key, so every run in this group carries the
+        -- same pair. Spelled out as fields because whoever publishes a record
+        -- has to put them in its provenance, and parsing them back out of the
+        -- key would be a second reading of something already known.
+        game_patch = g.game_patch,
+        calibration_id = g.calibration_id,
         route = g.route,
         combo = M.combo_of(g.route),
         result = M.result({ successes = successes, failures = failures, reproduced = reproduced }),
@@ -538,6 +583,7 @@ function M.evaluate(runs, opts)
                 g = { subject_kind = run.subject_kind, subject_id = run.subject_id,
                       test_kind = run.test_kind, character = run.character,
                       control_scheme = run.control_scheme, cohort_key = cohort,
+                      game_patch = run.game_patch, calibration_id = run.calibration_id,
                       route = run.route, runs = {} }
                 groups[key] = g
             elseif g.route == nil then

@@ -87,6 +87,7 @@ local SUITES = {
     "tests.lua.test_labrows",
     "tests.lua.test_labeval",
     "tests.lua.test_labknown",
+    "tests.lua.test_verifiedcombo",
     "tests.lua.test_routefile",
 }
 

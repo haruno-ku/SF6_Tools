@@ -638,8 +638,8 @@ positions=uncontrolled;resources=unpinned;counter=unknown;screen=unknown;opponen
 
 | | 何待ちか |
 |---|---|
-| **ルート試行（実機2回目）** | **`ce.verified_combo.v1` は実測ダメージを要求する**ので、ペアではなくルートを走らせる必要がある。ここが繋がるまで公開用の一覧は作れない |
-| `KnowledgeDb` の呼び出し元 | 上記の次。1024行のアダプタは書けているが入力が無い |
+| **ルート試行（実機2回目）** | **`ce.verified_combo.v1` は実測ダメージを要求する**ので、ペアではなくルートを走らせる必要がある。ここが繋がるまで公開用の一覧は作れない。**残っているのはこれだけ**: 下の `publish.lua` が、実測待ちのルートを名指しで出す |
+| `KnowledgeDb` の呼び出し元 | **完了**（`tools/lua/publish.lua`）。ただし今日は全件が実測ダメージ不足で弾かれる。弾かれた一覧がそのまま実機の作業リスト |
 | 3回再検証 | 1パスが実機で通ってから。今は1ペア1試行 |
 | delay の線形掃引 | `SequenceCompiler.M.sweep` は実装済み。`Sweep` から使うのは次 |
 | 全キャラの連続実行 | **できません** — `FighterID` への書き込みがどこにも無く、キャラは人間がメニューで選ぶしかない |
@@ -653,6 +653,9 @@ positions=uncontrolled;resources=unpinned;counter=unknown;screen=unknown;opponen
 lua tools/lua/audit.lua      # 31キャラ: 分類器は通用するか（数秒）
 lua tools/lua/survey.lua     # 31キャラ: frame-data join は通用するか（4秒）
 lua tools/lua/explore.lua    # 1キャラの候補を全部出す
+lua tools/lua/publish.lua --character Zangief
+                             # 公開までのドライラン。今日は0件公開で、
+                             # 「なぜ弾かれたか」の一覧が出力
 ```
 
 キャラ名は `data/characters.json` が正。`Zangief` / `zangief` / `6` のどれでも通る。

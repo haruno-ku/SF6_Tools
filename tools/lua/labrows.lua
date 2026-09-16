@@ -156,6 +156,13 @@ local function int_or_nil(v)
     return math.tointeger(v)
 end
 
+-- A gauge reading is a bar position, not a count, so it is not put through
+-- int_or_nil: rounding it here would be this module deciding what the units are.
+local function num_or_nil(v)
+    if type(v) ~= "number" or v ~= v then return nil end
+    return v
+end
+
 local function sorted_keys(set)
     local out = {}
     for k in pairs(set) do out[#out + 1] = k end
@@ -443,6 +450,30 @@ function M.row(rec, fc)
     local measured = damage and int_or_nil(damage.combo_damage) or nil
     if measured and measured < 0 then measured = nil end
 
+    -- The other two things a judged trial records about what the combo DID, and
+    -- the only other two: the hit count DamageTracker kept beside the damage,
+    -- and the Drive / Super gauges at both ends of the observation window
+    -- (RunnerFsm writes evidence.gauges; it does not say which end is a spend
+    -- and which is a gain, and neither does this). Carried, not interpreted -
+    -- ce.verified_combo.v1 needs them and there was nowhere for them to travel.
+    --
+    -- This adds no flag and changes no rule, so M.VERSION is NOT bumped: every
+    -- evaluation over the committed logs keeps the evidence set, and therefore
+    -- the id, it already has.
+    local measured_hits = damage and int_or_nil(damage.hits) or nil
+    if measured_hits and measured_hits < 0 then measured_hits = nil end
+
+    local g = has_evidence and type(rec.evidence.gauges) == "table" and rec.evidence.gauges or nil
+    local gauges = g and {
+        drive_start = num_or_nil(g.drive_start), drive_end = num_or_nil(g.drive_end),
+        super_start = num_or_nil(g.super_start), super_end = num_or_nil(g.super_end),
+    } or nil
+    -- A gauges block whose every reading failed is not a reading.
+    if gauges and gauges.drive_start == nil and gauges.drive_end == nil
+        and gauges.super_start == nil and gauges.super_end == nil then
+        gauges = nil
+    end
+
     return {
         kind = "run",
         source_file = fc.source_file,
@@ -469,6 +500,8 @@ function M.row(rec, fc)
         conclusive = (answers ~= ResultCollector.ANSWERS.UNANSWERED),
         runtime_verified = (type(rec.runtime_verified) == "boolean") and rec.runtime_verified or nil,
         measured_damage = measured,
+        measured_hits = measured_hits,
+        measured_gauges = gauges,
         has_evidence = has_evidence,
         has_timing = has_timing,
         reason = rec.reason,

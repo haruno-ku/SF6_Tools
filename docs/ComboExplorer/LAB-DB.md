@@ -153,4 +153,19 @@ dry run・本体・本体（2 回目は全表 before = after）→ anon / authen
 
 - 実測ダメージ: 既存ログには無い（`measured_damage` は全行 null、`confirmed_combos.damage_min/max` も null）。
   次の実機セッションから入る
-- 評価の公開（`ce.verified_combo.v1` への書き出し・release）: Phase B の範囲外
+- release（`public` への掲載・#38 §9）: まだ形が決まっていない
+
+## 評価から公開までのドライラン
+
+```
+lua tools/lua/publish.lua --character Zangief
+```
+
+`tools/lua/verifiedcombo.lua` が `reproduced` の評価だけを `ce.verified_combo.v1` にし、
+`core/KnowledgeDb.lua` の `export` に渡します。出力は
+`docs/ComboExplorer/publish-<char>-<scheme>.md`。
+
+**今日は公開0件です。** 実測ダメージが無いので確定6件が全部弾かれます。その一覧が
+次の実機セッションの作業リストで、同時に `action_id` → 技スラッグの対応表の雛形
+（`reframework/data/ComboExplorer_data/slugs/<char>-<scheme>.json`、`slug` は全部 null）
+が書き出されます。埋めるのは人間の仕事で、このツールはスラッグを推測しません。
