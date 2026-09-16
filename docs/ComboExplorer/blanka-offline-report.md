@@ -109,24 +109,25 @@ not combos that are known to work.
 ## Theoretical edges
 
 - pairs considered        782
-- candidate edges         565
-- excluded                217
+- candidate edges         532
+- excluded                250
 
 by reason:
   chain_cancel             34
-  frame_data_incomplete    303
+  frame_data_incomplete    285
   frame_link               128
-  special_cancel           95
+  special_cancel           80
   super_cancel             50
 
 by confidence:
-  high                     60
+  high                     45
   medium                   92
-  low                      413
+  low                      395
 
 excluded because the data said no:
-  frame_margin_negative    202
+  frame_margin_negative    184
   self_pair_without_chain  15
+  throw_after_a_hit        66
 
 Nothing was excluded for missing data. A gap in the source is recorded as
 an unknown and the pair stays a candidate; only a KNOWN negative margin
@@ -167,7 +168,7 @@ by confidence:
   low                      44
 
 excluded:
-  drc_margin_negative      115
+  drc_margin_negative      100
   followup_after_drive_rush 10
 
 drc_margin_negative is drc_on_hit minus B's startup, known and below zero,
@@ -178,14 +179,14 @@ rather than once per target.
 
 ## Route candidates
 
-- routes                  2182
-- graph nodes             46
-- graph edges             565
-- folded canonical variants 2383  (same buttons, unresolved action id)
+- routes                  2105
+- graph nodes             43
+- graph edges             532
+- folded canonical variants 2427  (same buttons, unresolved action id)
 - search complete         false
-  beam dropped 1597 partial routes, 0 routes not emitted
-  length 2               340
-  length 3               1842
+  beam dropped 1267 partial routes, 0 routes not emitted
+  length 2               316
+  length 3               1789
 
 dropped by a search bound (not by the game):
   max_repeat_per_action    2
@@ -282,10 +283,10 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/blanka/modern/candidate-edges.json  (818410 bytes)
-- candidates/blanka/modern/candidate-routes.json  (15375660 bytes)
+- candidates/blanka/modern/candidate-edges.json  (776026 bytes)
+- candidates/blanka/modern/candidate-routes.json  (14866463 bytes)
 - reframework/data/ComboExplorer_data/worklist/blanka-modern-drc.json  (50508 bytes)
-- reframework/data/ComboExplorer_data/worklist/blanka-modern.json  (205873 bytes)
+- reframework/data/ComboExplorer_data/worklist/blanka-modern.json  (193963 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

@@ -58,25 +58,26 @@ not combos that are known to work.
 ## Theoretical edges
 
 - pairs considered        1232
-- candidate edges         583
-- excluded                649
+- candidate edges         486
+- excluded                746
 
 by reason:
   chain_cancel             154
-  frame_link               187
-  special_cancel           198
+  frame_link               155
+  special_cancel           121
   super_cancel             96
   target_combo             2
 
 by confidence:
-  high                     147
-  medium                   188
-  low                      248
+  high                     105
+  medium                   170
+  low                      211
 
 excluded because the data said no:
   followup_after_a_move_not_its_parent 174
-  frame_margin_negative    460
+  frame_margin_negative    403
   self_pair_without_chain  15
+  throw_after_a_hit        252
 
 Nothing was excluded for missing data. A gap in the source is recorded as
 an unknown and the pair stays a candidate; only a KNOWN negative margin
@@ -109,16 +110,16 @@ have never been measured. They are not in the route search below, and with
     671:manual 4 + 中
     672:manual 4 + 中
 - pairs considered        784
-- DRC edges               349
-- excluded                435
+- DRC edges               291
+- excluded                493
 
 by confidence:
-  high                     47
-  medium                   55
-  low                      247
+  high                     35
+  medium                   45
+  low                      211
 
 excluded:
-  drc_margin_negative      323
+  drc_margin_negative      283
   followup_after_drive_rush 112
 
 drc_margin_negative is drc_on_hit minus B's startup, known and below zero,
@@ -129,14 +130,14 @@ rather than once per target.
 
 ## Route candidates
 
-- routes                  919
-- graph nodes             49
-- graph edges             583
-- folded canonical variants 3664  (same buttons, unresolved action id)
+- routes                  777
+- graph nodes             42
+- graph edges             486
+- folded canonical variants 3709  (same buttons, unresolved action id)
 - search complete         false
-  beam dropped 2652 partial routes, 0 routes not emitted
-  length 2               162
-  length 3               757
+  beam dropped 1583 partial routes, 0 routes not emitted
+  length 2               133
+  length 3               644
 
 dropped by a search bound (not by the game):
   max_repeat_per_action    7
@@ -194,18 +195,18 @@ scaling_model.not_modelled on every route. Used for ordering only.
 9   弱 > 2 + 中                                     900    3.5 medium 
 10  弱 > 3 + 强                                    1300    3.5 medium 
 
-## Pareto frontier: 11 routes nothing beats on both damage and inputs
+## Pareto frontier: 12 routes nothing beats on both damage and inputs
 
 1   2 + 强 > 3 + 强 > 2 + SP + 强                 6000    8.5
 2   2 + 强 > 强 > 2 + SP + 强                     5900    8.0
 3   弱 > 强 > 2 + SP + 强                         5200    7.5
 4   3 + 强 > 2 + SP + 强                           5000    6.5
 5   强 > 2 + SP + 强                               4900    6.0
-6   中 > 4 + SP                                     3100    5.5
+6   2 + 强 > 3 + 强 > 强                          2900    5.5
 7   弱 > 2 + 强 > 强                              2200    5.0
-8   2 + 强 > 3 + 强                                2000    4.0
-9   2 + 强 > 强                                    1900    3.5
-10  弱 > 强                                        1200    3.0
+8   强 > 弱 > 强                                  2100    4.5
+9   2 + 强 > 3 + 强                                2000    4.0
+10  2 + 强 > 强                                    1900    3.5
 
 ## Why the game still has to answer
 
@@ -238,10 +239,10 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/alex/modern/candidate-edges.json  (853153 bytes)
-- candidates/alex/modern/candidate-routes.json  (6458697 bytes)
-- reframework/data/ComboExplorer_data/worklist/alex-modern-drc.json  (156907 bytes)
-- reframework/data/ComboExplorer_data/worklist/alex-modern.json  (237466 bytes)
+- candidates/alex/modern/candidate-edges.json  (711786 bytes)
+- candidates/alex/modern/candidate-routes.json  (5497828 bytes)
+- reframework/data/ComboExplorer_data/worklist/alex-modern-drc.json  (130755 bytes)
+- reframework/data/ComboExplorer_data/worklist/alex-modern.json  (198102 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

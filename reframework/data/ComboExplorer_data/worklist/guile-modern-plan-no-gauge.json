@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 22,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-14T13:01:02Z",
+  "generated_at": "2026-09-16T00:26:31Z",
   "pairs": [
     {
       "a_active": "2(16)3",
@@ -524,7 +524,7 @@
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-14T13:01:02Z",
+    "generated_at": "2026-09-16T00:26:31Z",
     "include_verified": false,
     "name": "no-gauge",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",

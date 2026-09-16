@@ -18,7 +18,7 @@
   "control_scheme": "modern",
   "count": 20,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-14T13:00:17Z",
+  "generated_at": "2026-09-16T00:26:03Z",
   "pairs": [
     {
       "a_active": "3",
@@ -473,7 +473,7 @@
     "conditions": {},
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-14T13:00:17Z",
+    "generated_at": "2026-09-16T00:26:03Z",
     "include_verified": false,
     "name": "max-damage",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",

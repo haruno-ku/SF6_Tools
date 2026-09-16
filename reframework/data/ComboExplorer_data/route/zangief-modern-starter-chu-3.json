@@ -1,0 +1,44 @@
+{
+  "character": "Zangief",
+  "control_scheme": "modern",
+  "delays": [
+    [
+      4
+    ]
+  ],
+  "gaps": [
+    {
+      "delays": [
+        4
+      ],
+      "pair": "655:manual->1206:simple",
+      "source": "measured",
+      "why": "the gaps this pair actually linked at, in the runs policy ce-eval-v1 counted"
+    }
+  ],
+  "id": "zangief-modern-starter-chu-3",
+  "note": "Written by tools/lua/plan.lua --routes from plan starter-chu (rank 3). Every gap is a LIST, never one number: a single delay would read as a measurement, and pressing at one unmeasured gap is how a cancel window gets mistaken for a link window (#46). Where each list came from:\ngap 1 (3 + 中 -> 4 + SP + 强): 4 from measured - the gaps this pair actually linked at, in the runs policy ce-eval-v1 counted\nWhat the logs already say: 0/1 pairs reproduced; by its moves, pressed any way, the policy calls this combo observed_success\nThe grid is 1 combination(s). EVERY ROUTE IN A PLAN IS A PREDICTION: this file is a question for the game, not a combo.",
+  "plan": {
+    "conditions": {
+      "starter_button": "M"
+    },
+    "generated_at": "2026-09-16T00:28:59Z",
+    "name": "starter-chu",
+    "rank": 3,
+    "sort": "scaled_damage",
+    "tool": "tools/lua/plan.lua --routes"
+  },
+  "schema": "ce.route.v1",
+  "steps": [
+    {
+      "action_id": 655,
+      "input_method": "manual",
+      "notation": "3 + 中"
+    },
+    {
+      "action_id": 1206,
+      "input_method": "simple",
+      "notation": "4 + SP + 强"
+    }
+  ]
+}

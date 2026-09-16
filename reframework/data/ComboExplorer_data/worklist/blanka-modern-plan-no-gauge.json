@@ -16,9 +16,9 @@
   "bcm_sha256": "1bb40291a7011ce50cd59d7a6e0fd4af3aaa2de4afedc63754bca9fb05dc3a3b",
   "character": "Blanka",
   "control_scheme": "modern",
-  "count": 24,
+  "count": 22,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-14T13:00:34Z",
+  "generated_at": "2026-09-16T00:26:22Z",
   "pairs": [
     {
       "a_active": "4",
@@ -39,11 +39,15 @@
       "mechanism": "link",
       "needed_by_ranks": [
         1,
-        5,
-        6,
+        3,
+        4,
+        7,
+        8,
         11,
         12,
-        20
+        13,
+        15,
+        16
       ]
     },
     {
@@ -86,11 +90,15 @@
       "mechanism": "link",
       "needed_by_ranks": [
         2,
-        7,
-        8,
+        5,
+        6,
+        9,
+        10,
+        11,
         13,
         14,
-        20
+        17,
+        18
       ]
     },
     {
@@ -115,98 +123,6 @@
       ]
     },
     {
-      "a_active": "4",
-      "a_hitstop": 13,
-      "a_id": 644,
-      "a_method": "manual",
-      "a_notation": "6 + 强",
-      "a_on_hit": 27,
-      "a_recovery": 28,
-      "a_startup": 18,
-      "b_id": 609,
-      "b_method": "manual",
-      "b_notation": "中",
-      "b_startup": 8,
-      "confidence": "medium",
-      "known_status": "untested",
-      "margin_frames": 19,
-      "mechanism": "link",
-      "needed_by_ranks": [
-        3,
-        9,
-        18
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 11,
-      "a_hitstun": 25,
-      "a_id": 609,
-      "a_method": "manual",
-      "a_notation": "中",
-      "a_on_hit": 5,
-      "a_recovery": 17,
-      "a_startup": 8,
-      "b_id": 1023,
-      "b_method": "manual",
-      "b_notation": "236 + 强",
-      "b_startup": 43,
-      "confidence": "high",
-      "known_status": "untested",
-      "margin_frames": -38,
-      "mechanism": "cancel",
-      "needed_by_ranks": [
-        3,
-        16
-      ]
-    },
-    {
-      "a_active": "4",
-      "a_hitstop": 13,
-      "a_id": 644,
-      "a_method": "manual",
-      "a_notation": "6 + 强",
-      "a_on_hit": 27,
-      "a_recovery": 28,
-      "a_startup": 18,
-      "b_id": 642,
-      "b_method": "manual",
-      "b_notation": "4 + 中",
-      "b_startup": 9,
-      "confidence": "medium",
-      "known_status": "untested",
-      "margin_frames": 18,
-      "mechanism": "link",
-      "needed_by_ranks": [
-        4,
-        10,
-        19
-      ]
-    },
-    {
-      "a_active": "6",
-      "a_hitstop": 11,
-      "a_hitstun": 26,
-      "a_id": 642,
-      "a_method": "manual",
-      "a_notation": "4 + 中",
-      "a_on_hit": 8,
-      "a_recovery": 12,
-      "a_startup": 9,
-      "b_id": 1023,
-      "b_method": "manual",
-      "b_notation": "236 + 强",
-      "b_startup": 43,
-      "confidence": "high",
-      "known_status": "untested",
-      "margin_frames": -35,
-      "mechanism": "cancel",
-      "needed_by_ranks": [
-        4,
-        17
-      ]
-    },
-    {
       "a_active": "10",
       "a_hitstop": 13,
       "a_id": 646,
@@ -224,7 +140,7 @@
       "margin_frames": 7,
       "mechanism": "link",
       "needed_by_ranks": [
-        5
+        3
       ]
     },
     {
@@ -245,7 +161,7 @@
       "margin_frames": 21,
       "mechanism": "link",
       "needed_by_ranks": [
-        6
+        4
       ]
     },
     {
@@ -266,7 +182,7 @@
       "margin_frames": 5,
       "mechanism": "link",
       "needed_by_ranks": [
-        7
+        5
       ]
     },
     {
@@ -287,51 +203,7 @@
       "margin_frames": 19,
       "mechanism": "link",
       "needed_by_ranks": [
-        8
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 11,
-      "a_hitstun": 25,
-      "a_id": 609,
-      "a_method": "manual",
-      "a_notation": "中",
-      "a_on_hit": 5,
-      "a_recovery": 17,
-      "a_startup": 8,
-      "b_id": 1018,
-      "b_method": "manual",
-      "b_notation": "236 + 中",
-      "b_startup": 39,
-      "confidence": "high",
-      "known_status": "untested",
-      "margin_frames": -34,
-      "mechanism": "cancel",
-      "needed_by_ranks": [
-        9
-      ]
-    },
-    {
-      "a_active": "6",
-      "a_hitstop": 11,
-      "a_hitstun": 26,
-      "a_id": 642,
-      "a_method": "manual",
-      "a_notation": "4 + 中",
-      "a_on_hit": 8,
-      "a_recovery": 12,
-      "a_startup": 9,
-      "b_id": 1018,
-      "b_method": "manual",
-      "b_notation": "236 + 中",
-      "b_startup": 39,
-      "confidence": "high",
-      "known_status": "untested",
-      "margin_frames": -31,
-      "mechanism": "cancel",
-      "needed_by_ranks": [
-        10
+        6
       ]
     },
     {
@@ -352,7 +224,7 @@
       "margin_frames": 17,
       "mechanism": "link",
       "needed_by_ranks": [
-        11
+        7
       ]
     },
     {
@@ -373,7 +245,7 @@
       "margin_frames": 21,
       "mechanism": "link",
       "needed_by_ranks": [
-        12
+        8
       ]
     },
     {
@@ -394,7 +266,7 @@
       "margin_frames": 15,
       "mechanism": "link",
       "needed_by_ranks": [
-        13
+        9
       ]
     },
     {
@@ -415,7 +287,28 @@
       "margin_frames": 19,
       "mechanism": "link",
       "needed_by_ranks": [
-        14
+        10
+      ]
+    },
+    {
+      "a_active": "10",
+      "a_hitstop": 13,
+      "a_id": 646,
+      "a_method": "manual",
+      "a_notation": "3 + 强",
+      "a_on_hit": 29,
+      "a_recovery": 22,
+      "a_startup": 14,
+      "b_id": 859,
+      "b_method": "manual",
+      "b_notation": "[4]6 + 弱",
+      "b_startup": 10,
+      "confidence": "low",
+      "known_status": "untested",
+      "margin_frames": 19,
+      "mechanism": "link",
+      "needed_by_ranks": [
+        12
       ]
     },
     {
@@ -427,36 +320,35 @@
       "a_on_hit": 27,
       "a_recovery": 28,
       "a_startup": 18,
-      "b_id": 625,
+      "b_id": 859,
       "b_method": "manual",
-      "b_notation": "2 + 中",
-      "b_startup": 8,
-      "confidence": "medium",
+      "b_notation": "[4]6 + 弱",
+      "b_startup": 10,
+      "confidence": "low",
       "known_status": "untested",
-      "margin_frames": 19,
+      "margin_frames": 17,
       "mechanism": "link",
       "needed_by_ranks": [
-        15
+        14
       ]
     },
     {
-      "a_active": "3",
-      "a_hitstop": 9,
-      "a_hitstun": 24,
-      "a_id": 625,
+      "a_active": "10",
+      "a_hitstop": 13,
+      "a_id": 646,
       "a_method": "manual",
-      "a_notation": "2 + 中",
-      "a_on_hit": 5,
-      "a_recovery": 16,
-      "a_startup": 8,
-      "b_id": 1023,
-      "b_method": "manual",
-      "b_notation": "236 + 强",
-      "b_startup": 43,
-      "confidence": "high",
+      "a_notation": "3 + 强",
+      "a_on_hit": 29,
+      "a_recovery": 22,
+      "a_startup": 14,
+      "b_id": 867,
+      "b_method": "simple",
+      "b_notation": "[4] + SP",
+      "b_startup": 12,
+      "confidence": "low",
       "known_status": "untested",
-      "margin_frames": -38,
-      "mechanism": "cancel",
+      "margin_frames": 17,
+      "mechanism": "link",
       "needed_by_ranks": [
         15
       ]
@@ -470,11 +362,11 @@
       "a_on_hit": 29,
       "a_recovery": 22,
       "a_startup": 14,
-      "b_id": 609,
-      "b_method": "manual",
-      "b_notation": "中",
+      "b_id": 971,
+      "b_method": "simple",
+      "b_notation": "[2] + SP",
       "b_startup": 8,
-      "confidence": "medium",
+      "confidence": "low",
       "known_status": "untested",
       "margin_frames": 21,
       "mechanism": "link",
@@ -483,24 +375,66 @@
       ]
     },
     {
-      "a_active": "10",
+      "a_active": "4",
       "a_hitstop": 13,
-      "a_id": 646,
+      "a_id": 644,
       "a_method": "manual",
-      "a_notation": "3 + 强",
-      "a_on_hit": 29,
-      "a_recovery": 22,
-      "a_startup": 14,
-      "b_id": 642,
-      "b_method": "manual",
-      "b_notation": "4 + 中",
-      "b_startup": 9,
-      "confidence": "medium",
+      "a_notation": "6 + 强",
+      "a_on_hit": 27,
+      "a_recovery": 28,
+      "a_startup": 18,
+      "b_id": 867,
+      "b_method": "simple",
+      "b_notation": "[4] + SP",
+      "b_startup": 12,
+      "confidence": "low",
       "known_status": "untested",
-      "margin_frames": 20,
+      "margin_frames": 15,
       "mechanism": "link",
       "needed_by_ranks": [
         17
+      ]
+    },
+    {
+      "a_active": "4",
+      "a_hitstop": 13,
+      "a_id": 644,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "a_on_hit": 27,
+      "a_recovery": 28,
+      "a_startup": 18,
+      "b_id": 971,
+      "b_method": "simple",
+      "b_notation": "[2] + SP",
+      "b_startup": 8,
+      "confidence": "low",
+      "known_status": "untested",
+      "margin_frames": 19,
+      "mechanism": "link",
+      "needed_by_ranks": [
+        18
+      ]
+    },
+    {
+      "a_active": "4",
+      "a_hitstop": 13,
+      "a_id": 644,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "a_on_hit": 27,
+      "a_recovery": 28,
+      "a_startup": 18,
+      "b_id": 609,
+      "b_method": "manual",
+      "b_notation": "中",
+      "b_startup": 8,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": 19,
+      "mechanism": "link",
+      "needed_by_ranks": [
+        19
       ]
     },
     {
@@ -513,16 +447,37 @@
       "a_on_hit": 5,
       "a_recovery": 17,
       "a_startup": 8,
-      "b_id": 1012,
+      "b_id": 984,
       "b_method": "manual",
-      "b_notation": "236 + 弱",
-      "b_startup": 34,
-      "confidence": "high",
+      "b_notation": "[2]8 + 强",
+      "b_startup": 8,
+      "confidence": "low",
       "known_status": "untested",
-      "margin_frames": -29,
+      "margin_frames": -3,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        18
+        19
+      ]
+    },
+    {
+      "a_active": "4",
+      "a_hitstop": 13,
+      "a_id": 644,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "a_on_hit": 27,
+      "a_recovery": 28,
+      "a_startup": 18,
+      "b_id": 642,
+      "b_method": "manual",
+      "b_notation": "4 + 中",
+      "b_startup": 9,
+      "confidence": "medium",
+      "known_status": "untested",
+      "margin_frames": 18,
+      "mechanism": "link",
+      "needed_by_ranks": [
+        20
       ]
     },
     {
@@ -535,16 +490,16 @@
       "a_on_hit": 8,
       "a_recovery": 12,
       "a_startup": 9,
-      "b_id": 1012,
+      "b_id": 984,
       "b_method": "manual",
-      "b_notation": "236 + 弱",
-      "b_startup": 34,
-      "confidence": "high",
+      "b_notation": "[2]8 + 强",
+      "b_startup": 8,
+      "confidence": "low",
       "known_status": "untested",
-      "margin_frames": -26,
-      "mechanism": "cancel",
+      "margin_frames": 0,
+      "mechanism": "both",
       "needed_by_ranks": [
-        19
+        20
       ]
     }
   ],
@@ -554,7 +509,7 @@
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-14T13:00:34Z",
+    "generated_at": "2026-09-16T00:26:22Z",
     "include_verified": false,
     "name": "no-gauge",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",

@@ -3,14 +3,14 @@
     {
       "character": "Ryu",
       "components": {
-        "data_quality": 0.66704020716495038,
-        "easy_damage": 0.468501326259947,
-        "input_shape": 0.56512937863052282,
+        "data_quality": 0.64313222319120689,
+        "easy_damage": 0.84858834244080139,
+        "input_shape": 0.5111201079622133,
         "route_availability": 0.45835702472201495,
         "timing_comfort": 0.98249706416141769
       },
       "coverage": 1.0,
-      "damage_rank": 11,
+      "damage_rank": 8,
       "fighter_id": 1,
       "flags": [
         {
@@ -18,7 +18,7 @@
         }
       ],
       "lc": "ryu",
-      "rank": 4,
+      "rank": 2,
       "raw": {
         "data_quality": {
           "confident_share": 0.52813067150635207,
@@ -82,23 +82,23 @@
           "unknown_share": 0.0
         }
       },
-      "score": 63.999673176466587,
+      "score": 73.812972055447034,
       "signals": {
         "data_quality": {
-          "confident_share": 0.51126731136996428,
-          "exact_join_share": 0.31266641308482312,
+          "confident_share": 0.45956215970961889,
+          "exact_join_share": 0.29653679653679649,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.71264367816091956,
-          "best_pareto_ratio": 0.22435897435897445
+          "best_cheap_damage": 0.86111111111111116,
+          "best_pareto_ratio": 0.83606557377049162
         },
         "input_shape": {
           "big_motion_share": 0.36842105263157898,
-          "mean_hardest_motion": 0.60869565217391308,
-          "mean_input_count": 0.69230769230769229,
-          "mean_method_switches": 0.63157894736842102,
-          "simple_share": 0.36842105263157898
+          "mean_hardest_motion": 0.49999999999999989,
+          "mean_input_count": 0.658119658119658,
+          "mean_method_switches": 0.29999999999999993,
+          "simple_share": 0.70000000000000007
         },
         "route_availability": {
           "no_gauge_routes": 0.45835702472201495
@@ -111,18 +111,18 @@
     {
       "character": "Luke",
       "components": {
-        "data_quality": 0.78318855845530133,
-        "easy_damage": 0.30686339522546452,
-        "input_shape": 0.57952793773731992,
+        "data_quality": 0.74882052058111392,
+        "easy_damage": 0.697176684881603,
+        "input_shape": 0.53193946404472736,
         "route_availability": 0.071829494538164063,
         "timing_comfort": 0.9182701894317048
       },
       "coverage": 1.0,
-      "damage_rank": 22,
+      "damage_rank": 20,
       "fighter_id": 2,
       "flags": [],
       "lc": "luke",
-      "rank": 15,
+      "rank": 14,
       "raw": {
         "data_quality": {
           "confident_share": 0.70508474576271185,
@@ -186,23 +186,23 @@
           "unknown_share": 0.050847457627118647
         }
       },
-      "score": 55.201035565924215,
+      "score": 65.377042034551664,
       "signals": {
         "data_quality": {
-          "confident_share": 0.73673708651482239,
-          "exact_join_share": 0.44246861924686193,
+          "confident_share": 0.66222987288135593,
+          "exact_join_share": 0.4196428571428571,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.5977011494252874,
-          "best_pareto_ratio": 0.01602564102564159
+          "best_cheap_damage": 0.72222222222222221,
+          "best_pareto_ratio": 0.6721311475409838
         },
         "input_shape": {
           "big_motion_share": 0.42105263157894735,
-          "mean_hardest_motion": 0.64130434782608692,
-          "mean_input_count": 0.68681318681318682,
-          "mean_method_switches": 0.57894736842105265,
-          "simple_share": 0.42105263157894735
+          "mean_hardest_motion": 0.5714285714285714,
+          "mean_input_count": 0.64957264957264971,
+          "mean_method_switches": 0.20000000000000007,
+          "simple_share": 0.79999999999999993
         },
         "route_availability": {
           "no_gauge_routes": 0.071829494538164063
@@ -215,18 +215,18 @@
     {
       "character": "Kimberly",
       "components": {
-        "data_quality": 0.73834270436371052,
-        "easy_damage": 0.33110908488063689,
-        "input_shape": 0.55853597203711614,
+        "data_quality": 0.70210218057124996,
+        "easy_damage": 0.71988843351548271,
+        "input_shape": 0.50086369770580308,
         "route_availability": 0.38389674708820065,
         "timing_comfort": 0.85620102911940099
       },
       "coverage": 1.0,
-      "damage_rank": 16,
+      "damage_rank": 14,
       "fighter_id": 3,
       "flags": [],
       "lc": "kimberly",
-      "rank": 12,
+      "rank": 11,
       "raw": {
         "data_quality": {
           "confident_share": 0.75347912524850891,
@@ -290,23 +290,23 @@
           "unknown_share": 0.071570576540755465
         }
       },
-      "score": 56.524092089851166,
+      "score": 66.3832604526891,
       "signals": {
         "data_quality": {
-          "confident_share": 0.79839980836393765,
-          "exact_join_share": 0.38218947105476797,
+          "confident_share": 0.71765656063618288,
+          "exact_join_share": 0.36247334754797439,
           "join_share": 0.85636221701795456
         },
         "easy_damage": {
-          "best_cheap_damage": 0.61494252873563215,
-          "best_pareto_ratio": 0.047275641025641593
+          "best_cheap_damage": 0.74305555555555558,
+          "best_pareto_ratio": 0.69672131147540994
         },
         "input_shape": {
           "big_motion_share": 0.36842105263157898,
-          "mean_hardest_motion": 0.60869565217391308,
-          "mean_input_count": 0.67032967032967028,
-          "mean_method_switches": 0.63157894736842102,
-          "simple_share": 0.36842105263157898
+          "mean_hardest_motion": 0.49999999999999989,
+          "mean_input_count": 0.62393162393162382,
+          "mean_method_switches": 0.29999999999999993,
+          "simple_share": 0.70000000000000007
         },
         "route_availability": {
           "no_gauge_routes": 0.38389674708820065
@@ -319,14 +319,14 @@
     {
       "character": "ChunLi",
       "components": {
-        "data_quality": 0.90519597710617405,
-        "easy_damage": 0.30686339522546452,
-        "input_shape": 0.59494241456484032,
+        "data_quality": 0.85953458621485479,
+        "easy_damage": 0.697176684881603,
+        "input_shape": 0.55419221129747454,
         "route_availability": 0.53118554911094151,
         "timing_comfort": 0.903922360543571
       },
       "coverage": 1.0,
-      "damage_rank": 17,
+      "damage_rank": 15,
       "fighter_id": 4,
       "flags": [
         {
@@ -334,7 +334,7 @@
         }
       ],
       "lc": "chunli",
-      "rank": 9,
+      "rank": 6,
       "raw": {
         "data_quality": {
           "confident_share": 0.9030694668820678,
@@ -398,23 +398,23 @@
           "unknown_share": 0.0
         }
       },
-      "score": 61.041336496645393,
+      "score": 71.27536619573219,
       "signals": {
         "data_quality": {
-          "confident_share": 0.98900350502196366,
-          "exact_join_share": 0.54797287548694273,
+          "confident_share": 0.88898424878836824,
+          "exact_join_share": 0.51970443349753703,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.5977011494252874,
-          "best_pareto_ratio": 0.01602564102564159
+          "best_cheap_damage": 0.72222222222222221,
+          "best_pareto_ratio": 0.6721311475409838
         },
         "input_shape": {
           "big_motion_share": 0.42105263157894735,
-          "mean_hardest_motion": 0.63043478260869568,
-          "mean_input_count": 0.74725274725274726,
-          "mean_method_switches": 0.57894736842105265,
-          "simple_share": 0.42105263157894735
+          "mean_hardest_motion": 0.54761904761904767,
+          "mean_input_count": 0.74358974358974361,
+          "mean_method_switches": 0.20000000000000007,
+          "simple_share": 0.79999999999999993
         },
         "route_availability": {
           "no_gauge_routes": 0.53118554911094151
@@ -427,226 +427,222 @@
     {
       "character": "Manon",
       "components": {
-        "data_quality": 0.9356559397718186,
-        "easy_damage": 0.468501326259947,
-        "input_shape": 0.56304866472200565,
-        "route_availability": 0.17755066889767088,
-        "timing_comfort": 0.97546026044005385
+        "data_quality": 1.0,
+        "easy_damage": 0.12181238615664845,
+        "input_shape": 0.60434740697898603,
+        "route_availability": 0.046393915150642479,
+        "timing_comfort": 0.95313839821642932
       },
       "coverage": 1.0,
-      "damage_rank": 10,
+      "damage_rank": 30,
       "fighter_id": 5,
-      "flags": [
-        {
-          "kind": "search_truncated"
-        }
-      ],
+      "flags": [],
       "lc": "manon",
-      "rank": 5,
+      "rank": 22,
       "raw": {
         "data_quality": {
-          "confident_share": 0.89007633587786261,
-          "exact_join_share": 0.83606557377049184,
-          "guessed_join_share": 0.16393442622950818,
-          "guessed_join_steps": 10,
+          "confident_share": 1.0,
+          "exact_join_share": 1.0,
+          "guessed_join_share": 0.0,
+          "guessed_join_steps": 0,
           "join_matched": 93,
           "join_rows": 93,
           "join_share": 1.0,
-          "low_confidence_pairs": 72,
-          "low_confidence_share": 0.1099236641221374,
-          "missing_data_steps": 22,
-          "search_truncated": true,
+          "low_confidence_pairs": 0,
+          "low_confidence_share": 0.0,
+          "missing_data_steps": 25,
+          "search_truncated": false,
           "top_n": 25,
-          "top_steps": 61,
-          "worklist_pairs": 655
+          "top_steps": 68,
+          "worklist_pairs": 343
         },
         "easy_damage": {
-          "best_cheap_damage": 4000.0,
-          "best_pareto_ratio": 666.66666666666663,
-          "cheap_routes": 191,
-          "cheap_routes_with_damage": 178,
+          "best_cheap_damage": 3040.0,
+          "best_pareto_ratio": 506.66666666666669,
+          "cheap_routes": 180,
+          "cheap_routes_with_damage": 164,
           "cheap_threshold": 6.0,
-          "mean_pareto_ratio": 458.1469958612816,
-          "pareto_routes": 7,
-          "pareto_routes_with_damage": 7,
-          "routes": 599
+          "mean_pareto_ratio": 392.00609390609395,
+          "pareto_routes": 9,
+          "pareto_routes_with_damage": 9,
+          "routes": 490
         },
         "input_shape": {
-          "big_motion_routes": 19,
-          "big_motion_share": 0.76000000000000001,
-          "mean_hardest_motion": 4.4400000000000004,
-          "mean_input_count": 8.3200000000000003,
-          "mean_method_switches": 0.23999999999999999,
-          "simple_routes": 6,
-          "simple_share": 0.23999999999999999,
+          "big_motion_routes": 15,
+          "big_motion_share": 0.59999999999999998,
+          "mean_hardest_motion": 3.6000000000000001,
+          "mean_input_count": 8.1999999999999993,
+          "mean_method_switches": 0.40000000000000002,
+          "simple_routes": 10,
+          "simple_share": 0.40000000000000002,
           "top_n": 25
         },
         "route_availability": {
-          "no_gauge_routes": 445,
-          "no_gauge_share": 0.74290484140233726,
-          "routes": 599,
-          "three_move_no_gauge_routes": 338,
-          "three_move_routes": 446
+          "no_gauge_routes": 348,
+          "no_gauge_share": 0.71020408163265303,
+          "routes": 490,
+          "three_move_no_gauge_routes": 266,
+          "three_move_routes": 374
         },
         "timing_comfort": {
           "both_pairs": 15,
-          "cancel_pairs": 556,
-          "cancel_share": 0.84885496183206111,
-          "comfortable_link_share": 0.88095238095238093,
-          "comfortable_links": 74,
+          "cancel_pairs": 282,
+          "cancel_share": 0.82215743440233235,
+          "comfortable_link_share": 0.78260869565217395,
+          "comfortable_links": 36,
           "comfortable_margin": 3,
-          "forgiving_share": 0.98473282442748089,
-          "link_pairs": 84,
+          "forgiving_share": 0.9708454810495627,
+          "link_pairs": 46,
           "links_without_margin": 0,
           "negative_links": 10,
-          "pairs": 655,
+          "pairs": 343,
           "tight_link_share": 0.0,
           "tight_links": 0,
           "unknown_pairs": 0,
           "unknown_share": 0.0
         }
       },
-      "score": 63.649829003544802,
+      "score": 53.055455866091265,
       "signals": {
         "data_quality": {
-          "confident_share": 0.97244803243249578,
-          "exact_join_share": 0.73338363399410123,
+          "confident_share": 1.0,
+          "exact_join_share": 1.0,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.71264367816091956,
-          "best_pareto_ratio": 0.22435897435897445
+          "best_cheap_damage": 0.19444444444444445,
+          "best_pareto_ratio": 0.049180327868852465
         },
         "input_shape": {
-          "big_motion_share": 0.31578947368421051,
-          "mean_hardest_motion": 0.59239130434782616,
-          "mean_input_count": 0.72527472527472525,
-          "mean_method_switches": 0.68421052631578949,
-          "simple_share": 0.31578947368421051
+          "big_motion_share": 0.52631578947368429,
+          "mean_hardest_motion": 0.7142857142857143,
+          "mean_input_count": 0.73504273504273521,
+          "mean_method_switches": 0.0,
+          "simple_share": 1.0
         },
         "route_availability": {
-          "no_gauge_routes": 0.17755066889767088
+          "no_gauge_routes": 0.046393915150642479
         },
         "timing_comfort": {
-          "forgiving_share": 0.97546026044005385
+          "forgiving_share": 0.95313839821642932
         }
       }
     },
     {
       "character": "Zangief",
       "components": {
-        "data_quality": 0.7551087887387038,
-        "easy_damage": 0.88505747126436773,
-        "input_shape": 0.18947368421052632,
-        "route_availability": 0.34851161105838535,
-        "timing_comfort": 0.95039034132171363
+        "data_quality": 0.93084905660377371,
+        "easy_damage": 0.8217492353163558,
+        "input_shape": 0.50887603624445743,
+        "route_availability": 0.044859353226715859,
+        "timing_comfort": 0.89890862005179428
       },
       "coverage": 1.0,
-      "damage_rank": 1,
+      "damage_rank": 9,
       "fighter_id": 6,
       "flags": [],
       "lc": "zangief",
-      "rank": 3,
+      "rank": 9,
       "raw": {
         "data_quality": {
-          "confident_share": 0.68827160493827155,
-          "exact_join_share": 0.6376811594202898,
-          "guessed_join_share": 0.36231884057971014,
-          "guessed_join_steps": 25,
+          "confident_share": 0.84905660377358494,
+          "exact_join_share": 1.0,
+          "guessed_join_share": 0.0,
+          "guessed_join_steps": 0,
           "join_matched": 47,
           "join_rows": 47,
           "join_share": 1.0,
-          "low_confidence_pairs": 101,
-          "low_confidence_share": 0.31172839506172839,
-          "missing_data_steps": 25,
+          "low_confidence_pairs": 24,
+          "low_confidence_share": 0.15094339622641509,
+          "missing_data_steps": 22,
           "search_truncated": false,
           "top_n": 25,
-          "top_steps": 69,
-          "worklist_pairs": 324
+          "top_steps": 72,
+          "worklist_pairs": 159
         },
         "easy_damage": {
-          "best_cheap_damage": 4100.0,
-          "best_pareto_ratio": 790.76923076923072,
-          "cheap_routes": 319,
-          "cheap_routes_with_damage": 313,
+          "best_cheap_damage": 3700.0,
+          "best_pareto_ratio": 698.11320754716985,
+          "cheap_routes": 288,
+          "cheap_routes_with_damage": 282,
           "cheap_threshold": 6.0,
-          "mean_pareto_ratio": 573.13423909423909,
+          "mean_pareto_ratio": 532.99789804527495,
           "pareto_routes": 10,
           "pareto_routes_with_damage": 10,
-          "routes": 917
+          "routes": 423
         },
         "input_shape": {
-          "big_motion_routes": 20,
-          "big_motion_share": 0.80000000000000004,
-          "mean_hardest_motion": 8.8000000000000007,
-          "mean_input_count": 13.6,
-          "mean_method_switches": 0.20000000000000001,
-          "simple_routes": 5,
-          "simple_share": 0.20000000000000001,
+          "big_motion_routes": 16,
+          "big_motion_share": 0.64000000000000001,
+          "mean_hardest_motion": 4.0800000000000001,
+          "mean_input_count": 9.2799999999999994,
+          "mean_method_switches": 0.23999999999999999,
+          "simple_routes": 6,
+          "simple_share": 0.23999999999999999,
           "top_n": 25
         },
         "route_availability": {
-          "no_gauge_routes": 613,
-          "no_gauge_share": 0.66848418756815708,
-          "routes": 917,
-          "three_move_no_gauge_routes": 499,
-          "three_move_routes": 747
+          "no_gauge_routes": 347,
+          "no_gauge_share": 0.82033096926713944,
+          "routes": 423,
+          "three_move_no_gauge_routes": 282,
+          "three_move_routes": 344
         },
         "timing_comfort": {
-          "both_pairs": 44,
-          "cancel_pairs": 180,
-          "cancel_share": 0.55555555555555558,
-          "comfortable_link_share": 0.97826086956521741,
-          "comfortable_links": 90,
+          "both_pairs": 17,
+          "cancel_pairs": 87,
+          "cancel_share": 0.54716981132075471,
+          "comfortable_link_share": 0.95744680851063835,
+          "comfortable_links": 45,
           "comfortable_margin": 3,
-          "forgiving_share": 0.96913580246913578,
-          "link_pairs": 92,
+          "forgiving_share": 0.93710691823899372,
+          "link_pairs": 47,
           "links_without_margin": 0,
           "negative_links": 0,
-          "pairs": 324,
-          "tight_link_share": 0.021739130434782608,
+          "pairs": 159,
+          "tight_link_share": 0.042553191489361701,
           "tight_links": 2,
           "unknown_pairs": 8,
-          "unknown_share": 0.024691358024691357
+          "unknown_share": 0.050314465408805034
         }
       },
-      "score": 66.084528774207939,
+      "score": 69.604177565201866,
       "signals": {
         "data_quality": {
-          "confident_share": 0.71531426764446715,
-          "exact_join_share": 0.34491540840458418,
+          "confident_share": 0.82712264150943404,
+          "exact_join_share": 1.0,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.77011494252873558,
-          "best_pareto_ratio": 1.0
+          "best_cheap_damage": 0.65277777777777779,
+          "best_pareto_ratio": 0.99072069285493369
         },
         "input_shape": {
-          "big_motion_share": 0.26315789473684204,
-          "mean_hardest_motion": 0.0,
-          "mean_input_count": 0.0,
-          "mean_method_switches": 0.73684210526315796,
-          "simple_share": 0.26315789473684209
+          "big_motion_share": 0.47368421052631582,
+          "mean_hardest_motion": 0.5714285714285714,
+          "mean_input_count": 0.50427350427350448,
+          "mean_method_switches": 0.40000000000000002,
+          "simple_share": 0.59999999999999998
         },
         "route_availability": {
-          "no_gauge_routes": 0.34851161105838535
+          "no_gauge_routes": 0.044859353226715859
         },
         "timing_comfort": {
-          "forgiving_share": 0.95039034132171363
+          "forgiving_share": 0.89890862005179428
         }
       }
     },
     {
       "character": "JP",
       "components": {
-        "data_quality": 0.86737544329022476,
-        "easy_damage": 0.30686339522546452,
-        "input_shape": 0.85000000000000009,
-        "route_availability": 0.56824758935877784,
-        "timing_comfort": 0.88537102638202669
+        "data_quality": 0.82577993308616404,
+        "easy_damage": 0.697176684881603,
+        "input_shape": 0.8600000000000001,
+        "route_availability": 0.55538852373113046,
+        "timing_comfort": 0.8816188504861846
       },
       "coverage": 1.0,
-      "damage_rank": 19,
+      "damage_rank": 17,
       "fighter_id": 7,
       "flags": [
         {
@@ -654,107 +650,107 @@
         }
       ],
       "lc": "jp",
-      "rank": 2,
+      "rank": 1,
       "raw": {
         "data_quality": {
-          "confident_share": 0.78129952456418383,
-          "exact_join_share": 0.80327868852459017,
-          "guessed_join_share": 0.19672131147540983,
+          "confident_share": 0.77414075286415707,
+          "exact_join_share": 0.80952380952380953,
+          "guessed_join_share": 0.19047619047619047,
           "guessed_join_steps": 12,
           "join_matched": 67,
           "join_rows": 67,
           "join_share": 1.0,
           "low_confidence_pairs": 138,
-          "low_confidence_share": 0.21870047543581617,
+          "low_confidence_share": 0.22585924713584288,
           "missing_data_steps": 12,
           "search_truncated": true,
           "top_n": 25,
-          "top_steps": 61,
-          "worklist_pairs": 631
+          "top_steps": 63,
+          "worklist_pairs": 611
         },
         "easy_damage": {
           "best_cheap_damage": 3800.0,
           "best_pareto_ratio": 633.33333333333337,
-          "cheap_routes": 370,
-          "cheap_routes_with_damage": 303,
+          "cheap_routes": 368,
+          "cheap_routes_with_damage": 301,
           "cheap_threshold": 6.0,
-          "mean_pareto_ratio": 417.16766566766569,
+          "mean_pareto_ratio": 414.44039294039294,
           "pareto_routes": 8,
           "pareto_routes_with_damage": 8,
-          "routes": 1202
+          "routes": 1156
         },
         "input_shape": {
           "big_motion_routes": 6,
           "big_motion_share": 0.23999999999999999,
-          "mean_hardest_motion": 1.4399999999999999,
-          "mean_input_count": 6.3200000000000003,
-          "mean_method_switches": 0.76000000000000001,
-          "simple_routes": 19,
-          "simple_share": 0.76000000000000001,
+          "mean_hardest_motion": 2.6400000000000001,
+          "mean_input_count": 6.96,
+          "mean_method_switches": 0.32000000000000001,
+          "simple_routes": 8,
+          "simple_share": 0.32000000000000001,
           "top_n": 25
         },
         "route_availability": {
-          "no_gauge_routes": 925,
-          "no_gauge_share": 0.76955074875207985,
-          "routes": 1202,
-          "three_move_no_gauge_routes": 701,
-          "three_move_routes": 910
+          "no_gauge_routes": 903,
+          "no_gauge_share": 0.78114186851211076,
+          "routes": 1156,
+          "three_move_no_gauge_routes": 685,
+          "three_move_routes": 876
         },
         "timing_comfort": {
-          "both_pairs": 148,
-          "cancel_pairs": 397,
-          "cancel_share": 0.62916006339144215,
+          "both_pairs": 146,
+          "cancel_pairs": 379,
+          "cancel_share": 0.62029459901800332,
           "comfortable_link_share": 0.7321428571428571,
           "comfortable_links": 41,
           "comfortable_margin": 3,
-          "forgiving_share": 0.92868462757527737,
+          "forgiving_share": 0.92635024549918166,
           "link_pairs": 56,
           "links_without_margin": 0,
           "negative_links": 2,
-          "pairs": 631,
+          "pairs": 611,
           "tight_link_share": 0.23214285714285715,
           "tight_links": 13,
           "unknown_pairs": 30,
-          "unknown_share": 0.047543581616481777
+          "unknown_share": 0.049099836333878884
         }
       },
-      "score": 66.946407842804646,
+      "score": 78.267456376775655,
       "signals": {
         "data_quality": {
-          "confident_share": 0.83384775837303404,
-          "exact_join_share": 0.66918169970505526,
+          "confident_share": 0.74132058101472986,
+          "exact_join_share": 0.6462585034013606,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.5977011494252874,
-          "best_pareto_ratio": 0.01602564102564159
+          "best_cheap_damage": 0.72222222222222221,
+          "best_pareto_ratio": 0.6721311475409838
         },
         "input_shape": {
           "big_motion_share": 1.0,
           "mean_hardest_motion": 1.0,
           "mean_input_count": 1.0,
-          "mean_method_switches": 0.0,
-          "simple_share": 1.0
+          "mean_method_switches": 0.20000000000000007,
+          "simple_share": 0.79999999999999993
         },
         "route_availability": {
-          "no_gauge_routes": 0.56824758935877784
+          "no_gauge_routes": 0.55538852373113046
         },
         "timing_comfort": {
-          "forgiving_share": 0.88537102638202669
+          "forgiving_share": 0.8816188504861846
         }
       }
     },
     {
       "character": "Dhalsim",
       "components": {
-        "data_quality": 0.58077474223658321,
-        "easy_damage": 0.028735632183908177,
-        "input_shape": 0.6149184625443207,
+        "data_quality": 0.56312950304102427,
+        "easy_damage": 0.36448262575311757,
+        "input_shape": 0.58383458646616559,
         "route_availability": 1.0,
         "timing_comfort": 0.29315201984408212
       },
       "coverage": 1.0,
-      "damage_rank": 27,
+      "damage_rank": 25,
       "fighter_id": 8,
       "flags": [
         {
@@ -762,7 +758,7 @@
         }
       ],
       "lc": "dhalsim",
-      "rank": 28,
+      "rank": 27,
       "raw": {
         "data_quality": {
           "confident_share": 0.40662650602409633,
@@ -826,23 +822,23 @@
           "unknown_share": 0.43825301204819278
         }
       },
-      "score": 39.371578447593151,
+      "score": 48.49043896075996,
       "signals": {
         "data_quality": {
-          "confident_share": 0.35645020989560694,
-          "exact_join_share": 0.31266641308482312,
+          "confident_share": 0.32040192018072283,
+          "exact_join_share": 0.29653679653679649,
           "join_share": 0.93915343915343941
         },
         "easy_damage": {
-          "best_cheap_damage": 0.057471264367816355,
-          "best_pareto_ratio": 0.0
+          "best_cheap_damage": 0.069444444444444767,
+          "best_pareto_ratio": 0.65952080706179039
         },
         "input_shape": {
           "big_motion_share": 0.52631578947368429,
-          "mean_hardest_motion": 0.70652173913043481,
-          "mean_input_count": 0.69780219780219788,
-          "mean_method_switches": 0.47368421052631582,
-          "simple_share": 0.52631578947368418
+          "mean_hardest_motion": 0.7142857142857143,
+          "mean_input_count": 0.66666666666666674,
+          "mean_method_switches": 0.0,
+          "simple_share": 1.0
         },
         "route_availability": {
           "no_gauge_routes": 1.0
@@ -855,14 +851,14 @@
     {
       "character": "Cammy",
       "components": {
-        "data_quality": 0.94771224186799841,
-        "easy_damage": 0.028735632183908177,
-        "input_shape": 0.50831028239495057,
+        "data_quality": 0.89963962726727098,
+        "easy_damage": 0.36448262575311757,
+        "input_shape": 0.42589165220744174,
         "route_availability": 0.70059175532532225,
         "timing_comfort": 0.9148422282820412
       },
       "coverage": 1.0,
-      "damage_rank": 26,
+      "damage_rank": 24,
       "fighter_id": 9,
       "flags": [
         {
@@ -870,7 +866,7 @@
         }
       ],
       "lc": "cammy",
-      "rank": 18,
+      "rank": 16,
       "raw": {
         "data_quality": {
           "confident_share": 0.91169977924944812,
@@ -934,23 +930,23 @@
           "unknown_share": 0.0
         }
       },
-      "score": 52.923921704375253,
+      "score": 60.45513961075654,
       "signals": {
         "data_quality": {
-          "confident_share": 1.0,
-          "exact_join_share": 0.73856120933999192,
+          "confident_share": 0.89886865342163358,
+          "exact_join_share": 0.70046082949308763,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.057471264367816355,
-          "best_pareto_ratio": 0.0
+          "best_cheap_damage": 0.069444444444444767,
+          "best_pareto_ratio": 0.65952080706179039
         },
         "input_shape": {
           "big_motion_share": 0.26315789473684204,
-          "mean_hardest_motion": 0.5434782608695653,
-          "mean_input_count": 0.60989010989010994,
-          "mean_method_switches": 0.73684210526315796,
-          "simple_share": 0.26315789473684209
+          "mean_hardest_motion": 0.35714285714285721,
+          "mean_input_count": 0.52991452991452992,
+          "mean_method_switches": 0.5,
+          "simple_share": 0.5
         },
         "route_availability": {
           "no_gauge_routes": 0.70059175532532225
@@ -963,18 +959,18 @@
     {
       "character": "Ken",
       "components": {
-        "data_quality": 0.77592890795546532,
-        "easy_damage": 0.30686339522546452,
-        "input_shape": 0.60051990343752371,
+        "data_quality": 0.74189081865622974,
+        "easy_damage": 0.697176684881603,
+        "input_shape": 0.56301523038365153,
         "route_availability": 0.091904565962953447,
         "timing_comfort": 0.93394439967767906
       },
       "coverage": 1.0,
-      "damage_rank": 21,
+      "damage_rank": 19,
       "fighter_id": 10,
       "flags": [],
       "lc": "ken",
-      "rank": 13,
+      "rank": 10,
       "raw": {
         "data_quality": {
           "confident_share": 0.70684931506849313,
@@ -1038,23 +1034,23 @@
           "unknown_share": 0.041095890410958902
         }
       },
-      "score": 56.245844173828196,
+      "score": 66.677245144173185,
       "signals": {
         "data_quality": {
-          "confident_share": 0.73898544980498115,
-          "exact_join_share": 0.40167364016736412,
+          "confident_share": 0.66425085616438351,
+          "exact_join_share": 0.38095238095238104,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.5977011494252874,
-          "best_pareto_ratio": 0.01602564102564159
+          "best_cheap_damage": 0.72222222222222221,
+          "best_pareto_ratio": 0.6721311475409838
         },
         "input_shape": {
           "big_motion_share": 0.47368421052631582,
-          "mean_hardest_motion": 0.67391304347826098,
-          "mean_input_count": 0.70329670329670324,
-          "mean_method_switches": 0.52631578947368429,
-          "simple_share": 0.47368421052631576
+          "mean_hardest_motion": 0.6428571428571429,
+          "mean_input_count": 0.67521367521367515,
+          "mean_method_switches": 0.10000000000000009,
+          "simple_share": 0.89999999999999991
         },
         "route_availability": {
           "no_gauge_routes": 0.091904565962953447
@@ -1067,14 +1063,14 @@
     {
       "character": "DeeJay",
       "components": {
-        "data_quality": 0.51171592846563818,
-        "easy_damage": 0.468501326259947,
-        "input_shape": 0.47248315185958206,
+        "data_quality": 0.50393607681622266,
+        "easy_damage": 0.84858834244080139,
+        "input_shape": 0.37173896279159435,
         "route_availability": 0.44178967609891062,
         "timing_comfort": 0.73108535398892383
       },
       "coverage": 1.0,
-      "damage_rank": 7,
+      "damage_rank": 5,
       "fighter_id": 11,
       "flags": [
         {
@@ -1086,7 +1082,7 @@
         }
       ],
       "lc": "deejay",
-      "rank": 17,
+      "rank": 15,
       "raw": {
         "data_quality": {
           "confident_share": 0.20674300254452926,
@@ -1150,23 +1146,23 @@
           "unknown_share": 0.029262086513994912
         }
       },
-      "score": 53.679308479656548,
+      "score": 62.485515721888326,
       "signals": {
         "data_quality": {
-          "confident_share": 0.1017644176972694,
-          "exact_join_share": 0.35505080693365199,
+          "confident_share": 0.091472845101781206,
+          "exact_join_share": 0.33673469387755089,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.71264367816091956,
-          "best_pareto_ratio": 0.22435897435897445
+          "best_cheap_damage": 0.86111111111111116,
+          "best_pareto_ratio": 0.83606557377049162
         },
         "input_shape": {
           "big_motion_share": 0.21052631578947367,
-          "mean_hardest_motion": 0.51086956521739135,
-          "mean_input_count": 0.5439560439560438,
-          "mean_method_switches": 0.78947368421052633,
-          "simple_share": 0.21052631578947367
+          "mean_hardest_motion": 0.2857142857142857,
+          "mean_input_count": 0.42735042735042728,
+          "mean_method_switches": 0.60000000000000009,
+          "simple_share": 0.39999999999999997
         },
         "route_availability": {
           "no_gauge_routes": 0.44178967609891062
@@ -1179,126 +1175,122 @@
     {
       "character": "Lily",
       "components": {
-        "data_quality": 0.81776848669805202,
-        "easy_damage": 0.87259615384615397,
-        "input_shape": 0.58282464103402321,
-        "route_availability": 0.38308088962479375,
-        "timing_comfort": 0.96203103288559522
+        "data_quality": 0.84300634398496244,
+        "easy_damage": 0.076388888888888895,
+        "input_shape": 0.47235203393098135,
+        "route_availability": 0.30874506093937959,
+        "timing_comfort": 0.95467989827509947
       },
       "coverage": 1.0,
-      "damage_rank": 2,
+      "damage_rank": 31,
       "fighter_id": 12,
-      "flags": [
-        {
-          "kind": "search_truncated"
-        }
-      ],
+      "flags": [],
       "lc": "lily",
-      "rank": 1,
+      "rank": 25,
       "raw": {
         "data_quality": {
-          "confident_share": 0.8283464566929134,
-          "exact_join_share": 0.61538461538461542,
-          "guessed_join_share": 0.38461538461538464,
-          "guessed_join_steps": 25,
+          "confident_share": 0.88533834586466165,
+          "exact_join_share": 0.71875,
+          "guessed_join_share": 0.28125,
+          "guessed_join_steps": 18,
           "join_matched": 73,
           "join_rows": 73,
           "join_share": 1.0,
-          "low_confidence_pairs": 109,
-          "low_confidence_share": 0.17165354330708663,
+          "low_confidence_pairs": 61,
+          "low_confidence_share": 0.11466165413533834,
           "missing_data_steps": 25,
-          "search_truncated": true,
+          "search_truncated": false,
           "top_n": 25,
-          "top_steps": 65,
-          "worklist_pairs": 635
+          "top_steps": 64,
+          "worklist_pairs": 532
         },
         "easy_damage": {
-          "best_cheap_damage": 4500.0,
-          "best_pareto_ratio": 750.0,
-          "cheap_routes": 194,
-          "cheap_routes_with_damage": 181,
+          "best_cheap_damage": 2980.0,
+          "best_pareto_ratio": 496.66666666666669,
+          "cheap_routes": 204,
+          "cheap_routes_with_damage": 164,
           "cheap_threshold": 6.0,
-          "mean_pareto_ratio": 472.14741127608772,
+          "mean_pareto_ratio": 370.40381467660882,
           "pareto_routes": 12,
           "pareto_routes_with_damage": 12,
-          "routes": 848
+          "routes": 725
         },
         "input_shape": {
-          "big_motion_routes": 17,
-          "big_motion_share": 0.68000000000000005,
-          "mean_hardest_motion": 4.0800000000000001,
-          "mean_input_count": 8.5199999999999996,
-          "mean_method_switches": 0.32000000000000001,
-          "simple_routes": 8,
-          "simple_share": 0.32000000000000001,
+          "big_motion_routes": 19,
+          "big_motion_share": 0.76000000000000001,
+          "mean_hardest_motion": 4.5599999999999996,
+          "mean_input_count": 8.8000000000000007,
+          "mean_method_switches": 0.23999999999999999,
+          "simple_routes": 6,
+          "simple_share": 0.23999999999999999,
           "top_n": 25
         },
         "route_availability": {
-          "no_gauge_routes": 654,
-          "no_gauge_share": 0.77122641509433965,
-          "routes": 848,
-          "three_move_no_gauge_routes": 484,
-          "three_move_routes": 616
+          "no_gauge_routes": 569,
+          "no_gauge_share": 0.78482758620689652,
+          "routes": 725,
+          "three_move_no_gauge_routes": 427,
+          "three_move_routes": 544
         },
         "timing_comfort": {
-          "both_pairs": 117,
-          "cancel_pairs": 444,
-          "cancel_share": 0.6992125984251969,
-          "comfortable_link_share": 0.95161290322580649,
-          "comfortable_links": 59,
+          "both_pairs": 54,
+          "cancel_pairs": 413,
+          "cancel_share": 0.77631578947368418,
+          "comfortable_link_share": 0.94339622641509435,
+          "comfortable_links": 50,
           "comfortable_margin": 3,
-          "forgiving_share": 0.97637795275590555,
-          "link_pairs": 62,
+          "forgiving_share": 0.97180451127819545,
+          "link_pairs": 53,
           "links_without_margin": 0,
           "negative_links": 2,
-          "pairs": 635,
-          "tight_link_share": 0.016129032258064516,
+          "pairs": 532,
+          "tight_link_share": 0.018867924528301886,
           "tight_links": 1,
           "unknown_pairs": 12,
-          "unknown_share": 0.01889763779527559
+          "unknown_share": 0.022556390977443608
         }
       },
-      "score": 76.807770226603537,
+      "score": 49.484979021062117,
       "signals": {
         "data_quality": {
-          "confident_share": 0.89379360168236843,
-          "exact_join_share": 0.30125523012552308,
+          "confident_share": 0.86867657424812028,
+          "exact_join_share": 0.4776785714285714,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 1.0,
-          "best_pareto_ratio": 0.74519230769230804
+          "best_cheap_damage": 0.15277777777777779,
+          "best_pareto_ratio": 0.0
         },
         "input_shape": {
-          "big_motion_share": 0.42105263157894735,
-          "mean_hardest_motion": 0.64130434782608692,
-          "mean_input_count": 0.69780219780219788,
-          "mean_method_switches": 0.57894736842105265,
-          "simple_share": 0.42105263157894735
+          "big_motion_share": 0.31578947368421051,
+          "mean_hardest_motion": 0.42857142857142871,
+          "mean_input_count": 0.60683760683760668,
+          "mean_method_switches": 0.40000000000000002,
+          "simple_share": 0.59999999999999998
         },
         "route_availability": {
-          "no_gauge_routes": 0.38308088962479375
+          "no_gauge_routes": 0.30874506093937959
         },
         "timing_comfort": {
-          "forgiving_share": 0.96203103288559522
+          "forgiving_share": 0.95467989827509947
         }
       }
     },
     {
       "character": "AKI",
       "components": {
-        "data_quality": 0.68869239869226018,
-        "easy_damage": 0.028735632183908177,
-        "input_shape": 0.59557484849246878,
+        "data_quality": 0.65648155625886728,
+        "easy_damage": 0.36448262575311757,
+        "input_shape": 0.55532292269134398,
         "route_availability": 0.14031095606895008,
         "timing_comfort": 0.57624331550802133
       },
       "coverage": 1.0,
-      "damage_rank": 24,
+      "damage_rank": 22,
       "fighter_id": 13,
       "flags": [],
       "lc": "aki",
-      "rank": 30,
+      "rank": 29,
       "raw": {
         "data_quality": {
           "confident_share": 0.68484848484848482,
@@ -1362,23 +1354,23 @@
           "unknown_share": 0.18787878787878787
         }
       },
-      "score": 38.4475566131416,
+      "score": 47.191559850855839,
       "signals": {
         "data_quality": {
-          "confident_share": 0.71095262680527449,
-          "exact_join_share": 0.33448190991877913,
+          "confident_share": 0.63905303030303029,
+          "exact_join_share": 0.31722689075630245,
           "join_share": 0.84353741496598644
         },
         "easy_damage": {
-          "best_cheap_damage": 0.057471264367816355,
-          "best_pareto_ratio": 0.0
+          "best_cheap_damage": 0.069444444444444767,
+          "best_pareto_ratio": 0.65952080706179039
         },
         "input_shape": {
           "big_motion_share": 0.47368421052631582,
-          "mean_hardest_motion": 0.67391304347826098,
-          "mean_input_count": 0.68681318681318682,
-          "mean_method_switches": 0.52631578947368429,
-          "simple_share": 0.47368421052631576
+          "mean_hardest_motion": 0.6428571428571429,
+          "mean_input_count": 0.64957264957264971,
+          "mean_method_switches": 0.10000000000000009,
+          "simple_share": 0.89999999999999991
         },
         "route_availability": {
           "no_gauge_routes": 0.14031095606895008
@@ -1391,14 +1383,14 @@
     {
       "character": "Rashid",
       "components": {
-        "data_quality": 0.81617176048740081,
-        "easy_damage": 0.028735632183908177,
-        "input_shape": 0.56798947619885831,
+        "data_quality": 0.77750145084384215,
+        "easy_damage": 0.36448262575311757,
+        "input_shape": 0.51399074609600925,
         "route_availability": 0.29255236201720181,
         "timing_comfort": 0.76945038621509199
       },
       "coverage": 1.0,
-      "damage_rank": 29,
+      "damage_rank": 27,
       "fighter_id": 14,
       "flags": [
         {
@@ -1406,7 +1398,7 @@
         }
       ],
       "lc": "rashid",
-      "rank": 22,
+      "rank": 21,
       "raw": {
         "data_quality": {
           "confident_share": 0.80808080808080807,
@@ -1470,23 +1462,23 @@
           "unknown_share": 0.10707070707070707
         }
       },
-      "score": 45.385306750912036,
+      "score": 53.721045208981501,
       "signals": {
         "data_quality": {
-          "confident_share": 0.86797169701620969,
-          "exact_join_share": 0.34491540840458418,
+          "confident_share": 0.78019255050505054,
+          "exact_join_share": 0.32712215320910959,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.057471264367816355,
-          "best_pareto_ratio": 0.0
+          "best_cheap_damage": 0.069444444444444767,
+          "best_pareto_ratio": 0.65952080706179039
         },
         "input_shape": {
           "big_motion_share": 0.42105263157894735,
-          "mean_hardest_motion": 0.64130434782608692,
-          "mean_input_count": 0.64835164835164827,
-          "mean_method_switches": 0.57894736842105265,
-          "simple_share": 0.42105263157894735
+          "mean_hardest_motion": 0.5714285714285714,
+          "mean_input_count": 0.58974358974358965,
+          "mean_method_switches": 0.20000000000000007,
+          "simple_share": 0.79999999999999993
         },
         "route_availability": {
           "no_gauge_routes": 0.29255236201720181
@@ -1499,53 +1491,53 @@
     {
       "character": "Blanka",
       "components": {
-        "data_quality": 0.51270525104026676,
-        "easy_damage": 0.39500442086649001,
-        "input_shape": 0.47907655845298869,
-        "route_availability": 0.84991418896520909,
-        "timing_comfort": 0.11808953669963555
+        "data_quality": 0.49654767291759333,
+        "easy_damage": 0.76653355751716412,
+        "input_shape": 0.38199537304800468,
+        "route_availability": 0.81064883356588535,
+        "timing_comfort": 0.11776868642193714
       },
       "coverage": 1.0,
-      "damage_rank": 14,
+      "damage_rank": 13,
       "fighter_id": 15,
       "flags": [
         {
           "kind": "low_confidence",
-          "share": 0.73097345132743363
+          "share": 0.74248120300751874
         },
         {
           "kind": "search_truncated"
         }
       ],
       "lc": "blanka",
-      "rank": 27,
+      "rank": 26,
       "raw": {
         "data_quality": {
-          "confident_share": 0.26902654867256637,
+          "confident_share": 0.25751879699248126,
           "exact_join_share": 0.6376811594202898,
           "guessed_join_share": 0.36231884057971014,
           "guessed_join_steps": 25,
           "join_matched": 60,
           "join_rows": 61,
           "join_share": 0.98360655737704916,
-          "low_confidence_pairs": 413,
-          "low_confidence_share": 0.73097345132743363,
+          "low_confidence_pairs": 395,
+          "low_confidence_share": 0.74248120300751874,
           "missing_data_steps": 25,
           "search_truncated": true,
           "top_n": 25,
           "top_steps": 69,
-          "worklist_pairs": 565
+          "worklist_pairs": 532
         },
         "easy_damage": {
           "best_cheap_damage": 3800.0,
           "best_pareto_ratio": 661.53846153846155,
-          "cheap_routes": 409,
-          "cheap_routes_with_damage": 284,
+          "cheap_routes": 407,
+          "cheap_routes_with_damage": 278,
           "cheap_threshold": 6.0,
           "mean_pareto_ratio": 520.80108299026165,
           "pareto_routes": 10,
           "pareto_routes_with_damage": 10,
-          "routes": 2182
+          "routes": 2105
         },
         "input_shape": {
           "big_motion_routes": 21,
@@ -1558,67 +1550,67 @@
           "top_n": 25
         },
         "route_availability": {
-          "no_gauge_routes": 1567,
-          "no_gauge_share": 0.71814848762603112,
-          "routes": 2182,
-          "three_move_no_gauge_routes": 1321,
-          "three_move_routes": 1842
+          "no_gauge_routes": 1456,
+          "no_gauge_share": 0.69168646080760099,
+          "routes": 2105,
+          "three_move_no_gauge_routes": 1234,
+          "three_move_routes": 1789
         },
         "timing_comfort": {
           "both_pairs": 45,
-          "cancel_pairs": 134,
-          "cancel_share": 0.23716814159292035,
+          "cancel_pairs": 119,
+          "cancel_share": 0.22368421052631579,
           "comfortable_link_share": 0.77551020408163263,
           "comfortable_links": 76,
           "comfortable_margin": 3,
-          "forgiving_share": 0.45132743362831856,
+          "forgiving_share": 0.45112781954887216,
           "link_pairs": 98,
           "links_without_margin": 0,
           "negative_links": 10,
-          "pairs": 565,
+          "pairs": 532,
           "tight_link_share": 0.12244897959183673,
           "tight_links": 12,
-          "unknown_pairs": 288,
-          "unknown_share": 0.50973451327433628
+          "unknown_pairs": 270,
+          "unknown_share": 0.50751879699248126
         }
       },
-      "score": 40.405479404865076,
+      "score": 48.562073277098257,
       "signals": {
         "data_quality": {
-          "confident_share": 0.18112431488939754,
-          "exact_join_share": 0.34491540840458418,
+          "confident_share": 0.14962699718045122,
+          "exact_join_share": 0.32712215320910959,
           "join_share": 0.92818110850897728
         },
         "easy_damage": {
-          "best_cheap_damage": 0.5977011494252874,
-          "best_pareto_ratio": 0.19230769230769268
+          "best_cheap_damage": 0.72222222222222221,
+          "best_pareto_ratio": 0.81084489281210592
         },
         "input_shape": {
           "big_motion_share": 0.21052631578947367,
-          "mean_hardest_motion": 0.51086956521739135,
-          "mean_input_count": 0.56593406593406592,
-          "mean_method_switches": 0.78947368421052633,
-          "simple_share": 0.21052631578947367
+          "mean_hardest_motion": 0.2857142857142857,
+          "mean_input_count": 0.46153846153846156,
+          "mean_method_switches": 0.60000000000000009,
+          "simple_share": 0.39999999999999997
         },
         "route_availability": {
-          "no_gauge_routes": 0.84991418896520909
+          "no_gauge_routes": 0.81064883356588535
         },
         "timing_comfort": {
-          "forgiving_share": 0.11808953669963555
+          "forgiving_share": 0.11776868642193714
         }
       }
     },
     {
       "character": "Juri",
       "components": {
-        "data_quality": 0.64477695678195035,
-        "easy_damage": 0.30686339522546452,
-        "input_shape": 0.64623714386300202,
+        "data_quality": 0.6251175572030927,
+        "easy_damage": 0.697176684881603,
+        "input_shape": 0.63255253518411425,
         "route_availability": 0.31988701526800944,
         "timing_comfort": 0.78326312937235187
       },
       "coverage": 1.0,
-      "damage_rank": 20,
+      "damage_rank": 18,
       "fighter_id": 16,
       "flags": [
         {
@@ -1626,7 +1618,7 @@
         }
       ],
       "lc": "juri",
-      "rank": 16,
+      "rank": 12,
       "raw": {
         "data_quality": {
           "confident_share": 0.40536013400335014,
@@ -1690,23 +1682,23 @@
           "unknown_share": 0.10469011725293133
         }
       },
-      "score": 54.590048408147396,
+      "score": 65.760737885070768,
       "signals": {
         "data_quality": {
-          "confident_share": 0.3548366352098174,
-          "exact_join_share": 0.51421151349011684,
+          "confident_share": 0.31895152847571195,
+          "exact_join_share": 0.48768472906403937,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.5977011494252874,
-          "best_pareto_ratio": 0.01602564102564159
+          "best_cheap_damage": 0.72222222222222221,
+          "best_pareto_ratio": 0.6721311475409838
         },
         "input_shape": {
           "big_motion_share": 0.52631578947368429,
-          "mean_hardest_motion": 0.70652173913043481,
-          "mean_input_count": 0.80219780219780223,
-          "mean_method_switches": 0.47368421052631582,
-          "simple_share": 0.52631578947368418
+          "mean_hardest_motion": 0.7142857142857143,
+          "mean_input_count": 0.82905982905982911,
+          "mean_method_switches": 0.0,
+          "simple_share": 1.0
         },
         "route_availability": {
           "no_gauge_routes": 0.31988701526800944
@@ -1719,18 +1711,18 @@
     {
       "character": "Marisa",
       "components": {
-        "data_quality": 0.82136178622881006,
-        "easy_damage": 0.04807692307692335,
-        "input_shape": 0.50622532501823125,
+        "data_quality": 0.78282140412075385,
+        "easy_damage": 0.36759142496847425,
+        "input_shape": 0.42106998264893014,
         "route_availability": 0.29158440797278545,
         "timing_comfort": 0.88702311595564742
       },
       "coverage": 1.0,
-      "damage_rank": 23,
+      "damage_rank": 21,
       "fighter_id": 17,
       "flags": [],
       "lc": "marisa",
-      "rank": 20,
+      "rank": 19,
       "raw": {
         "data_quality": {
           "confident_share": 0.792332268370607,
@@ -1794,23 +1786,23 @@
           "unknown_share": 0.025559105431309903
         }
       },
-      "score": 47.402980658670629,
+      "score": 54.474128335104055,
       "signals": {
         "data_quality": {
-          "confident_share": 0.84790536216497192,
-          "exact_join_share": 0.41099820681410648,
+          "confident_share": 0.76215555111821087,
+          "exact_join_share": 0.38979591836734701,
           "join_share": 1.0
         },
         "easy_damage": {
           "best_cheap_damage": 0.0,
-          "best_pareto_ratio": 0.0961538461538467
+          "best_pareto_ratio": 0.73518284993694849
         },
         "input_shape": {
           "big_motion_share": 0.31578947368421051,
-          "mean_hardest_motion": 0.57608695652173925,
-          "mean_input_count": 0.5494505494505495,
-          "mean_method_switches": 0.68421052631578949,
-          "simple_share": 0.31578947368421051
+          "mean_hardest_motion": 0.42857142857142871,
+          "mean_input_count": 0.43589743589743601,
+          "mean_method_switches": 0.40000000000000002,
+          "simple_share": 0.59999999999999998
         },
         "route_availability": {
           "no_gauge_routes": 0.29158440797278545
@@ -1823,14 +1815,14 @@
     {
       "character": "Guile",
       "components": {
-        "data_quality": 0.18149594830923799,
-        "easy_damage": 0.468501326259947,
-        "input_shape": 0.67173472980109139,
+        "data_quality": 0.17649856205734527,
+        "easy_damage": 0.84858834244080139,
+        "input_shape": 0.70800655484866015,
         "route_availability": 0.56477112339913493,
         "timing_comfort": 0.23281509600622516
       },
       "coverage": 1.0,
-      "damage_rank": 9,
+      "damage_rank": 7,
       "fighter_id": 18,
       "flags": [
         {
@@ -1848,7 +1840,7 @@
         }
       ],
       "lc": "guile",
-      "rank": 24,
+      "rank": 18,
       "raw": {
         "data_quality": {
           "confident_share": 0.16124419020378977,
@@ -1912,23 +1904,23 @@
           "unknown_share": 0.44762245262781553
         }
       },
-      "score": 44.131456150065056,
+      "score": 56.390888399160978,
       "signals": {
         "data_quality": {
-          "confident_share": 0.04379114394849655,
-          "exact_join_share": 0.31266641308482312,
+          "confident_share": 0.039362486592778009,
+          "exact_join_share": 0.29653679653679649,
           "join_share": 0.25361552028218687
         },
         "easy_damage": {
-          "best_cheap_damage": 0.71264367816091956,
-          "best_pareto_ratio": 0.22435897435897445
+          "best_cheap_damage": 0.86111111111111116,
+          "best_pareto_ratio": 0.83606557377049162
         },
         "input_shape": {
           "big_motion_share": 0.36842105263157898,
-          "mean_hardest_motion": 0.80434782608695654,
-          "mean_input_count": 0.88461538461538458,
-          "mean_method_switches": 0.63157894736842102,
-          "simple_share": 0.36842105263157898
+          "mean_hardest_motion": 0.9285714285714286,
+          "mean_input_count": 0.95726495726495719,
+          "mean_method_switches": 0.29999999999999993,
+          "simple_share": 0.70000000000000007
         },
         "route_availability": {
           "no_gauge_routes": 0.56477112339913493
@@ -1941,18 +1933,18 @@
     {
       "character": "Ed",
       "components": {
-        "data_quality": 0.73553354317427311,
-        "easy_damage": 0.468501326259947,
-        "input_shape": 0.6379953856212438,
+        "data_quality": 0.70141687209395542,
+        "easy_damage": 0.84858834244080139,
+        "input_shape": 0.61973202236360148,
         "route_availability": 0.51992630243321913,
         "timing_comfort": 0.73210784313725485
       },
       "coverage": 1.0,
-      "damage_rank": 8,
+      "damage_rank": 6,
       "fighter_id": 19,
       "flags": [],
       "lc": "ed",
-      "rank": 10,
+      "rank": 5,
       "raw": {
         "data_quality": {
           "confident_share": 0.72619047619047616,
@@ -2016,23 +2008,23 @@
           "unknown_share": 0.16071428571428573
         }
       },
-      "score": 60.862218962835804,
+      "score": 71.467078656017208,
       "signals": {
         "data_quality": {
-          "confident_share": 0.76362939918868544,
-          "exact_join_share": 0.31266641308482312,
+          "confident_share": 0.68640252976190474,
+          "exact_join_share": 0.29653679653679649,
           "join_share": 0.91887125220458565
         },
         "easy_damage": {
-          "best_cheap_damage": 0.71264367816091956,
-          "best_pareto_ratio": 0.22435897435897445
+          "best_cheap_damage": 0.86111111111111116,
+          "best_pareto_ratio": 0.83606557377049162
         },
         "input_shape": {
           "big_motion_share": 0.52631578947368429,
-          "mean_hardest_motion": 0.70652173913043481,
-          "mean_input_count": 0.77472527472527475,
-          "mean_method_switches": 0.47368421052631582,
-          "simple_share": 0.52631578947368418
+          "mean_hardest_motion": 0.7142857142857143,
+          "mean_input_count": 0.78632478632478642,
+          "mean_method_switches": 0.0,
+          "simple_share": 1.0
         },
         "route_availability": {
           "no_gauge_routes": 0.51992630243321913
@@ -2045,21 +2037,21 @@
     {
       "character": "EHonda",
       "components": {
-        "data_quality": 0.85152545479103314,
-        "easy_damage": 0.54932029177718855,
-        "input_shape": 0.5815233107853246,
-        "route_availability": 0.087665750137576257,
-        "timing_comfort": 0.86605392156862726
+        "data_quality": 0.80672646915355839,
+        "easy_damage": 0.92429417122040081,
+        "input_shape": 0.54179776363986909,
+        "route_availability": 0.055509950594539059,
+        "timing_comfort": 0.87489941731409526
       },
       "coverage": 1.0,
-      "damage_rank": 6,
+      "damage_rank": 4,
       "fighter_id": 20,
       "flags": [],
       "lc": "ehonda",
-      "rank": 7,
+      "rank": 4,
       "raw": {
         "data_quality": {
-          "confident_share": 0.85135135135135132,
+          "confident_share": 0.84433962264150941,
           "exact_join_share": 0.67164179104477606,
           "guessed_join_share": 0.32835820895522388,
           "guessed_join_steps": 22,
@@ -2067,23 +2059,23 @@
           "join_rows": 67,
           "join_share": 1.0,
           "low_confidence_pairs": 66,
-          "low_confidence_share": 0.14864864864864866,
+          "low_confidence_share": 0.15566037735849056,
           "missing_data_steps": 25,
           "search_truncated": false,
           "top_n": 25,
           "top_steps": 67,
-          "worklist_pairs": 444
+          "worklist_pairs": 424
         },
         "easy_damage": {
           "best_cheap_damage": 4100.0,
           "best_pareto_ratio": 683.33333333333337,
-          "cheap_routes": 201,
-          "cheap_routes_with_damage": 165,
+          "cheap_routes": 192,
+          "cheap_routes_with_damage": 156,
           "cheap_threshold": 6.0,
-          "mean_pareto_ratio": 509.04947433518868,
+          "mean_pareto_ratio": 500.73778602350029,
           "pareto_routes": 7,
           "pareto_routes_with_damage": 7,
-          "routes": 609
+          "routes": 565
         },
         "input_shape": {
           "big_motion_routes": 18,
@@ -2096,67 +2088,67 @@
           "top_n": 25
         },
         "route_availability": {
-          "no_gauge_routes": 376,
-          "no_gauge_share": 0.61740558292282433,
-          "routes": 609,
-          "three_move_no_gauge_routes": 277,
-          "three_move_routes": 447
+          "no_gauge_routes": 354,
+          "no_gauge_share": 0.6265486725663717,
+          "routes": 565,
+          "three_move_no_gauge_routes": 261,
+          "three_move_routes": 415
         },
         "timing_comfort": {
-          "both_pairs": 23,
-          "cancel_pairs": 331,
-          "cancel_share": 0.74549549549549554,
-          "comfortable_link_share": 0.71621621621621623,
-          "comfortable_links": 53,
+          "both_pairs": 21,
+          "cancel_pairs": 319,
+          "cancel_share": 0.75235849056603776,
+          "comfortable_link_share": 0.75,
+          "comfortable_links": 51,
           "comfortable_margin": 3,
-          "forgiving_share": 0.91666666666666663,
-          "link_pairs": 74,
+          "forgiving_share": 0.92216981132075471,
+          "link_pairs": 68,
           "links_without_margin": 0,
-          "negative_links": 9,
-          "pairs": 444,
-          "tight_link_share": 0.16216216216216217,
+          "negative_links": 5,
+          "pairs": 424,
+          "tight_link_share": 0.17647058823529413,
           "tight_links": 12,
           "unknown_pairs": 16,
-          "unknown_share": 0.036036036036036036
+          "unknown_share": 0.037735849056603772
         }
       },
-      "score": 62.060951611450562,
+      "score": 71.768618857942116,
       "signals": {
         "data_quality": {
-          "confident_share": 0.92310577461575161,
-          "exact_join_share": 0.41141572472366189,
+          "confident_share": 0.82172022405660372,
+          "exact_join_share": 0.39019189765458406,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.77011494252873558,
-          "best_pareto_ratio": 0.32852564102564158
+          "best_cheap_damage": 0.93055555555555558,
+          "best_pareto_ratio": 0.91803278688524603
         },
         "input_shape": {
           "big_motion_share": 0.36842105263157898,
-          "mean_hardest_motion": 0.64130434782608692,
-          "mean_input_count": 0.71978021978021989,
-          "mean_method_switches": 0.63157894736842102,
-          "simple_share": 0.36842105263157898
+          "mean_hardest_motion": 0.5714285714285714,
+          "mean_input_count": 0.70085470085470103,
+          "mean_method_switches": 0.29999999999999993,
+          "simple_share": 0.70000000000000007
         },
         "route_availability": {
-          "no_gauge_routes": 0.087665750137576257
+          "no_gauge_routes": 0.055509950594539059
         },
         "timing_comfort": {
-          "forgiving_share": 0.86605392156862726
+          "forgiving_share": 0.87489941731409526
         }
       }
     },
     {
       "character": "Jamie",
       "components": {
-        "data_quality": 0.076360147233046974,
-        "easy_damage": 0.46242263483642798,
-        "input_shape": 0.46753809691452713,
-        "route_availability": 0.46048063226507407,
-        "timing_comfort": 0.38553862078812101
+        "data_quality": 0.046658909574468083,
+        "easy_damage": 0.80747337817009934,
+        "input_shape": 0.36404665509928674,
+        "route_availability": 0.46259584054739217,
+        "timing_comfort": 0.32670721214017512
       },
       "coverage": 1.0,
-      "damage_rank": 12,
+      "damage_rank": 10,
       "fighter_id": 21,
       "flags": [
         {
@@ -2167,41 +2159,38 @@
         },
         {
           "kind": "low_confidence",
-          "share": 0.72330097087378642
-        },
-        {
-          "kind": "search_truncated"
+          "share": 0.77127659574468088
         }
       ],
       "lc": "jamie",
-      "rank": 26,
+      "rank": 30,
       "raw": {
         "data_quality": {
-          "confident_share": 0.27669902912621358,
+          "confident_share": 0.22872340425531912,
           "exact_join_share": 0.46153846153846156,
           "guessed_join_share": 0.53846153846153844,
           "guessed_join_steps": 35,
           "join_matched": 71,
           "join_rows": 92,
           "join_share": 0.77173913043478259,
-          "low_confidence_pairs": 596,
-          "low_confidence_share": 0.72330097087378642,
+          "low_confidence_pairs": 580,
+          "low_confidence_share": 0.77127659574468088,
           "missing_data_steps": 25,
-          "search_truncated": true,
+          "search_truncated": false,
           "top_n": 25,
           "top_steps": 65,
-          "worklist_pairs": 824
+          "worklist_pairs": 752
         },
         "easy_damage": {
           "best_cheap_damage": 3700.0,
           "best_pareto_ratio": 692.30769230769226,
-          "cheap_routes": 254,
-          "cheap_routes_with_damage": 191,
+          "cheap_routes": 252,
+          "cheap_routes_with_damage": 189,
           "cheap_threshold": 6.0,
           "mean_pareto_ratio": 430.60969912440504,
           "pareto_routes": 10,
           "pareto_routes_with_damage": 8,
-          "routes": 1111
+          "routes": 1079
         },
         "input_shape": {
           "big_motion_routes": 21,
@@ -2214,67 +2203,67 @@
           "top_n": 25
         },
         "route_availability": {
-          "no_gauge_routes": 756,
-          "no_gauge_share": 0.68046804680468043,
-          "routes": 1111,
-          "three_move_no_gauge_routes": 585,
-          "three_move_routes": 861
+          "no_gauge_routes": 759,
+          "no_gauge_share": 0.70342910101946243,
+          "routes": 1079,
+          "three_move_no_gauge_routes": 588,
+          "three_move_routes": 836
         },
         "timing_comfort": {
           "both_pairs": 76,
-          "cancel_pairs": 321,
-          "cancel_share": 0.3895631067961165,
-          "comfortable_link_share": 0.85496183206106868,
-          "comfortable_links": 112,
+          "cancel_pairs": 265,
+          "cancel_share": 0.35239361702127658,
+          "comfortable_link_share": 0.83478260869565213,
+          "comfortable_links": 96,
           "comfortable_margin": 3,
-          "forgiving_share": 0.61771844660194175,
-          "link_pairs": 131,
+          "forgiving_share": 0.5811170212765957,
+          "link_pairs": 115,
           "links_without_margin": 0,
           "negative_links": 9,
-          "pairs": 824,
-          "tight_link_share": 0.076335877862595422,
+          "pairs": 752,
+          "tight_link_share": 0.086956521739130432,
           "tight_links": 10,
           "unknown_pairs": 296,
-          "unknown_share": 0.35922330097087379
+          "unknown_share": 0.39361702127659576
         }
       },
-      "score": 40.568004782640259,
+      "score": 46.585595527308129,
       "signals": {
         "data_quality": {
-          "confident_share": 0.19090036808261743,
+          "confident_share": 0.11664727393617021,
           "exact_join_share": 0.0,
           "join_share": 0.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.54022988505747127,
-          "best_pareto_ratio": 0.38461538461538469
+          "best_cheap_damage": 0.65277777777777779,
+          "best_pareto_ratio": 0.96216897856242101
         },
         "input_shape": {
           "big_motion_share": 0.21052631578947367,
-          "mean_hardest_motion": 0.51086956521739135,
-          "mean_input_count": 0.52747252747252749,
-          "mean_method_switches": 0.78947368421052633,
-          "simple_share": 0.21052631578947367
+          "mean_hardest_motion": 0.2857142857142857,
+          "mean_input_count": 0.40170940170940184,
+          "mean_method_switches": 0.60000000000000009,
+          "simple_share": 0.39999999999999997
         },
         "route_availability": {
-          "no_gauge_routes": 0.46048063226507407
+          "no_gauge_routes": 0.46259584054739217
         },
         "timing_comfort": {
-          "forgiving_share": 0.38553862078812101
+          "forgiving_share": 0.32670721214017512
         }
       }
     },
     {
       "character": "Akuma",
       "components": {
-        "data_quality": 0.66691481736613767,
-        "easy_damage": 0.5667717665115195,
-        "input_shape": 0.68380126738250313,
+        "data_quality": 0.63745475532884299,
+        "easy_damage": 0.92591590198302243,
+        "input_shape": 0.67969924812030091,
         "route_availability": 0.62620845897347222,
         "timing_comfort": 0.51896736796908549
       },
       "coverage": 1.0,
-      "damage_rank": 4,
+      "damage_rank": 2,
       "fighter_id": 22,
       "flags": [
         {
@@ -2282,7 +2271,7 @@
         }
       ],
       "lc": "akuma",
-      "rank": 11,
+      "rank": 7,
       "raw": {
         "data_quality": {
           "confident_share": 0.55474452554744524,
@@ -2346,23 +2335,23 @@
           "unknown_share": 0.28345498783454987
         }
       },
-      "score": 60.003601642531414,
+      "score": 70.380774604748481,
       "signals": {
         "data_quality": {
-          "confident_share": 0.54517791620684442,
-          "exact_join_share": 0.71783472803347281,
+          "confident_share": 0.49004333941605838,
+          "exact_join_share": 0.6808035714285714,
           "join_share": 0.76319176319176318
         },
         "easy_damage": {
-          "best_cheap_damage": 0.71264367816091956,
-          "best_pareto_ratio": 0.42089985486211956
+          "best_cheap_damage": 0.86111111111111116,
+          "best_pareto_ratio": 0.99072069285493369
         },
         "input_shape": {
           "big_motion_share": 0.68421052631578949,
-          "mean_hardest_motion": 0.71739130434782616,
-          "mean_input_count": 0.76923076923076927,
-          "mean_method_switches": 0.73684210526315796,
-          "simple_share": 0.26315789473684209
+          "mean_hardest_motion": 0.73809523809523814,
+          "mean_input_count": 0.77777777777777779,
+          "mean_method_switches": 0.5,
+          "simple_share": 0.5
         },
         "route_availability": {
           "no_gauge_routes": 0.62620845897347222
@@ -2375,18 +2364,18 @@
     {
       "character": "Sagat",
       "components": {
-        "data_quality": 0.82694572457548832,
-        "easy_damage": 0.028735632183908177,
-        "input_shape": 0.54040410390524807,
+        "data_quality": 0.78728625916385964,
+        "easy_damage": 0.36448262575311757,
+        "input_shape": 0.47265856950067475,
         "route_availability": 0.44616131731019909,
         "timing_comfort": 0.94928255282695584
       },
       "coverage": 1.0,
-      "damage_rank": 30,
+      "damage_rank": 28,
       "fighter_id": 25,
       "flags": [],
       "lc": "sagat",
-      "rank": 19,
+      "rank": 17,
       "raw": {
         "data_quality": {
           "confident_share": 0.82524271844660191,
@@ -2450,23 +2439,23 @@
           "unknown_share": 0.0
         }
       },
-      "score": 50.835305802679223,
+      "score": 58.817482595524872,
       "signals": {
         "data_quality": {
-          "confident_share": 0.88983890797189458,
-          "exact_join_share": 0.35505080693365199,
+          "confident_share": 0.79984830097087378,
+          "exact_join_share": 0.33673469387755089,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.057471264367816355,
-          "best_pareto_ratio": 0.0
+          "best_cheap_damage": 0.069444444444444767,
+          "best_pareto_ratio": 0.65952080706179039
         },
         "input_shape": {
           "big_motion_share": 0.36842105263157898,
-          "mean_hardest_motion": 0.60869565217391308,
-          "mean_input_count": 0.60989010989010994,
-          "mean_method_switches": 0.63157894736842102,
-          "simple_share": 0.36842105263157898
+          "mean_hardest_motion": 0.49999999999999989,
+          "mean_input_count": 0.52991452991452992,
+          "mean_method_switches": 0.29999999999999993,
+          "simple_share": 0.70000000000000007
         },
         "route_availability": {
           "no_gauge_routes": 0.44616131731019909
@@ -2479,14 +2468,14 @@
     {
       "character": "MBison",
       "components": {
-        "data_quality": 0.62318867004429868,
-        "easy_damage": 0.63013925729442988,
-        "input_shape": 0.58872400482812381,
+        "data_quality": 0.60527313386750903,
+        "easy_damage": 1.0,
+        "input_shape": 0.54220936957779076,
         "route_availability": 0.46889172774253374,
         "timing_comfort": 0.44645914561790123
       },
       "coverage": 1.0,
-      "damage_rank": 3,
+      "damage_rank": 1,
       "fighter_id": 26,
       "flags": [
         {
@@ -2498,7 +2487,7 @@
         }
       ],
       "lc": "mbison",
-      "rank": 14,
+      "rank": 13,
       "raw": {
         "data_quality": {
           "confident_share": 0.3804034582132565,
@@ -2562,23 +2551,23 @@
           "unknown_share": 0.33141210374639768
         }
       },
-      "score": 55.704560457851862,
+      "score": 65.458361495992733,
       "signals": {
         "data_quality": {
-          "confident_share": 0.32303755908002152,
-          "exact_join_share": 0.46986823206145012,
+          "confident_share": 0.29036833573487036,
+          "exact_join_share": 0.44562899786780386,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.82758620689655171,
-          "best_pareto_ratio": 0.43269230769230804
+          "best_cheap_damage": 1.0,
+          "best_pareto_ratio": 1.0
         },
         "input_shape": {
           "big_motion_share": 0.47368421052631582,
-          "mean_hardest_motion": 0.64130434782608692,
-          "mean_input_count": 0.66483516483516492,
-          "mean_method_switches": 0.68421052631578949,
-          "simple_share": 0.31578947368421051
+          "mean_hardest_motion": 0.5714285714285714,
+          "mean_input_count": 0.61538461538461542,
+          "mean_method_switches": 0.40000000000000002,
+          "simple_share": 0.59999999999999998
         },
         "route_availability": {
           "no_gauge_routes": 0.46889172774253374
@@ -2591,18 +2580,18 @@
     {
       "character": "Terry",
       "components": {
-        "data_quality": 0.82175107969414363,
-        "easy_damage": 0.38768236074270573,
-        "input_shape": 0.60051990343752371,
+        "data_quality": 0.78288586755360479,
+        "easy_damage": 0.77288251366120209,
+        "input_shape": 0.56301523038365153,
         "route_availability": 0.20558124829870378,
         "timing_comfort": 1.0
       },
       "coverage": 1.0,
-      "damage_rank": 15,
+      "damage_rank": 11,
       "fighter_id": 27,
       "flags": [],
       "lc": "terry",
-      "rank": 8,
+      "rank": 3,
       "raw": {
         "data_quality": {
           "confident_share": 0.80440097799511001,
@@ -2666,23 +2655,23 @@
           "unknown_share": 0.0
         }
       },
-      "score": 61.916791688147754,
+      "score": 72.146527327950437,
       "signals": {
         "data_quality": {
-          "confident_share": 0.86328296370797497,
-          "exact_join_share": 0.38218947105476797,
+          "confident_share": 0.77597799511002441,
+          "exact_join_share": 0.36247334754797439,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.65517241379310343,
-          "best_pareto_ratio": 0.12019230769230801
+          "best_cheap_damage": 0.79166666666666663,
+          "best_pareto_ratio": 0.75409836065573765
         },
         "input_shape": {
           "big_motion_share": 0.47368421052631582,
-          "mean_hardest_motion": 0.67391304347826098,
-          "mean_input_count": 0.70329670329670324,
-          "mean_method_switches": 0.52631578947368429,
-          "simple_share": 0.47368421052631576
+          "mean_hardest_motion": 0.6428571428571429,
+          "mean_input_count": 0.67521367521367515,
+          "mean_method_switches": 0.10000000000000009,
+          "simple_share": 0.89999999999999991
         },
         "route_availability": {
           "no_gauge_routes": 0.20558124829870378
@@ -2695,14 +2684,14 @@
     {
       "character": "Mai",
       "components": {
-        "data_quality": 0.47011381156615278,
-        "easy_damage": 0.028735632183908177,
-        "input_shape": 0.61821516584102398,
+        "data_quality": 0.46644080829114754,
+        "easy_damage": 0.36448262575311757,
+        "input_shape": 0.5889627915943707,
         "route_availability": 0.0,
         "timing_comfort": 0.95044769352827829
       },
       "coverage": 1.0,
-      "damage_rank": 28,
+      "damage_rank": 26,
       "fighter_id": 28,
       "flags": [
         {
@@ -2711,7 +2700,7 @@
         }
       ],
       "lc": "mai",
-      "rank": 23,
+      "rank": 20,
       "raw": {
         "data_quality": {
           "confident_share": 0.12909441233140651,
@@ -2775,23 +2764,23 @@
           "unknown_share": 0.0
         }
       },
-      "score": 44.779778565411334,
+      "score": 54.084148983571232,
       "signals": {
         "data_quality": {
-          "confident_share": 0.0028268247130898293,
-          "exact_join_share": 0.34491540840458418,
+          "confident_share": 0.0025409441233140502,
+          "exact_join_share": 0.32712215320910959,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.057471264367816355,
-          "best_pareto_ratio": 0.0
+          "best_cheap_damage": 0.069444444444444767,
+          "best_pareto_ratio": 0.65952080706179039
         },
         "input_shape": {
           "big_motion_share": 0.52631578947368429,
-          "mean_hardest_motion": 0.70652173913043481,
-          "mean_input_count": 0.70879120879120894,
-          "mean_method_switches": 0.47368421052631582,
-          "simple_share": 0.52631578947368418
+          "mean_hardest_motion": 0.7142857142857143,
+          "mean_input_count": 0.68376068376068388,
+          "mean_method_switches": 0.0,
+          "simple_share": 1.0
         },
         "route_availability": {
           "no_gauge_routes": 0.0
@@ -2804,14 +2793,14 @@
     {
       "character": "Elena",
       "components": {
-        "data_quality": 0.15495857589979498,
-        "easy_damage": 0.30686339522546452,
-        "input_shape": 0.55523926874041285,
+        "data_quality": 0.1437159049960427,
+        "easy_damage": 0.697176684881603,
+        "input_shape": 0.4957354925775978,
         "route_availability": 0.25344031007574408,
         "timing_comfort": 0.0
       },
       "coverage": 1.0,
-      "damage_rank": 18,
+      "damage_rank": 16,
       "fighter_id": 29,
       "flags": [
         {
@@ -2893,23 +2882,23 @@
           "unknown_share": 0.6111619396157365
         }
       },
-      "score": 27.170872435029654,
+      "score": 37.280250011605901,
       "signals": {
         "data_quality": {
-          "confident_share": 0.17057886684187876,
-          "exact_join_share": 0.42087127738124547,
+          "confident_share": 0.15332799634034769,
+          "exact_join_share": 0.39915966386554624,
           "join_share": 0.0063819342169859515
         },
         "easy_damage": {
-          "best_cheap_damage": 0.5977011494252874,
-          "best_pareto_ratio": 0.01602564102564159
+          "best_cheap_damage": 0.72222222222222221,
+          "best_pareto_ratio": 0.6721311475409838
         },
         "input_shape": {
           "big_motion_share": 0.36842105263157898,
-          "mean_hardest_motion": 0.60869565217391308,
-          "mean_input_count": 0.65934065934065922,
-          "mean_method_switches": 0.63157894736842102,
-          "simple_share": 0.36842105263157898
+          "mean_hardest_motion": 0.49999999999999989,
+          "mean_input_count": 0.60683760683760668,
+          "mean_method_switches": 0.29999999999999993,
+          "simple_share": 0.70000000000000007
         },
         "route_availability": {
           "no_gauge_routes": 0.25344031007574408
@@ -2922,18 +2911,18 @@
     {
       "character": "CViper",
       "components": {
-        "data_quality": 0.6905264900141781,
-        "easy_damage": 0.028735632183908177,
-        "input_shape": 0.52435719315009932,
+        "data_quality": 0.65308009774553621,
+        "easy_damage": 0.36448262575311757,
+        "input_shape": 0.4492751108540583,
         "route_availability": 0.25551718438903348,
         "timing_comfort": 0.77115653040877363
       },
       "coverage": 1.0,
-      "damage_rank": 25,
+      "damage_rank": 23,
       "fighter_id": 30,
       "flags": [],
       "lc": "cviper",
-      "rank": 25,
+      "rank": 24,
       "raw": {
         "data_quality": {
           "confident_share": 0.75593220338983047,
@@ -2997,23 +2986,23 @@
           "unknown_share": 0.094915254237288138
         }
       },
-      "score": 42.710348798521188,
+      "score": 50.531242625510018,
       "signals": {
         "data_quality": {
-          "confident_share": 0.80152544974439688,
-          "exact_join_share": 0.48681098781153365,
+          "confident_share": 0.72046610169491521,
+          "exact_join_share": 0.46169772256728786,
           "join_share": 0.68138528138528132
         },
         "easy_damage": {
-          "best_cheap_damage": 0.057471264367816355,
-          "best_pareto_ratio": 0.0
+          "best_cheap_damage": 0.069444444444444767,
+          "best_pareto_ratio": 0.65952080706179039
         },
         "input_shape": {
           "big_motion_share": 0.31578947368421051,
-          "mean_hardest_motion": 0.57608695652173925,
-          "mean_input_count": 0.60989010989010994,
-          "mean_method_switches": 0.68421052631578949,
-          "simple_share": 0.31578947368421051
+          "mean_hardest_motion": 0.42857142857142871,
+          "mean_input_count": 0.52991452991452992,
+          "mean_method_switches": 0.40000000000000002,
+          "simple_share": 0.59999999999999998
         },
         "route_availability": {
           "no_gauge_routes": 0.25551718438903348
@@ -3026,14 +3015,14 @@
     {
       "character": "Alex",
       "components": {
-        "data_quality": 0.72324194768557892,
-        "easy_damage": 0.54932029177718855,
-        "input_shape": 0.50171687580154389,
-        "route_availability": 0.35543461341186977,
-        "timing_comfort": 0.89247553223690856
+        "data_quality": 0.69124295412392045,
+        "easy_damage": 0.92429417122040081,
+        "input_shape": 0.41563524195103146,
+        "route_availability": 0.24821256108177864,
+        "timing_comfort": 0.89085875090777045
       },
       "coverage": 1.0,
-      "damage_rank": 5,
+      "damage_rank": 3,
       "fighter_id": 31,
       "flags": [
         {
@@ -3041,34 +3030,34 @@
         }
       ],
       "lc": "alex",
-      "rank": 6,
+      "rank": 8,
       "raw": {
         "data_quality": {
-          "confident_share": 0.57461406518010294,
+          "confident_share": 0.56584362139917688,
           "exact_join_share": 0.70422535211267601,
           "guessed_join_share": 0.29577464788732394,
           "guessed_join_steps": 21,
           "join_matched": 70,
           "join_rows": 70,
           "join_share": 1.0,
-          "low_confidence_pairs": 248,
-          "low_confidence_share": 0.42538593481989706,
+          "low_confidence_pairs": 211,
+          "low_confidence_share": 0.43415637860082307,
           "missing_data_steps": 25,
           "search_truncated": true,
           "top_n": 25,
           "top_steps": 71,
-          "worklist_pairs": 583
+          "worklist_pairs": 486
         },
         "easy_damage": {
           "best_cheap_damage": 4100.0,
           "best_pareto_ratio": 683.33333333333337,
-          "cheap_routes": 286,
-          "cheap_routes_with_damage": 281,
+          "cheap_routes": 284,
+          "cheap_routes_with_damage": 279,
           "cheap_threshold": 6.0,
-          "mean_pareto_ratio": 479.60989545214147,
-          "pareto_routes": 11,
-          "pareto_routes_with_damage": 11,
-          "routes": 919
+          "mean_pareto_ratio": 477.01614153820037,
+          "pareto_routes": 12,
+          "pareto_routes_with_damage": 12,
+          "routes": 777
         },
         "input_shape": {
           "big_motion_routes": 20,
@@ -3081,67 +3070,67 @@
           "top_n": 25
         },
         "route_availability": {
-          "no_gauge_routes": 621,
-          "no_gauge_share": 0.675734494015234,
-          "routes": 919,
-          "three_move_no_gauge_routes": 512,
-          "three_move_routes": 757
+          "no_gauge_routes": 508,
+          "no_gauge_share": 0.65379665379665375,
+          "routes": 777,
+          "three_move_no_gauge_routes": 421,
+          "three_move_routes": 644
         },
         "timing_comfort": {
-          "both_pairs": 54,
-          "cancel_pairs": 396,
-          "cancel_share": 0.67924528301886788,
-          "comfortable_link_share": 0.70676691729323304,
-          "comfortable_links": 94,
+          "both_pairs": 42,
+          "cancel_pairs": 331,
+          "cancel_share": 0.68106995884773658,
+          "comfortable_link_share": 0.70796460176991149,
+          "comfortable_links": 80,
           "comfortable_margin": 3,
-          "forgiving_share": 0.93310463121783882,
-          "link_pairs": 133,
+          "forgiving_share": 0.9320987654320988,
+          "link_pairs": 113,
           "links_without_margin": 0,
-          "negative_links": 27,
-          "pairs": 583,
-          "tight_link_share": 0.090225563909774431,
+          "negative_links": 21,
+          "pairs": 486,
+          "tight_link_share": 0.10619469026548672,
           "tight_links": 12,
           "unknown_pairs": 0,
           "unknown_share": 0.0
         }
       },
-      "score": 62.121184565251461,
+      "score": 69.78573011013907,
       "signals": {
         "data_quality": {
-          "confident_share": 0.57049511024170374,
-          "exact_join_share": 0.47521951794448691,
+          "confident_share": 0.50275527263374475,
+          "exact_join_share": 0.45070422535211258,
           "join_share": 1.0
         },
         "easy_damage": {
-          "best_cheap_damage": 0.77011494252873558,
-          "best_pareto_ratio": 0.32852564102564158
+          "best_cheap_damage": 0.93055555555555558,
+          "best_pareto_ratio": 0.91803278688524603
         },
         "input_shape": {
           "big_motion_share": 0.26315789473684204,
-          "mean_hardest_motion": 0.5434782608695653,
-          "mean_input_count": 0.58791208791208782,
-          "mean_method_switches": 0.73684210526315796,
-          "simple_share": 0.26315789473684209
+          "mean_hardest_motion": 0.35714285714285721,
+          "mean_input_count": 0.49572649572649574,
+          "mean_method_switches": 0.5,
+          "simple_share": 0.5
         },
         "route_availability": {
-          "no_gauge_routes": 0.35543461341186977
+          "no_gauge_routes": 0.24821256108177864
         },
         "timing_comfort": {
-          "forgiving_share": 0.89247553223690856
+          "forgiving_share": 0.89085875090777045
         }
       }
     },
     {
       "character": "Ingrid",
       "components": {
-        "data_quality": 0.68226072279463357,
-        "easy_damage": 0.3993259420419436,
-        "input_shape": 0.32587792642140467,
+        "data_quality": 0.65876876466160472,
+        "easy_damage": 0.76993409876997998,
+        "input_shape": 0.15000000000000002,
         "route_availability": 0.82082877722632974,
         "timing_comfort": 0.43217295263028721
       },
       "coverage": 1.0,
-      "damage_rank": 13,
+      "damage_rank": 12,
       "fighter_id": 32,
       "flags": [
         {
@@ -3153,7 +3142,7 @@
         }
       ],
       "lc": "ingrid",
-      "rank": 21,
+      "rank": 23,
       "raw": {
         "data_quality": {
           "confident_share": 0.38247566063977745,
@@ -3217,21 +3206,21 @@
           "unknown_share": 0.3226703755215577
         }
       },
-      "score": 45.96194523776024,
+      "score": 52.448322197735919,
       "signals": {
         "data_quality": {
-          "confident_share": 0.32567789961541621,
-          "exact_join_share": 1.0,
+          "confident_share": 0.29274165507649513,
+          "exact_join_share": 0.94841269841269837,
           "join_share": 0.87997390737116765
         },
         "easy_damage": {
-          "best_cheap_damage": 0.5977011494252874,
-          "best_pareto_ratio": 0.20095073465859983
+          "best_cheap_damage": 0.72222222222222221,
+          "best_pareto_ratio": 0.81764597531773775
         },
         "input_shape": {
           "big_motion_share": 0.0,
-          "mean_hardest_motion": 0.38043478260869568,
-          "mean_input_count": 0.26923076923076916,
+          "mean_hardest_motion": 0.0,
+          "mean_input_count": 0.0,
           "mean_method_switches": 1.0,
           "simple_share": 0.0
         },
@@ -3246,14 +3235,14 @@
     {
       "character": "Yasmine",
       "components": {
-        "data_quality": 0.4168283547728715,
-        "easy_damage": 0.028735632183908177,
-        "input_shape": 0.60667670430256238,
+        "data_quality": 0.4133773509403762,
+        "easy_damage": 0.36448262575311757,
+        "input_shape": 0.57101407364565271,
         "route_availability": 0.78892450296478134,
         "timing_comfort": 0.44740390016852571
       },
       "coverage": 1.0,
-      "damage_rank": 31,
+      "damage_rank": 29,
       "fighter_id": 33,
       "flags": [
         {
@@ -3265,7 +3254,7 @@
         }
       ],
       "lc": "yasmine",
-      "rank": 29,
+      "rank": 28,
       "raw": {
         "data_quality": {
           "confident_share": 0.1268758526603001,
@@ -3329,23 +3318,23 @@
           "unknown_share": 0.330150068212824
         }
       },
-      "score": 39.271612654670982,
+      "score": 48.417946656999561,
       "signals": {
         "data_quality": {
           "confident_share": 0.0,
-          "exact_join_share": 0.33448190991877913,
+          "exact_join_share": 0.31722689075630245,
           "join_share": 0.87482993197278913
         },
         "easy_damage": {
-          "best_cheap_damage": 0.057471264367816355,
-          "best_pareto_ratio": 0.0
+          "best_cheap_damage": 0.069444444444444767,
+          "best_pareto_ratio": 0.65952080706179039
         },
         "input_shape": {
           "big_motion_share": 0.52631578947368429,
-          "mean_hardest_motion": 0.70652173913043481,
-          "mean_input_count": 0.67032967032967028,
-          "mean_method_switches": 0.47368421052631582,
-          "simple_share": 0.52631578947368418
+          "mean_hardest_motion": 0.7142857142857143,
+          "mean_input_count": 0.62393162393162382,
+          "mean_method_switches": 0.0,
+          "simple_share": 1.0
         },
         "route_availability": {
           "no_gauge_routes": 0.78892450296478134
@@ -3361,7 +3350,7 @@
     "best_cheap_damage": 0.5,
     "best_pareto_ratio": 0.5
   },
-  "generated_at": "2026-09-16T00:03:13Z",
+  "generated_at": "2026-09-16T00:28:18Z",
   "lab": {
     "characters": 31,
     "confirmed": 7,
@@ -3382,7 +3371,7 @@
     "big_motion_digits": 4,
     "cheap_quantile": 0.25,
     "cheap_threshold": 6.0,
-    "cheap_threshold_routes": 34625,
+    "cheap_threshold_routes": 33558,
     "comfortable_margin": 3,
     "drive_rush": false,
     "max_steps": 3,

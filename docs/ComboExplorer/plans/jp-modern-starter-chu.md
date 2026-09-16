@@ -1,6 +1,6 @@
 # Route plan - JP / modern - starter-chu
 
-Generated 2026-09-14T12:59:28Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-16T00:25:36Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -28,17 +28,19 @@ never a damage figure.
 
 ## What each condition removed
 
-- routes found by the search: 1202 (search complete: false)
-  - the beam dropped 1483 partial routes and 0 routes were not emitted, so a route
+- routes found by the search: 1156 (search complete: false)
+  - the beam dropped 1307 partial routes and 0 routes were not emitted, so a route
     satisfying these conditions may be missing
 
 | condition | value | before | removed | after | kept on a gap |
 |---|---|---:|---:|---:|---:|
-| starter_button | M | 1202 | 1077 | 125 | 0 |
+| starter_button | M | 1156 | 1037 | 119 | 0 |
 
-- routes satisfying every condition: 125
-- of those, through a pair the logs rejected: 0 (ranked after the clean ones)
+- routes satisfying every condition: 119
+- of those, through a pair the policy CONCLUSIVELY rejected: 0 (ranked after the clean ones)
 - in this plan (top 20): 20
+
+Demotion counts conclusive failures only. Under policy `ce-eval-v1` a negative is one when the run pressed a playable input at the right timing; 0 of 0 runs were left out for asking something else, 0 of them negatives. 0 pair(s) changed status because of it.
 
 ## Routes
 
@@ -47,31 +49,31 @@ rejected pair were moved behind the clean ones.
 
 | # | sort | route (Modern) | classic | dmg scaled | dmg unscaled | gauge | cost | conf | status |
 |---:|---:|---|---|---:|---:|---|---:|---|---|
-| 1 | 1 | 中 → 236236 + 强 | MK → 236236+K | 4600 | 4600 | SA 1, drive >=0 (1 unknown) | 8.4 | low | 0/1 pairs verified |
-| 2 | 2 | 4 + 中 → 236236 + 强 | 4+MP → 236236+K | 4500 | 4500 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs verified |
-| 3 | 3 | 中 → 2 + SP + 强 | MK → 236236+K | 3800 | 4600 | SA 1, drive >=0 (1 unknown) | 6.0 | low | 0/1 pairs verified |
-| 4 | 4 | 4 + 中 → 2 + SP + 强 | 4+MP → 236236+K | 3700 | 4500 | SA 1, drive >=0 (1 unknown) | 6.5 | low | 0/1 pairs verified |
-| 5 | 5 | 中 → 4 + AUTO + SP | MK → 214+KK | 2680 | 3200 | OD 1, drive 20000 | 6.0 | high | 0/1 pairs verified |
-| 6 | 6 | 4 + 中 → 4 + AUTO + SP | 4+MP → 214+KK | 2580 | 3100 | OD 1, drive 20000 | 6.5 | high | 0/1 pairs verified |
-| 7 | 7 | 4 + 中 → 2 + 弱 → 4 + AUTO + SP | 4+MP → 2+LP → 214+KK | 2464 | 3400 | OD 1, drive 20000 | 8.5 | medium | 0/2 pairs verified |
-| 8 | 8 | 中 → 4 + SP | MK → 214+LK | 2040 | 2400 | drive 0 | 5.5 | high | 0/1 pairs verified |
-| 9 | 9 | 4 + 中 → 2 + 弱 → 4 + SP | 4+MP → 2+LP → 214+LK | 1952 | 2600 | drive 0 | 8.0 | medium | 0/2 pairs verified |
-| 10 | 10 | 4 + 中 → 4 + SP | 4+MP → 214+LK | 1940 | 2300 | drive 0 | 6.0 | high | 0/1 pairs verified |
-| 11 | 11 | 中 → 236 + 中 | MK → 236+MK | 1600 | 1600 | drive 0 | 5.7 | high | 0/1 pairs verified |
-| 12 | 12 | 中 → 236 + 强 | MK → 236+HK | 1600 | 1600 | drive 0 | 5.7 | high | 0/1 pairs verified |
-| 13 | 13 | 4 + 中 → 2 + 弱 → 236 + 中 | 4+MP → 2+LP → 236+MK | 1600 | 1800 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 14 | 14 | 4 + 中 → 2 + 弱 → 236 + 强 | 4+MP → 2+LP → 236+HK | 1600 | 1800 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 15 | 15 | 4 + 中 → 2 + 弱 → 3 + 强 | 4+MP → 2+LP → 3+HP | 1520 | 1700 | drive 0 | 6.0 | medium | 0/2 pairs verified |
-| 16 | 16 | 4 + 中 → 236 + 中 | 4+MP → 236+MK | 1500 | 1500 | drive 0 | 6.2 | high | 0/1 pairs verified |
-| 17 | 17 | 4 + 中 → 236 + 强 | 4+MP → 236+HK | 1500 | 1500 | drive 0 | 6.2 | high | 0/1 pairs verified |
-| 18 | 18 | 4 + 中 → 2 + 弱 → 强 | 4+MP → 2+LP → HK | 1440 | 1600 | drive 0 | 5.5 | medium | 0/2 pairs verified |
-| 19 | 19 | 4 + 中 → 2 + 弱 → 2 + 强 | 4+MP → 2+LP → 2+HP | 1440 | 1600 | drive 0 | 6.0 | medium | 0/2 pairs verified |
-| 20 | 20 | 4 + 中 → 2 + 弱 → 214 + 弱 | 4+MP → 2+LP → 214+LP | 1440 | 1600 | drive 0 | 8.2 | medium | 0/2 pairs verified |
+| 1 | 1 | 中 → 236236 + 强 | MK → 236236+K | 4600 | 4600 | SA 1, drive >=0 (1 unknown) | 8.4 | low | 0/1 pairs reproduced |
+| 2 | 2 | 4 + 中 → 236236 + 强 | 4+MP → 236236+K | 4500 | 4500 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs reproduced |
+| 3 | 3 | 中 → 2 + SP + 强 | MK → 236236+K | 3800 | 4600 | SA 1, drive >=0 (1 unknown) | 6.0 | low | 0/1 pairs reproduced |
+| 4 | 4 | 4 + 中 → 2 + SP + 强 | 4+MP → 236236+K | 3700 | 4500 | SA 1, drive >=0 (1 unknown) | 6.5 | low | 0/1 pairs reproduced |
+| 5 | 5 | 中 → 236 + 中 | MK → 236+MK | 1600 | 1600 | drive 0 | 5.7 | high | 0/1 pairs reproduced |
+| 6 | 6 | 中 → 236 + 强 | MK → 236+HK | 1600 | 1600 | drive 0 | 5.7 | high | 0/1 pairs reproduced |
+| 7 | 7 | 4 + 中 → 2 + 弱 → 236 + 中 | 4+MP → 2+LP → 236+MK | 1600 | 1800 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 8 | 8 | 4 + 中 → 2 + 弱 → 236 + 强 | 4+MP → 2+LP → 236+HK | 1600 | 1800 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 9 | 9 | 4 + 中 → 2 + 弱 → 3 + 强 | 4+MP → 2+LP → 3+HP | 1520 | 1700 | drive 0 | 6.0 | medium | 0/2 pairs reproduced |
+| 10 | 10 | 4 + 中 → 236 + 中 | 4+MP → 236+MK | 1500 | 1500 | drive 0 | 6.2 | high | 0/1 pairs reproduced |
+| 11 | 11 | 4 + 中 → 236 + 强 | 4+MP → 236+HK | 1500 | 1500 | drive 0 | 6.2 | high | 0/1 pairs reproduced |
+| 12 | 12 | 4 + 中 → 2 + 弱 → 强 | 4+MP → 2+LP → HK | 1440 | 1600 | drive 0 | 5.5 | medium | 0/2 pairs reproduced |
+| 13 | 13 | 4 + 中 → 2 + 弱 → 2 + 强 | 4+MP → 2+LP → 2+HP | 1440 | 1600 | drive 0 | 6.0 | medium | 0/2 pairs reproduced |
+| 14 | 14 | 4 + 中 → 2 + 弱 → 214 + 弱 | 4+MP → 2+LP → 214+LP | 1440 | 1600 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 15 | 15 | 4 + 中 → 2 + 弱 → 214 + 中 | 4+MP → 2+LP → 214+MP | 1440 | 1600 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 16 | 16 | 4 + 中 → 2 + 弱 → 214 + 强 | 4+MP → 2+LP → 214+HP | 1440 | 1600 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 17 | 17 | 4 + 中 → 2 + 弱 → 22 + 弱 | 4+MP → 2+LP → 22+LP | 1440 | 1600 | drive 0 | 7.3 | medium | 0/2 pairs reproduced |
+| 18 | 18 | 4 + 中 → 2 + 弱 → 22 + 中 | 4+MP → 2+LP → 22+MP | 1440 | 1600 | drive 0 | 7.3 | medium | 0/2 pairs reproduced |
+| 19 | 19 | 4 + 中 → 2 + 弱 → 22 + 强 | 4+MP → 2+LP → 22+HP | 1440 | 1600 | drive 0 | 7.3 | medium | 0/2 pairs reproduced |
+| 20 | 20 | 4 + 中 → 2 + 弱 → 236 + 弱 | 4+MP → 2+LP → 236+LK | 1440 | 1600 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
 
 ## Pairs to sweep: 21
 
 In the order the worklist holds them. `needed by` lists the plan ranks of the
-routes containing the pair. The full worklist has 631 pairs.
+routes containing the pair. The full worklist has 611 pairs.
 
 `press` is what the sweep's compiler can play (sweepreport.press_kind): `repeat`
 is a direction pressed twice in a row (22), `followup` a move that only exists
@@ -84,23 +86,25 @@ them (#49), so a plan that needs one needs a route run or a compiler change.
 | 2 | 4 + 中 → 236236 + 强 | `637:manual->1235:manual` | 2 | untested | single | low | -13 |
 | 3 | 中 → 2 + SP + 强 | `606:manual->1235:simple` | 3 | untested | single | low | -15 |
 | 4 | 4 + 中 → 2 + SP + 强 | `637:manual->1235:simple` | 4 | untested | single | low | -13 |
-| 5 | 中 → 4 + AUTO + SP | `606:manual->1016:simple` | 5 | untested | single | high | -23 |
-| 6 | 4 + 中 → 4 + AUTO + SP | `637:manual->1016:simple` | 6 | untested | single | high | -21 |
-| 7 | 4 + 中 → 2 + 弱 | `637:manual->613:manual` | 7, 9, 13, 14, 15, 18, 19, 20 | untested | single | medium | 1 |
-| 8 | 2 + 弱 → 4 + AUTO + SP | `613:manual->1016:simple` | 7 | untested | single | high | -22 |
-| 9 | 中 → 4 + SP | `606:manual->1010:simple` | 8 | untested | single | high | -23 |
-| 10 | 2 + 弱 → 4 + SP | `613:manual->1010:simple` | 9 | untested | single | high | -22 |
-| 11 | 4 + 中 → 4 + SP | `637:manual->1010:simple` | 10 | untested | single | high | -21 |
-| 12 | 中 → 236 + 中 | `606:manual->972:manual` | 11 | untested | single | high | -11 |
-| 13 | 中 → 236 + 强 | `606:manual->973:manual` | 12 | untested | single | high | -11 |
-| 14 | 2 + 弱 → 236 + 中 | `613:manual->972:manual` | 13 | untested | single | high | -10 |
-| 15 | 2 + 弱 → 236 + 强 | `613:manual->973:manual` | 14 | untested | single | high | -10 |
-| 16 | 2 + 弱 → 3 + 强 | `613:manual->640:manual` | 15 | untested | single | medium | -12 |
-| 17 | 4 + 中 → 236 + 中 | `637:manual->972:manual` | 16 | untested | single | high | -9 |
-| 18 | 4 + 中 → 236 + 强 | `637:manual->973:manual` | 17 | untested | single | high | -9 |
-| 19 | 2 + 弱 → 强 | `613:manual->607:manual` | 18 | untested | single | medium | -8 |
-| 20 | 2 + 弱 → 2 + 强 | `613:manual->617:manual` | 19 | untested | single | medium | -5 |
-| 21 | 2 + 弱 → 214 + 弱 | `613:manual->915:manual` | 20 | untested | single | high | -46 |
+| 5 | 中 → 236 + 中 | `606:manual->972:manual` | 5 | untested | single | high | -11 |
+| 6 | 中 → 236 + 强 | `606:manual->973:manual` | 6 | untested | single | high | -11 |
+| 7 | 4 + 中 → 2 + 弱 | `637:manual->613:manual` | 7, 8, 9, 12, 13, 14, 15, 16, 17, 18, 19, 20 | untested | single | medium | 1 |
+| 8 | 2 + 弱 → 236 + 中 | `613:manual->972:manual` | 7 | untested | single | high | -10 |
+| 9 | 2 + 弱 → 236 + 强 | `613:manual->973:manual` | 8 | untested | single | high | -10 |
+| 10 | 2 + 弱 → 3 + 强 | `613:manual->640:manual` | 9 | untested | single | medium | -12 |
+| 11 | 4 + 中 → 236 + 中 | `637:manual->972:manual` | 10 | untested | single | high | -9 |
+| 12 | 4 + 中 → 236 + 强 | `637:manual->973:manual` | 11 | untested | single | high | -9 |
+| 13 | 2 + 弱 → 强 | `613:manual->607:manual` | 12 | untested | single | medium | -8 |
+| 14 | 2 + 弱 → 2 + 强 | `613:manual->617:manual` | 13 | untested | single | medium | -5 |
+| 15 | 2 + 弱 → 214 + 弱 | `613:manual->915:manual` | 14 | untested | single | high | -46 |
+| 16 | 2 + 弱 → 214 + 中 | `613:manual->916:manual` | 15 | untested | single | high | -46 |
+| 17 | 2 + 弱 → 214 + 强 | `613:manual->917:manual` | 16 | untested | single | high | -46 |
+| 18 | 2 + 弱 → 22 + 弱 | `613:manual->956:manual` | 17 | untested | repeat | high | -18 |
+| 19 | 2 + 弱 → 22 + 中 | `613:manual->957:manual` | 18 | untested | repeat | high | -18 |
+| 20 | 2 + 弱 → 22 + 强 | `613:manual->958:manual` | 19 | untested | repeat | high | -18 |
+| 21 | 2 + 弱 → 236 + 弱 | `613:manual->971:manual` | 20 | untested | single | high | -10 |
+
+**3 of these the sweep cannot press as written.**
 
 ## Already known: 0
 
@@ -109,13 +113,26 @@ Nothing these routes need has been answered yet.
 ## Where the known statuses come from
 
 - trial logs read: 0 (0 records for modern)
-- pairs answered: 0 across 0 cohort(s) - verified 0, rejected 0, pending 0
+- pairs answered: 0 across 0 cohort(s) - raw ConfirmedEdge: verified 0, rejected 0, pending 0
 - route runs (combos, not pairs): 0 rows
-- combos confirmed in the logs: 0
+- combos the looser page rule calls confirmed: 0 (2+ links at any gap, across input methods, cohorts and gaps, superseded rows included)
 
-A pair measured in several cohorts is `verified` if any cohort linked it, else
-`rejected` if any answered no, else `pending`. `(mixed)` marks a pair one cohort
-linked and another rejected.
+### Policy `ce-eval-v1`
+
+A superseded re-run is left out unless it linked. A link counts under every flag. A negative counts only when the run asked the question at the right timing with a pressable input (no fixed_delay_4, unplayable_input, link_timing_on_cancel_pair, motion_button_late). Unanswered runs count as unanswered. Pairs fold per cohort through ConfirmedEdge (reproduced = stable); routes per cohort through the combo rule (reproduced = 2 counted links at any gap).
+
+- rows built from the trial files: 0 (0 lines, 0 committed twice, 0 refused)
+- runs counted: 0; left out: 0 (of which negatives: 0)
+- evaluations (one per subject per cohort): 0
+- pairs by status: 
+- reclassified by the policy: 0 of 0 (none)
+
+A pair measured in several cohorts takes the strongest result: `verified` when some
+cohort REPRODUCED it (ConfirmedEdge stable on the counted runs), else `linked_once`
+when some cohort linked it, else `rejected` when a cohort answered no on runs the
+policy counted, else `asked_badly` when negatives exist and every one of them was
+left out, else `pending`. `(mixed)` marks a pair that both linked and conclusively
+failed. Only `rejected` demotes a route.
 
 `as <key>` means the answer was recorded under another action id with the same
 buttons. The catalog lists Modern 弱 as 601, 602 and 611; the search keeps one of
@@ -132,5 +149,5 @@ same calibration and conditions are skipped, and the other way round.
 
 ## Written
 
-- reframework/data/ComboExplorer_data/worklist/jp-modern-plan-starter-chu.json  (21 pairs, 12123 bytes)
+- reframework/data/ComboExplorer_data/worklist/jp-modern-plan-starter-chu.json  (21 pairs, 12162 bytes)
 - docs/ComboExplorer/plans/jp-modern-starter-chu.md

@@ -53,26 +53,27 @@ not combos that are known to work.
 ## Theoretical edges
 
 - pairs considered        896
-- candidate edges         631
-- excluded                265
+- candidate edges         611
+- excluded                285
 
 by reason:
   chain_cancel             84
   frame_data_incomplete    98
-  frame_link               136
-  special_cancel           370
+  frame_link               134
+  special_cancel           350
   super_cancel             80
   target_combo             17
 
 by confidence:
-  high                     343
-  medium                   150
+  high                     325
+  medium                   148
   low                      138
 
 excluded because the data said no:
   followup_after_a_move_not_its_parent 53
-  frame_margin_negative    204
+  frame_margin_negative    196
   self_pair_without_chain  8
+  throw_after_a_hit        48
 
 Nothing was excluded for missing data. A gap in the source is recorded as
 an unknown and the pair stays a candidate; only a KNOWN negative margin
@@ -101,16 +102,16 @@ have never been measured. They are not in the route search below, and with
     639:manual 6 + 中
     640:manual 3 + 强
 - pairs considered        640
-- DRC edges               175
-- excluded                465
+- DRC edges               173
+- excluded                467
 
 by confidence:
   high                     78
-  medium                   93
+  medium                   91
   low                      4
 
 excluded:
-  drc_margin_negative      355
+  drc_margin_negative      337
   followup_after_drive_rush 110
 
 drc_margin_negative is drc_on_hit minus B's startup, known and below zero,
@@ -121,14 +122,14 @@ rather than once per target.
 
 ## Route candidates
 
-- routes                  1202
-- graph nodes             63
-- graph edges             631
-- folded canonical variants 3429  (same buttons, unresolved action id)
+- routes                  1156
+- graph nodes             61
+- graph edges             611
+- folded canonical variants 3455  (same buttons, unresolved action id)
 - search complete         false
-  beam dropped 1483 partial routes, 0 routes not emitted
-  length 2               292
-  length 3               910
+  beam dropped 1307 partial routes, 0 routes not emitted
+  length 2               280
+  length 3               876
 
 dropped by a search bound (not by the game):
   max_repeat_per_action    6
@@ -190,7 +191,7 @@ scaling_model.not_modelled on every route. Used for ordering only.
 
 1   2 + 强 > 2 + SP + 强                           4800    6.5
 2   中 > 2 + SP + 强                               4600    6.0
-3   中 > 4 + SP                                     2400    5.5
+3   3 + 强 > 弱 > 3 + 强                          2100    5.5
 4   弱 > 3 + 强 > 强                              2000    5.0
 5   强 > 弱 > 强                                  1900    4.5
 6   3 + 强 > 强                                    1700    3.5
@@ -223,10 +224,10 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/jp/modern/candidate-edges.json  (827242 bytes)
-- candidates/jp/modern/candidate-routes.json  (8292796 bytes)
-- reframework/data/ComboExplorer_data/worklist/jp-modern-drc.json  (82849 bytes)
-- reframework/data/ComboExplorer_data/worklist/jp-modern.json  (257673 bytes)
+- candidates/jp/modern/candidate-edges.json  (801845 bytes)
+- candidates/jp/modern/candidate-routes.json  (7980795 bytes)
+- reframework/data/ComboExplorer_data/worklist/jp-modern-drc.json  (81930 bytes)
+- reframework/data/ComboExplorer_data/worklist/jp-modern.json  (249447 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

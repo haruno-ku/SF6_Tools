@@ -51,26 +51,27 @@ not combos that are known to work.
 ## Theoretical edges
 
 - pairs considered        819
-- candidate edges         635
-- excluded                184
+- candidate edges         532
+- excluded                287
 
 by reason:
   chain_cancel             78
   frame_data_incomplete    13
-  frame_link               178
-  special_cancel           370
-  super_cancel             110
+  frame_link               106
+  special_cancel           320
+  super_cancel             66
   target_combo             3
 
 by confidence:
-  high                     392
-  medium                   134
-  low                      109
+  high                     342
+  medium                   129
+  low                      61
 
 excluded because the data said no:
   followup_after_a_move_not_its_parent 24
-  frame_margin_negative    153
+  frame_margin_negative    139
   self_pair_without_chain  7
+  throw_after_a_hit        207
 
 Nothing was excluded for missing data. A gap in the source is recorded as
 an unknown and the pair stays a candidate; only a KNOWN negative margin
@@ -98,13 +99,13 @@ have never been measured. They are not in the route search below, and with
     620:manual 2 + 中
     630:manual 3 + 强
 - pairs considered        630
-- DRC edges               294
-- excluded                336
+- DRC edges               204
+- excluded                426
 
 by confidence:
-  high                     91
-  medium                   147
-  low                      56
+  high                     76
+  medium                   112
+  low                      16
 
 excluded:
   drc_margin_negative      306
@@ -118,14 +119,13 @@ rather than once per target.
 
 ## Route candidates
 
-- routes                  848
-- graph nodes             63
-- graph edges             635
-- folded canonical variants 3787  (same buttons, unresolved action id)
-- search complete         false
-  beam dropped 562 partial routes, 0 routes not emitted
-  length 2               232
-  length 3               616
+- routes                  725
+- graph nodes             54
+- graph edges             532
+- folded canonical variants 3630  (same buttons, unresolved action id)
+- search complete         true
+  length 2               181
+  length 3               544
 
 dropped by a search bound (not by the game):
   max_repeat_per_action    6
@@ -137,16 +137,16 @@ frame table and neither does Modern's own damage reduction, so this is an
 upper bound for ordering, never a damage figure.
 
 #   route                                            dmg~   cost conf    unknowns
-1   3 + 强 > 4 + 强 > 214214 + 强                 5950   10.9 low     8
-2   3 + 强 > 4 + 强 > 2 + SP + 强                 5950    8.5 low     8
-3   弱 > 4 + 强 > 214214 + 强                     5850   10.4 low     7
-4   弱 > 4 + 强 > 2 + SP + 强                     5850    8.0 low     7
-5   3 + 强 > 强 > 214214 + 强                     5850   10.4 low     8
-6   3 + 强 > 强 > 2 + SP + 强                     5850    8.0 low     8
-7   3 + 强 > 6 + 强 > 214214 + 强                 5850   10.9 low     8
-8   3 + 强 > 6 + 强 > 2 + SP + 强                 5850    8.5 low     8
-9   4 + 强 > 弱 > 214214 + 强                     5850   10.4 low     7
-10  4 + 强 > 弱 > 2 + SP + 强                     5850    8.0 low     7
+1   3 + 强 > 4 + 强 > 236236 + 中                 4050   10.9 low     8
+2   3 + 强 > 4 + 强 > 4 + SP + 强                 4050    8.5 low     8
+3   弱 > 4 + 强 > 236236 + 中                     3950   10.4 low     7
+4   弱 > 4 + 强 > 4 + SP + 强                     3950    8.0 low     7
+5   3 + 强 > 强 > 236236 + 中                     3950   10.4 low     8
+6   3 + 强 > 强 > 4 + SP + 强                     3950    8.0 low     8
+7   3 + 强 > 6 + 强 > 236236 + 中                 3950   10.9 low     8
+8   3 + 强 > 6 + 强 > 4 + SP + 强                 3950    8.5 low     8
+9   4 + 强 > 弱 > 236236 + 中                     3950   10.4 low     7
+10  4 + 强 > 弱 > 4 + SP + 强                     3950    8.0 low     7
 
 ## Top 10 by predicted scaled damage (model)
 
@@ -158,16 +158,16 @@ the Super Art minimum. Not modelled: 9 things, listed in
 scaling_model.not_modelled on every route. Used for ordering only.
 
 #   route                                         scaled~     dmg~   cost conf   
-1   4 + 强 > 214214 + 强                           5500     5500    8.9 low    
-2   强 > 214214 + 强                               5400     5400    8.4 low    
-3   6 + 强 > 214214 + 强                           5400     5400    8.9 low    
-4   2 + 中 > 214214 + 强                           5200     5200    8.9 low    
-5   3 + 强 > 4 + 强 > 214214 + 强                 5050     5950   10.9 low    
-6   2 + 强 > 214214 + 强                           5000     5000    8.9 low    
-7   3 + 强 > 214214 + 强                           4950     4950    8.9 low    
-8   3 + 强 > 强 > 214214 + 强                     4950     5850   10.4 low    
-9   3 + 强 > 6 + 强 > 214214 + 强                 4950     5850   10.9 low    
-10  4 + 强 > 弱 > 214214 + 强                     4950     5850   10.4 low    
+1   4 + 强 > 236236 + 中                           3600     3600    8.9 low    
+2   3 + 强 > 4 + 强 > 236236 + 中                 3530     4050   10.9 low    
+3   强 > 236236 + 中                               3500     3500    8.4 low    
+4   6 + 强 > 236236 + 中                           3500     3500    8.9 low    
+5   3 + 强 > 强 > 236236 + 中                     3430     3950   10.4 low    
+6   3 + 强 > 6 + 强 > 236236 + 中                 3430     3950   10.9 low    
+7   4 + 强 > 弱 > 236236 + 中                     3430     3950   10.4 low    
+8   2 + 中 > 236236 + 中                           3300     3300    8.9 low    
+9   3 + 强 > 2 + 中 > 236236 + 中                 3230     3750   10.9 low    
+10  3 + 强 > 4 + 强 > 236236 + 弱                 3210     3650   10.9 medium 
 
 ## Top 10 by fewest inputs
 
@@ -185,13 +185,13 @@ scaling_model.not_modelled on every route. Used for ordering only.
 
 ## Pareto frontier: 12 routes nothing beats on both damage and inputs
 
-1   3 + 强 > 4 + 强 > 2 + SP + 强                 5950    8.5
-2   弱 > 4 + 强 > 2 + SP + 强                     5850    8.0
-3   弱 > 强 > 2 + SP + 强                         5750    7.5
-4   4 + 强 > 2 + SP + 强                           5500    6.5
-5   强 > 2 + SP + 强                               5400    6.0
-6   强 > AUTO + SP                                  3800    5.5
-7   强 > SP                                         3700    5.0
+1   3 + 强 > 4 + 强 > 4 + SP + 强                 4050    8.5
+2   弱 > 4 + 强 > 4 + SP + 强                     3950    8.0
+3   弱 > 强 > 4 + SP + 强                         3850    7.5
+4   4 + 强 > 4 + SP + 强                           3600    6.5
+5   强 > 4 + SP + 强                               3500    6.0
+6   强 > SP + 强                                   3100    5.5
+7   4 + 强 > 弱 > 强                              2250    5.0
 8   弱 > 弱 > 4 + 强                              1700    4.5
 9   弱 > 弱 > 强                                  1600    4.0
 10  弱 > 4 + 强                                    1350    3.5
@@ -222,10 +222,10 @@ marked as decidable offline.
 
 ## Written
 
-- candidates/lily/modern/candidate-edges.json  (841533 bytes)
-- candidates/lily/modern/candidate-routes.json  (5921054 bytes)
-- reframework/data/ComboExplorer_data/worklist/lily-modern-drc.json  (140293 bytes)
-- reframework/data/ComboExplorer_data/worklist/lily-modern.json  (262441 bytes)
+- candidates/lily/modern/candidate-edges.json  (688259 bytes)
+- candidates/lily/modern/candidate-routes.json  (5080419 bytes)
+- reframework/data/ComboExplorer_data/worklist/lily-modern-drc.json  (97788 bytes)
+- reframework/data/ComboExplorer_data/worklist/lily-modern.json  (220244 bytes)
 
 Both documents carry runtime_verified = false and every record in them is
 status = theoretical. The next step is the gaming machine: calibration,

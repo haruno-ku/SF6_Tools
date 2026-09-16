@@ -16,54 +16,10 @@
   "bcm_sha256": "b55590307aa3f59ecb1622eb9cd862a1314e519b553563c6622f29f5725d3f12",
   "character": "Lily",
   "control_scheme": "modern",
-  "count": 8,
+  "count": 6,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-14T13:00:08Z",
+  "generated_at": "2026-09-16T00:25:58Z",
   "pairs": [
-    {
-      "a_active": "3",
-      "a_hitstop": 11,
-      "a_hitstun": 22,
-      "a_id": 620,
-      "a_method": "manual",
-      "a_notation": "2 + 中",
-      "a_on_hit": 1,
-      "a_recovery": 18,
-      "a_startup": 8,
-      "b_id": 1216,
-      "b_method": "manual",
-      "b_notation": "214214 + 强",
-      "b_startup": 5,
-      "confidence": "low",
-      "known_status": "untested",
-      "margin_frames": -4,
-      "mechanism": "cancel",
-      "needed_by_ranks": [
-        1
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 11,
-      "a_hitstun": 22,
-      "a_id": 620,
-      "a_method": "manual",
-      "a_notation": "2 + 中",
-      "a_on_hit": 1,
-      "a_recovery": 18,
-      "a_startup": 8,
-      "b_id": 1216,
-      "b_method": "simple",
-      "b_notation": "2 + SP + 强",
-      "b_startup": 5,
-      "confidence": "low",
-      "known_status": "untested",
-      "margin_frames": -4,
-      "mechanism": "cancel",
-      "needed_by_ranks": [
-        2
-      ]
-    },
     {
       "a_active": "3",
       "a_hitstop": 11,
@@ -83,7 +39,7 @@
       "margin_frames": -8,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        3
+        1
       ]
     },
     {
@@ -105,7 +61,7 @@
       "margin_frames": -9,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        4
+        2
       ]
     },
     {
@@ -127,7 +83,7 @@
       "margin_frames": -8,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        5
+        3
       ]
     },
     {
@@ -149,7 +105,7 @@
       "margin_frames": -9,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        6
+        4
       ]
     },
     {
@@ -170,7 +126,7 @@
       "known_status": "untested",
       "mechanism": "unknown",
       "needed_by_ranks": [
-        7
+        5
       ]
     },
     {
@@ -191,7 +147,7 @@
       "known_status": "untested",
       "mechanism": "unknown",
       "needed_by_ranks": [
-        8
+        6
       ]
     }
   ],
@@ -201,7 +157,7 @@
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-14T13:00:08Z",
+    "generated_at": "2026-09-16T00:25:58Z",
     "include_verified": false,
     "name": "starter-chu",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",

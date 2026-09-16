@@ -16,9 +16,9 @@
   "bcm_sha256": "09e9334a458b4e7073d13c5a0e25255d2b35b0cb71ccdccbd67c8774b62d4053",
   "character": "Zangief",
   "control_scheme": "modern",
-  "count": 15,
+  "count": 21,
   "game_patch": "command_display@2026-08-03T00:00:00.000Z",
-  "generated_at": "2026-09-14T12:59:20Z",
+  "generated_at": "2026-09-16T00:28:57Z",
   "pairs": [
     {
       "a_active": "7(5)",
@@ -39,7 +39,8 @@
       "mechanism": "link",
       "needed_by_ranks": [
         1,
-        5
+        5,
+        7
       ]
     },
     {
@@ -61,7 +62,8 @@
       "mechanism": "link",
       "needed_by_ranks": [
         2,
-        6
+        8,
+        10
       ]
     },
     {
@@ -83,7 +85,8 @@
       "mechanism": "link",
       "needed_by_ranks": [
         3,
-        7
+        9,
+        11
       ]
     },
     {
@@ -106,7 +109,8 @@
       "mechanism": "cancel",
       "needed_by_ranks": [
         4,
-        8
+        12,
+        14
       ]
     },
     {
@@ -131,9 +135,53 @@
       "margin_frames": -18,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        5,
-        12,
-        19
+        5
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 11,
+      "a_hitstun": 22,
+      "a_id": 621,
+      "a_method": "manual",
+      "a_notation": "2 + 中",
+      "a_on_hit": 3,
+      "a_recovery": 16,
+      "a_startup": 8,
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "b_startup": 6,
+      "confidence": "low",
+      "known_status": "asked_badly",
+      "margin_frames": -3,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        6,
+        13,
+        15
+      ]
+    },
+    {
+      "a_active": "2",
+      "a_hitstop": 9,
+      "a_hitstun": 16,
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "a_on_hit": 6,
+      "a_recovery": 8,
+      "a_startup": 6,
+      "b_id": 662,
+      "b_method": "manual",
+      "b_notation": "6 + 强",
+      "b_startup": 22,
+      "confidence": "medium",
+      "known_status": "asked_badly",
+      "margin_frames": -16,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        7
       ]
     },
     {
@@ -158,8 +206,7 @@
       "margin_frames": -7,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        6,
-        15
+        8
       ]
     },
     {
@@ -184,8 +231,51 @@
       "margin_frames": -8,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        7,
-        16
+        9
+      ]
+    },
+    {
+      "a_active": "2",
+      "a_hitstop": 9,
+      "a_hitstun": 16,
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "a_on_hit": 6,
+      "a_recovery": 8,
+      "a_startup": 6,
+      "b_id": 623,
+      "b_method": "manual",
+      "b_notation": "2 + 强",
+      "b_startup": 11,
+      "confidence": "medium",
+      "known_status": "asked_badly",
+      "margin_frames": -5,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        10
+      ]
+    },
+    {
+      "a_active": "2",
+      "a_hitstop": 9,
+      "a_hitstun": 16,
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "a_on_hit": 6,
+      "a_recovery": 8,
+      "a_startup": 6,
+      "b_id": 633,
+      "b_method": "manual",
+      "b_notation": "3 + 强",
+      "b_startup": 12,
+      "confidence": "medium",
+      "known_status": "asked_badly",
+      "margin_frames": -6,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        11
       ]
     },
     {
@@ -210,8 +300,76 @@
       "margin_frames": -3,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        8,
-        20
+        12
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 9,
+      "a_hitstun": 16,
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "a_on_hit": 4,
+      "a_recovery": 9,
+      "a_startup": 7,
+      "b_id": 621,
+      "b_method": "manual",
+      "b_notation": "2 + 中",
+      "b_startup": 8,
+      "confidence": "medium",
+      "known_as": [
+        "611:manual->621:manual"
+      ],
+      "known_status": "pending",
+      "margin_frames": -4,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        13
+      ]
+    },
+    {
+      "a_active": "2",
+      "a_hitstop": 9,
+      "a_hitstun": 16,
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "a_on_hit": 6,
+      "a_recovery": 8,
+      "a_startup": 6,
+      "b_id": 655,
+      "b_method": "manual",
+      "b_notation": "3 + 中",
+      "b_startup": 7,
+      "confidence": "medium",
+      "known_status": "asked_badly",
+      "margin_frames": -1,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        14
+      ]
+    },
+    {
+      "a_active": "2",
+      "a_hitstop": 9,
+      "a_hitstun": 16,
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "a_on_hit": 6,
+      "a_recovery": 8,
+      "a_startup": 6,
+      "b_id": 621,
+      "b_method": "manual",
+      "b_notation": "2 + 中",
+      "b_startup": 8,
+      "confidence": "medium",
+      "known_status": "asked_badly",
+      "margin_frames": -2,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        15
       ]
     },
     {
@@ -236,7 +394,7 @@
       "margin_frames": -3,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        9
+        16
       ]
     },
     {
@@ -261,111 +419,100 @@
       "margin_frames": -2,
       "mechanism": "cancel",
       "needed_by_ranks": [
-        9,
-        10
-      ]
-    },
-    {
-      "a_active": "7(5)",
-      "a_hitstop": 13,
-      "a_id": 662,
-      "a_method": "manual",
-      "a_notation": "6 + 强",
-      "a_on_hit": 28,
-      "a_recovery": 25,
-      "a_startup": 22,
-      "b_id": 637,
-      "b_method": "manual",
-      "b_notation": "强",
-      "confidence": "low",
-      "known_status": "pending",
-      "mechanism": "unknown",
-      "needed_by_ranks": [
-        11,
-        12
-      ]
-    },
-    {
-      "a_active": "9",
-      "a_hitstop": 13,
-      "a_id": 623,
-      "a_method": "manual",
-      "a_notation": "2 + 强",
-      "a_on_hit": 20,
-      "a_recovery": 35,
-      "a_startup": 11,
-      "b_id": 637,
-      "b_method": "manual",
-      "b_notation": "强",
-      "confidence": "low",
-      "known_status": "pending",
-      "mechanism": "unknown",
-      "needed_by_ranks": [
-        13,
-        15
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 14,
-      "a_id": 633,
-      "a_method": "manual",
-      "a_notation": "3 + 强",
-      "a_on_hit": 36,
-      "a_recovery": 27,
-      "a_startup": 12,
-      "b_id": 637,
-      "b_method": "manual",
-      "b_notation": "强",
-      "confidence": "low",
-      "known_status": "pending",
-      "mechanism": "unknown",
-      "needed_by_ranks": [
-        14,
-        16
-      ]
-    },
-    {
-      "a_active": "3",
-      "a_hitstop": 11,
-      "a_hitstun": 23,
-      "a_id": 655,
-      "a_method": "manual",
-      "a_notation": "3 + 中",
-      "a_on_hit": -1,
-      "a_recovery": 21,
-      "a_startup": 7,
-      "b_id": 637,
-      "b_method": "manual",
-      "b_notation": "强",
-      "confidence": "low",
-      "known_status": "pending",
-      "mechanism": "unknown",
-      "needed_by_ranks": [
-        17,
-        20
-      ]
-    },
-    {
-      "a_active": "7(5)",
-      "a_hitstop": 13,
-      "a_id": 662,
-      "a_method": "manual",
-      "a_notation": "6 + 强",
-      "a_on_hit": 28,
-      "a_recovery": 25,
-      "a_startup": 22,
-      "b_id": 678,
-      "b_method": "manual",
-      "b_notation": "22 + 中",
-      "b_startup": 9,
-      "confidence": "medium",
-      "known_status": "pending",
-      "margin_frames": 19,
-      "mechanism": "link",
-      "needed_by_ranks": [
+        16,
         18,
         19
+      ]
+    },
+    {
+      "a_active": "3",
+      "a_hitstop": 9,
+      "a_hitstun": 16,
+      "a_id": 601,
+      "a_method": "manual",
+      "a_notation": "弱",
+      "a_on_hit": 4,
+      "a_recovery": 9,
+      "a_startup": 7,
+      "b_id": 617,
+      "b_method": "manual",
+      "b_notation": "2 + 弱",
+      "b_startup": 6,
+      "confidence": "medium",
+      "known_as": [
+        "611:manual->617:manual"
+      ],
+      "known_status": "pending",
+      "margin_frames": -2,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        17
+      ]
+    },
+    {
+      "a_active": "2",
+      "a_hitstop": 9,
+      "a_hitstun": 16,
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "a_on_hit": 6,
+      "a_recovery": 8,
+      "a_startup": 6,
+      "b_id": 785,
+      "b_method": "manual",
+      "b_notation": "22 + 强",
+      "b_startup": 6,
+      "confidence": "low",
+      "known_status": "asked_badly",
+      "margin_frames": 0,
+      "mechanism": "both",
+      "needed_by_ranks": [
+        17
+      ]
+    },
+    {
+      "a_active": "2",
+      "a_hitstop": 9,
+      "a_hitstun": 16,
+      "a_id": 617,
+      "a_method": "manual",
+      "a_notation": "2 + 弱",
+      "a_on_hit": 6,
+      "a_recovery": 8,
+      "a_startup": 6,
+      "b_id": 601,
+      "b_method": "manual",
+      "b_notation": "弱",
+      "b_startup": 7,
+      "confidence": "medium",
+      "known_as": [
+        "617:manual->611:manual"
+      ],
+      "known_status": "asked_badly",
+      "margin_frames": -1,
+      "mechanism": "cancel",
+      "needed_by_ranks": [
+        19
+      ]
+    },
+    {
+      "a_active": "7(5)",
+      "a_hitstop": 13,
+      "a_id": 662,
+      "a_method": "manual",
+      "a_notation": "6 + 强",
+      "a_on_hit": 28,
+      "a_recovery": 25,
+      "a_startup": 22,
+      "b_id": 637,
+      "b_method": "manual",
+      "b_notation": "强",
+      "confidence": "low",
+      "known_status": "pending",
+      "mechanism": "unknown",
+      "needed_by_ranks": [
+        20
       ]
     }
   ],
@@ -375,7 +522,7 @@
     },
     "demote_rejected": true,
     "drive_rush": false,
-    "generated_at": "2026-09-14T12:59:20Z",
+    "generated_at": "2026-09-16T00:28:57Z",
     "include_verified": false,
     "name": "no-gauge",
     "order": "route rank: every pair of the best route first, then the next route's new pairs",

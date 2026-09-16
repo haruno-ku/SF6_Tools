@@ -1,6 +1,6 @@
 # Route plan - Lily / modern - max-damage
 
-Generated 2026-09-14T12:59:59Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-16T00:25:53Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -18,20 +18,20 @@ game say whether these routes connect.
 
 Ordered on `offline_score.predicted_damage_scaled`, the combo-scaled prediction.
 
-13 route(s) carry no value on that field and are ranked after the rest, not removed.
+40 route(s) carry no value on that field and are ranked after the rest, not removed.
 
 Unscaled damage is a frame-table sum: an upper bound for ordering when complete,
 never a damage figure.
 
 ## What each condition removed
 
-- routes found by the search: 848 (search complete: false)
-  - the beam dropped 562 partial routes and 0 routes were not emitted, so a route
-    satisfying these conditions may be missing
+- routes found by the search: 725 (search complete: true)
 
-- routes satisfying every condition: 848
-- of those, through a pair the logs rejected: 0 (ranked after the clean ones)
+- routes satisfying every condition: 725
+- of those, through a pair the policy CONCLUSIVELY rejected: 0 (ranked after the clean ones)
 - in this plan (top 20): 20
+
+Demotion counts conclusive failures only. Under policy `ce-eval-v1` a negative is one when the run pressed a playable input at the right timing; 0 of 0 runs were left out for asking something else, 0 of them negatives. 0 pair(s) changed status because of it.
 
 ## Routes
 
@@ -40,31 +40,31 @@ rejected pair were moved behind the clean ones.
 
 | # | sort | route (Modern) | classic | dmg scaled | dmg unscaled | gauge | cost | conf | status |
 |---:|---:|---|---|---:|---:|---|---:|---|---|
-| 1 | 1 | 4 + 强 → 214214 + 强 | 4+HP → 214214+P | 5500 | 5500 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs verified |
-| 2 | 2 | 强 → 214214 + 强 | HP → 214214+P | 5400 | 5400 | SA 1, drive >=0 (1 unknown) | 8.4 | low | 0/1 pairs verified |
-| 3 | 3 | 6 + 强 → 214214 + 强 | 6+HP → 214214+P | 5400 | 5400 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs verified |
-| 4 | 4 | 2 + 中 → 214214 + 强 | 2+MP → 214214+P | 5200 | 5200 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs verified |
-| 5 | 5 | 3 + 强 → 4 + 强 → 214214 + 强 | 2+HK → 4+HP → 214214+P | 5050 | 5950 | SA 1, drive >=0 (1 unknown) | 10.9 | low | 0/2 pairs verified |
-| 6 | 6 | 2 + 强 → 214214 + 强 | 2+HP → 214214+P | 5000 | 5000 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs verified |
-| 7 | 7 | 3 + 强 → 214214 + 强 | 2+HK → 214214+P | 4950 | 4950 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs verified |
-| 8 | 8 | 3 + 强 → 强 → 214214 + 强 | 2+HK → HP → 214214+P | 4950 | 5850 | SA 1, drive >=0 (1 unknown) | 10.4 | low | 0/2 pairs verified |
-| 9 | 9 | 3 + 强 → 6 + 强 → 214214 + 强 | 2+HK → 6+HP → 214214+P | 4950 | 5850 | SA 1, drive >=0 (1 unknown) | 10.9 | low | 0/2 pairs verified |
-| 10 | 10 | 4 + 强 → 弱 → 214214 + 强 | 4+HP → LP → 214214+P | 4950 | 5850 | SA 1, drive >=0 (1 unknown) | 10.4 | low | 0/2 pairs verified |
-| 11 | 11 | 3 + 强 → 2 + 中 → 214214 + 强 | 2+HK → 2+MP → 214214+P | 4750 | 5650 | SA 1, drive >=0 (1 unknown) | 10.9 | low | 0/2 pairs verified |
-| 12 | 12 | 4 + 强 → 2 + SP + 强 | 4+HP → 214214+P | 4600 | 5500 | SA 1, drive >=0 (1 unknown) | 6.5 | low | 0/1 pairs verified |
-| 13 | 13 | 3 + 强 → 2 + 强 → 214214 + 强 | 2+HK → 2+HP → 214214+P | 4550 | 5450 | SA 1, drive >=0 (1 unknown) | 10.9 | low | 0/2 pairs verified |
-| 14 | 14 | 强 → 2 + SP + 强 | HP → 214214+P | 4500 | 5400 | SA 1, drive >=0 (1 unknown) | 6.0 | low | 0/1 pairs verified |
-| 15 | 15 | 6 + 强 → 2 + SP + 强 | 6+HP → 214214+P | 4500 | 5400 | SA 1, drive >=0 (1 unknown) | 6.5 | low | 0/1 pairs verified |
-| 16 | 16 | 3 + 强 → 弱 → 214214 + 强 | 2+HK → LP → 214214+P | 4400 | 5300 | SA 1, drive >=0 (1 unknown) | 10.4 | low | 0/2 pairs verified |
-| 17 | 17 | 3 + 强 → 2 + 弱 → 214214 + 强 | 2+HK → 2+LP → 214214+P | 4350 | 5250 | SA 1, drive >=0 (1 unknown) | 10.9 | low | 0/2 pairs verified |
-| 18 | 18 | 3 + 强 → 4 + 强 → 2 + SP + 强 | 2+HK → 4+HP → 214214+P | 4330 | 5950 | SA 1, drive >=0 (1 unknown) | 8.5 | low | 0/2 pairs verified |
-| 19 | 19 | 弱 → 4 + 强 → 214214 + 强 | LP → 4+HP → 214214+P | 4300 | 5850 | SA 1, drive >=0 (1 unknown) | 10.4 | low | 0/2 pairs verified |
-| 20 | 20 | 2 + 中 → 2 + SP + 强 | 2+MP → 214214+P | 4300 | 5200 | SA 1, drive >=0 (1 unknown) | 6.5 | low | 0/1 pairs verified |
+| 1 | 1 | 4 + 强 → 236236 + 中 | 4+HP → 236236+K | 3600 | 3600 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs reproduced |
+| 2 | 2 | 3 + 强 → 4 + 强 → 236236 + 中 | 2+HK → 4+HP → 236236+K | 3530 | 4050 | SA 1, drive >=0 (1 unknown) | 10.9 | low | 0/2 pairs reproduced |
+| 3 | 3 | 强 → 236236 + 中 | HP → 236236+K | 3500 | 3500 | SA 1, drive >=0 (1 unknown) | 8.4 | low | 0/1 pairs reproduced |
+| 4 | 4 | 6 + 强 → 236236 + 中 | 6+HP → 236236+K | 3500 | 3500 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs reproduced |
+| 5 | 5 | 3 + 强 → 强 → 236236 + 中 | 2+HK → HP → 236236+K | 3430 | 3950 | SA 1, drive >=0 (1 unknown) | 10.4 | low | 0/2 pairs reproduced |
+| 6 | 6 | 3 + 强 → 6 + 强 → 236236 + 中 | 2+HK → 6+HP → 236236+K | 3430 | 3950 | SA 1, drive >=0 (1 unknown) | 10.9 | low | 0/2 pairs reproduced |
+| 7 | 7 | 4 + 强 → 弱 → 236236 + 中 | 4+HP → LP → 236236+K | 3430 | 3950 | SA 1, drive >=0 (1 unknown) | 10.4 | low | 0/2 pairs reproduced |
+| 8 | 8 | 2 + 中 → 236236 + 中 | 2+MP → 236236+K | 3300 | 3300 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs reproduced |
+| 9 | 9 | 3 + 强 → 2 + 中 → 236236 + 中 | 2+HK → 2+MP → 236236+K | 3230 | 3750 | SA 1, drive >=0 (1 unknown) | 10.9 | low | 0/2 pairs reproduced |
+| 10 | 10 | 3 + 强 → 4 + 强 → 236236 + 弱 | 2+HK → 4+HP → 236236+P | 3210 | 3650 | SA 1, drive >=0 (1 unknown) | 10.9 | medium | 0/2 pairs reproduced |
+| 11 | 11 | 4 + 强 → 236236 + 弱 | 4+HP → 236236+P | 3200 | 3200 | SA 1, drive >=0 (1 unknown) | 8.9 | high | 0/1 pairs reproduced |
+| 12 | 12 | 3 + 强 → 4 + 强 → 4 + SP + 强 | 2+HK → 4+HP → 236236+K | 3114 | 4050 | SA 1, drive >=0 (1 unknown) | 8.5 | low | 0/2 pairs reproduced |
+| 13 | 13 | 3 + 强 → 强 → 236236 + 弱 | 2+HK → HP → 236236+P | 3110 | 3550 | SA 1, drive >=0 (1 unknown) | 10.4 | medium | 0/2 pairs reproduced |
+| 14 | 14 | 3 + 强 → 6 + 强 → 236236 + 弱 | 2+HK → 6+HP → 236236+P | 3110 | 3550 | SA 1, drive >=0 (1 unknown) | 10.9 | medium | 0/2 pairs reproduced |
+| 15 | 15 | 4 + 强 → 弱 → 236236 + 弱 | 4+HP → LP → 236236+P | 3110 | 3550 | SA 1, drive >=0 (1 unknown) | 10.4 | medium | 0/2 pairs reproduced |
+| 16 | 16 | 强 → 236236 + 弱 | HP → 236236+P | 3100 | 3100 | SA 1, drive >=0 (1 unknown) | 8.4 | high | 0/1 pairs reproduced |
+| 17 | 17 | 2 + 强 → 236236 + 中 | 2+HP → 236236+K | 3100 | 3100 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs reproduced |
+| 18 | 18 | 6 + 强 → 236236 + 弱 | 6+HP → 236236+P | 3100 | 3100 | SA 1, drive >=0 (1 unknown) | 8.9 | high | 0/1 pairs reproduced |
+| 19 | 19 | 4 + 强 → 4 + SP + 强 | 4+HP → 236236+K | 3080 | 3600 | SA 1, drive >=0 (1 unknown) | 6.5 | low | 0/1 pairs reproduced |
+| 20 | 20 | 3 + 强 → 236236 + 中 | 2+HK → 236236+K | 3050 | 3050 | SA 1, drive >=0 (1 unknown) | 8.9 | low | 0/1 pairs reproduced |
 
-## Pairs to sweep: 21
+## Pairs to sweep: 17
 
 In the order the worklist holds them. `needed by` lists the plan ranks of the
-routes containing the pair. The full worklist has 635 pairs.
+routes containing the pair. The full worklist has 532 pairs.
 
 `press` is what the sweep's compiler can play (sweepreport.press_kind): `repeat`
 is a direction pressed twice in a row (22), `followup` a move that only exists
@@ -73,27 +73,23 @@ them (#49), so a plan that needs one needs a route run or a compiler change.
 
 | # | pair | key | needed by | logs say | press | confidence | margin |
 |---:|---|---|---|---|---|---|---:|
-| 1 | 4 + 强 → 214214 + 强 | `658:manual->1216:manual` | 1, 5, 19 | untested | single | low | 0 |
-| 2 | 强 → 214214 + 强 | `606:manual->1216:manual` | 2, 8 | untested | single | low | -5 |
-| 3 | 6 + 强 → 214214 + 强 | `653:manual->1216:manual` | 3, 9 | untested | single | low | -3 |
-| 4 | 2 + 中 → 214214 + 强 | `620:manual->1216:manual` | 4, 11 | untested | single | low | -4 |
-| 5 | 3 + 强 → 4 + 强 | `630:manual->658:manual` | 5, 18 | untested | single | medium | 18 |
-| 6 | 2 + 强 → 214214 + 强 | `622:manual->1216:manual` | 6, 13 | untested | single | low | -5 |
-| 7 | 3 + 强 → 214214 + 强 | `630:manual->1216:manual` | 7 | untested | single | low | 27 |
-| 8 | 3 + 强 → 强 | `630:manual->606:manual` | 8 | untested | single | medium | 22 |
-| 9 | 3 + 强 → 6 + 强 | `630:manual->653:manual` | 9 | untested | single | medium | 16 |
-| 10 | 4 + 强 → 弱 | `658:manual->601:manual` | 10 | untested | single | medium | 0 |
-| 11 | 弱 → 214214 + 强 | `601:manual->1216:manual` | 10, 16 | untested | single | low | 1 |
-| 12 | 3 + 强 → 2 + 中 | `630:manual->620:manual` | 11 | untested | single | medium | 24 |
-| 13 | 4 + 强 → 2 + SP + 强 | `658:manual->1216:simple` | 12, 18 | untested | single | low | 0 |
-| 14 | 3 + 强 → 2 + 强 | `630:manual->622:manual` | 13 | untested | single | medium | 22 |
-| 15 | 强 → 2 + SP + 强 | `606:manual->1216:simple` | 14 | untested | single | low | -5 |
-| 16 | 6 + 强 → 2 + SP + 强 | `653:manual->1216:simple` | 15 | untested | single | low | -3 |
-| 17 | 3 + 强 → 弱 | `630:manual->601:manual` | 16 | untested | single | medium | 27 |
-| 18 | 3 + 强 → 2 + 弱 | `630:manual->616:manual` | 17 | untested | single | medium | 26 |
-| 19 | 2 + 弱 → 214214 + 强 | `616:manual->1216:manual` | 17 | untested | single | low | 1 |
-| 20 | 弱 → 4 + 强 | `601:manual->658:manual` | 19 | untested | single | medium | -8 |
-| 21 | 2 + 中 → 2 + SP + 强 | `620:manual->1216:simple` | 20 | untested | single | low | -4 |
+| 1 | 4 + 强 → 236236 + 中 | `658:manual->1206:manual` | 1, 2 | untested | single | low | -4 |
+| 2 | 3 + 强 → 4 + 强 | `630:manual->658:manual` | 2, 10, 12 | untested | single | medium | 18 |
+| 3 | 强 → 236236 + 中 | `606:manual->1206:manual` | 3, 5 | untested | single | low | -9 |
+| 4 | 6 + 强 → 236236 + 中 | `653:manual->1206:manual` | 4, 6 | untested | single | low | -7 |
+| 5 | 3 + 强 → 强 | `630:manual->606:manual` | 5, 13 | untested | single | medium | 22 |
+| 6 | 3 + 强 → 6 + 强 | `630:manual->653:manual` | 6, 14 | untested | single | medium | 16 |
+| 7 | 4 + 强 → 弱 | `658:manual->601:manual` | 7, 15 | untested | single | medium | 0 |
+| 8 | 弱 → 236236 + 中 | `601:manual->1206:manual` | 7 | untested | single | low | -3 |
+| 9 | 2 + 中 → 236236 + 中 | `620:manual->1206:manual` | 8, 9 | untested | single | low | -8 |
+| 10 | 3 + 强 → 2 + 中 | `630:manual->620:manual` | 9 | untested | single | medium | 24 |
+| 11 | 4 + 强 → 236236 + 弱 | `658:manual->1200:manual` | 10, 11 | untested | single | high | -5 |
+| 12 | 4 + 强 → 4 + SP + 强 | `658:manual->1206:simple` | 12, 19 | untested | single | low | -4 |
+| 13 | 强 → 236236 + 弱 | `606:manual->1200:manual` | 13, 16 | untested | single | high | -10 |
+| 14 | 6 + 强 → 236236 + 弱 | `653:manual->1200:manual` | 14, 18 | untested | single | high | -8 |
+| 15 | 弱 → 236236 + 弱 | `601:manual->1200:manual` | 15 | untested | single | high | -4 |
+| 16 | 2 + 强 → 236236 + 中 | `622:manual->1206:manual` | 17 | untested | single | low | -9 |
+| 17 | 3 + 强 → 236236 + 中 | `630:manual->1206:manual` | 20 | untested | single | low | 23 |
 
 ## Already known: 0
 
@@ -102,13 +98,26 @@ Nothing these routes need has been answered yet.
 ## Where the known statuses come from
 
 - trial logs read: 0 (0 records for modern)
-- pairs answered: 0 across 0 cohort(s) - verified 0, rejected 0, pending 0
+- pairs answered: 0 across 0 cohort(s) - raw ConfirmedEdge: verified 0, rejected 0, pending 0
 - route runs (combos, not pairs): 0 rows
-- combos confirmed in the logs: 0
+- combos the looser page rule calls confirmed: 0 (2+ links at any gap, across input methods, cohorts and gaps, superseded rows included)
 
-A pair measured in several cohorts is `verified` if any cohort linked it, else
-`rejected` if any answered no, else `pending`. `(mixed)` marks a pair one cohort
-linked and another rejected.
+### Policy `ce-eval-v1`
+
+A superseded re-run is left out unless it linked. A link counts under every flag. A negative counts only when the run asked the question at the right timing with a pressable input (no fixed_delay_4, unplayable_input, link_timing_on_cancel_pair, motion_button_late). Unanswered runs count as unanswered. Pairs fold per cohort through ConfirmedEdge (reproduced = stable); routes per cohort through the combo rule (reproduced = 2 counted links at any gap).
+
+- rows built from the trial files: 0 (0 lines, 0 committed twice, 0 refused)
+- runs counted: 0; left out: 0 (of which negatives: 0)
+- evaluations (one per subject per cohort): 0
+- pairs by status: 
+- reclassified by the policy: 0 of 0 (none)
+
+A pair measured in several cohorts takes the strongest result: `verified` when some
+cohort REPRODUCED it (ConfirmedEdge stable on the counted runs), else `linked_once`
+when some cohort linked it, else `rejected` when a cohort answered no on runs the
+policy counted, else `asked_badly` when negatives exist and every one of them was
+left out, else `pending`. `(mixed)` marks a pair that both linked and conclusively
+failed. Only `rejected` demotes a route.
 
 `as <key>` means the answer was recorded under another action id with the same
 buttons. The catalog lists Modern 弱 as 601, 602 and 611; the search keeps one of
@@ -125,5 +134,5 @@ same calibration and conditions are skipped, and the other way round.
 
 ## Written
 
-- reframework/data/ComboExplorer_data/worklist/lily-modern-plan-max-damage.json  (21 pairs, 12123 bytes)
+- reframework/data/ComboExplorer_data/worklist/lily-modern-plan-max-damage.json  (17 pairs, 10214 bytes)
 - docs/ComboExplorer/plans/lily-modern-max-damage.md

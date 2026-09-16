@@ -20,7 +20,7 @@
       "notes": [],
       "offline_report": "ryu-offline-report.md",
       "page": "sweep-report-ryu-modern.html",
-      "page_bytes": 291582,
+      "page_bytes": 299299,
       "plans": {
         "max-damage": 22,
         "no-gauge": 25,
@@ -58,7 +58,7 @@
       "notes": [],
       "offline_report": "luke-offline-report.md",
       "page": "sweep-report-luke-modern.html",
-      "page_bytes": 211060,
+      "page_bytes": 218777,
       "plans": {
         "max-damage": 20,
         "no-gauge": 25,
@@ -96,7 +96,7 @@
       "notes": [],
       "offline_report": "kimberly-offline-report.md",
       "page": "sweep-report-kimberly-modern.html",
-      "page_bytes": 224657,
+      "page_bytes": 232374,
       "plans": {
         "max-damage": 19,
         "no-gauge": 25,
@@ -134,7 +134,7 @@
       "notes": [],
       "offline_report": "chunli-offline-report.md",
       "page": "sweep-report-chunli-modern.html",
-      "page_bytes": 290233,
+      "page_bytes": 297950,
       "plans": {
         "max-damage": 24,
         "no-gauge": 25,
@@ -153,7 +153,7 @@
       "worklist_pairs": 619
     },
     {
-      "candidates": 655,
+      "candidates": 343,
       "catalog_rows": 139,
       "character": "Manon",
       "combos_confirmed": 0,
@@ -163,8 +163,8 @@
         "matched": 93,
         "rows": 93
       },
-      "drc_edges": 218,
-      "drc_pairs": 218,
+      "drc_edges": 76,
+      "drc_pairs": 76,
       "fighter_id": 5,
       "frame_data": true,
       "lc": "manon",
@@ -172,26 +172,26 @@
       "notes": [],
       "offline_report": "manon-offline-report.md",
       "page": "sweep-report-manon-modern.html",
-      "page_bytes": 152832,
+      "page_bytes": 161201,
       "plans": {
-        "max-damage": 23,
-        "no-gauge": 21,
+        "max-damage": 20,
+        "no-gauge": 24,
         "starter-chu": 22
       },
-      "routes": 599,
-      "routes_complete": false,
-      "routes_drc": 421,
+      "routes": 490,
+      "routes_complete": true,
+      "routes_drc": 582,
       "trials": 0,
       "unpressable": 12,
       "worklist_confidence": {
-        "high": 417,
-        "low": 72,
-        "medium": 166
+        "high": 207,
+        "low": 0,
+        "medium": 136
       },
-      "worklist_pairs": 655
+      "worklist_pairs": 343
     },
     {
-      "candidates": 324,
+      "candidates": 159,
       "catalog_rows": 88,
       "character": "Zangief",
       "combos_confirmed": 7,
@@ -201,8 +201,8 @@
         "matched": 47,
         "rows": 47
       },
-      "drc_edges": 145,
-      "drc_pairs": 145,
+      "drc_edges": 61,
+      "drc_pairs": 61,
       "fighter_id": 6,
       "frame_data": true,
       "lc": "zangief",
@@ -210,26 +210,26 @@
       "notes": [],
       "offline_report": "zangief-offline-report.md",
       "page": "sweep-report-zangief-modern.html",
-      "page_bytes": 469518,
+      "page_bytes": 303892,
       "plans": {
-        "max-damage": 17,
-        "no-gauge": 15,
-        "starter-chu": 16
+        "max-damage": 18,
+        "no-gauge": 21,
+        "starter-chu": 11
       },
-      "routes": 917,
+      "routes": 423,
       "routes_complete": true,
-      "routes_drc": 713,
+      "routes_drc": 398,
       "trials": 1000,
       "unpressable": 24,
       "worklist_confidence": {
-        "high": 88,
-        "low": 101,
-        "medium": 135
+        "high": 24,
+        "low": 24,
+        "medium": 111
       },
-      "worklist_pairs": 324
+      "worklist_pairs": 159
     },
     {
-      "candidates": 631,
+      "candidates": 611,
       "catalog_rows": 93,
       "character": "JP",
       "combos_confirmed": 0,
@@ -239,8 +239,8 @@
         "matched": 67,
         "rows": 67
       },
-      "drc_edges": 175,
-      "drc_pairs": 175,
+      "drc_edges": 173,
+      "drc_pairs": 173,
       "fighter_id": 7,
       "frame_data": true,
       "lc": "jp",
@@ -248,23 +248,23 @@
       "notes": [],
       "offline_report": "jp-offline-report.md",
       "page": "sweep-report-jp-modern.html",
-      "page_bytes": 273258,
+      "page_bytes": 273824,
       "plans": {
-        "max-damage": 25,
-        "no-gauge": 26,
+        "max-damage": 21,
+        "no-gauge": 23,
         "starter-chu": 21
       },
-      "routes": 1202,
+      "routes": 1156,
       "routes_complete": false,
-      "routes_drc": 1181,
+      "routes_drc": 1149,
       "trials": 0,
       "unpressable": 85,
       "worklist_confidence": {
-        "high": 343,
+        "high": 325,
         "low": 138,
-        "medium": 150
+        "medium": 148
       },
-      "worklist_pairs": 631
+      "worklist_pairs": 611
     },
     {
       "candidates": 664,
@@ -286,7 +286,7 @@
       "notes": [],
       "offline_report": "dhalsim-offline-report.md",
       "page": "sweep-report-dhalsim-modern.html",
-      "page_bytes": 440197,
+      "page_bytes": 447914,
       "plans": {
         "max-damage": 19,
         "no-gauge": 23,
@@ -324,7 +324,7 @@
       "notes": [],
       "offline_report": "cammy-offline-report.md",
       "page": "sweep-report-cammy-modern.html",
-      "page_bytes": 321208,
+      "page_bytes": 328925,
       "plans": {
         "max-damage": 22,
         "no-gauge": 21,
@@ -362,7 +362,7 @@
       "notes": [],
       "offline_report": "ken-offline-report.md",
       "page": "sweep-report-ken-modern.html",
-      "page_bytes": 180395,
+      "page_bytes": 188112,
       "plans": {
         "max-damage": 20,
         "no-gauge": 24,
@@ -402,7 +402,7 @@
       ],
       "offline_report": "deejay-offline-report.md",
       "page": "sweep-report-deejay-modern.html",
-      "page_bytes": 201843,
+      "page_bytes": 209560,
       "plans": {
         "max-damage": 23,
         "no-gauge": 22,
@@ -421,7 +421,7 @@
       "worklist_pairs": 1572
     },
     {
-      "candidates": 635,
+      "candidates": 532,
       "catalog_rows": 126,
       "character": "Lily",
       "combos_confirmed": 0,
@@ -431,8 +431,8 @@
         "matched": 73,
         "rows": 73
       },
-      "drc_edges": 294,
-      "drc_pairs": 294,
+      "drc_edges": 204,
+      "drc_pairs": 204,
       "fighter_id": 12,
       "frame_data": true,
       "lc": "lily",
@@ -440,23 +440,23 @@
       "notes": [],
       "offline_report": "lily-offline-report.md",
       "page": "sweep-report-lily-modern.html",
-      "page_bytes": 248632,
+      "page_bytes": 222845,
       "plans": {
-        "max-damage": 21,
-        "no-gauge": 17,
-        "starter-chu": 8
+        "max-damage": 17,
+        "no-gauge": 23,
+        "starter-chu": 6
       },
-      "routes": 848,
-      "routes_complete": false,
-      "routes_drc": 1226,
+      "routes": 725,
+      "routes_complete": true,
+      "routes_drc": 1012,
       "trials": 0,
       "unpressable": 15,
       "worklist_confidence": {
-        "high": 392,
-        "low": 109,
-        "medium": 134
+        "high": 342,
+        "low": 61,
+        "medium": 129
       },
-      "worklist_pairs": 635
+      "worklist_pairs": 532
     },
     {
       "candidates": 330,
@@ -478,7 +478,7 @@
       "notes": [],
       "offline_report": "aki-offline-report.md",
       "page": "sweep-report-aki-modern.html",
-      "page_bytes": 119843,
+      "page_bytes": 127560,
       "plans": {
         "max-damage": 20,
         "no-gauge": 20,
@@ -516,7 +516,7 @@
       "notes": [],
       "offline_report": "rashid-offline-report.md",
       "page": "sweep-report-rashid-modern.html",
-      "page_bytes": 175118,
+      "page_bytes": 182835,
       "plans": {
         "max-damage": 21,
         "no-gauge": 21,
@@ -535,7 +535,7 @@
       "worklist_pairs": 495
     },
     {
-      "candidates": 565,
+      "candidates": 532,
       "catalog_rows": 112,
       "character": "Blanka",
       "combos_confirmed": 0,
@@ -552,27 +552,27 @@
       "lc": "blanka",
       "logs": 0,
       "notes": [
-        "ワークリストの 73% が low 確度"
+        "ワークリストの 74% が low 確度"
       ],
       "offline_report": "blanka-offline-report.md",
       "page": "sweep-report-blanka-modern.html",
-      "page_bytes": 357834,
+      "page_bytes": 358501,
       "plans": {
         "max-damage": 22,
-        "no-gauge": 24,
+        "no-gauge": 22,
         "starter-chu": 18
       },
-      "routes": 2182,
+      "routes": 2105,
       "routes_complete": false,
-      "routes_drc": 1245,
+      "routes_drc": 1237,
       "trials": 0,
       "unpressable": 45,
       "worklist_confidence": {
-        "high": 60,
-        "low": 413,
+        "high": 45,
+        "low": 395,
         "medium": 92
       },
-      "worklist_pairs": 565
+      "worklist_pairs": 532
     },
     {
       "candidates": 2388,
@@ -594,7 +594,7 @@
       "notes": [],
       "offline_report": "juri-offline-report.md",
       "page": "sweep-report-juri-modern.html",
-      "page_bytes": 197400,
+      "page_bytes": 205117,
       "plans": {
         "max-damage": 23,
         "no-gauge": 22,
@@ -632,7 +632,7 @@
       "notes": [],
       "offline_report": "marisa-offline-report.md",
       "page": "sweep-report-marisa-modern.html",
-      "page_bytes": 206944,
+      "page_bytes": 214661,
       "plans": {
         "max-damage": 21,
         "no-gauge": 21,
@@ -673,7 +673,7 @@
       ],
       "offline_report": "guile-offline-report.md",
       "page": "sweep-report-guile-modern.html",
-      "page_bytes": 276336,
+      "page_bytes": 284053,
       "plans": {
         "max-damage": 22,
         "no-gauge": 22,
@@ -711,7 +711,7 @@
       "notes": [],
       "offline_report": "ed-offline-report.md",
       "page": "sweep-report-ed-modern.html",
-      "page_bytes": 262297,
+      "page_bytes": 270014,
       "plans": {
         "max-damage": 18,
         "no-gauge": 24,
@@ -730,7 +730,7 @@
       "worklist_pairs": 336
     },
     {
-      "candidates": 444,
+      "candidates": 424,
       "catalog_rows": 122,
       "character": "EHonda",
       "combos_confirmed": 0,
@@ -740,8 +740,8 @@
         "matched": 67,
         "rows": 67
       },
-      "drc_edges": 174,
-      "drc_pairs": 174,
+      "drc_edges": 160,
+      "drc_pairs": 160,
       "fighter_id": 20,
       "frame_data": true,
       "lc": "ehonda",
@@ -749,26 +749,26 @@
       "notes": [],
       "offline_report": "ehonda-offline-report.md",
       "page": "sweep-report-ehonda-modern.html",
-      "page_bytes": 179524,
+      "page_bytes": 177077,
       "plans": {
         "max-damage": 20,
         "no-gauge": 21,
-        "starter-chu": 18
+        "starter-chu": 17
       },
-      "routes": 609,
+      "routes": 565,
       "routes_complete": true,
-      "routes_drc": 714,
+      "routes_drc": 651,
       "trials": 0,
       "unpressable": 10,
       "worklist_confidence": {
-        "high": 267,
+        "high": 253,
         "low": 66,
-        "medium": 111
+        "medium": 105
       },
-      "worklist_pairs": 444
+      "worklist_pairs": 424
     },
     {
-      "candidates": 824,
+      "candidates": 752,
       "catalog_rows": 171,
       "character": "Jamie",
       "combos_confirmed": 0,
@@ -778,35 +778,35 @@
         "matched": 71,
         "rows": 92
       },
-      "drc_edges": 722,
-      "drc_pairs": 722,
+      "drc_edges": 650,
+      "drc_pairs": 650,
       "fighter_id": 21,
       "frame_data": true,
       "lc": "jamie",
       "logs": 0,
       "notes": [
         "始動・対象技のフレームデータ結合 71/92 (77%): 残りは数字のない候補",
-        "ワークリストの 72% が low 確度"
+        "ワークリストの 77% が low 確度"
       ],
       "offline_report": "jamie-offline-report.md",
       "page": "sweep-report-jamie-modern.html",
-      "page_bytes": 284257,
+      "page_bytes": 297777,
       "plans": {
         "max-damage": 21,
         "no-gauge": 20,
         "starter-chu": 26
       },
-      "routes": 1111,
-      "routes_complete": false,
-      "routes_drc": 1298,
+      "routes": 1079,
+      "routes_complete": true,
+      "routes_drc": 1408,
       "trials": 0,
       "unpressable": 22,
       "worklist_confidence": {
-        "high": 137,
-        "low": 596,
-        "medium": 91
+        "high": 97,
+        "low": 580,
+        "medium": 75
       },
-      "worklist_pairs": 824
+      "worklist_pairs": 752
     },
     {
       "candidates": 822,
@@ -828,7 +828,7 @@
       "notes": [],
       "offline_report": "akuma-offline-report.md",
       "page": "sweep-report-akuma-modern.html",
-      "page_bytes": 392646,
+      "page_bytes": 400363,
       "plans": {
         "max-damage": 23,
         "no-gauge": 22,
@@ -866,7 +866,7 @@
       "notes": [],
       "offline_report": "sagat-offline-report.md",
       "page": "sweep-report-sagat-modern.html",
-      "page_bytes": 204889,
+      "page_bytes": 212606,
       "plans": {
         "max-damage": 21,
         "no-gauge": 25,
@@ -906,7 +906,7 @@
       ],
       "offline_report": "mbison-offline-report.md",
       "page": "sweep-report-mbison-modern.html",
-      "page_bytes": 236651,
+      "page_bytes": 244368,
       "plans": {
         "max-damage": 21,
         "no-gauge": 23,
@@ -944,7 +944,7 @@
       "notes": [],
       "offline_report": "terry-offline-report.md",
       "page": "sweep-report-terry-modern.html",
-      "page_bytes": 200927,
+      "page_bytes": 208644,
       "plans": {
         "max-damage": 20,
         "no-gauge": 24,
@@ -984,7 +984,7 @@
       ],
       "offline_report": "mai-offline-report.md",
       "page": "sweep-report-mai-modern.html",
-      "page_bytes": 115142,
+      "page_bytes": 122859,
       "plans": {
         "max-damage": 17,
         "no-gauge": 22,
@@ -1025,7 +1025,7 @@
       ],
       "offline_report": "elena-offline-report.md",
       "page": "sweep-report-elena-modern.html",
-      "page_bytes": 218758,
+      "page_bytes": 226475,
       "plans": {
         "max-damage": 22,
         "no-gauge": 24,
@@ -1063,7 +1063,7 @@
       "notes": [],
       "offline_report": "cviper-offline-report.md",
       "page": "sweep-report-cviper-modern.html",
-      "page_bytes": 156867,
+      "page_bytes": 164584,
       "plans": {
         "max-damage": 20,
         "no-gauge": 22,
@@ -1082,7 +1082,7 @@
       "worklist_pairs": 295
     },
     {
-      "candidates": 583,
+      "candidates": 486,
       "catalog_rows": 96,
       "character": "Alex",
       "combos_confirmed": 0,
@@ -1092,8 +1092,8 @@
         "matched": 70,
         "rows": 70
       },
-      "drc_edges": 349,
-      "drc_pairs": 349,
+      "drc_edges": 291,
+      "drc_pairs": 291,
       "fighter_id": 31,
       "frame_data": true,
       "lc": "alex",
@@ -1101,23 +1101,23 @@
       "notes": [],
       "offline_report": "alex-offline-report.md",
       "page": "sweep-report-alex-modern.html",
-      "page_bytes": 207587,
+      "page_bytes": 191346,
       "plans": {
         "max-damage": 22,
-        "no-gauge": 24,
+        "no-gauge": 22,
         "starter-chu": 16
       },
-      "routes": 919,
+      "routes": 777,
       "routes_complete": false,
-      "routes_drc": 744,
+      "routes_drc": 631,
       "trials": 0,
       "unpressable": 2,
       "worklist_confidence": {
-        "high": 147,
-        "low": 248,
-        "medium": 188
+        "high": 105,
+        "low": 211,
+        "medium": 170
       },
-      "worklist_pairs": 583
+      "worklist_pairs": 486
     },
     {
       "candidates": 719,
@@ -1141,7 +1141,7 @@
       ],
       "offline_report": "ingrid-offline-report.md",
       "page": "sweep-report-ingrid-modern.html",
-      "page_bytes": 357484,
+      "page_bytes": 365201,
       "plans": {
         "max-damage": 21,
         "no-gauge": 24,
@@ -1181,7 +1181,7 @@
       ],
       "offline_report": "yasmine-offline-report.md",
       "page": "sweep-report-yasmine-modern.html",
-      "page_bytes": 282567,
+      "page_bytes": 290284,
       "plans": {
         "max-damage": 20,
         "no-gauge": 18,

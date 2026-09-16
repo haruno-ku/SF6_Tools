@@ -1,0 +1,52 @@
+{
+  "character": "Zangief",
+  "control_scheme": "modern",
+  "delays": [
+    [
+      48,
+      49,
+      50,
+      51,
+      52
+    ]
+  ],
+  "gaps": [
+    {
+      "delays": [
+        48,
+        49,
+        50,
+        51,
+        52
+      ],
+      "pair": "633:manual->785:manual",
+      "source": "predicted",
+      "why": "runtime/Sweep.plan_for's grid for this pair: the predicted link window"
+    }
+  ],
+  "id": "zangief-modern-no-gauge-3",
+  "note": "Written by tools/lua/plan.lua --routes from plan no-gauge (rank 3). Every gap is a LIST, never one number: a single delay would read as a measurement, and pressing at one unmeasured gap is how a cancel window gets mistaken for a link window (#46). Where each list came from:\ngap 1 (3 + 强 -> 22 + 强): 48, 49, 50, 51, 52 from predicted - runtime/Sweep.plan_for's grid for this pair: the predicted link window\nWhat the logs already say: 0/1 pairs reproduced; by its moves, pressed any way, the policy calls this combo pending\nThe grid is 5 combination(s). EVERY ROUTE IN A PLAN IS A PREDICTION: this file is a question for the game, not a combo.",
+  "plan": {
+    "conditions": {
+      "no_gauge": true
+    },
+    "generated_at": "2026-09-16T00:28:57Z",
+    "name": "no-gauge",
+    "rank": 3,
+    "sort": "scaled_damage",
+    "tool": "tools/lua/plan.lua --routes"
+  },
+  "schema": "ce.route.v1",
+  "steps": [
+    {
+      "action_id": 633,
+      "input_method": "manual",
+      "notation": "3 + 强"
+    },
+    {
+      "action_id": 785,
+      "input_method": "manual",
+      "notation": "22 + 强"
+    }
+  ]
+}

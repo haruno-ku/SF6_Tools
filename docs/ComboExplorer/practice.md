@@ -17,132 +17,132 @@ absolute. The components are the point: disagree with the weights and re-read th
 
 | # | Character | Predicted ease | Easy damage | Input shape | Timing comfort | Route availability | Data quality | Flags |
 |---:|---|---:|---:|---:|---:|---:|---:|---|
-| 1 | Lily | **76.8** | 87 | 58 | 96 | 38 | 82 | route search hit the beam limit |
-| 2 | JP | **66.9** | 31 | 85 | 89 | 57 | 87 | route search hit the beam limit |
-| 3 | Zangief | **66.1** | 89 | 19 | 95 | 35 | 76 | - |
-| 4 | Ryu | **64.0** | 47 | 57 | 98 | 46 | 67 | route search hit the beam limit |
-| 5 | Manon | **63.6** | 47 | 56 | 98 | 18 | 94 | route search hit the beam limit |
-| 6 | Alex | **62.1** | 55 | 50 | 89 | 36 | 72 | route search hit the beam limit |
-| 7 | EHonda | **62.1** | 55 | 58 | 87 | 9 | 85 | - |
-| 8 | Terry | **61.9** | 39 | 60 | 100 | 21 | 82 | - |
-| 9 | ChunLi | **61.0** | 31 | 59 | 90 | 53 | 91 | route search hit the beam limit |
-| 10 | Ed | **60.9** | 47 | 64 | 73 | 52 | 74 | - |
-| 11 | Akuma | **60.0** | 57 | 68 | 52 | 63 | 67 | route search hit the beam limit |
-| 12 | Kimberly | **56.5** | 33 | 56 | 86 | 38 | 74 | - |
-| 13 | Ken | **56.2** | 31 | 60 | 93 | 9 | 78 | - |
-| 14 | MBison | **55.7** | 63 | 59 | 45 | 47 | 62 | 62% of the worklist is low confidence; route search hit the beam limit |
-| 15 | Luke | **55.2** | 31 | 58 | 92 | 7 | 78 | - |
-| 16 | Juri | **54.6** | 31 | 65 | 78 | 32 | 64 | route search hit the beam limit |
-| 17 | DeeJay | **53.7** | 47 | 47 | 73 | 44 | 51 | 79% of the worklist is low confidence; route search hit the beam limit |
-| 18 | Cammy | **52.9** | 3 | 51 | 91 | 70 | 95 | route search hit the beam limit |
-| 19 | Sagat | **50.8** | 3 | 54 | 95 | 45 | 83 | - |
-| 20 | Marisa | **47.4** | 5 | 51 | 89 | 29 | 82 | - |
-| 21 | Ingrid | **46.0** | 40 | 33 | 43 | 82 | 68 | 62% of the worklist is low confidence; route search hit the beam limit |
-| 22 | Rashid | **45.4** | 3 | 57 | 77 | 29 | 82 | route search hit the beam limit |
-| 23 | Mai | **44.8** | 3 | 62 | 95 | 0 | 47 | 87% of the worklist is low confidence |
-| 24 | Guile | **44.1** | 47 | 67 | 23 | 56 | 18 | frame-data join 112/135 (83%); 84% of the worklist is low confidence; route search hit the beam limit |
-| 25 | CViper | **42.7** | 3 | 52 | 77 | 26 | 69 | - |
-| 26 | Jamie | **40.6** | 46 | 47 | 39 | 46 | 8 | frame-data join 71/92 (77%); 72% of the worklist is low confidence; route search hit the beam limit |
-| 27 | Blanka | **40.4** | 40 | 48 | 12 | 85 | 51 | 73% of the worklist is low confidence; route search hit the beam limit |
-| 28 | Dhalsim | **39.4** | 3 | 61 | 29 | 100 | 58 | route search hit the beam limit |
-| 29 | Yasmine | **39.3** | 3 | 61 | 45 | 79 | 42 | 87% of the worklist is low confidence; route search hit the beam limit |
-| 30 | AKI | **38.4** | 3 | 60 | 58 | 14 | 69 | - |
-| 31 | Elena | **27.2** | 31 | 56 | 0 | 25 | 15 | frame-data join 75/97 (77%); 74% of the worklist is low confidence; route search hit the beam limit |
+| 1 | JP | **78.3** | 70 | 86 | 88 | 56 | 83 | route search hit the beam limit |
+| 2 | Ryu | **73.8** | 85 | 51 | 98 | 46 | 64 | route search hit the beam limit |
+| 3 | Terry | **72.1** | 77 | 56 | 100 | 21 | 78 | - |
+| 4 | EHonda | **71.8** | 92 | 54 | 87 | 6 | 81 | - |
+| 5 | Ed | **71.5** | 85 | 62 | 73 | 52 | 70 | - |
+| 6 | ChunLi | **71.3** | 70 | 55 | 90 | 53 | 86 | route search hit the beam limit |
+| 7 | Akuma | **70.4** | 93 | 68 | 52 | 63 | 64 | route search hit the beam limit |
+| 8 | Alex | **69.8** | 92 | 42 | 89 | 25 | 69 | route search hit the beam limit |
+| 9 | Zangief | **69.6** | 82 | 51 | 90 | 4 | 93 | - |
+| 10 | Ken | **66.7** | 70 | 56 | 93 | 9 | 74 | - |
+| 11 | Kimberly | **66.4** | 72 | 50 | 86 | 38 | 70 | - |
+| 12 | Juri | **65.8** | 70 | 63 | 78 | 32 | 63 | route search hit the beam limit |
+| 13 | MBison | **65.5** | 100 | 54 | 45 | 47 | 61 | 62% of the worklist is low confidence; route search hit the beam limit |
+| 14 | Luke | **65.4** | 70 | 53 | 92 | 7 | 75 | - |
+| 15 | DeeJay | **62.5** | 85 | 37 | 73 | 44 | 50 | 79% of the worklist is low confidence; route search hit the beam limit |
+| 16 | Cammy | **60.5** | 36 | 43 | 91 | 70 | 90 | route search hit the beam limit |
+| 17 | Sagat | **58.8** | 36 | 47 | 95 | 45 | 79 | - |
+| 18 | Guile | **56.4** | 85 | 71 | 23 | 56 | 18 | frame-data join 112/135 (83%); 84% of the worklist is low confidence; route search hit the beam limit |
+| 19 | Marisa | **54.5** | 37 | 42 | 89 | 29 | 78 | - |
+| 20 | Mai | **54.1** | 36 | 59 | 95 | 0 | 47 | 87% of the worklist is low confidence |
+| 21 | Rashid | **53.7** | 36 | 51 | 77 | 29 | 78 | route search hit the beam limit |
+| 22 | Manon | **53.1** | 12 | 60 | 95 | 5 | 100 | - |
+| 23 | Ingrid | **52.4** | 77 | 15 | 43 | 82 | 66 | 62% of the worklist is low confidence; route search hit the beam limit |
+| 24 | CViper | **50.5** | 36 | 45 | 77 | 26 | 65 | - |
+| 25 | Lily | **49.5** | 8 | 47 | 95 | 31 | 84 | - |
+| 26 | Blanka | **48.6** | 77 | 38 | 12 | 81 | 50 | 74% of the worklist is low confidence; route search hit the beam limit |
+| 27 | Dhalsim | **48.5** | 36 | 58 | 29 | 100 | 56 | route search hit the beam limit |
+| 28 | Yasmine | **48.4** | 36 | 57 | 45 | 79 | 41 | 87% of the worklist is low confidence; route search hit the beam limit |
+| 29 | AKI | **47.2** | 36 | 56 | 58 | 14 | 66 | - |
+| 30 | Jamie | **46.6** | 81 | 36 | 33 | 46 | 5 | frame-data join 71/92 (77%); 77% of the worklist is low confidence |
+| 31 | Elena | **37.3** | 70 | 50 | 0 | 25 | 14 | frame-data join 75/97 (77%); 74% of the worklist is low confidence; route search hit the beam limit |
 
 ## Second view - easiest to get real damage cheaply
 
 Component 1 alone, so the composite is not the only reading. A high row here means the
 character's CHEAP routes - execution_cost at or under 6.00, the 25th percentile of all
-34625 routes across the roster - already predict good scaled damage, and that the best
+33558 routes across the roster - already predict good scaled damage, and that the best
 deal on its Pareto front is a good one.
 
 | # | Character | Easy damage | Best cheap route (predicted scaled damage) | Cheap routes | Best damage / cost on the Pareto front | Pareto routes |
 |---:|---|---:|---:|---:|---:|---:|
-| 1 | Zangief | 89 | 4100 | 319 of 917 | 790.8 | 10 |
-| 2 | Lily | 87 | 4500 | 194 of 848 | 750.0 | 12 |
-| 3 | MBison | 63 | 4200 | 327 of 1368 | 700.0 | 10 |
-| 4 | Akuma | 57 | 4000 | 463 of 1520 | 698.1 | 9 |
-| 5 | Alex | 55 | 4100 | 286 of 919 | 683.3 | 11 |
-| 6 | EHonda | 55 | 4100 | 201 of 609 | 683.3 | 7 |
-| 7 | DeeJay | 47 | 4000 | 374 of 1070 | 666.7 | 10 |
-| 8 | Ed | 47 | 4000 | 215 of 1245 | 666.7 | 11 |
-| 9 | Guile | 47 | 4000 | 495 of 1178 | 666.7 | 10 |
-| 10 | Manon | 47 | 4000 | 191 of 599 | 666.7 | 7 |
-| 11 | Ryu | 47 | 4000 | 289 of 1092 | 666.7 | 10 |
-| 12 | Jamie | 46 | 3700 | 254 of 1111 | 692.3 | 10 |
-| 13 | Ingrid | 40 | 3800 | 366 of 2502 | 662.9 | 14 |
-| 14 | Blanka | 40 | 3800 | 409 of 2182 | 661.5 | 10 |
-| 15 | Terry | 39 | 3900 | 178 of 699 | 650.0 | 10 |
-| 16 | Kimberly | 33 | 3830 | 285 of 912 | 638.3 | 11 |
-| 17 | ChunLi | 31 | 3800 | 348 of 1157 | 633.3 | 8 |
-| 18 | Elena | 31 | 3800 | 267 of 857 | 633.3 | 7 |
-| 19 | JP | 31 | 3800 | 370 of 1202 | 633.3 | 8 |
-| 20 | Juri | 31 | 3800 | 268 of 775 | 633.3 | 7 |
-| 21 | Ken | 31 | 3800 | 162 of 674 | 633.3 | 9 |
-| 22 | Luke | 31 | 3800 | 172 of 623 | 633.3 | 7 |
-| 23 | Marisa | 5 | 2760 | 238 of 803 | 646.2 | 8 |
-| 24 | AKI | 3 | 2860 | 170 of 657 | 630.8 | 10 |
-| 25 | CViper | 3 | 2860 | 223 of 719 | 630.8 | 10 |
-| 26 | Cammy | 3 | 2860 | 460 of 1541 | 630.8 | 7 |
-| 27 | Dhalsim | 3 | 2860 | 598 of 2681 | 630.8 | 9 |
-| 28 | Mai | 3 | 2860 | 121 of 454 | 630.8 | 9 |
-| 29 | Rashid | 3 | 2860 | 242 of 872 | 630.8 | 10 |
-| 30 | Sagat | 3 | 2860 | 341 of 979 | 630.8 | 10 |
-| 31 | Yasmine | 3 | 2860 | 473 of 1860 | 630.8 | 7 |
+| 1 | MBison | 100 | 4200 | 327 of 1368 | 700.0 | 10 |
+| 2 | Akuma | 93 | 4000 | 463 of 1520 | 698.1 | 9 |
+| 3 | Alex | 92 | 4100 | 284 of 777 | 683.3 | 12 |
+| 4 | EHonda | 92 | 4100 | 192 of 565 | 683.3 | 7 |
+| 5 | DeeJay | 85 | 4000 | 374 of 1070 | 666.7 | 10 |
+| 6 | Ed | 85 | 4000 | 215 of 1245 | 666.7 | 11 |
+| 7 | Guile | 85 | 4000 | 495 of 1178 | 666.7 | 10 |
+| 8 | Ryu | 85 | 4000 | 289 of 1092 | 666.7 | 10 |
+| 9 | Zangief | 82 | 3700 | 288 of 423 | 698.1 | 10 |
+| 10 | Jamie | 81 | 3700 | 252 of 1079 | 692.3 | 10 |
+| 11 | Terry | 77 | 3900 | 178 of 699 | 650.0 | 10 |
+| 12 | Ingrid | 77 | 3800 | 366 of 2502 | 662.9 | 14 |
+| 13 | Blanka | 77 | 3800 | 407 of 2105 | 661.5 | 10 |
+| 14 | Kimberly | 72 | 3830 | 285 of 912 | 638.3 | 11 |
+| 15 | ChunLi | 70 | 3800 | 348 of 1157 | 633.3 | 8 |
+| 16 | Elena | 70 | 3800 | 267 of 857 | 633.3 | 7 |
+| 17 | JP | 70 | 3800 | 368 of 1156 | 633.3 | 8 |
+| 18 | Juri | 70 | 3800 | 268 of 775 | 633.3 | 7 |
+| 19 | Ken | 70 | 3800 | 162 of 674 | 633.3 | 9 |
+| 20 | Luke | 70 | 3800 | 172 of 623 | 633.3 | 7 |
+| 21 | Marisa | 37 | 2760 | 238 of 803 | 646.2 | 8 |
+| 22 | AKI | 36 | 2860 | 170 of 657 | 630.8 | 10 |
+| 23 | CViper | 36 | 2860 | 223 of 719 | 630.8 | 10 |
+| 24 | Cammy | 36 | 2860 | 460 of 1541 | 630.8 | 7 |
+| 25 | Dhalsim | 36 | 2860 | 598 of 2681 | 630.8 | 9 |
+| 26 | Mai | 36 | 2860 | 121 of 454 | 630.8 | 9 |
+| 27 | Rashid | 36 | 2860 | 242 of 872 | 630.8 | 10 |
+| 28 | Sagat | 36 | 2860 | 341 of 979 | 630.8 | 10 |
+| 29 | Yasmine | 36 | 2860 | 473 of 1860 | 630.8 | 7 |
+| 30 | Manon | 12 | 3040 | 180 of 490 | 506.7 | 9 |
+| 31 | Lily | 8 | 2980 | 204 of 725 | 496.7 | 12 |
 
 ## The top 3 and the bottom 3, and why
 
 From the components, not from the total. Read these as hypotheses for the sweep.
 
-1. **Lily** (predicted ease 76.8) - its top 25 routes by predicted scaled damage average 8.5 inputs and 4.1 directions in the longest motion, 68% of them needing a 4+ direction motion; 98% of its 635 worklist pairs are a cancel or a link with 3+ frames of predicted margin (59 of 62 links are that comfortable); the best route under the cheap cut predicts 4500 scaled damage.
-2. **JP** (predicted ease 66.9) - its top 25 routes by predicted scaled damage average 6.3 inputs and 1.4 directions in the longest motion, 24% of them needing a 4+ direction motion; 93% of its 631 worklist pairs are a cancel or a link with 3+ frames of predicted margin (41 of 56 links are that comfortable); the best route under the cheap cut predicts 3800 scaled damage.
-3. **Zangief** (predicted ease 66.1) - its top 25 routes by predicted scaled damage average 13.6 inputs and 8.8 directions in the longest motion, 80% of them needing a 4+ direction motion; 97% of its 324 worklist pairs are a cancel or a link with 3+ frames of predicted margin (90 of 92 links are that comfortable); the best route under the cheap cut predicts 4100 scaled damage.
+1. **JP** (predicted ease 78.3) - its top 25 routes by predicted scaled damage average 7.0 inputs and 2.6 directions in the longest motion, 24% of them needing a 4+ direction motion; 93% of its 611 worklist pairs are a cancel or a link with 3+ frames of predicted margin (41 of 56 links are that comfortable); the best route under the cheap cut predicts 3800 scaled damage.
+2. **Ryu** (predicted ease 73.8) - its top 25 routes by predicted scaled damage average 8.6 inputs and 4.3 directions in the longest motion, 72% of them needing a 4+ direction motion; 99% of its 551 worklist pairs are a cancel or a link with 3+ frames of predicted margin (56 of 62 links are that comfortable); the best route under the cheap cut predicts 4000 scaled damage.
+3. **Terry** (predicted ease 72.1) - its top 25 routes by predicted scaled damage average 8.5 inputs and 3.8 directions in the longest motion, 64% of them needing a 4+ direction motion; 100% of its 409 worklist pairs are a cancel or a link with 3+ frames of predicted margin (43 of 43 links are that comfortable); the best route under the cheap cut predicts 3900 scaled damage.
 
-29. **Yasmine** (predicted ease 39.3) - its top 25 routes by predicted scaled damage average 8.7 inputs and 3.6 directions in the longest motion, 60% of them needing a 4+ direction motion; 66% of its 733 worklist pairs are a cancel or a link with 3+ frames of predicted margin (23 of 33 links are that comfortable); the best route under the cheap cut predicts 2860 scaled damage.
-30. **AKI** (predicted ease 38.4) - its top 25 routes by predicted scaled damage average 8.6 inputs and 3.8 directions in the longest motion, 64% of them needing a 4+ direction motion; 74% of its 330 worklist pairs are a cancel or a link with 3+ frames of predicted margin (32 of 57 links are that comfortable); the best route under the cheap cut predicts 2860 scaled damage.
-31. **Elena** (predicted ease 27.2) - its top 25 routes by predicted scaled damage average 8.8 inputs and 4.3 directions in the longest motion, 72% of them needing a 4+ direction motion; 38% of its 1093 worklist pairs are a cancel or a link with 3+ frames of predicted margin (57 of 69 links are that comfortable); the best route under the cheap cut predicts 3800 scaled damage.
+29. **AKI** (predicted ease 47.2) - its top 25 routes by predicted scaled damage average 8.6 inputs and 3.8 directions in the longest motion, 64% of them needing a 4+ direction motion; 74% of its 330 worklist pairs are a cancel or a link with 3+ frames of predicted margin (32 of 57 links are that comfortable); the best route under the cheap cut predicts 2860 scaled damage.
+30. **Jamie** (predicted ease 46.6) - its top 25 routes by predicted scaled damage average 9.8 inputs and 5.0 directions in the longest motion, 84% of them needing a 4+ direction motion; 58% of its 752 worklist pairs are a cancel or a link with 3+ frames of predicted margin (96 of 115 links are that comfortable); the best route under the cheap cut predicts 3700 scaled damage.
+31. **Elena** (predicted ease 37.3) - its top 25 routes by predicted scaled damage average 8.8 inputs and 4.3 directions in the longest motion, 72% of them needing a 4+ direction motion; 38% of its 1093 worklist pairs are a cancel or a link with 3+ frames of predicted margin (57 of 69 links are that comfortable); the best route under the cheap cut predicts 3800 scaled damage.
 
 ## Component 1 - easy damage
 
 The best `predicted_damage_scaled` among routes whose `execution_cost` is at or under
 **6.00**, plus the best damage-per-cost ratio on `Scoring.pareto` (the routes nothing
 else beats on damage and cost at once). The cut is the 25th percentile of the pooled
-execution cost of all 34625 routes, so it is the same cut for everyone and a character can
+execution cost of all 33558 routes, so it is the same cut for everyone and a character can
 have none under it. `predicted_damage_scaled` is `core/DamageScaling`'s model, which
 nobody has checked against this build.
 
 | Character | Routes | Cheap routes | Best cheap scaled damage | Pareto routes | Best damage/cost | Mean damage/cost |
 |---|---:|---:|---:|---:|---:|---:|
-| Lily | 848 | 194 | 4500 | 12 | 750.0 | 472.1 |
-| JP | 1202 | 370 | 3800 | 8 | 633.3 | 417.2 |
-| Zangief | 917 | 319 | 4100 | 10 | 790.8 | 573.1 |
+| JP | 1156 | 368 | 3800 | 8 | 633.3 | 414.4 |
 | Ryu | 1092 | 289 | 4000 | 10 | 666.7 | 432.1 |
-| Manon | 599 | 191 | 4000 | 7 | 666.7 | 458.1 |
-| Alex | 919 | 286 | 4100 | 11 | 683.3 | 479.6 |
-| EHonda | 609 | 201 | 4100 | 7 | 683.3 | 509.0 |
 | Terry | 699 | 178 | 3900 | 10 | 650.0 | 453.4 |
-| ChunLi | 1157 | 348 | 3800 | 8 | 633.3 | 441.4 |
+| EHonda | 565 | 192 | 4100 | 7 | 683.3 | 500.7 |
 | Ed | 1245 | 215 | 4000 | 11 | 666.7 | 436.7 |
+| ChunLi | 1157 | 348 | 3800 | 8 | 633.3 | 441.4 |
 | Akuma | 1520 | 463 | 4000 | 9 | 698.1 | 492.4 |
-| Kimberly | 912 | 285 | 3830 | 11 | 638.3 | 412.1 |
+| Alex | 777 | 284 | 4100 | 12 | 683.3 | 477.0 |
+| Zangief | 423 | 288 | 3700 | 10 | 698.1 | 533.0 |
 | Ken | 674 | 162 | 3800 | 9 | 633.3 | 444.9 |
+| Kimberly | 912 | 285 | 3830 | 11 | 638.3 | 412.1 |
+| Juri | 775 | 268 | 3800 | 7 | 633.3 | 484.4 |
 | MBison | 1368 | 327 | 4200 | 10 | 700.0 | 523.7 |
 | Luke | 623 | 172 | 3800 | 7 | 633.3 | 514.5 |
-| Juri | 775 | 268 | 3800 | 7 | 633.3 | 484.4 |
 | DeeJay | 1070 | 374 | 4000 | 10 | 666.7 | 454.8 |
 | Cammy | 1541 | 460 | 2860 | 7 | 630.8 | 421.1 |
 | Sagat | 979 | 341 | 2860 | 10 | 630.8 | 409.7 |
-| Marisa | 803 | 238 | 2760 | 8 | 646.2 | 504.4 |
-| Ingrid | 2502 | 366 | 3800 | 14 | 662.9 | 516.1 |
-| Rashid | 872 | 242 | 2860 | 10 | 630.8 | 410.8 |
-| Mai | 454 | 121 | 2860 | 9 | 630.8 | 445.5 |
 | Guile | 1178 | 495 | 4000 | 10 | 666.7 | 408.0 |
+| Marisa | 803 | 238 | 2760 | 8 | 646.2 | 504.4 |
+| Mai | 454 | 121 | 2860 | 9 | 630.8 | 445.5 |
+| Rashid | 872 | 242 | 2860 | 10 | 630.8 | 410.8 |
+| Manon | 490 | 180 | 3040 | 9 | 506.7 | 392.0 |
+| Ingrid | 2502 | 366 | 3800 | 14 | 662.9 | 516.1 |
 | CViper | 719 | 223 | 2860 | 10 | 630.8 | 427.3 |
-| Jamie | 1111 | 254 | 3700 | 10 | 692.3 | 430.6 |
-| Blanka | 2182 | 409 | 3800 | 10 | 661.5 | 520.8 |
+| Lily | 725 | 204 | 2980 | 12 | 496.7 | 370.4 |
+| Blanka | 2105 | 407 | 3800 | 10 | 661.5 | 520.8 |
 | Dhalsim | 2681 | 598 | 2860 | 9 | 630.8 | 421.8 |
 | Yasmine | 1860 | 473 | 2860 | 7 | 630.8 | 475.3 |
 | AKI | 657 | 170 | 2860 | 10 | 630.8 | 448.9 |
+| Jamie | 1079 | 252 | 3700 | 10 | 692.3 | 430.6 |
 | Elena | 857 | 267 | 3800 | 7 | 633.3 | 499.1 |
 
 ## Component 2 - the input shape of the good routes
@@ -154,36 +154,36 @@ at least one Modern SP input in it, which is one button instead of a motion.
 
 | Character | Top routes | Mean inputs | Mean longest motion | 4+ motion | Mean method switches | Uses a simple input |
 |---|---:|---:|---:|---:|---:|---:|
-| Lily | 25 | 8.5 | 4.08 | 68% (17) | 0.32 | 32% (8) |
-| JP | 25 | 6.3 | 1.44 | 24% (6) | 0.76 | 76% (19) |
-| Zangief | 25 | 13.6 | 8.80 | 80% (20) | 0.20 | 20% (5) |
+| JP | 25 | 7.0 | 2.64 | 24% (6) | 0.32 | 32% (8) |
 | Ryu | 25 | 8.6 | 4.32 | 72% (18) | 0.28 | 28% (7) |
-| Manon | 25 | 8.3 | 4.44 | 76% (19) | 0.24 | 24% (6) |
-| Alex | 25 | 9.3 | 4.80 | 80% (20) | 0.20 | 20% (5) |
-| EHonda | 25 | 8.4 | 4.08 | 72% (18) | 0.28 | 28% (7) |
 | Terry | 25 | 8.5 | 3.84 | 64% (16) | 0.36 | 36% (9) |
-| ChunLi | 25 | 8.2 | 4.16 | 68% (17) | 0.32 | 32% (8) |
+| EHonda | 25 | 8.4 | 4.08 | 72% (18) | 0.28 | 28% (7) |
 | Ed | 25 | 8.0 | 3.60 | 60% (15) | 0.40 | 40% (10) |
+| ChunLi | 25 | 8.2 | 4.16 | 68% (17) | 0.32 | 32% (8) |
 | Akuma | 25 | 8.0 | 3.52 | 48% (12) | 0.20 | 20% (5) |
-| Kimberly | 25 | 8.7 | 4.32 | 72% (18) | 0.28 | 28% (7) |
+| Alex | 25 | 9.3 | 4.80 | 80% (20) | 0.20 | 20% (5) |
+| Zangief | 25 | 9.3 | 4.08 | 64% (16) | 0.24 | 24% (6) |
 | Ken | 25 | 8.5 | 3.84 | 64% (16) | 0.36 | 36% (9) |
+| Kimberly | 25 | 8.7 | 4.32 | 72% (18) | 0.28 | 28% (7) |
+| Juri | 25 | 7.8 | 3.60 | 60% (15) | 0.40 | 40% (10) |
 | MBison | 25 | 8.8 | 4.08 | 64% (16) | 0.24 | 24% (6) |
 | Luke | 25 | 8.6 | 4.08 | 68% (17) | 0.32 | 32% (8) |
-| Juri | 25 | 7.8 | 3.60 | 60% (15) | 0.40 | 40% (10) |
 | DeeJay | 25 | 9.6 | 5.04 | 84% (21) | 0.16 | 16% (4) |
 | Cammy | 25 | 9.2 | 4.80 | 80% (20) | 0.20 | 20% (5) |
 | Sagat | 25 | 9.2 | 4.32 | 72% (18) | 0.28 | 28% (7) |
-| Marisa | 25 | 9.6 | 4.56 | 76% (19) | 0.24 | 24% (6) |
-| Ingrid | 25 | 11.6 | 6.00 | 100% (25) | 0.00 | 0% (0) |
-| Rashid | 25 | 8.9 | 4.08 | 68% (17) | 0.32 | 32% (8) |
-| Mai | 25 | 8.4 | 3.60 | 60% (15) | 0.40 | 40% (10) |
 | Guile | 25 | 7.2 | 2.88 | 72% (18) | 0.28 | 28% (7) |
+| Marisa | 25 | 9.6 | 4.56 | 76% (19) | 0.24 | 24% (6) |
+| Mai | 25 | 8.4 | 3.60 | 60% (15) | 0.40 | 40% (10) |
+| Rashid | 25 | 8.9 | 4.08 | 68% (17) | 0.32 | 32% (8) |
+| Manon | 25 | 8.2 | 3.60 | 60% (15) | 0.40 | 40% (10) |
+| Ingrid | 25 | 11.6 | 6.00 | 100% (25) | 0.00 | 0% (0) |
 | CViper | 25 | 9.2 | 4.56 | 76% (19) | 0.24 | 24% (6) |
-| Jamie | 25 | 9.8 | 5.04 | 84% (21) | 0.16 | 16% (4) |
+| Lily | 25 | 8.8 | 4.56 | 76% (19) | 0.24 | 24% (6) |
 | Blanka | 25 | 9.5 | 5.04 | 84% (21) | 0.16 | 16% (4) |
 | Dhalsim | 25 | 8.5 | 3.60 | 60% (15) | 0.40 | 40% (10) |
 | Yasmine | 25 | 8.7 | 3.60 | 60% (15) | 0.40 | 40% (10) |
 | AKI | 25 | 8.6 | 3.84 | 64% (16) | 0.36 | 36% (9) |
+| Jamie | 25 | 9.8 | 5.04 | 84% (21) | 0.16 | 16% (4) |
 | Elena | 25 | 8.8 | 4.32 | 72% (18) | 0.28 | 28% (7) |
 
 ## Component 3 - timing comfort (predicted)
@@ -198,36 +198,36 @@ column carries some of the same information as component 5.
 
 | Character | Pairs | Cancel | Both | Link | Unknown | Comfortable links (3+f) | Tight links (1-2f) | Forgiving share |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Lily | 635 | 444 | 117 | 62 | 12 | 59 (95%) | 1 (2%) | 97.6% |
-| JP | 631 | 397 | 148 | 56 | 30 | 41 (73%) | 13 (23%) | 92.9% |
-| Zangief | 324 | 180 | 44 | 92 | 8 | 90 (98%) | 2 (2%) | 96.9% |
+| JP | 611 | 379 | 146 | 56 | 30 | 41 (73%) | 13 (23%) | 92.6% |
 | Ryu | 551 | 446 | 43 | 62 | 0 | 56 (90%) | 1 (2%) | 98.9% |
-| Manon | 655 | 556 | 15 | 84 | 0 | 74 (88%) | 0 (0%) | 98.5% |
-| Alex | 583 | 396 | 54 | 133 | 0 | 94 (71%) | 12 (9%) | 93.3% |
-| EHonda | 444 | 331 | 23 | 74 | 16 | 53 (72%) | 12 (16%) | 91.7% |
 | Terry | 409 | 330 | 36 | 43 | 0 | 43 (100%) | 0 (0%) | 100.0% |
-| ChunLi | 619 | 469 | 65 | 85 | 0 | 48 (56%) | 22 (26%) | 94.0% |
+| EHonda | 424 | 319 | 21 | 68 | 16 | 51 (75%) | 12 (18%) | 92.2% |
 | Ed | 336 | 213 | 24 | 45 | 54 | 43 (96%) | 1 (2%) | 83.3% |
+| ChunLi | 619 | 469 | 65 | 85 | 0 | 48 (56%) | 22 (26%) | 94.0% |
 | Akuma | 822 | 398 | 114 | 77 | 233 | 64 (83%) | 5 (6%) | 70.1% |
-| Kimberly | 503 | 341 | 75 | 51 | 36 | 42 (82%) | 3 (6%) | 91.1% |
+| Alex | 486 | 331 | 42 | 113 | 0 | 80 (71%) | 12 (11%) | 93.2% |
+| Zangief | 159 | 87 | 17 | 47 | 8 | 45 (96%) | 2 (4%) | 93.7% |
 | Ken | 365 | 233 | 79 | 38 | 15 | 38 (100%) | 0 (0%) | 95.9% |
+| Kimberly | 503 | 341 | 75 | 51 | 36 | 42 (82%) | 3 (6%) | 91.1% |
+| Juri | 2388 | 1531 | 311 | 296 | 250 | 224 (76%) | 72 (24%) | 86.5% |
 | MBison | 694 | 379 | 30 | 55 | 230 | 46 (84%) | 3 (5%) | 65.6% |
 | Luke | 295 | 200 | 44 | 36 | 15 | 36 (100%) | 0 (0%) | 94.9% |
-| Juri | 2388 | 1531 | 311 | 296 | 250 | 224 (76%) | 72 (24%) | 86.5% |
 | DeeJay | 1572 | 1065 | 105 | 356 | 46 | 139 (39%) | 145 (41%) | 83.3% |
 | Cammy | 453 | 255 | 100 | 98 | 0 | 74 (76%) | 15 (15%) | 94.7% |
 | Sagat | 412 | 278 | 59 | 75 | 0 | 62 (83%) | 8 (11%) | 96.8% |
-| Marisa | 313 | 192 | 25 | 88 | 8 | 74 (84%) | 6 (7%) | 93.0% |
-| Ingrid | 719 | 150 | 84 | 253 | 232 | 231 (91%) | 10 (4%) | 64.7% |
-| Rashid | 495 | 351 | 21 | 70 | 53 | 52 (74%) | 9 (13%) | 85.7% |
-| Mai | 519 | 416 | 18 | 85 | 0 | 69 (81%) | 6 (7%) | 96.9% |
 | Guile | 2797 | 1147 | 227 | 171 | 1252 | 88 (51%) | 50 (29%) | 52.3% |
+| Marisa | 313 | 192 | 25 | 88 | 8 | 74 (84%) | 6 (7%) | 93.0% |
+| Mai | 519 | 416 | 18 | 85 | 0 | 69 (81%) | 6 (7%) | 96.9% |
+| Rashid | 495 | 351 | 21 | 70 | 53 | 52 (74%) | 9 (13%) | 85.7% |
+| Manon | 343 | 282 | 15 | 46 | 0 | 36 (78%) | 0 (0%) | 97.1% |
+| Ingrid | 719 | 150 | 84 | 253 | 232 | 231 (91%) | 10 (4%) | 64.7% |
 | CViper | 295 | 174 | 41 | 52 | 28 | 38 (73%) | 8 (15%) | 85.8% |
-| Jamie | 824 | 321 | 76 | 131 | 296 | 112 (85%) | 10 (8%) | 61.8% |
-| Blanka | 565 | 134 | 45 | 98 | 288 | 76 (78%) | 12 (12%) | 45.1% |
+| Lily | 532 | 413 | 54 | 53 | 12 | 50 (94%) | 1 (2%) | 97.2% |
+| Blanka | 532 | 119 | 45 | 98 | 270 | 76 (78%) | 12 (12%) | 45.1% |
 | Dhalsim | 664 | 302 | 22 | 49 | 291 | 48 (98%) | 1 (2%) | 56.0% |
 | Yasmine | 733 | 109 | 349 | 33 | 242 | 23 (70%) | 2 (6%) | 65.6% |
 | AKI | 330 | 196 | 15 | 57 | 62 | 32 (56%) | 10 (18%) | 73.6% |
+| Jamie | 752 | 265 | 76 | 115 | 296 | 96 (83%) | 10 (9%) | 58.1% |
 | Elena | 1093 | 288 | 68 | 69 | 668 | 57 (83%) | 7 (10%) | 37.8% |
 
 ## Component 4 - route availability
@@ -241,36 +241,36 @@ out. The count is log-scaled before normalising, because the roster spans 454 to
 
 | Character | Routes | 3-move routes | No-gauge routes | No-gauge share | 3-move and no gauge |
 |---|---:|---:|---:|---:|---:|
-| Lily | 848 | 616 | 654 | 77% | 484 |
-| JP | 1202 | 910 | 925 | 77% | 701 |
-| Zangief | 917 | 747 | 613 | 67% | 499 |
+| JP | 1156 | 876 | 903 | 78% | 685 |
 | Ryu | 1092 | 837 | 753 | 69% | 582 |
-| Manon | 599 | 446 | 445 | 74% | 338 |
-| Alex | 919 | 757 | 621 | 68% | 512 |
-| EHonda | 609 | 447 | 376 | 62% | 277 |
 | Terry | 699 | 516 | 469 | 67% | 346 |
-| ChunLi | 1157 | 894 | 863 | 75% | 680 |
+| EHonda | 565 | 415 | 354 | 63% | 261 |
 | Ed | 1245 | 1029 | 845 | 68% | 699 |
+| ChunLi | 1157 | 894 | 863 | 75% | 680 |
 | Akuma | 1520 | 1056 | 1031 | 68% | 712 |
-| Kimberly | 912 | 703 | 655 | 72% | 505 |
+| Alex | 777 | 644 | 508 | 65% | 421 |
+| Zangief | 423 | 344 | 347 | 82% | 282 |
 | Ken | 674 | 497 | 379 | 56% | 279 |
+| Kimberly | 912 | 703 | 655 | 72% | 505 |
+| Juri | 775 | 425 | 581 | 75% | 329 |
 | MBison | 1368 | 1015 | 768 | 56% | 518 |
 | Luke | 623 | 403 | 365 | 59% | 235 |
-| Juri | 775 | 425 | 581 | 75% | 329 |
 | DeeJay | 1070 | 845 | 730 | 68% | 577 |
 | Cammy | 1541 | 1293 | 1185 | 77% | 1002 |
 | Sagat | 979 | 798 | 736 | 75% | 600 |
-| Marisa | 803 | 603 | 551 | 69% | 414 |
-| Ingrid | 2502 | 2103 | 1484 | 59% | 1198 |
-| Rashid | 872 | 690 | 552 | 63% | 437 |
-| Mai | 454 | 331 | 319 | 70% | 232 |
 | Guile | 1178 | 607 | 919 | 78% | 447 |
+| Marisa | 803 | 603 | 551 | 69% | 414 |
+| Mai | 454 | 331 | 319 | 70% | 232 |
+| Rashid | 872 | 690 | 552 | 63% | 437 |
+| Manon | 490 | 374 | 348 | 71% | 266 |
+| Ingrid | 2502 | 2103 | 1484 | 59% | 1198 |
 | CViper | 719 | 582 | 515 | 72% | 417 |
-| Jamie | 1111 | 861 | 756 | 68% | 585 |
-| Blanka | 2182 | 1842 | 1567 | 72% | 1321 |
+| Lily | 725 | 544 | 569 | 78% | 427 |
+| Blanka | 2105 | 1789 | 1456 | 69% | 1234 |
 | Dhalsim | 2681 | 2217 | 2075 | 77% | 1699 |
 | Yasmine | 1860 | 1497 | 1398 | 75% | 1117 |
 | AKI | 657 | 522 | 415 | 63% | 330 |
+| Jamie | 1079 | 836 | 759 | 70% | 588 |
 | Elena | 857 | 600 | 513 | 60% | 326 |
 
 ## Component 5 - data quality
@@ -283,36 +283,36 @@ roster, so a penalty would be a penalty on nearly everyone.
 
 | Character | Frame-data join | Worklist pairs | Low confidence | Guessed join (top routes) | Search truncated |
 |---|---:|---:|---:|---:|---|
-| Lily | 73 of 73 (100%) | 635 | 109 (17%) | 25 of 65 steps (38%) | yes |
-| JP | 67 of 67 (100%) | 631 | 138 (22%) | 12 of 61 steps (20%) | yes |
-| Zangief | 47 of 47 (100%) | 324 | 101 (31%) | 25 of 69 steps (36%) | no |
+| JP | 67 of 67 (100%) | 611 | 138 (23%) | 12 of 63 steps (19%) | yes |
 | Ryu | 66 of 66 (100%) | 551 | 260 (47%) | 25 of 66 steps (38%) | yes |
-| Manon | 93 of 93 (100%) | 655 | 72 (11%) | 10 of 61 steps (16%) | yes |
-| Alex | 70 of 70 (100%) | 583 | 248 (43%) | 21 of 71 steps (30%) | yes |
-| EHonda | 67 of 67 (100%) | 444 | 66 (15%) | 22 of 67 steps (33%) | no |
 | Terry | 56 of 56 (100%) | 409 | 80 (20%) | 23 of 67 steps (34%) | no |
-| ChunLi | 68 of 68 (100%) | 619 | 60 (10%) | 15 of 58 steps (26%) | yes |
+| EHonda | 67 of 67 (100%) | 424 | 66 (16%) | 22 of 67 steps (33%) | no |
 | Ed | 53 of 54 (98%) | 336 | 92 (27%) | 25 of 66 steps (38%) | no |
+| ChunLi | 68 of 68 (100%) | 619 | 60 (10%) | 15 of 58 steps (26%) | yes |
 | Akuma | 70 of 74 (95%) | 822 | 366 (45%) | 11 of 64 steps (17%) | yes |
-| Kimberly | 59 of 61 (97%) | 503 | 124 (25%) | 23 of 67 steps (34%) | no |
+| Alex | 70 of 70 (100%) | 486 | 211 (43%) | 21 of 71 steps (30%) | yes |
+| Zangief | 47 of 47 (100%) | 159 | 24 (15%) | 0 of 72 steps (0%) | no |
 | Ken | 50 of 50 (100%) | 365 | 107 (29%) | 22 of 66 steps (33%) | no |
+| Kimberly | 59 of 61 (97%) | 503 | 124 (25%) | 23 of 67 steps (34%) | no |
+| Juri | 148 of 148 (100%) | 2388 | 1420 (59%) | 16 of 58 steps (28%) | yes |
 | MBison | 64 of 64 (100%) | 694 | 430 (62%) | 20 of 67 steps (30%) | yes |
 | Luke | 48 of 48 (100%) | 295 | 87 (29%) | 20 of 64 steps (31%) | no |
-| Juri | 148 of 148 (100%) | 2388 | 1420 (59%) | 16 of 58 steps (28%) | yes |
 | DeeJay | 121 of 121 (100%) | 1572 | 1247 (79%) | 25 of 70 steps (36%) | yes |
 | Cammy | 58 of 58 (100%) | 453 | 40 (9%) | 10 of 62 steps (16%) | yes |
 | Sagat | 62 of 62 (100%) | 412 | 72 (17%) | 25 of 70 steps (36%) | no |
-| Marisa | 52 of 52 (100%) | 313 | 65 (21%) | 23 of 70 steps (33%) | no |
-| Ingrid | 71 of 73 (97%) | 719 | 444 (62%) | 2 of 72 steps (3%) | yes |
-| Rashid | 68 of 68 (100%) | 495 | 95 (19%) | 25 of 69 steps (36%) | yes |
-| Mai | 84 of 84 (100%) | 519 | 452 (87%) | 25 of 69 steps (36%) | no |
 | Guile | 112 of 135 (83%) | 2797 | 2346 (84%) | 25 of 66 steps (38%) | yes |
+| Marisa | 52 of 52 (100%) | 313 | 65 (21%) | 23 of 70 steps (33%) | no |
+| Mai | 84 of 84 (100%) | 519 | 452 (87%) | 25 of 69 steps (36%) | no |
+| Rashid | 68 of 68 (100%) | 495 | 95 (19%) | 25 of 69 steps (36%) | yes |
+| Manon | 93 of 93 (100%) | 343 | 0 (0%) | 0 of 68 steps (0%) | no |
+| Ingrid | 71 of 73 (97%) | 719 | 444 (62%) | 2 of 72 steps (3%) | yes |
 | CViper | 51 of 55 (93%) | 295 | 72 (24%) | 20 of 69 steps (29%) | no |
-| Jamie | 71 of 92 (77%) | 824 | 596 (72%) | 35 of 65 steps (54%) | yes |
-| Blanka | 60 of 61 (98%) | 565 | 413 (73%) | 25 of 69 steps (36%) | yes |
+| Lily | 73 of 73 (100%) | 532 | 61 (11%) | 18 of 64 steps (28%) | no |
+| Blanka | 60 of 61 (98%) | 532 | 395 (74%) | 25 of 69 steps (36%) | yes |
 | Dhalsim | 71 of 72 (99%) | 664 | 394 (59%) | 25 of 66 steps (38%) | yes |
 | Yasmine | 68 of 70 (97%) | 733 | 640 (87%) | 25 of 68 steps (37%) | yes |
 | AKI | 54 of 56 (96%) | 330 | 104 (32%) | 25 of 68 steps (37%) | no |
+| Jamie | 71 of 92 (77%) | 752 | 580 (77%) | 35 of 65 steps (54%) | no |
 | Elena | 75 of 97 (77%) | 1093 | 808 (74%) | 22 of 68 steps (32%) | yes |
 
 ## Method
@@ -382,4 +382,4 @@ Inside the components:
   data says is worth a trial. None of them is known to combo.
 - **Min-max is relative.** A 0 in a column means "last of these 31", not "none".
 
-Page version: [practice.html](practice.html). Numbers: `practice.json`. Generated 2026-09-16T00:03:13Z.
+Page version: [practice.html](practice.html). Numbers: `practice.json`. Generated 2026-09-16T00:28:18Z.

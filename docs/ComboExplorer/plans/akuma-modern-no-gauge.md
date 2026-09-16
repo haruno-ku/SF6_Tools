@@ -1,6 +1,6 @@
 # Route plan - Akuma / modern - no-gauge
 
-Generated 2026-09-14T13:02:04Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
+Generated 2026-09-16T00:27:15Z by `lua tools/lua/plan.lua`. Do not edit by hand; rerun it.
 
 EVERY ROUTE HERE IS A THEORETICAL CANDIDATE. The ranking is a prediction from
 the frame data. The worklist below is the smallest set of pairs that lets the
@@ -38,8 +38,10 @@ never a damage figure.
 | no_gauge | true | 1520 | 489 | 1031 | 206 |
 
 - routes satisfying every condition: 1031
-- of those, through a pair the logs rejected: 0 (ranked after the clean ones)
+- of those, through a pair the policy CONCLUSIVELY rejected: 0 (ranked after the clean ones)
 - in this plan (top 20): 20
+
+Demotion counts conclusive failures only. Under policy `ce-eval-v1` a negative is one when the run pressed a playable input at the right timing; 0 of 0 runs were left out for asking something else, 0 of them negatives. 0 pair(s) changed status because of it.
 
 ## Routes
 
@@ -48,26 +50,26 @@ rejected pair were moved behind the clean ones.
 
 | # | sort | route (Modern) | classic | dmg scaled | dmg unscaled | gauge | cost | conf | status |
 |---:|---:|---|---|---:|---:|---|---:|---|---|
-| 1 | 1 | 3 + 强 → 2 + 强 → 623 + 弱 | 2+HK → 2+HP → 623+LP | 2680 | 2900 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 2 | 2 | 3 + 强 → 强 → 623 + 弱 | 2+HK → HP → 623+LP | 2580 | 2800 | drive 0 | 7.7 | medium | 0/2 pairs verified |
-| 3 | 3 | 3 + 强 → 4 + 强 → 623 + 弱 | 2+HK → 4+HK → 623+LP | 2580 | 2800 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 4 | 4 | 4 + 强 → 2 + 强 → 623 + 弱 | 4+HK → 2+HP → 623+LP | 2580 | 2800 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 5 | 5 | 4 + 强 → 3 + 强 → 623 + 弱 | 4+HK → 2+HK → 623+LP | 2580 | 2800 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 6 | 6 | 3 + 强 → 中 → 623 + 弱 | 2+HK → MK → 623+LP | 2480 | 2700 | drive 0 | 7.7 | medium | 0/2 pairs verified |
-| 7 | 7 | 3 + 强 → 6 + 中 → 623 + 弱 | 2+HK → 6+MK → 623+LP | 2480 | 2700 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 8 | 8 | 4 + 强 → 强 → 623 + 弱 | 4+HK → HP → 623+LP | 2480 | 2700 | drive 0 | 7.7 | medium | 0/2 pairs verified |
-| 9 | 9 | 3 + 强 → 4 + 强 → 2 + 强 | 2+HK → 4+HK → 2+HP | 2420 | 2600 | drive 0 | 6.0 | medium | 0/2 pairs verified |
-| 10 | 10 | 3 + 强 → 4 + 强 → 3 + 强 | 2+HK → 4+HK → 2+HK | 2420 | 2600 | drive 0 | 6.0 | medium | 0/2 pairs verified |
-| 11 | 11 | 4 + 强 → 3 + 强 → 2 + 强 | 4+HK → 2+HK → 2+HP | 2420 | 2600 | drive 0 | 6.0 | medium | 0/2 pairs verified |
-| 12 | 12 | 4 + 强 → 中 → 623 + 弱 | 4+HK → MK → 623+LP | 2380 | 2600 | drive 0 | 7.7 | medium | 0/2 pairs verified |
-| 13 | 13 | 4 + 强 → 6 + 中 → 623 + 弱 | 4+HK → 6+MK → 623+LP | 2380 | 2600 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 14 | 14 | 3 + 强 → 2 + 强 → 3 + SP | 2+HK → 2+HP → 214+HP | 2376 | 2700 | drive 0 | 8.0 | medium | 0/2 pairs verified |
-| 15 | 15 | 3 + 强 → 2 + 强 → 236 + 弱 | 2+HK → 2+HP → 236+LP | 2360 | 2500 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 16 | 16 | 3 + 强 → 2 + 强 → 236 + 中 | 2+HK → 2+HP → 236+MP | 2360 | 2500 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 17 | 17 | 3 + 强 → 2 + 强 → 236 + 强 | 2+HK → 2+HP → 236+HP | 2360 | 2500 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 18 | 18 | 3 + 强 → 2 + 强 → 623 + 中 | 2+HK → 2+HP → 623+MP | 2360 | 2500 | drive 0 | 8.2 | medium | 0/2 pairs verified |
-| 19 | 19 | 3 + 强 → 4 + 强 → 强 | 2+HK → 4+HK → HP | 2340 | 2500 | drive 0 | 5.5 | medium | 0/2 pairs verified |
-| 20 | 20 | 3 + 强 → 4 + 强 → 6 + 强 | 2+HK → 4+HK → 6+HP | 2340 | 2500 | drive 0 | 6.0 | medium | 0/2 pairs verified |
+| 1 | 1 | 3 + 强 → 2 + 强 → 623 + 弱 | 2+HK → 2+HP → 623+LP | 2680 | 2900 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 2 | 2 | 3 + 强 → 强 → 623 + 弱 | 2+HK → HP → 623+LP | 2580 | 2800 | drive 0 | 7.7 | medium | 0/2 pairs reproduced |
+| 3 | 3 | 3 + 强 → 4 + 强 → 623 + 弱 | 2+HK → 4+HK → 623+LP | 2580 | 2800 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 4 | 4 | 4 + 强 → 2 + 强 → 623 + 弱 | 4+HK → 2+HP → 623+LP | 2580 | 2800 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 5 | 5 | 4 + 强 → 3 + 强 → 623 + 弱 | 4+HK → 2+HK → 623+LP | 2580 | 2800 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 6 | 6 | 3 + 强 → 中 → 623 + 弱 | 2+HK → MK → 623+LP | 2480 | 2700 | drive 0 | 7.7 | medium | 0/2 pairs reproduced |
+| 7 | 7 | 3 + 强 → 6 + 中 → 623 + 弱 | 2+HK → 6+MK → 623+LP | 2480 | 2700 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 8 | 8 | 4 + 强 → 强 → 623 + 弱 | 4+HK → HP → 623+LP | 2480 | 2700 | drive 0 | 7.7 | medium | 0/2 pairs reproduced |
+| 9 | 9 | 3 + 强 → 4 + 强 → 2 + 强 | 2+HK → 4+HK → 2+HP | 2420 | 2600 | drive 0 | 6.0 | medium | 0/2 pairs reproduced |
+| 10 | 10 | 3 + 强 → 4 + 强 → 3 + 强 | 2+HK → 4+HK → 2+HK | 2420 | 2600 | drive 0 | 6.0 | medium | 0/2 pairs reproduced |
+| 11 | 11 | 4 + 强 → 3 + 强 → 2 + 强 | 4+HK → 2+HK → 2+HP | 2420 | 2600 | drive 0 | 6.0 | medium | 0/2 pairs reproduced |
+| 12 | 12 | 4 + 强 → 中 → 623 + 弱 | 4+HK → MK → 623+LP | 2380 | 2600 | drive 0 | 7.7 | medium | 0/2 pairs reproduced |
+| 13 | 13 | 4 + 强 → 6 + 中 → 623 + 弱 | 4+HK → 6+MK → 623+LP | 2380 | 2600 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 14 | 14 | 3 + 强 → 2 + 强 → 3 + SP | 2+HK → 2+HP → 214+HP | 2376 | 2700 | drive 0 | 8.0 | medium | 0/2 pairs reproduced |
+| 15 | 15 | 3 + 强 → 2 + 强 → 236 + 弱 | 2+HK → 2+HP → 236+LP | 2360 | 2500 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 16 | 16 | 3 + 强 → 2 + 强 → 236 + 中 | 2+HK → 2+HP → 236+MP | 2360 | 2500 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 17 | 17 | 3 + 强 → 2 + 强 → 236 + 强 | 2+HK → 2+HP → 236+HP | 2360 | 2500 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 18 | 18 | 3 + 强 → 2 + 强 → 623 + 中 | 2+HK → 2+HP → 623+MP | 2360 | 2500 | drive 0 | 8.2 | medium | 0/2 pairs reproduced |
+| 19 | 19 | 3 + 强 → 4 + 强 → 强 | 2+HK → 4+HK → HP | 2340 | 2500 | drive 0 | 5.5 | medium | 0/2 pairs reproduced |
+| 20 | 20 | 3 + 强 → 4 + 强 → 6 + 强 | 2+HK → 4+HK → 6+HP | 2340 | 2500 | drive 0 | 6.0 | medium | 0/2 pairs reproduced |
 
 ## Pairs to sweep: 22
 
@@ -111,13 +113,26 @@ Nothing these routes need has been answered yet.
 ## Where the known statuses come from
 
 - trial logs read: 0 (0 records for modern)
-- pairs answered: 0 across 0 cohort(s) - verified 0, rejected 0, pending 0
+- pairs answered: 0 across 0 cohort(s) - raw ConfirmedEdge: verified 0, rejected 0, pending 0
 - route runs (combos, not pairs): 0 rows
-- combos confirmed in the logs: 0
+- combos the looser page rule calls confirmed: 0 (2+ links at any gap, across input methods, cohorts and gaps, superseded rows included)
 
-A pair measured in several cohorts is `verified` if any cohort linked it, else
-`rejected` if any answered no, else `pending`. `(mixed)` marks a pair one cohort
-linked and another rejected.
+### Policy `ce-eval-v1`
+
+A superseded re-run is left out unless it linked. A link counts under every flag. A negative counts only when the run asked the question at the right timing with a pressable input (no fixed_delay_4, unplayable_input, link_timing_on_cancel_pair, motion_button_late). Unanswered runs count as unanswered. Pairs fold per cohort through ConfirmedEdge (reproduced = stable); routes per cohort through the combo rule (reproduced = 2 counted links at any gap).
+
+- rows built from the trial files: 0 (0 lines, 0 committed twice, 0 refused)
+- runs counted: 0; left out: 0 (of which negatives: 0)
+- evaluations (one per subject per cohort): 0
+- pairs by status: 
+- reclassified by the policy: 0 of 0 (none)
+
+A pair measured in several cohorts takes the strongest result: `verified` when some
+cohort REPRODUCED it (ConfirmedEdge stable on the counted runs), else `linked_once`
+when some cohort linked it, else `rejected` when a cohort answered no on runs the
+policy counted, else `asked_badly` when negatives exist and every one of them was
+left out, else `pending`. `(mixed)` marks a pair that both linked and conclusively
+failed. Only `rejected` demotes a route.
 
 `as <key>` means the answer was recorded under another action id with the same
 buttons. The catalog lists Modern 弱 as 601, 602 and 611; the search keeps one of

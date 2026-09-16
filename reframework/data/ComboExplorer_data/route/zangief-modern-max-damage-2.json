@@ -1,0 +1,50 @@
+{
+  "character": "Zangief",
+  "control_scheme": "modern",
+  "delays": [
+    [
+      56,
+      57,
+      58,
+      59,
+      60
+    ]
+  ],
+  "gaps": [
+    {
+      "delays": [
+        56,
+        57,
+        58,
+        59,
+        60
+      ],
+      "pair": "623:manual->1206:manual",
+      "source": "predicted",
+      "why": "runtime/Sweep.plan_for's grid for this pair: the predicted link window"
+    }
+  ],
+  "id": "zangief-modern-max-damage-2",
+  "note": "Written by tools/lua/plan.lua --routes from plan max-damage (rank 2). Every gap is a LIST, never one number: a single delay would read as a measurement, and pressing at one unmeasured gap is how a cancel window gets mistaken for a link window (#46). Where each list came from:\ngap 1 (2 + 强 -> 236236 + 中): 56, 57, 58, 59, 60 from predicted - runtime/Sweep.plan_for's grid for this pair: the predicted link window\nWhat the logs already say: 0/1 pairs reproduced; by its moves, pressed any way, the policy calls this combo no_success_observed; a pair of it has never been asked properly: 623:manual->1206:manual\nThe grid is 5 combination(s). EVERY ROUTE IN A PLAN IS A PREDICTION: this file is a question for the game, not a combo.",
+  "plan": {
+    "conditions": {},
+    "generated_at": "2026-09-16T00:28:54Z",
+    "name": "max-damage",
+    "rank": 2,
+    "sort": "scaled_damage",
+    "tool": "tools/lua/plan.lua --routes"
+  },
+  "schema": "ce.route.v1",
+  "steps": [
+    {
+      "action_id": 623,
+      "input_method": "manual",
+      "notation": "2 + 强"
+    },
+    {
+      "action_id": 1206,
+      "input_method": "manual",
+      "notation": "236236 + 中"
+    }
+  ]
+}
